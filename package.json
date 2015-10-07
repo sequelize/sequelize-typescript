@@ -13,6 +13,7 @@
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "mysql": "^2.9.0",
+    "q": "^1.4.1",
     "sequelize": "^3.8.0",
     "sqlite3": "~2.1.5"
   },

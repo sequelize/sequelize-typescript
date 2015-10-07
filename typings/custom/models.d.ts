@@ -12,6 +12,8 @@ import ICompetition = goalazo.ICompetition;
 import ILocation = goalazo.ILocation;
 import IViewing = goalazo.IViewing;
 import IMatch = goalazo.IMatch;
+import ICountry = goalazo.ICountry;
+import ICountryCompetition = goalazo.ICountryCompetition;
 
 export interface ITeamCompetition {
     teamId: number;
@@ -21,7 +23,7 @@ export interface ITeamCompetition {
 export interface IUserInstance extends Instance<IUserInstance, IUser>, IUser {}
 export interface IUserModel extends Model<IUserInstance, IUser> {}
 
-export interface ICompetitionSeriesInstance extends Instance<ICompetitionSeriesInstance, ICompetitionSeries>, ITeam {}
+export interface ICompetitionSeriesInstance extends Instance<ICompetitionSeriesInstance, ICompetitionSeries>, ICompetitionSeries {}
 export interface ICompetitionSeriesModel extends Model<ICompetitionSeriesInstance, ICompetitionSeries> {}
 
 export interface ICompetitionInstance extends Instance<ICompetitionInstance, ICompetition>, ICompetition {}
@@ -39,6 +41,12 @@ export interface IMatchModel extends Model<IMatchInstance, IMatch> {}
 export interface ITeamInstance extends Instance<ITeamInstance, ITeam>, ITeam {}
 export interface ITeamModel extends Model<ITeamInstance, ITeam> {}
 
+export interface ICountryInstance extends Instance<ICountryInstance, ICountry>, ICountry {}
+export interface ICountryModel extends Model<ICountryInstance, ICountry> {}
+
+export interface ICountryCompetitionInstance extends Instance<ICountryCompetitionInstance, ICountryCompetition>, ICountryCompetition {}
+export interface ICountryCompetitionModel extends Model<ICountryCompetitionInstance, ICountryCompetition> {}
+
 export interface ITeamCompetitionInstance extends Instance<ITeamCompetitionInstance, ITeamCompetition>, ITeamCompetition {}
 export interface ITeamCompetitionModel extends Model<ITeamCompetitionInstance, ITeamCompetition> {}
 
@@ -52,4 +60,6 @@ export interface Models {
     Viewing: IViewingModel;
     Match: IMatchModel;
     Team: ITeamModel;
+    Country: ICountryModel;
+    CountryCompetition: ICountryCompetitionModel;
 }

@@ -14,13 +14,13 @@ export = function (sequelize: Sequelize, DataTypes) {
     var TeamCompetition = sequelize.define<ITeamCompetitionInstance, ITeamCompetition>('TeamCompetition', {
 
         teamId: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
 
         competitionId: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         }

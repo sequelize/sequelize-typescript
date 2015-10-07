@@ -3,12 +3,12 @@
 module.exports = function (sequelize, DataTypes) {
     var TeamCompetition = sequelize.define('TeamCompetition', {
         teamId: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
         competitionId: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         }
@@ -18,4 +18,4 @@ module.exports = function (sequelize, DataTypes) {
     });
     return TeamCompetition;
 };
-//# sourceMappingURL=TeamCondition.js.map
+//# sourceMappingURL=TeamCompetition.js.map

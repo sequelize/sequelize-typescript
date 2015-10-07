@@ -3,7 +3,7 @@
 ///<reference path="typings/body-parser/body-parser.d.ts"/>
 ///<reference path="typings/method-override/method-override.d.ts"/>
 ///<reference path="typings/morgan/morgan.d.ts"/>
-///<reference path="typings/custom/ServerProtoRequest.d.ts"/>
+///<reference path="typings/custom/ApiRequest.d.ts"/>
 var api_1 = require('./api/api');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -40,9 +40,15 @@ app.use('/:apiVersion/', function (req, res, next) {
     }
 });
 app.use(function (req, res, next) { return req.api.checkAuthenticationMiddleWare(req, res, next); });
+app.use(function (req, res, next) { return req.api.checkRequestFilterMiddleware(req, res, next); });
 app.get('/*/user', function (req, res) { return req.api.getUser(req, res); });
 app.post('/*/user', function (req, res) { return req.api.setUser(req, res); });
 app.delete('/*/user', function (req, res) { return req.api.removeUser(req, res); });
+app.get('/*/countries', function (req, res, next) { return req.api.getCountries(req, res, next); });
+app.get('/*/countries/:countryId/competitions', function (req, res, next) { return req.api.getCountryCompetitions(req, res, next); });
+app.get('/*/competitions/:competitionId/teams', function (req, res, next) { return req.api.getCompetitionTeams(req, res, next); });
+app.get('/*/competitionSeries', function (req, res, next) { return req.api.getCompetitionSeries(req, res, next); });
+app.get('/*/teams', function (req, res, next) { return req.api.getTeams(req, res, next); });
 http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
 });

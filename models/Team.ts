@@ -5,8 +5,8 @@ import {Sequelize} from "sequelize";
 import {Model} from "sequelize";
 import {ITeamModel} from "../typings/custom/models";
 import {ITeamInstance} from "../typings/custom/models";
-import ITeam = goalazo.ITeam;
 import {Models} from "../typings/custom/models";
+import ITeam = goalazo.ITeam;
 
 export = function (sequelize: Sequelize, DataTypes) {
 

@@ -10,3 +10,4 @@
 /// <reference path="lodash/lodash.d.ts" />
 /// <reference path="sequelize/sequelize.d.ts" />
 /// <reference path="validator/validator.d.ts" />
+/// <reference path="q/Q.d.ts" />

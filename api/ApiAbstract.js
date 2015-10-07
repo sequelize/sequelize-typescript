@@ -2,6 +2,8 @@
 var ApiAbstract = (function () {
     function ApiAbstract() {
     }
+    // USER
+    // -------------------------------------------------------
     ApiAbstract.prototype.getUser = function (req, res) {
         res.sendStatus(404);
     };
@@ -11,11 +13,38 @@ var ApiAbstract = (function () {
     ApiAbstract.prototype.removeUser = function (req, res) {
         res.sendStatus(404);
     };
+    // COMPETITION SERIES
+    // -------------------------------------------------------
+    ApiAbstract.prototype.getCompetitionSeries = function (req, res, next) {
+        res.sendStatus(404);
+    };
+    // COMPETITION
+    // -------------------------------------------------------
+    ApiAbstract.prototype.getCompetitionTeams = function (req, res, next) {
+        res.sendStatus(404);
+    };
+    // TEAM
+    // -------------------------------------------------------
+    ApiAbstract.prototype.getTeams = function (req, res, next) {
+        res.sendStatus(404);
+    };
+    // COUNTRY
+    // -------------------------------------------------------
+    ApiAbstract.prototype.getCountries = function (req, res, next) {
+        res.sendStatus(404);
+    };
+    ApiAbstract.prototype.getCountryCompetitions = function (req, res, next) {
+        res.sendStatus(404);
+    };
+    // MIDDLEWARE
+    // -------------------------------------------------------
     ApiAbstract.prototype.checkAuthenticationMiddleWare = function (req, res, next) {
+        next();
+    };
+    ApiAbstract.prototype.checkRequestFilterMiddleware = function (req, res, next) {
         next();
     };
     return ApiAbstract;
 })();
-exports.__esModule = true;
-exports["default"] = ApiAbstract;
+exports.ApiAbstract = ApiAbstract;
 //# sourceMappingURL=ApiAbstract.js.map

@@ -1,5 +1,6 @@
 ///<reference path="../typings/node/node.d.ts"/>
 
+import {Models} from "../typings/custom/models";
 var fs = require('fs');
 var path = require('path');
 var Sequelize = require('sequelize');
@@ -10,11 +11,11 @@ var config = {
     database: 'goalazo',
     dialect: 'mysql',
     host: 'localhost',
-    //password: process.env.DB_PASSWORD,
+    password: '',
     username: 'root'
 };
 
-var sequelize = new Sequelize(config.database, config.username, config);
+var sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 fs
     .readdirSync(__dirname)
@@ -32,7 +33,12 @@ Object.keys(db).forEach(function (modelName) {
     }
 });
 
-module.exports = lodash.extend({
+export default <Models>lodash.extend({
     sequelize: sequelize,
     Sequelize: Sequelize
 }, db);
+
+//module.exports = <Models>lodash.extend({
+//    sequelize: sequelize,
+//    Sequelize: Sequelize
+//}, db);

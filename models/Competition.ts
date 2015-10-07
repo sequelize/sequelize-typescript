@@ -13,7 +13,7 @@ export = function (sequelize: Sequelize, DataTypes) {
 
         competitionSeriesId: {
             field: 'competition_series_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
@@ -38,11 +38,8 @@ export = function (sequelize: Sequelize, DataTypes) {
         ['associate'] (models: Models) {
 
             Competition.belongsTo(models.CompetitionSeries, {
-                as: {
-                    singular: 'competitionSeries',
-                    plural: 'competitionSeriesList'
-                },
-                foreignKey: 'question_id'
+                as: 'competitionSeries',
+                foreignKey: 'competition_series_id'
             });
 
             Competition.hasMany(models.Match, {
@@ -53,6 +50,12 @@ export = function (sequelize: Sequelize, DataTypes) {
             Competition.belongsToMany(models.Team, {
                 through: models.TeamCompetition,
                 as: 'teams',
+                foreignKey: 'competition_id'
+            });
+
+            Competition.belongsToMany(models.Country, {
+                through: models.CountryCompetition,
+                as: 'countries',
                 foreignKey: 'competition_id'
             });
         }

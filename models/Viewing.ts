@@ -13,14 +13,14 @@ export = function (sequelize: Sequelize, DataTypes) {
 
         matchId: {
             field: 'match_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
 
         locationId: {
             field: 'location_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },

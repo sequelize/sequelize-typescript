@@ -4,13 +4,13 @@ module.exports = function (sequelize, DataTypes) {
     var Viewing = sequelize.define('Viewing', {
         matchId: {
             field: 'match_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
         locationId: {
             field: 'location_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },

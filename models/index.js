@@ -8,10 +8,10 @@ var config = {
     database: 'goalazo',
     dialect: 'mysql',
     host: 'localhost',
-    //password: process.env.DB_PASSWORD,
+    password: '',
     username: 'root'
 };
-var sequelize = new Sequelize(config.database, config.username, config);
+var sequelize = new Sequelize(config.database, config.username, config.password, config);
 fs
     .readdirSync(__dirname)
     .filter(function (file) {
@@ -26,8 +26,13 @@ Object.keys(db).forEach(function (modelName) {
         db[modelName].options.associate(db);
     }
 });
-module.exports = lodash.extend({
+exports.__esModule = true;
+exports["default"] = lodash.extend({
     sequelize: sequelize,
     Sequelize: Sequelize
 }, db);
+//module.exports = <Models>lodash.extend({
+//    sequelize: sequelize,
+//    Sequelize: Sequelize
+//}, db);
 //# sourceMappingURL=index.js.map

@@ -4,19 +4,19 @@ module.exports = function (sequelize, DataTypes) {
     var Match = sequelize.define('Match', {
         teamHomeId: {
             field: 'team_home_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
         teamAwayId: {
             field: 'team_away_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
         competitionId: {
             field: 'competition_id',
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },

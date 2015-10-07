@@ -3,11 +3,11 @@
 ///<reference path="typings/body-parser/body-parser.d.ts"/>
 ///<reference path="typings/method-override/method-override.d.ts"/>
 ///<reference path="typings/morgan/morgan.d.ts"/>
-///<reference path="typings/custom/ServerProtoRequest.d.ts"/>
+///<reference path="typings/custom/ApiRequest.d.ts"/>
 
 
-//import ServerProtoRequest  from './typings/custom/ServerProtoRequest';
-import ApiAbstract from './api/ApiAbstract';
+import {ApiAbstract} from './api/ApiAbstract';
+import {ApiRequest} from "./typings/custom/ApiRequest";
 import apis from './api/api';
 
 import express        = require('express')
@@ -38,7 +38,7 @@ if ('development' === app.get('env')) {
     app.use(errorHandler())
 }
 
-app.use('/:apiVersion/', function (req: ServerProtoRequest, res: express.Response, next: Function) {
+app.use('/:apiVersion/', function (req: ApiRequest, res: express.Response, next: Function) {
 
     var apiVersion = req.params['apiVersion'];
     var api: ApiAbstract = apis[apiVersion];
@@ -53,12 +53,20 @@ app.use('/:apiVersion/', function (req: ServerProtoRequest, res: express.Respons
     }
 });
 
-app.use((req: ServerProtoRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
+app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
+app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkRequestFilterMiddleware(req, res, next));
 
-app.get('/*/user', (req: ServerProtoRequest, res: express.Response) => req.api.getUser(req, res));
-app.post('/*/user', (req: ServerProtoRequest, res: express.Response) => req.api.setUser(req, res));
-app.delete('/*/user', (req: ServerProtoRequest, res: express.Response) => req.api.removeUser(req, res));
+app.get('/*/user', (req: ApiRequest, res: express.Response) => req.api.getUser(req, res));
+app.post('/*/user', (req: ApiRequest, res: express.Response) => req.api.setUser(req, res));
+app.delete('/*/user', (req: ApiRequest, res: express.Response) => req.api.removeUser(req, res));
 
+app.get('/*/countries', (req: ApiRequest, res, next) => req.api.getCountries(req, res, next));
+app.get('/*/countries/:countryId/competitions', (req: ApiRequest, res, next) => req.api.getCountryCompetitions(req, res, next));
+
+app.get('/*/competitions/:competitionId/teams', (req: ApiRequest, res, next) => req.api.getCompetitionTeams(req, res, next));
+app.get('/*/competitionSeries', (req: ApiRequest, res, next) => req.api.getCompetitionSeries(req, res, next));
+
+app.get('/*/teams', (req: ApiRequest, res, next) => req.api.getTeams(req, res, next));
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'))
