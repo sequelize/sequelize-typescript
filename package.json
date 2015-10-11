@@ -20,7 +20,8 @@
     "password-generator": "^2.0.1",
     "q": "^1.4.1",
     "sequelize": "^3.8.0",
-    "sqlite3": "~2.1.5"
+    "sqlite3": "~2.1.5",
+    "tsd-http-status-codes": "git+https://github.com/RobinBuschmann/tsd-http-status-codes.git"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

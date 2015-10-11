@@ -39,8 +39,9 @@ app.use('/:apiVersion/', function (req, res, next) {
         next();
     }
 });
-app.use(function (req, res, next) { return req.api.checkAuthenticationMiddleWare(req, res, next); });
 app.use(function (req, res, next) { return req.api.checkRequestFilterMiddleware(req, res, next); });
+app.post('/*/users/me/auth', function (req, res, next) { return req.api.authUser(req, res, next); });
+app.use(function (req, res, next) { return req.api.checkAuthenticationMiddleWare(req, res, next); });
 app.post('/*/users', function (req, res, next) { return req.api.postUser(req, res, next); });
 app.get('/*/countries', function (req, res, next) { return req.api.getCountries(req, res, next); });
 app.get('/*/countries/:countryId/competitions', function (req, res, next) { return req.api.getCountryCompetitions(req, res, next); });

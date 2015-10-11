@@ -1,6 +1,7 @@
 ///<reference path="../typings/bluebird/bluebird.d.ts"/>
 ///<reference path="../typings/q/Q.d.ts"/>
 ///<reference path="../node_modules/tsd-goalazo-models/models.d.ts"/>
+///<reference path="../node_modules/tsd-http-status-codes/HttpStatus.d.ts"/>
 
 import express = require('express');
 import Q = require('q');
@@ -19,6 +20,7 @@ import {ICountryTeamsRequest} from "../typings/custom/ApiRequest";
 import ICompetition = goalazo.ICompetition;
 import {IUserRequest} from "../typings/custom/ApiRequest";
 import {UserSvcUno} from "../services/user/UserSvcUno";
+import IAuthUser = goalazo.IAuthUser;
 
 export class ApiUnus extends ApiAbstract {
 
@@ -39,10 +41,8 @@ export class ApiUnus extends ApiAbstract {
         this.userSvc = new UserSvcUno();
     }
 
-    getUser(req: ApiRequest, res: express.Response): void {
-
-        res.send('get v1');
-    }
+    // USER
+    // --------------
 
     postUser(req: IUserRequest, res: express.Response, next: any): void {
 
@@ -57,16 +57,23 @@ export class ApiUnus extends ApiAbstract {
             ;
         } else {
 
-            res.status(400).send(`Both name and password should be provided
+            res.status(HttpStatus.BadRequest).send(`Both name and password should be provided
             or no parameter for an auto generated user`);
         }
     }
 
-    setUser(req: ApiRequest, res: express.Response): void {
+    authUser(req: IUserRequest, res: express.Response, next: any): void {
 
-        res.send('set v1');
+        var data = req.body;
+
+        this.userSvc.authenticate(data.name, data.password)
+            .then((user) => res.json(user))
+            .catch(next)
+        ;
     }
 
+// COUNTRIES
+    // --------------
 
     getCountries(req: ApiRequest, res: express.Response, next: any): void {
 
@@ -89,6 +96,9 @@ export class ApiUnus extends ApiAbstract {
             .catch(next);
     }
 
+    // COMPETITION SERIES
+    // --------------
+
     getCompetitionSeries(req: ApiRequest, res: express.Response, next: any): void {
 
         Q.when<ICompetitionSeries[]>(null)
@@ -100,6 +110,10 @@ export class ApiUnus extends ApiAbstract {
             .catch(next)
         ;
     }
+
+
+    // COMPETITION
+    // --------------
 
     getCompetitionTeams(req: ICompetitionTeamsRequest, res: express.Response, next: any): void {
 
@@ -113,6 +127,10 @@ export class ApiUnus extends ApiAbstract {
 
     }
 
+
+    // TEAM
+    // --------------
+
     getTeams(req: ApiRequest, res: express.Response, next: any): void {
 
         Q.when<ITeam[]>(null)
@@ -125,13 +143,16 @@ export class ApiUnus extends ApiAbstract {
         ;
     }
 
+    // MIDDLEWARE
+    // ---------------------------
+
     checkRequestFilterMiddleware(req: ApiRequest, res: express.Response, next: Function) {
 
         if (req.query.limit > config.request.maxLimit) {
 
             // if limit is higher than configured max
             // response with BAD REQUEST
-            res.status(400).send('Maximal limit for data request is ' + config.request.maxLimit);
+            res.status(HttpStatus.BadRequest).send('Maximal limit for data request is ' + config.request.maxLimit);
             return;
         } else if (!req.query.limit) {
 
@@ -140,6 +161,27 @@ export class ApiUnus extends ApiAbstract {
         }
 
         next();
+    }
+
+    checkAuthenticationMiddleWare(req: ApiRequest, res: express.Response, next: any): void {
+
+        var token = req.headers[config.request.accessTokenHeader];
+
+        if (!token) {
+
+            res.sendStatus(HttpStatus.Unauthorized);
+        }
+
+        this.userSvc.checkAuthentication(token)
+            .then((user: IAuthUser) => {
+
+                req.user = user;
+                next();
+            })
+            .catch(() => {
+
+                res.status(HttpStatus.Unauthorized);
+            })
     }
 }
 

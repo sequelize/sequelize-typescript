@@ -1,6 +1,7 @@
 ///<reference path="../typings/bluebird/bluebird.d.ts"/>
 ///<reference path="../typings/q/Q.d.ts"/>
 ///<reference path="../node_modules/tsd-goalazo-models/models.d.ts"/>
+///<reference path="../node_modules/tsd-http-status-codes/HttpStatus.d.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -24,9 +25,8 @@ var ApiUnus = (function (_super) {
         this.teamSvc = new TeamSvcUno_1.TeamSvcUno();
         this.userSvc = new UserSvcUno_1.UserSvcUno();
     }
-    ApiUnus.prototype.getUser = function (req, res) {
-        res.send('get v1');
-    };
+    // USER
+    // --------------
     ApiUnus.prototype.postUser = function (req, res, next) {
         var data = req.body;
         if ((!data.name && !data.password) ||
@@ -36,12 +36,17 @@ var ApiUnus = (function (_super) {
                 .catch(next);
         }
         else {
-            res.status(400).send("Both name and password should be provided\n            or no parameter for an auto generated user");
+            res.status(400 /* BadRequest */).send("Both name and password should be provided\n            or no parameter for an auto generated user");
         }
     };
-    ApiUnus.prototype.setUser = function (req, res) {
-        res.send('set v1');
+    ApiUnus.prototype.authUser = function (req, res, next) {
+        var data = req.body;
+        this.userSvc.authenticate(data.name, data.password)
+            .then(function (user) { return res.json(user); })
+            .catch(next);
     };
+    // COUNTRIES
+    // --------------
     ApiUnus.prototype.getCountries = function (req, res, next) {
         this.countrySvc.getCountries(req.query.limit)
             .then(function (countries) {
@@ -56,6 +61,8 @@ var ApiUnus = (function (_super) {
         })
             .catch(next);
     };
+    // COMPETITION SERIES
+    // --------------
     ApiUnus.prototype.getCompetitionSeries = function (req, res, next) {
         var _this = this;
         Q.when(null)
@@ -65,6 +72,8 @@ var ApiUnus = (function (_super) {
         })
             .catch(next);
     };
+    // COMPETITION
+    // --------------
     ApiUnus.prototype.getCompetitionTeams = function (req, res, next) {
         var _this = this;
         Q.when(null)
@@ -74,6 +83,8 @@ var ApiUnus = (function (_super) {
         })
             .catch(next);
     };
+    // TEAM
+    // --------------
     ApiUnus.prototype.getTeams = function (req, res, next) {
         var _this = this;
         Q.when(null)
@@ -83,11 +94,13 @@ var ApiUnus = (function (_super) {
         })
             .catch(next);
     };
+    // MIDDLEWARE
+    // ---------------------------
     ApiUnus.prototype.checkRequestFilterMiddleware = function (req, res, next) {
         if (req.query.limit > config_1.config.request.maxLimit) {
             // if limit is higher than configured max
             // response with BAD REQUEST
-            res.status(400).send('Maximal limit for data request is ' + config_1.config.request.maxLimit);
+            res.status(400 /* BadRequest */).send('Maximal limit for data request is ' + config_1.config.request.maxLimit);
             return;
         }
         else if (!req.query.limit) {
@@ -95,6 +108,20 @@ var ApiUnus = (function (_super) {
             req.query.limit = config_1.config.request.maxLimit;
         }
         next();
+    };
+    ApiUnus.prototype.checkAuthenticationMiddleWare = function (req, res, next) {
+        var token = req.headers[config_1.config.request.accessTokenHeader];
+        if (!token) {
+            res.sendStatus(401 /* Unauthorized */);
+        }
+        this.userSvc.checkAuthentication(token)
+            .then(function (user) {
+            req.user = user;
+            next();
+        })
+            .catch(function () {
+            res.status(401 /* Unauthorized */);
+        });
     };
     return ApiUnus;
 })(ApiAbstract_1.ApiAbstract);

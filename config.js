@@ -1,7 +1,8 @@
 ///<reference path="typings/node/node.d.ts"/>
 exports.config = {
     request: {
-        maxLimit: 100
+        maxLimit: 100,
+        accessTokenHeader: 'x-access-token'
     },
     passwordPepper: process.env.PWD_PEPPER || throwError('environment variable is missing: password pepper'),
     jwtSecret: process.env.JWT_SECRET || throwError('environment variable is missing: jwt secret')

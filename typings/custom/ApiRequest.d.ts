@@ -1,9 +1,12 @@
 ///<reference path="../express/express"/>
+///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
 
 import {ApiAbstract} from '../../api/ApiAbstract';
 import express = require('express');
+import IAuthUser = goalazo.IAuthUser;
 
 export interface ApiRequest extends express.Request {
+    user: IAuthUser,
     api: ApiAbstract;
     query: {limit: number};
 }

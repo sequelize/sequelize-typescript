@@ -53,8 +53,11 @@ app.use('/:apiVersion/', function (req: ApiRequest, res: express.Response, next:
     }
 });
 
-app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
 app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkRequestFilterMiddleware(req, res, next));
+
+app.post('/*/users/me/auth', (req: ApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
+
+app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
 
 app.post('/*/users', (req: ApiRequest, res: express.Response, next) => req.api.postUser(req, res, next));
 
