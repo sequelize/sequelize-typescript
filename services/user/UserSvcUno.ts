@@ -56,7 +56,7 @@ export class UserSvcUno {
             .then((user: IUser) => {
 
                 if (!user) {
-                    
+
                     throw new Error('');
                 }
 
