@@ -13,6 +13,7 @@ var TeamSvcUno_1 = require("../services/Team/TeamSvcUno");
 var CompetitionSeriesSvcUno_1 = require('../services/competitionSeries/CompetitionSeriesSvcUno');
 var CompetitionSvcUno_1 = require("../services/competition/CompetitionSvcUno");
 var CountrySvcUno_1 = require("../services/country/CountrySvcUno");
+var UserSvcUno_1 = require("../services/user/UserSvcUno");
 var ApiUnus = (function (_super) {
     __extends(ApiUnus, _super);
     function ApiUnus() {
@@ -21,9 +22,22 @@ var ApiUnus = (function (_super) {
         this.competitionSvc = new CompetitionSvcUno_1.CompetitionSvcUno();
         this.countrySvc = new CountrySvcUno_1.CountrySvcUno();
         this.teamSvc = new TeamSvcUno_1.TeamSvcUno();
+        this.userSvc = new UserSvcUno_1.UserSvcUno();
     }
     ApiUnus.prototype.getUser = function (req, res) {
         res.send('get v1');
+    };
+    ApiUnus.prototype.postUser = function (req, res, next) {
+        var data = req.body;
+        if ((!data.name && !data.password) ||
+            data.name && data.password) {
+            this.userSvc.register(data.name, data.password)
+                .then(function (user) { return res.json(user); })
+                .catch(next);
+        }
+        else {
+            res.status(400).send("Both name and password should be provided\n            or no parameter for an auto generated user");
+        }
     };
     ApiUnus.prototype.setUser = function (req, res) {
         res.send('set v1');

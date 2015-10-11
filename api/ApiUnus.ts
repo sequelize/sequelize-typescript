@@ -17,6 +17,8 @@ import {CountrySvcUno} from "../services/country/CountrySvcUno";
 import ICountry = goalazo.ICountry;
 import {ICountryTeamsRequest} from "../typings/custom/ApiRequest";
 import ICompetition = goalazo.ICompetition;
+import {IUserRequest} from "../typings/custom/ApiRequest";
+import {UserSvcUno} from "../services/user/UserSvcUno";
 
 export class ApiUnus extends ApiAbstract {
 
@@ -24,6 +26,7 @@ export class ApiUnus extends ApiAbstract {
     protected competitionSvc: CompetitionSvcUno;
     protected countrySvc: CountrySvcUno;
     protected teamSvc: TeamSvcUno;
+    protected userSvc: UserSvcUno;
 
     constructor() {
 
@@ -33,11 +36,30 @@ export class ApiUnus extends ApiAbstract {
         this.competitionSvc = new CompetitionSvcUno();
         this.countrySvc = new CountrySvcUno();
         this.teamSvc = new TeamSvcUno();
+        this.userSvc = new UserSvcUno();
     }
 
     getUser(req: ApiRequest, res: express.Response): void {
 
         res.send('get v1');
+    }
+
+    postUser(req: IUserRequest, res: express.Response, next: any): void {
+
+        var data = req.body;
+
+        if ((!data.name && !data.password) ||
+            data.name && data.password) {
+
+            this.userSvc.register(data.name, data.password)
+                .then((user) => res.json(user))
+                .catch(next)
+            ;
+        } else {
+
+            res.status(400).send(`Both name and password should be provided
+            or no parameter for an auto generated user`);
+        }
     }
 
     setUser(req: ApiRequest, res: express.Response): void {

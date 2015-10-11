@@ -4,6 +4,7 @@ import express = require('express');
 import {ApiRequest} from "../typings/custom/ApiRequest";
 import {ICompetitionTeamsRequest} from "../typings/custom/ApiRequest";
 import {ICountryTeamsRequest} from "../typings/custom/ApiRequest";
+import {IUserRequest} from "../typings/custom/ApiRequest";
 
 export abstract class ApiAbstract {
 
@@ -14,12 +15,9 @@ export abstract class ApiAbstract {
         res.sendStatus(404);
     }
 
-    setUser(req: ApiRequest, res: express.Response): void {
-        res.sendStatus(404);
-    }
+    postUser(req: IUserRequest, res: express.Response, next: any): void {
 
-    removeUser(req: ApiRequest, res: express.Response): void {
-        res.sendStatus(404);
+        res.status(404).send('postUser() not implemented on this version');
     }
 
     // COMPETITION SERIES

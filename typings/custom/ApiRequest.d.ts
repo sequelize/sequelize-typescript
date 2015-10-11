@@ -8,6 +8,12 @@ export interface ApiRequest extends express.Request {
     query: {limit: number};
 }
 
+export interface IUserRequest extends ApiRequest {
+    body: {name: string; password: string};
+}
+export interface ICountryTeamsRequest extends ICountryRequest {
+}
+
 export interface ICountryRequest extends ApiRequest {
     params: {countryId: number};
 }

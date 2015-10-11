@@ -7,11 +7,8 @@ var ApiAbstract = (function () {
     ApiAbstract.prototype.getUser = function (req, res) {
         res.sendStatus(404);
     };
-    ApiAbstract.prototype.setUser = function (req, res) {
-        res.sendStatus(404);
-    };
-    ApiAbstract.prototype.removeUser = function (req, res) {
-        res.sendStatus(404);
+    ApiAbstract.prototype.postUser = function (req, res, next) {
+        res.status(404).send('postUser() not implemented on this version');
     };
     // COMPETITION SERIES
     // -------------------------------------------------------

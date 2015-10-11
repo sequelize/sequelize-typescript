@@ -11,3 +11,5 @@
 /// <reference path="sequelize/sequelize.d.ts" />
 /// <reference path="validator/validator.d.ts" />
 /// <reference path="q/Q.d.ts" />
+/// <reference path="bcrypt/bcrypt.d.ts" />
+/// <reference path="jsonwebtoken/jsonwebtoken.d.ts" />

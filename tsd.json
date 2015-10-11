@@ -6,7 +6,7 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "node/node.d.ts": {
-      "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
+      "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
     },
     "serve-static/serve-static.d.ts": {
       "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
@@ -40,6 +40,12 @@
     },
     "q/Q.d.ts": {
       "commit": "32029fcb4e1a3ef8968711b545d77b584435729d"
+    },
+    "bcrypt/bcrypt.d.ts": {
+      "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
+    },
+    "jsonwebtoken/jsonwebtoken.d.ts": {
+      "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
     }
   }
 }

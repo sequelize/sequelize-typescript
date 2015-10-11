@@ -41,9 +41,7 @@ app.use('/:apiVersion/', function (req, res, next) {
 });
 app.use(function (req, res, next) { return req.api.checkAuthenticationMiddleWare(req, res, next); });
 app.use(function (req, res, next) { return req.api.checkRequestFilterMiddleware(req, res, next); });
-app.get('/*/user', function (req, res) { return req.api.getUser(req, res); });
-app.post('/*/user', function (req, res) { return req.api.setUser(req, res); });
-app.delete('/*/user', function (req, res) { return req.api.removeUser(req, res); });
+app.post('/*/users', function (req, res, next) { return req.api.postUser(req, res, next); });
 app.get('/*/countries', function (req, res, next) { return req.api.getCountries(req, res, next); });
 app.get('/*/countries/:countryId/competitions', function (req, res, next) { return req.api.getCountryCompetitions(req, res, next); });
 app.get('/*/competitions/:competitionId/teams', function (req, res, next) { return req.api.getCompetitionTeams(req, res, next); });

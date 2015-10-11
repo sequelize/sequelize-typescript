@@ -6,13 +6,18 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.13.3",
+    "crypto-js": "^3.1.5",
     "errorhandler": "^1.4.2",
     "express": "^4.13.3",
+    "jsonwebtoken": "^5.4.0",
     "lodash": "~2.4.1",
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "mysql": "^2.9.0",
+    "node-uuid": "^1.4.3",
+    "password-generator": "^2.0.1",
     "q": "^1.4.1",
     "sequelize": "^3.8.0",
     "sqlite3": "~2.1.5"

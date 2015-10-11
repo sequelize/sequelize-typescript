@@ -56,9 +56,7 @@ app.use('/:apiVersion/', function (req: ApiRequest, res: express.Response, next:
 app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
 app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkRequestFilterMiddleware(req, res, next));
 
-app.get('/*/user', (req: ApiRequest, res: express.Response) => req.api.getUser(req, res));
-app.post('/*/user', (req: ApiRequest, res: express.Response) => req.api.setUser(req, res));
-app.delete('/*/user', (req: ApiRequest, res: express.Response) => req.api.removeUser(req, res));
+app.post('/*/users', (req: ApiRequest, res: express.Response, next) => req.api.postUser(req, res, next));
 
 app.get('/*/countries', (req: ApiRequest, res, next) => req.api.getCountries(req, res, next));
 app.get('/*/countries/:countryId/competitions', (req: ApiRequest, res, next) => req.api.getCountryCompetitions(req, res, next));
