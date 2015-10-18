@@ -34,6 +34,11 @@ module.exports = function (sequelize, DataTypes) {
             timestamps: false
         },
         _a['associate'] = function (models) {
+            User.belongsToMany(models.Filter, {
+                through: models.UserFilter,
+                as: 'filters',
+                foreignKey: 'user_id'
+            });
         },
         _a
     ));

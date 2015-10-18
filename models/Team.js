@@ -22,8 +22,13 @@ module.exports = function (sequelize, DataTypes) {
             });
             Team.belongsToMany(models.Competition, {
                 through: models.TeamCompetition,
-                as: 'teams',
-                foreignKey: 'competition_id'
+                as: 'competitions',
+                foreignKey: 'team_id'
+            });
+            Team.belongsToMany(models.Filter, {
+                through: models.FilterTeam,
+                as: 'filters',
+                foreignKey: 'team_id'
             });
         },
         _a

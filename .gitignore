@@ -11,4 +11,10 @@ plugins
 *.swo
 *.log
 *.DS_Store
-secrets.txt
+secrets.json
+
+# all js files
+**/*.js
+**/*.js.map
+# expect
+!Gruntfile.js

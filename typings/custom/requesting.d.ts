@@ -14,6 +14,9 @@ export interface ApiRequest extends express.Request {
 export interface IUserRequest extends ApiRequest {
     body: {name: string; password: string};
 }
+export interface IUserFilterPostRequest extends ApiRequest {
+    body: {filterName: string, teamIds: Array<number>, competitionSeriesIds: Array<number>};
+}
 export interface ICountryTeamsRequest extends ICountryRequest {
 }
 

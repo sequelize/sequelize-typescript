@@ -23,7 +23,7 @@ declare module "jsonwebtoken" {
          */
         algorithm?: string;
         /** @member {number} - Lifetime for the token in minutes */
-        expiresInMinutes?: number;
+        expiresIn?: string;
         audience?: string;
         subject?: string;
         issuer?: string;

@@ -8,19 +8,21 @@ import Q = require('q');
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import ITeam = goalazo.ITeam;
 import {config} from '../config';
-import {ApiRequest} from '../typings/custom/ApiRequest';
+import {ApiRequest} from '../typings/custom/requesting';
 import {ApiAbstract} from './ApiAbstract';
 import {TeamSvcUno} from "../services/Team/TeamSvcUno";
 import {CompetitionSeriesSvcUno} from '../services/competitionSeries/CompetitionSeriesSvcUno';
-import {ICompetitionTeamsRequest} from "../typings/custom/ApiRequest";
+import {ICompetitionTeamsRequest} from "../typings/custom/requesting";
 import {CompetitionSvcUno} from "../services/competition/CompetitionSvcUno";
 import {CountrySvcUno} from "../services/country/CountrySvcUno";
-import ICountry = goalazo.ICountry;
-import {ICountryTeamsRequest} from "../typings/custom/ApiRequest";
-import ICompetition = goalazo.ICompetition;
-import {IUserRequest} from "../typings/custom/ApiRequest";
+import {ICountryTeamsRequest} from "../typings/custom/requesting";
+import {IUserRequest} from "../typings/custom/requesting";
 import {UserSvcUno} from "../services/user/UserSvcUno";
+import {IUserFilterPostRequest} from "../typings/custom/requesting";
+import ICountry = goalazo.ICountry;
+import ICompetition = goalazo.ICompetition;
 import IAuthUser = goalazo.IAuthUser;
+import {Util} from "../uitils/Util";
 
 export class ApiUnus extends ApiAbstract {
 
@@ -70,6 +72,31 @@ export class ApiUnus extends ApiAbstract {
             .then((user) => res.json(user))
             .catch(next)
         ;
+    }
+
+    getUserFilters(req: IUserRequest, res: express.Response, next: any): void {
+
+        this.userSvc.getUserFilters(req.user, req.query.limit)
+            .then((filters) => res.json(filters))
+            .catch(next)
+    }
+
+    postUserFilter(req: IUserFilterPostRequest, res: express.Response, next: any): void {
+
+        var data = req.body;
+
+        data.teamIds = Util.toArrayIfExists<number>(data.teamIds);
+        data.competitionSeriesIds = Util.toArrayIfExists<number>(data.competitionSeriesIds);
+
+        if (data.filterName && (data.teamIds || data.competitionSeriesIds)) {
+
+            this.userSvc.setUserFilter(req.user, data.filterName, data.teamIds, data.competitionSeriesIds)
+                .then(() => res.sendStatus(HttpStatus.OK))
+                .catch(next)
+        } else {
+
+            res.status(HttpStatus.BadRequest).send(`Parameters missing: filterName and teamIds or competitionSeriesIds`);
+        }
     }
 
 // COUNTRIES

@@ -2,10 +2,11 @@
 ///<reference path="../node_modules/tsd-http-status-codes/HttpStatus.d.ts"/>
 
 import express = require('express');
-import {ApiRequest} from "../typings/custom/ApiRequest";
-import {ICompetitionTeamsRequest} from "../typings/custom/ApiRequest";
-import {ICountryTeamsRequest} from "../typings/custom/ApiRequest";
-import {IUserRequest} from "../typings/custom/ApiRequest";
+import {ApiRequest} from "../typings/custom/requesting";
+import {ICompetitionTeamsRequest} from "../typings/custom/requesting";
+import {ICountryTeamsRequest} from "../typings/custom/requesting";
+import {IUserRequest} from "../typings/custom/requesting";
+import {IUserFilterPostRequest} from "../typings/custom/requesting";
 
 export abstract class ApiAbstract {
 
@@ -20,6 +21,16 @@ export abstract class ApiAbstract {
     authUser(req: IUserRequest, res: express.Response, next: any): void {
 
         res.status(HttpStatus.NotFound).send('authUser() not implemented on this version');
+    }
+
+    getUserFilters(req: IUserRequest, res: express.Response, next: any): void {
+
+        res.status(HttpStatus.NotFound).send('getUserFilters() not implemented on this version');
+    }
+
+    postUserFilter(req: IUserFilterPostRequest, res: express.Response, next: any): void {
+
+        res.status(HttpStatus.NotFound).send('postUserFilter() not implemented on this version');
     }
 
     // COMPETITION SERIES

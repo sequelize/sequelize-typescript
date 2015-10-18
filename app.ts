@@ -55,19 +55,21 @@ app.use('/:apiVersion/', function (req: ApiRequest, res: express.Response, next:
 
 app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkRequestFilterMiddleware(req, res, next));
 
-app.post('/*/users/me/auth', (req: ApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
+app.post('/:apiVersion/users/auth', (req: ApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
 
 app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
 
-app.post('/*/users', (req: ApiRequest, res: express.Response, next) => req.api.postUser(req, res, next));
+app.post('/:apiVersion/users', (req: ApiRequest, res: express.Response, next) => req.api.postUser(req, res, next));
+app.get('/:apiVersion/users/me/filters', (req: ApiRequest, res: express.Response, next) => req.api.getUserFilters(req, res, next));
+app.post('/:apiVersion/users/me/filters', (req: ApiRequest, res: express.Response, next) => req.api.postUserFilter(req, res, next));
 
-app.get('/*/countries', (req: ApiRequest, res, next) => req.api.getCountries(req, res, next));
-app.get('/*/countries/:countryId/competitions', (req: ApiRequest, res, next) => req.api.getCountryCompetitions(req, res, next));
+app.get('/:apiVersion/countries', (req: ApiRequest, res, next) => req.api.getCountries(req, res, next));
+app.get('/:apiVersion/countries/:countryId/competitions', (req: ApiRequest, res, next) => req.api.getCountryCompetitions(req, res, next));
 
-app.get('/*/competitions/:competitionId/teams', (req: ApiRequest, res, next) => req.api.getCompetitionTeams(req, res, next));
-app.get('/*/competitionSeries', (req: ApiRequest, res, next) => req.api.getCompetitionSeries(req, res, next));
+app.get('/:apiVersion/competitions/:competitionId/teams', (req: ApiRequest, res, next) => req.api.getCompetitionTeams(req, res, next));
+app.get('/:apiVersion/competitionSeries', (req: ApiRequest, res, next) => req.api.getCompetitionSeries(req, res, next));
 
-app.get('/*/teams', (req: ApiRequest, res, next) => req.api.getTeams(req, res, next));
+app.get('/:apiVersion/teams', (req: ApiRequest, res, next) => req.api.getTeams(req, res, next));
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'))

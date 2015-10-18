@@ -26,6 +26,12 @@ export = function (sequelize: Sequelize, DataTypes) {
                 as: 'competitions',
                 foreignKey: 'competition_series_id'
             });
+
+            CompetitionSeries.belongsToMany(models.Filter, {
+                through: models.FilterCompetitionSeries,
+                as: 'filters',
+                foreignKey: 'competition_series_id'
+            })
         }
     });
 

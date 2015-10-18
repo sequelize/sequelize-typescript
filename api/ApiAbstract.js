@@ -11,6 +11,12 @@ var ApiAbstract = (function () {
     ApiAbstract.prototype.authUser = function (req, res, next) {
         res.status(404 /* NotFound */).send('authUser() not implemented on this version');
     };
+    ApiAbstract.prototype.getUserFilters = function (req, res, next) {
+        res.status(404 /* NotFound */).send('getUserFilters() not implemented on this version');
+    };
+    ApiAbstract.prototype.postUserFilter = function (req, res, next) {
+        res.status(404 /* NotFound */).send('postUserFilter() not implemented on this version');
+    };
     // COMPETITION SERIES
     // -------------------------------------------------------
     ApiAbstract.prototype.getCompetitionSeries = function (req, res, next) {

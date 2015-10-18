@@ -15,6 +15,7 @@ var CompetitionSeriesSvcUno_1 = require('../services/competitionSeries/Competiti
 var CompetitionSvcUno_1 = require("../services/competition/CompetitionSvcUno");
 var CountrySvcUno_1 = require("../services/country/CountrySvcUno");
 var UserSvcUno_1 = require("../services/user/UserSvcUno");
+var Util_1 = require("../uitils/Util");
 var ApiUnus = (function (_super) {
     __extends(ApiUnus, _super);
     function ApiUnus() {
@@ -44,6 +45,24 @@ var ApiUnus = (function (_super) {
         this.userSvc.authenticate(data.name, data.password)
             .then(function (user) { return res.json(user); })
             .catch(next);
+    };
+    ApiUnus.prototype.getUserFilters = function (req, res, next) {
+        this.userSvc.getUserFilters(req.user, req.query.limit)
+            .then(function (filters) { return res.json(filters); })
+            .catch(next);
+    };
+    ApiUnus.prototype.postUserFilter = function (req, res, next) {
+        var data = req.body;
+        data.teamIds = Util_1.Util.toArrayIfExists(data.teamIds);
+        data.competitionSeriesIds = Util_1.Util.toArrayIfExists(data.competitionSeriesIds);
+        if (data.filterName && (data.teamIds || data.competitionSeriesIds)) {
+            this.userSvc.setUserFilter(req.user, data.filterName, data.teamIds, data.competitionSeriesIds)
+                .then(function () { return res.sendStatus(200 /* OK */); })
+                .catch(next);
+        }
+        else {
+            res.status(400 /* BadRequest */).send("Parameters missing: filterName and teamIds or competitionSeriesIds");
+        }
     };
     // COUNTRIES
     // --------------

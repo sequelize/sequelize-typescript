@@ -40,14 +40,16 @@ app.use('/:apiVersion/', function (req, res, next) {
     }
 });
 app.use(function (req, res, next) { return req.api.checkRequestFilterMiddleware(req, res, next); });
-app.post('/*/users/me/auth', function (req, res, next) { return req.api.authUser(req, res, next); });
+app.post('/:apiVersion/users/auth', function (req, res, next) { return req.api.authUser(req, res, next); });
 app.use(function (req, res, next) { return req.api.checkAuthenticationMiddleWare(req, res, next); });
-app.post('/*/users', function (req, res, next) { return req.api.postUser(req, res, next); });
-app.get('/*/countries', function (req, res, next) { return req.api.getCountries(req, res, next); });
-app.get('/*/countries/:countryId/competitions', function (req, res, next) { return req.api.getCountryCompetitions(req, res, next); });
-app.get('/*/competitions/:competitionId/teams', function (req, res, next) { return req.api.getCompetitionTeams(req, res, next); });
-app.get('/*/competitionSeries', function (req, res, next) { return req.api.getCompetitionSeries(req, res, next); });
-app.get('/*/teams', function (req, res, next) { return req.api.getTeams(req, res, next); });
+app.post('/:apiVersion/users', function (req, res, next) { return req.api.postUser(req, res, next); });
+app.get('/:apiVersion/users/me/filters', function (req, res, next) { return req.api.getUserFilters(req, res, next); });
+app.post('/:apiVersion/users/me/filters', function (req, res, next) { return req.api.postUserFilter(req, res, next); });
+app.get('/:apiVersion/countries', function (req, res, next) { return req.api.getCountries(req, res, next); });
+app.get('/:apiVersion/countries/:countryId/competitions', function (req, res, next) { return req.api.getCountryCompetitions(req, res, next); });
+app.get('/:apiVersion/competitions/:competitionId/teams', function (req, res, next) { return req.api.getCompetitionTeams(req, res, next); });
+app.get('/:apiVersion/competitionSeries', function (req, res, next) { return req.api.getCompetitionSeries(req, res, next); });
+app.get('/:apiVersion/teams', function (req, res, next) { return req.api.getTeams(req, res, next); });
 http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
 });

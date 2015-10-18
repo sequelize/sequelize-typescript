@@ -2,7 +2,6 @@
 ///<reference path="../sequelize/sequelize.d.ts"/>
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
 
-
 import {Instance} from "sequelize";
 import {Model} from "sequelize";
 import ITeam = goalazo.ITeam;
@@ -13,15 +12,46 @@ import ILocation = goalazo.ILocation;
 import IViewing = goalazo.IViewing;
 import IMatch = goalazo.IMatch;
 import ICountry = goalazo.ICountry;
-import ICountryCompetition = goalazo.ICountryCompetition;
+import IFilter = goalazo.IFilter;
+import {Sequelize} from "sequelize";
+import {SequelizeStatic} from "sequelize";
+
+// CONNECTIONS
+
+export interface IUserFilter {
+    userId: number;
+    filterId: number;
+}
 
 export interface ITeamCompetition {
     teamId: number;
     competitionId: number;
 }
 
+export interface IFilterCompetitionSeries {
+    filterId: number;
+    competitionSeriesId: number;
+}
+
+export interface IFilterTeam {
+    filter_id?: number;
+    filterId: number;
+    team_id?: number;
+    teamId: number;
+}
+
+export interface ICountryCompetition {
+    countryId: number;
+    competitionId: number;
+}
+
+// SEQUELIZE INTERFACES
+
 export interface IUserInstance extends Instance<IUserInstance, IUser>, IUser {}
 export interface IUserModel extends Model<IUserInstance, IUser> {}
+
+export interface IUserFilterInstance extends Instance<IUserFilterInstance, IUserFilter>, IUserFilter {}
+export interface IUserFilterModel extends Model<IUserFilterInstance, IUserFilter> {}
 
 export interface ICompetitionSeriesInstance extends Instance<ICompetitionSeriesInstance, ICompetitionSeries>, ICompetitionSeries {}
 export interface ICompetitionSeriesModel extends Model<ICompetitionSeriesInstance, ICompetitionSeries> {}
@@ -50,9 +80,20 @@ export interface ICountryCompetitionModel extends Model<ICountryCompetitionInsta
 export interface ITeamCompetitionInstance extends Instance<ITeamCompetitionInstance, ITeamCompetition>, ITeamCompetition {}
 export interface ITeamCompetitionModel extends Model<ITeamCompetitionInstance, ITeamCompetition> {}
 
+export interface IFilterInstance extends Instance<IFilterInstance, IFilter>, IFilter {}
+export interface IFilterModel extends Model<IFilterInstance, IFilter> {}
+
+export interface IFilterCompetitionSeriesInstance extends Instance<IFilterCompetitionSeriesInstance, IFilterCompetitionSeries>, IFilterCompetitionSeries {}
+export interface IFilterCompetitionSeriesModel extends Model<IFilterCompetitionSeriesInstance, IFilterCompetitionSeries> {}
+
+export interface IFilterTeamInstance extends Instance<IFilterTeamInstance, IFilterTeam>, IFilterTeam {}
+export interface IFilterTeamModel extends Model<IFilterTeamInstance, IFilterTeam> {}
+
+// BUNDLED EXPORT
 
 export interface Models {
     User: IUserModel;
+    UserFilter: IUserFilterModel;
     CompetitionSeries: ICompetitionSeriesModel;
     Competition: ICompetitionModel;
     TeamCompetition: ITeamCompetitionModel;
@@ -62,4 +103,11 @@ export interface Models {
     Team: ITeamModel;
     Country: ICountryModel;
     CountryCompetition: ICountryCompetitionModel;
+    Filter: IFilterModel;
+    FilterCompetitionSeries: IFilterCompetitionSeriesModel;
+    FilterTeam: IFilterTeamModel;
+
+
+    sequelize: Sequelize,
+    Sequelize: SequelizeStatic
 }

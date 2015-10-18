@@ -3,11 +3,15 @@
 module.exports = function (sequelize, DataTypes) {
     var TeamCompetition = sequelize.define('TeamCompetition', {
         teamId: {
+            field: 'team_id',
+            primaryKey: true,
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
         },
         competitionId: {
+            field: 'competition_id',
+            primaryKey: true,
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {}
