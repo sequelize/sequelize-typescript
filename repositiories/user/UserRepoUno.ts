@@ -50,14 +50,6 @@ export class UserRepoUno extends BaseRepo {
                         where: {
                             id: userId
                         }
-                    },
-                    {
-                        model: Models.CompetitionSeries,
-                        as: 'competitionSeries'
-                    },
-                    {
-                        model: Models.Team,
-                        as: 'teams'
                     }
                 ],
                 limit: limit

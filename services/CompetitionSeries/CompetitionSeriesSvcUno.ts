@@ -14,8 +14,8 @@ export class CompetitionSeriesSvcUno {
         this.competitionSeriesRepo = new CompetitionSeriesRepoUno();
     }
 
-    getCompetitionSeries(): Promise<ICompetitionSeries[]> {
+    getCompetitionSeries(limit: number): Promise<ICompetitionSeries[]> {
 
-        return this.competitionSeriesRepo.getCompetitionSeries();
+        return this.competitionSeriesRepo.getCompetitionSeries(limit);
     }
 }

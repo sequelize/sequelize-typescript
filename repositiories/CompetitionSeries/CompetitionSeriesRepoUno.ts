@@ -11,13 +11,11 @@ import {ICompetitionSeriesInstance} from "../../typings/custom/models";
 
 export class CompetitionSeriesRepoUno {
 
-    getCompetitionSeries(): Promise<ICompetitionSeries[]> {
+    getCompetitionSeries(limit: number): Promise<ICompetitionSeries[]> {
 
         return Q.when()
-            .then(() => Models.CompetitionSeries.findAll())
-            .then((competitionSeries: ICompetitionSeriesInstance[]) => {
-
-            return competitionSeries;
-        });
+            .then(() => Models.CompetitionSeries.findAll({
+                limit
+            }));
     }
 }

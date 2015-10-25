@@ -29,13 +29,13 @@ export = function (sequelize: Sequelize, DataTypes) {
         },
 
         longitude: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DOUBLE,
             allowNull: false,
             validate: {}
         },
 
         latitude: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DOUBLE,
             allowNull: false,
             validate: {}
         },
@@ -74,7 +74,6 @@ export = function (sequelize: Sequelize, DataTypes) {
                 as: 'viewings',
                 foreignKey: 'location_id'
             });
-
         }
     });
     return Location;

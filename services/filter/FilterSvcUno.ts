@@ -20,9 +20,9 @@ export class FilterSvcUno {
         this.filterRepo = new FilterRepoUno();
     }
 
-    getFilterMatches(filterId: number): Promise<Array<IMatch>> {
+    getFilterMatches(filterId: number, limit: number): Promise<Array<IMatch>> {
 
-        return this.filterRepo.getFilterMatches(filterId);
+        return this.filterRepo.getFilterMatches(filterId, limit);
     }
 
     setFilter(name: string,

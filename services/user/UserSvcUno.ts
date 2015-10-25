@@ -85,6 +85,8 @@ export class UserSvcUno {
 
             jwt.verify(token, config.jwtSecret, (err, user) => {
 
+                console.log(err, user);
+
                 if (err) {
 
                     reject(err);

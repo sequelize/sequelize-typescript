@@ -8,6 +8,7 @@ import {ICountryTeamsRequest} from "../typings/custom/requesting";
 import {IUserRequest} from "../typings/custom/requesting";
 import {IUserFilterPostRequest} from "../typings/custom/requesting";
 import {IFilterMatchesGetRequest} from "../typings/custom/requesting";
+import {IMatchViewingsGetRequest} from "../typings/custom/requesting";
 
 export abstract class ApiAbstract {
 
@@ -48,10 +49,17 @@ export abstract class ApiAbstract {
         res.sendStatus(HttpStatus.NotFound);
     }
 
-    // TEAM
+    // FILTER
     // -------------------------------------------------------
 
     getFilterMatches(req: IFilterMatchesGetRequest, res: express.Response, next: any): void {
+        res.sendStatus(HttpStatus.NotFound);
+    }
+
+    // MATCH
+    // -------------------------------------------------------
+
+    getMatchViewings(req: IMatchViewingsGetRequest, res: express.Response, next: any): void {
         res.sendStatus(HttpStatus.NotFound);
     }
 

@@ -20,6 +20,14 @@ export interface IUserFilterPostRequest extends ApiRequest {
 export interface IFilterMatchesGetRequest extends ApiRequest {
     params: {filterId: number};
 }
+export interface IMatchViewingsGetRequest extends ApiRequest {
+    params: {matchId: number};
+    query: {longitude1: number,
+        longitude2: number,
+        latitude1: number,
+        latitude2: number,
+        limit: number}
+}
 export interface ICountryTeamsRequest extends ICountryRequest {
 }
 

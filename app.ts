@@ -61,6 +61,7 @@ app.post('/:apiVersion/users', (req: ApiRequest, res: express.Response, next) =>
 app.post('/:apiVersion/users/auth', (req: ApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
 
 app.get('/:apiVersion/filters/:filterId/matches', (req: ApiRequest, res: express.Response, next) => req.api.getFilterMatches(req, res, next));
+app.get('/:apiVersion/matches/:matchId/viewings', (req: ApiRequest, res: express.Response, next) => req.api.getMatchViewings(req, res, next));
 
 app.get('/:apiVersion/countries', (req: ApiRequest, res, next) => req.api.getCountries(req, res, next));
 app.get('/:apiVersion/countries/:countryId/competitions', (req: ApiRequest, res, next) => req.api.getCountryCompetitions(req, res, next));

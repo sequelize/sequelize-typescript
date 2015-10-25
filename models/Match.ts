@@ -58,6 +58,11 @@ export = function (sequelize: Sequelize, DataTypes) {
                 as: 'competition',
                 foreignKey: 'competition_id'
             });
+
+            Match.hasMany(models.Viewing, {
+                as: 'viewings',
+                foreignKey: 'match_id'
+            })
         }
     });
     return Match;

@@ -14,11 +14,12 @@ import {Model} from "sequelize";
 import {IFilterTeam} from "../../typings/custom/models";
 import {IFilterCompetitionSeries} from "../../typings/custom/models";
 import {ITransaction} from "../../typings/custom/db";
+import IMatch = goalazo.IMatch;
+import {IMatchInstance} from "../../typings/custom/models";
 
 export class FilterRepoUno {
 
-    getFilterMatches(filterId: number) {
-
+    getFilterMatches(filterId: number, limit: number) {
 
         return Q.when()
             .then(() => Models.Match.findAll({
@@ -40,8 +41,19 @@ export class FilterRepoUno {
                         LEFT JOIN \`match\` m ON (m.team_away_id = ft.team_id OR
                                                 m.team_home_id = ft.team_id OR
                                                 c.id = m.competition_id)
-                    WHERE f.id = ?)`, filterId])
+                    WHERE f.id = ?)`, filterId]),
+                limit
             }))
+        .then((matches: Array<IMatchInstance>) => matches.map(match => {
+
+            match = <any>match.get();
+            delete match['competition_id'];
+            delete match['team_away_id'];
+            delete match['team_home_id'];
+
+            return match;
+        }))
+
     }
 
     setFilter(name: string, transaction?: ITransaction): Promise<IFilterInstance> {
