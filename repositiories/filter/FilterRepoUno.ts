@@ -17,6 +17,33 @@ import {ITransaction} from "../../typings/custom/db";
 
 export class FilterRepoUno {
 
+    getFilterMatches(filterId: number) {
+
+
+        return Q.when()
+            .then(() => Models.Match.findAll({
+                include: [
+                    {
+                        model: Models.Team,
+                        as: 'homeTeam'
+                    },
+                    {
+                        model: Models.Team,
+                        as: 'awayTeam'
+                    }
+                ],
+                where: <any>([`Match.id IN (SELECT m.id FROM filter f
+                        LEFT JOIN filter_competition_series fcs
+                                INNER JOIN competition c ON c.competition_series_id = fcs.competition_series_id
+                            ON fcs.filter_id = f.id
+                        LEFT JOIN filter_team ft ON ft.filter_id = f.id
+                        LEFT JOIN \`match\` m ON (m.team_away_id = ft.team_id OR
+                                                m.team_home_id = ft.team_id OR
+                                                c.id = m.competition_id)
+                    WHERE f.id = ?)`, filterId])
+            }))
+    }
+
     setFilter(name: string, transaction?: ITransaction): Promise<IFilterInstance> {
 
         return Q.when()

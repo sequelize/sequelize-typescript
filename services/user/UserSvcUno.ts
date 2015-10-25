@@ -30,7 +30,7 @@ export class UserSvcUno {
         this.filterService = new FilterSvcUno();
     }
 
-    public register(name?: string, password?: string): Promise<IUser> {
+    public register(name?: string, password?: string): Promise<IAuthUser> {
         var generateUserPromise: Promise<IUser>;
 
         if (!name && !password) {

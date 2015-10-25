@@ -45,12 +45,12 @@ export = function (sequelize: Sequelize, DataTypes) {
         ['associate'] (models: Models) {
 
             Match.belongsTo(models.Team, {
-                as: 'homeMatches',
+                as: 'homeTeam',
                 foreignKey: 'team_home_id'
             });
 
             Match.belongsTo(models.Team, {
-                as: 'awayMatches',
+                as: 'awayTeam',
                 foreignKey: 'team_away_id'
             });
 

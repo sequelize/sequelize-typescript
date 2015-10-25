@@ -17,6 +17,9 @@ export interface IUserRequest extends ApiRequest {
 export interface IUserFilterPostRequest extends ApiRequest {
     body: {filterName: string, teamIds: Array<number>, competitionSeriesIds: Array<number>};
 }
+export interface IFilterMatchesGetRequest extends ApiRequest {
+    params: {filterId: number};
+}
 export interface ICountryTeamsRequest extends ICountryRequest {
 }
 

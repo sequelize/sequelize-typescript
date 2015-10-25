@@ -10,6 +10,7 @@ import Q = require('q');
 import IFilter = goalazo.IFilter;
 import {IFilterInstance} from "../../typings/custom/models";
 import {ITransaction} from "../../typings/custom/db";
+import IMatch = goalazo.IMatch;
 
 export class FilterSvcUno {
 
@@ -17,6 +18,11 @@ export class FilterSvcUno {
 
     constructor() {
         this.filterRepo = new FilterRepoUno();
+    }
+
+    getFilterMatches(filterId: number): Promise<Array<IMatch>> {
+
+        return this.filterRepo.getFilterMatches(filterId);
     }
 
     setFilter(name: string,

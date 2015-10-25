@@ -7,6 +7,7 @@ import {ICompetitionTeamsRequest} from "../typings/custom/requesting";
 import {ICountryTeamsRequest} from "../typings/custom/requesting";
 import {IUserRequest} from "../typings/custom/requesting";
 import {IUserFilterPostRequest} from "../typings/custom/requesting";
+import {IFilterMatchesGetRequest} from "../typings/custom/requesting";
 
 export abstract class ApiAbstract {
 
@@ -44,6 +45,13 @@ export abstract class ApiAbstract {
     // -------------------------------------------------------
 
     getCompetitionTeams(req: ICompetitionTeamsRequest, res: express.Response, next: any): void {
+        res.sendStatus(HttpStatus.NotFound);
+    }
+
+    // TEAM
+    // -------------------------------------------------------
+
+    getFilterMatches(req: IFilterMatchesGetRequest, res: express.Response, next: any): void {
         res.sendStatus(HttpStatus.NotFound);
     }
 

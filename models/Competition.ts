@@ -6,8 +6,9 @@ import {Model} from "sequelize";
 import {ICompetitionInstance} from "../typings/custom/models";
 import ICompetition = goalazo.ICompetition;
 import {Models} from "../typings/custom/models";
+import {DataTypes} from "sequelize";
 
-export = function (sequelize: Sequelize, DataTypes) {
+export = function (sequelize: Sequelize, DataTypes: DataTypes) {
 
     var Competition = sequelize.define<ICompetitionInstance, ICompetition>('Competition', {
 
@@ -60,5 +61,6 @@ export = function (sequelize: Sequelize, DataTypes) {
             });
         }
     });
+
     return Competition;
 };

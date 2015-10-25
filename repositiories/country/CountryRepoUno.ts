@@ -11,6 +11,7 @@ import {ICompetitionSeriesInstance} from "../../typings/custom/models";
 import ICountry = goalazo.ICountry;
 import ICompetition = goalazo.ICompetition;
 import {Model} from "sequelize";
+import {ICompetitionInstance} from "../../typings/custom/models";
 
 export class CountryRepoUno {
 
@@ -33,9 +34,20 @@ export class CountryRepoUno {
                         where: {
                             id: countryId
                         }
+                    },
+                    {
+                        model: Models.CompetitionSeries,
+                        as: 'competitionSeries'
                     }
                 ],
                 limit
+            }))
+            .then((competitions: Array<ICompetitionInstance>) => competitions.map(competition => {
+
+                competition = <any>competition.get();
+                delete competition.countries;
+
+                return competition;
             }))
     }
 }

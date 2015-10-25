@@ -30,11 +30,22 @@ module.exports = function (grunt) {
             dev: {
                 script: 'app.js'
             }
+        },
+        apidoc: {
+            myapp: {
+                src: "api/",
+                dest: "documentation/",
+                options: {
+                    debug: true,
+                    includeFilters: [ ".*\\.js$" ],
+                    excludeFilters: [ "node_modules/" ]
+                }
+            }
         }
     });
 
 
-    grunt.registerTask('dev', ['env:dev', 'nodemon']);
-    grunt.registerTask('prod', ['env:prod', 'nodemon']);
+    grunt.registerTask('dev', ['env:dev', 'apidoc', 'nodemon']);
+    grunt.registerTask('prod', ['env:prod', 'apidoc', 'nodemon']);
 
 };

@@ -34,6 +34,7 @@ export = function (sequelize: Sequelize, DataTypes: DataTypes) {
         teamId: {
             type: DataTypes.VIRTUAL,
             set: function (teamId) {
+
                 this.setDataValue('team_id', teamId);
             }
         }
@@ -42,15 +43,6 @@ export = function (sequelize: Sequelize, DataTypes: DataTypes) {
         tableName: 'filter_team',
         timestamps: false
     });
-
-/*    FilterTeam.beforeCreate(mapProperties);
-    FilterTeam.beforeBulkCreate((filterTeams) => filterTeams.forEach(mapProperties));
-
-    var mapProperties = filterTeam => {
-
-        filterTeam.setDataValue('team_id', filterTeam.teamId);
-        filterTeam.setDataValue('filter_id', filterTeam.filterId);
-    };*/
 
     return FilterTeam;
 };

@@ -20,6 +20,7 @@ export class CompetitionRepoUno extends BaseRepo {
             .then(() => Models.Team.findAll({
                 include: [
                     {
+                        attributes: [],
                         model: Models.Competition,
                         as: 'competitions',
                         where: {

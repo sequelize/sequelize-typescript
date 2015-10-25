@@ -61,7 +61,15 @@ export class UserRepoUno extends BaseRepo {
                     }
                 ],
                 limit: limit
-            }));
+            }))
+            .then((filters: Array<IFilterInstance>) => filters.map(filter => {
+
+                filter = <any>filter.get();
+                delete filter['users'];
+
+                return filter;
+            }))
+            ;
     }
 
     setUserFilter(userId: number, filterId: number, transaction: ITransaction): Promise<any> {
