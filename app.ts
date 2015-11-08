@@ -38,6 +38,16 @@ if ('development' === app.get('env')) {
     app.use(errorHandler())
 }
 
+//CORS middleware
+app.use(function (req, res, next) {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+
+    next();
+});
+
 app.use('/:apiVersion/', function (req: ApiRequest, res: express.Response, next: Function) {
 
     var apiVersion = req.params['apiVersion'];
@@ -61,7 +71,7 @@ app.post('/:apiVersion/users', (req: ApiRequest, res: express.Response, next) =>
 app.post('/:apiVersion/users/auth', (req: ApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
 
 app.get('/:apiVersion/filters/:filterId/matches', (req: ApiRequest, res: express.Response, next) => req.api.getFilterMatches(req, res, next));
-app.get('/:apiVersion/matches/:matchId/viewings', (req: ApiRequest, res: express.Response, next) => req.api.getMatchViewings(req, res, next));
+app.get('/:apiVersion/matches/:matchId/viewings', (req, res: express.Response, next) => req.api.getMatchViewings(req, res, next));
 
 app.get('/:apiVersion/countries', (req: ApiRequest, res, next) => req.api.getCountries(req, res, next));
 app.get('/:apiVersion/countries/:countryId/competitions', (req: ApiRequest, res, next) => req.api.getCountryCompetitions(req, res, next));
