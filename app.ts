@@ -70,6 +70,10 @@ app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.chec
 app.post('/:apiVersion/users', (req: ApiRequest, res: express.Response, next) => req.api.postUser(req, res, next));
 app.post('/:apiVersion/users/auth', (req: ApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
 
+app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
+
+// AUTH RESTRICTED ROUTES
+
 app.get('/:apiVersion/filters/:filterId/matches', (req: ApiRequest, res: express.Response, next) => req.api.getFilterMatches(req, res, next));
 app.get('/:apiVersion/matches/:matchId/viewings', (req, res: express.Response, next) => req.api.getMatchViewings(req, res, next));
 
@@ -80,10 +84,6 @@ app.get('/:apiVersion/competitions/:competitionId/teams', (req: ApiRequest, res,
 app.get('/:apiVersion/competition-series', (req: ApiRequest, res, next) => req.api.getCompetitionSeries(req, res, next));
 
 app.get('/:apiVersion/teams', (req: ApiRequest, res, next) => req.api.getTeams(req, res, next));
-
-// AUTH RESTRICTED ROUTES
-
-app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkAuthenticationMiddleWare(req, res, next));
 
 app.get('/:apiVersion/users/me/filters', (req: ApiRequest, res: express.Response, next) => req.api.getUserFilters(req, res, next));
 app.post('/:apiVersion/users/me/filters', (req: ApiRequest, res: express.Response, next) => req.api.postUserFilter(req, res, next));

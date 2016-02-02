@@ -1,7 +1,7 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
 ///<reference path="../../typings/q/Q.d.ts"/>
 
-
+import {Inject} from 'di-ts'
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import Promise = Q.Promise;
 import {CompetitionSeriesRepoUno} from "../../repositiories/competitionSeries/CompetitionSeriesRepoUno";
@@ -12,12 +12,10 @@ import {IFilterInstance} from "../../typings/custom/models";
 import {ITransaction} from "../../typings/custom/db";
 import IMatch = goalazo.IMatch;
 
+@Inject
 export class FilterSvcUno {
 
-    protected filterRepo: FilterRepoUno;
-
-    constructor() {
-        this.filterRepo = new FilterRepoUno();
+    constructor(protected filterRepo: FilterRepoUno) {
     }
 
     getFilterMatches(filterId: number, limit: number): Promise<Array<IMatch>> {

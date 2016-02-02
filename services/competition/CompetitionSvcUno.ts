@@ -1,18 +1,16 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
 ///<reference path="../../typings/q/Q.d.ts"/>
 
-
+import {Inject} from 'di-ts'
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import Promise = Q.Promise;
 import {CompetitionRepoUno} from "../../repositiories/competition/CompetitionRepoUno";
 import ITeam = goalazo.ITeam;
 
+@Inject
 export class CompetitionSvcUno {
 
-    protected competitionRepo: CompetitionRepoUno;
-
-    constructor() {
-        this.competitionRepo = new CompetitionRepoUno();
+    constructor(protected competitionRepo: CompetitionRepoUno) {
     }
 
     getCompetitionTeams(competitionId: number, limit: number): Promise<ITeam[]> {

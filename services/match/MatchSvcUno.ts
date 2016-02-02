@@ -1,7 +1,7 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
 ///<reference path="../../typings/q/Q.d.ts"/>
 
-
+import {Inject} from 'di-ts'
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import Promise = Q.Promise;
 import {CompetitionSeriesRepoUno} from "../../repositiories/CompetitionSeries/CompetitionSeriesRepoUno";
@@ -11,12 +11,11 @@ import {MatchRepoUno} from "../../repositiories/match/MatchRepoUno";
 import IMatch = goalazo.IMatch;
 import IViewing = goalazo.IViewing;
 
+@Inject
 export class MatchSvcUno {
 
-    protected matchRepo: MatchRepoUno;
 
-    constructor() {
-        this.matchRepo = new MatchRepoUno();
+    constructor(protected matchRepo: MatchRepoUno) {
     }
 
     getMatchViewings(matchId: number,

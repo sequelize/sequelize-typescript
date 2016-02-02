@@ -1,7 +1,7 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
 ///<reference path="../../typings/q/Q.d.ts"/>
 
-
+import {Inject} from 'di-ts'
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import Promise = Q.Promise;
 import {CountryRepoUno} from "../../repositiories/country/CountryRepoUno";
@@ -9,12 +9,10 @@ import ITeam = goalazo.ITeam;
 import ICountry = goalazo.ICountry;
 import ICompetition = goalazo.ICompetition;
 
+@Inject
 export class CountrySvcUno {
 
-    protected countryRepo: CountryRepoUno;
-
-    constructor() {
-        this.countryRepo = new CountryRepoUno();
+    constructor(protected countryRepo: CountryRepoUno) {
     }
 
     getCountries(limit: number): Promise<ICountry[]> {

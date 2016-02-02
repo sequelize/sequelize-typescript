@@ -9,10 +9,10 @@ module.exports = function (grunt) {
     grunt.initConfig({
         env: {
             dev: {
-                src: ['secrets.json']
+                src: ['env.json']
             },
             prod: {
-                src: ['secrets.json']
+                src: ['env.json']
             }
         },
         'node-inspector': {

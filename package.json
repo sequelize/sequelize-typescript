@@ -9,6 +9,7 @@
     "bcrypt": "^0.8.5",
     "body-parser": "^1.13.3",
     "crypto-js": "^3.1.5",
+    "di-ts": "0.0.31",
     "errorhandler": "^1.4.2",
     "express": "^4.13.3",
     "grunt-env": "^0.4.4",
@@ -58,7 +59,8 @@
     "karma-ng-scenario": "^0.1.0",
     "load-grunt-tasks": "^3.2.0",
     "time-grunt": "^1.2.1",
-    "tsd-goalazo-models": "git+https://github.com/RobinBuschmann/tsd-goalazo-models.git"
+    "tsd-goalazo-models": "git+https://github.com/RobinBuschmann/tsd-goalazo-models.git",
+    "typescript": "^1.7.5"
   },
   "engines": {
     "node": ">=0.8.15"

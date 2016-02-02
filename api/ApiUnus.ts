@@ -2,12 +2,14 @@
 ///<reference path="../typings/q/Q.d.ts"/>
 ///<reference path="../node_modules/tsd-goalazo-models/models.d.ts"/>
 ///<reference path="../node_modules/tsd-http-status-codes/HttpStatus.d.ts"/>
+///<reference path="../node_modules/di-ts/di-ts.d.ts"/>
 
 import express = require('express');
 import Q = require('q');
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import ITeam = goalazo.ITeam;
 import {config} from '../config';
+import {Inject} from 'di-ts'
 import {ApiRequest} from '../typings/custom/requesting';
 import {ApiAbstract} from './ApiAbstract';
 import {TeamSvcUno} from "../services/Team/TeamSvcUno";
@@ -19,39 +21,30 @@ import {ICountryTeamsRequest} from "../typings/custom/requesting";
 import {IUserRequest} from "../typings/custom/requesting";
 import {UserSvcUno} from "../services/user/UserSvcUno";
 import {IUserFilterPostRequest} from "../typings/custom/requesting";
-import ICountry = goalazo.ICountry;
-import ICompetition = goalazo.ICompetition;
-import IAuthUser = goalazo.IAuthUser;
 import {Util} from "../uitils/Util";
 import {CodeError, ErrorCode} from "../uitils/CodeError";
 import {FilterSvcUno} from "../services/filter/FilterSvcUno";
-import IMatch = goalazo.IMatch;
 import {IFilterMatchesGetRequest} from "../typings/custom/requesting";
 import {IMatchViewingsGetRequest} from "../typings/custom/requesting";
 import {MatchSvcUno} from "../services/match/MatchSvcUno";
+import ICountry = goalazo.ICountry;
+import ICompetition = goalazo.ICompetition;
+import IAuthUser = goalazo.IAuthUser;
+import IMatch = goalazo.IMatch;
 import IViewing = goalazo.IViewing;
 
+@Inject
 export class ApiUnus extends ApiAbstract {
 
-    protected competitionSeriesSvc: CompetitionSeriesSvcUno;
-    protected competitionSvc: CompetitionSvcUno;
-    protected countrySvc: CountrySvcUno;
-    protected teamSvc: TeamSvcUno;
-    protected userSvc: UserSvcUno;
-    protected filterSvc: FilterSvcUno;
-    protected matchSvc: MatchSvcUno;
-
-    constructor() {
+    constructor(protected competitionSeriesSvc: CompetitionSeriesSvcUno,
+                protected competitionSvc: CompetitionSvcUno,
+                protected countrySvc: CountrySvcUno,
+                protected teamSvc: TeamSvcUno,
+                protected userSvc: UserSvcUno,
+                protected filterSvc: FilterSvcUno,
+                protected matchSvc: MatchSvcUno) {
 
         super();
-
-        this.competitionSeriesSvc = new CompetitionSeriesSvcUno();
-        this.competitionSvc = new CompetitionSvcUno();
-        this.countrySvc = new CountrySvcUno();
-        this.teamSvc = new TeamSvcUno();
-        this.userSvc = new UserSvcUno();
-        this.filterSvc = new FilterSvcUno();
-        this.matchSvc = new MatchSvcUno();
     }
 
     // USER

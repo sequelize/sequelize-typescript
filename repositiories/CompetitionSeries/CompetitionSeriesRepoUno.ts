@@ -1,7 +1,6 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
 ///<reference path="../../typings/q/Q.d.ts"/>
 
-
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import Promise = Q.Promise;
 

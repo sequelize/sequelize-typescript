@@ -1,21 +1,14 @@
 ///<reference path="../typings/node/node.d.ts"/>
 
 import {Models} from "../typings/custom/models";
+import {config} from "../config";
 var fs = require('fs');
 var path = require('path');
 var Sequelize = require('sequelize');
 var lodash = require('lodash');
 var db = {};
 
-var config = {
-    database: 'goalazo',
-    dialect: 'mysql',
-    host: 'localhost',
-    password: '',
-    username: 'root'
-};
-
-var sequelize = new Sequelize(config.database, config.username, config.password, config);
+var sequelize = new Sequelize(config.database.name, config.database.username, config.database.password, config);
 
 fs
     .readdirSync(__dirname)
@@ -37,8 +30,3 @@ export default <Models>lodash.extend({
     sequelize: sequelize,
     Sequelize: Sequelize
 }, db);
-
-//module.exports = <Models>lodash.extend({
-//    sequelize: sequelize,
-//    Sequelize: Sequelize
-//}, db);

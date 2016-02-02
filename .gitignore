@@ -12,6 +12,7 @@ plugins
 *.log
 *.DS_Store
 secrets.json
+env.json
 documentation
 
 # all js files

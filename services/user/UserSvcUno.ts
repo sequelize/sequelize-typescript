@@ -4,30 +4,27 @@
 ///<reference path="../../typings/express/express.d.ts"/>
 ///<reference path="../../typings/jsonwebtoken/jsonwebtoken.d.ts"/>
 
+var uuid = require('node-uuid');
 import IAuthUser = goalazo.IAuthUser;
-import {CodeError, ErrorCode} from "../../uitils/CodeError";
 import Promise = Q.Promise;
 import IFilter = goalazo.IFilter;
+import IUser = goalazo.IUser;
+import {Inject} from 'di-ts'
+import {CodeError, ErrorCode} from "../../uitils/CodeError";
 import {FilterSvcUno} from "../filter/FilterSvcUno";
-var uuid = require('node-uuid');
+import {IUserInstance} from "../../typings/custom/models";
+import {UserRepoUno} from "../../repositiories/user/UserRepoUno";
+import {config} from '../../config';
 import express = require('express');
 import bcrypt = require('bcrypt');
 import crypto = require('crypto');
 import Q = require('q');
 import jwt = require('jsonwebtoken');
-import {config} from '../../config';
-import {IUserInstance} from "../../typings/custom/models";
-import {UserRepoUno} from "../../repositiories/user/UserRepoUno";
-import IUser = goalazo.IUser;
 
+@Inject
 export class UserSvcUno {
 
-    protected userRepo: UserRepoUno;
-    protected filterService: FilterSvcUno;
-
-    constructor() {
-        this.userRepo = new UserRepoUno();
-        this.filterService = new FilterSvcUno();
+    constructor(protected userRepo: UserRepoUno, protected filterService: FilterSvcUno) {
     }
 
     public register(name?: string, password?: string): Promise<IAuthUser> {
@@ -142,7 +139,7 @@ export class UserSvcUno {
     protected getToken(user: IAuthUser) {
 
         return jwt.sign(user, config.jwtSecret, {
-            expiresIn: "24h" // expires in 24h
+            expiresIn: "1h" // expires in 1h
         });
     }
 
