@@ -1,11 +1,8 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
-///<reference path="../../typings/q/Q.d.ts"/>
-
 
 import ICompetitionSeries = goalazo.ICompetitionSeries;
-import Promise = Q.Promise;
 
-import Q = require('q');
+import P = require('bluebird');
 import Models from '../../models/index';
 import {ICompetitionSeriesInstance} from "../../typings/custom/models";
 import ICountry = goalazo.ICountry;
@@ -17,7 +14,7 @@ export class CountryRepoUno {
 
     getCountries(limit: number): Promise<ICountry[]> {
 
-        return Q.when()
+        return P.resolve()
             .then(() => Models.Country.findAll({
                 limit
             }));
@@ -25,7 +22,7 @@ export class CountryRepoUno {
 
     getCountryCompetitions(countryId: number, limit: number): Promise<ICompetition[]> {
 
-        return Q.when()
+        return P.resolve()
             .then(() => Models.Competition.findAll({
                 include: [
                     {

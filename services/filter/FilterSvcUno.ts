@@ -1,12 +1,10 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
-///<reference path="../../typings/q/Q.d.ts"/>
 
 import {Inject} from 'di-ts'
 import ICompetitionSeries = goalazo.ICompetitionSeries;
-import Promise = Q.Promise;
 import {CompetitionSeriesRepoUno} from "../../repositiories/competitionSeries/CompetitionSeriesRepoUno";
 import {FilterRepoUno} from "../../repositiories/filter/FilterRepoUno";
-import Q = require('q');
+import P = require('bluebird');
 import IFilter = goalazo.IFilter;
 import {IFilterInstance} from "../../typings/custom/models";
 import {ITransaction} from "../../typings/custom/db";
@@ -37,7 +35,7 @@ export class FilterSvcUno {
                     filterId: filter.id
                 }));
 
-                return Q.all([
+                return P.all([
                         this.filterRepo.setFilterTeams(filterTeams, transaction),
                         this.filterRepo.setFilterCompetitionSeries(filterCompetitionSeries, transaction),
                     ])

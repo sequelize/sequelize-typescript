@@ -1,13 +1,12 @@
 ///<reference path="../typings/bluebird/bluebird.d.ts"/>
-///<reference path="../typings/q/Q.d.ts"/>
 ///<reference path="../node_modules/tsd-goalazo-models/models.d.ts"/>
 ///<reference path="../node_modules/tsd-http-status-codes/HttpStatus.d.ts"/>
 ///<reference path="../node_modules/di-ts/di-ts.d.ts"/>
 
 import express = require('express');
-import Q = require('q');
 import ICompetitionSeries = goalazo.ICompetitionSeries;
 import ITeam = goalazo.ITeam;
+import P = require('bluebird');
 import {config} from '../config';
 import {Inject} from 'di-ts'
 import {ApiRequest} from '../typings/custom/requesting';
@@ -22,7 +21,6 @@ import {IUserRequest} from "../typings/custom/requesting";
 import {UserSvcUno} from "../services/user/UserSvcUno";
 import {IUserFilterPostRequest} from "../typings/custom/requesting";
 import {Util} from "../uitils/Util";
-import {CodeError, ErrorCode} from "../uitils/CodeError";
 import {FilterSvcUno} from "../services/filter/FilterSvcUno";
 import {IFilterMatchesGetRequest} from "../typings/custom/requesting";
 import {IMatchViewingsGetRequest} from "../typings/custom/requesting";
@@ -32,6 +30,7 @@ import ICompetition = goalazo.ICompetition;
 import IAuthUser = goalazo.IAuthUser;
 import IMatch = goalazo.IMatch;
 import IViewing = goalazo.IViewing;
+import {AuthenticationFailedError} from "../errors/AuthenticationFailedError";
 
 @Inject
 export class ApiV1 extends ApiAbstract {
@@ -122,18 +121,17 @@ export class ApiV1 extends ApiAbstract {
 
         var data = req.body;
 
-        this.userSvc.authenticate(data.name, data.password)
-            .then((user) => res.json(user))
-            .catch((err) => {
+        if(data.name) {
 
-                if (err instanceof CodeError && (<CodeError>err).code === ErrorCode.AuthenticationFailed) {
+            this.userSvc.authenticate(data.name, data.password)
+                .then((user) => res.json(user))
+                .catch(AuthenticationFailedError, err => res.sendStatus(HttpStatus.Forbidden))
+                .catch(next)
+            ;
+        } else {
+            res.status(HttpStatus.BadRequest).send(`At least a name and password should be provided`);
+        }
 
-                    res.sendStatus(HttpStatus.Forbidden);
-                } else {
-                    next(err);
-                }
-            })
-        ;
     }
 
     /**
@@ -306,7 +304,7 @@ export class ApiV1 extends ApiAbstract {
      */
     getCompetitionSeries(req: ApiRequest, res: express.Response, next: any): void {
 
-        Q.when<ICompetitionSeries[]>(null)
+        P.resolve()
             .then(() => this.competitionSeriesSvc.getCompetitionSeries(req.query.limit))
             .then((competitionSeries: ICompetitionSeries[]) => {
 
@@ -342,7 +340,7 @@ export class ApiV1 extends ApiAbstract {
      */
     getCompetitionTeams(req: ICompetitionTeamsRequest, res: express.Response, next: any): void {
 
-        Q.when<ITeam[]>(null)
+        P.resolve()
             .then(() => this.competitionSvc.getCompetitionTeams(req.params.competitionId, req.query.limit))
             .then((teams: ITeam[]) => {
 
@@ -389,7 +387,7 @@ export class ApiV1 extends ApiAbstract {
      */
     getFilterMatches(req: IFilterMatchesGetRequest, res: express.Response, next: any): void {
 
-        Q.when<IMatch[]>(null)
+        P.resolve()
             .then(() => this.filterSvc.getFilterMatches(req.params.filterId, req.query.limit))
             .then((matches: IMatch[]) => {
 
@@ -466,7 +464,7 @@ export class ApiV1 extends ApiAbstract {
 
     getTeams(req: ApiRequest, res: express.Response, next: any): void {
 
-        Q.when<ITeam[]>(null)
+        P.resolve()
             .then(() => this.teamSvc.getTeams())
             .then((teams: ITeam[]) => {
 

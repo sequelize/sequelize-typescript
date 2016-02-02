@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "bcrypt": "^0.8.5",
+    "bluebird": "^3.2.1",
     "body-parser": "^1.13.3",
     "crypto-js": "^3.1.5",
     "di-ts": "0.0.31",
@@ -20,7 +21,6 @@
     "mysql": "^2.9.0",
     "node-uuid": "^1.4.3",
     "password-generator": "^2.0.1",
-    "q": "^1.4.1",
     "sequelize": "^3.12.1",
     "sqlite3": "~2.1.5",
     "tsd-http-status-codes": "git+https://github.com/RobinBuschmann/tsd-http-status-codes.git"

@@ -1,14 +1,12 @@
-///<reference path="../typings/q/Q.d.ts"/>
 
 import Models from '../models/index';
-import Q = require('q');
-import Promise = Q.Promise;
+import P = require('bluebird');
 import {ITransaction} from "../typings/custom/db";
 
 export abstract class BaseRepo {
 
     getTransactionPromise(): Promise<ITransaction> {
 
-        return Q.when().then(() => Models.sequelize.transaction());
+        return P.resolve().then(() => Models.sequelize.transaction());
     }
 }

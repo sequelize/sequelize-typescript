@@ -1,11 +1,8 @@
 ///<reference path="../../node_modules/tsd-goalazo-models/models.d.ts"/>
-///<reference path="../../typings/q/Q.d.ts"/>
-
 
 import ICompetitionSeries = goalazo.ICompetitionSeries;
-import Promise = Q.Promise;
 
-import Q = require('q');
+import P = require('bluebird');
 import Models from '../../models/index';
 import {IFilterInstance} from "../../typings/custom/models";
 import IFilter = goalazo.IFilter;
@@ -25,7 +22,7 @@ export class MatchRepoUno {
                      latitude1: number,
                      latitude2: number) {
 
-        return Q.when()
+        return P.resolve()
             .then(() => Models.Viewing.findAll({
                 include: [
                     {
