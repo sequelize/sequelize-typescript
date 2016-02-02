@@ -34,7 +34,7 @@ import IMatch = goalazo.IMatch;
 import IViewing = goalazo.IViewing;
 
 @Inject
-export class ApiUnus extends ApiAbstract {
+export class ApiV1 extends ApiAbstract {
 
     constructor(protected competitionSeriesSvc: CompetitionSeriesSvcUno,
                 protected competitionSvc: CompetitionSvcUno,
