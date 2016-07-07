@@ -6,6 +6,7 @@
 
 # libraries
 node_modules
+typings
 
 # cache
 .temp
