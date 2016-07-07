@@ -6,7 +6,7 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "node/node.d.ts": {
-      "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
+      "commit": "8df97176d2f27399ffc562098409223fef6c2304"
     },
     "serve-static/serve-static.d.ts": {
       "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
@@ -43,6 +43,9 @@
     },
     "jsonwebtoken/jsonwebtoken.d.ts": {
       "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
+    },
+    "soap/soap.d.ts": {
+      "commit": "8df97176d2f27399ffc562098409223fef6c2304"
     }
   }
 }

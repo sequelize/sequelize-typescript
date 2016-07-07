@@ -1,22 +1,29 @@
-node_modules
-www
+# mac
+*.DS_Store
+
+# ide
 .idea
+
+# libraries
+node_modules
+
+# cache
 .temp
 .sass-cache
-app/bower_components
-coverage
-platforms
-plugins
-*.swp
-*.swo
-*.log
-*.DS_Store
-secrets.json
-env.json
-documentation
 
-# all js files
+# testing
+coverage
+test
+
+# certificates
+certificates/*
+
+# js files
 **/*.js
 **/*.js.map
 # expect
 !Gruntfile.js
+
+# ..
+mock.json
+req.xml

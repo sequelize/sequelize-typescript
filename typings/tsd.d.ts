@@ -12,3 +12,4 @@
 /// <reference path="validator/validator.d.ts" />
 /// <reference path="bcrypt/bcrypt.d.ts" />
 /// <reference path="jsonwebtoken/jsonwebtoken.d.ts" />
+/// <reference path="soap/soap.d.ts" />
