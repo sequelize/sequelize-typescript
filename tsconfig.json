@@ -5,9 +5,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
-    "rootDir": "."
+    "rootDir": ".",
+    "pretty": true
   },
-
   "exclude": [
     "node_modules",
     "documentation",

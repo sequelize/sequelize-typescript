@@ -1,14 +1,15 @@
 import fs = require('fs');
 import soap = require('soap');
+import Promise = require('bluebird');
 import {Inject} from "di-ts";
-import {Client} from "soap";
 import {config} from "../config";
+import {Client} from "soap";
 
 @Inject
 export class SoapService {
-    
+
     private client:Client;
-    
+
     constructor() {
 
         const cert = fs.readFileSync('./certificates/private.crt');
@@ -35,5 +36,31 @@ export class SoapService {
                 this.client = client;
             }
         )
+    }
+
+    eRoamingPullEvseData(providerId: string, geoFormat: string) {
+
+        return new Promise((resolve, reject) => {
+
+            this.client['eRoamingPullEvseData'](
+                {
+                    "wsc:ProviderID": providerId,
+                    "wsc:GeoCoordinatesResponseFormat": geoFormat
+                },
+                (err, data) => {
+
+                    if(err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(data);
+                },
+                {timeout: 1000 * 60 * 5},
+                {
+                    'Connection': 'Keep-Alive'
+                }
+            )
+        });
+
     }
 }

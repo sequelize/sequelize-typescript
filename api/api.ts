@@ -1,3 +1,6 @@
+///<reference path="../node_modules/di-ts/di-ts.d.ts"/>
+
+
 import {Injector} from 'di-ts'
 
 let fs = require('fs');

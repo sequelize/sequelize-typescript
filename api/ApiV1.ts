@@ -2,76 +2,40 @@ import express = require('express');
 import Promise = require('bluebird');
 import fs = require('fs');
 import soap = require('soap');
-import {config} from "../config";
 import {Inject} from 'di-ts'
 import {ApiAbstract} from "./ApiAbstract";
-import {Client} from "soap";
+import {SoapService} from "../services/SoapService";
+import {IEvseDataRoot} from "../interfaces/IEvseDataRoot";
+import {DataImporter} from "../services/DataImporter";
+let data = require('../mock.json');
+import {bookshelf} from "../bookshelf";
 
 @Inject
 export class ApiV1 extends ApiAbstract {
 
-    protected soapClient:Client;
-    protected data: any;
+  protected data: any;
 
-    constructor() {
+  constructor(protected soapService: SoapService,
+              protected dataImporter: DataImporter) {
 
-        super();
-        
-        this.initSoapClient();
-    }
+    super();
+  }
 
-    start(req:express.Request, res:express.Response, next:any):void {
+  dataImport(req: express.Request, res: express.Response, next: any): void {
 
-        this.soapClient['eRoamingPullEvseData'](
-            {
-                "wsc:ProviderID": "DE*ICE",
-                "wsc:GeoCoordinatesResponseFormat": "Google"
-            },
-            (err, data) => {
+    /*this.soapService
+      .eRoamingPullEvseData('DE*ICE', 'Google')
+      .then((data: IEvseDataRoot) =>*/ this.dataImporter.execute(data)//)
+      .then(() => res.sendStatus(200))
+      .catch(next)
+    ;
 
-                this.data = err || data;
-                res.json(err || data);
-            },
-            {timeout: 1000 * 60 * 5},
-            {
-                'Connection': 'Keep-Alive'
-            }
-        )
-    }
-    
-    getData(req:express.Request, res:express.Response):void {
-        
-        res.json(this.data);
-    }
+  }
 
-    protected initSoapClient() {
+  getData(req: express.Request, res: express.Response): void {
 
-        const cert = fs.readFileSync('./certificates/private.crt');
-        const key = fs.readFileSync('./certificates/private.key');
-
-        soap.createClient(
-            config.hbsSoapEndpoint + '?wsdl',
-            {
-                envelopeKey: 'soapenv',
-                wsdl_options: {cert, key},
-                overrideRootElement: {
-                    namespace: "wsc",
-                }
-            },
-            (err, client:Client) => {
-
-                if (err) {
-                    throw new Error(err);
-                }
-
-                const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
-
-                client.setSecurity(new ClientSSLSecurity(key, cert, {}));
-
-                this.soapClient = client;
-            }
-        )
-    }
+    res.json(this.data);
+  }
 
 }
 

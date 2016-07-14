@@ -6,7 +6,7 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "node/node.d.ts": {
-      "commit": "8df97176d2f27399ffc562098409223fef6c2304"
+      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
     },
     "serve-static/serve-static.d.ts": {
       "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
@@ -26,17 +26,14 @@
     "morgan/morgan.d.ts": {
       "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
     },
-    "sequelize/sequelize.d.ts": {
-      "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
-    },
     "bluebird/bluebird.d.ts": {
-      "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
+      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
     },
     "lodash/lodash.d.ts": {
-      "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
+      "commit": "7ce2630b07ef481d6c5f262dcafe9c9e2feec446"
     },
     "validator/validator.d.ts": {
-      "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
+      "commit": "7ce2630b07ef481d6c5f262dcafe9c9e2feec446"
     },
     "bcrypt/bcrypt.d.ts": {
       "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
@@ -46,6 +43,21 @@
     },
     "soap/soap.d.ts": {
       "commit": "8df97176d2f27399ffc562098409223fef6c2304"
+    },
+    "knex/knex.d.ts": {
+      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
+    },
+    "bookshelf/bookshelf.d.ts": {
+      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
+    },
+    "create-error/create-error.d.ts": {
+      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
+    },
+    "lodash/lodash-3.10.d.ts": {
+      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
+    },
+    "reflect-metadata/reflect-metadata.d.ts": {
+      "commit": "1c7905f8ff315708d2e885bc28f4c023590fb6ab"
     }
   }
 }
