@@ -6,7 +6,6 @@ import {Accessibility} from "../models/Accessibility";
 import {AuthenticationMode} from "../models/AuthenticationMode";
 import {ChargingFacility} from "../models/ChargingFacility";
 import {ChargingMode} from "../models/ChargingMode";
-import {Operator} from "../models/Operator";
 import {Plug} from "../models/Plug";
 import {ValueAddedService} from "../models/ValueAddedService";
 import {IOperatorEvseData} from "../interfaces/IOperatorEvseData";
@@ -29,7 +28,6 @@ export class DataImporter {
   private authenticationModes;
   private chargingFacilities;
   private chargingModes;
-  private operators;
   private paymentOptions;
   private plugs;
   private valueAddedServices;
@@ -65,7 +63,6 @@ export class DataImporter {
         this.authenticationModes || AuthenticationMode.fetchAll(),
         this.chargingFacilities || ChargingFacility.fetchAll(),
         this.chargingModes || ChargingMode.fetchAll(),
-        this.operators || Operator.fetchAll(),
         this.paymentOptions || PaymentOption.fetchAll(),
         this.plugs || Plug.fetchAll(),
         this.valueAddedServices || ValueAddedService.fetchAll(),
@@ -74,7 +71,6 @@ export class DataImporter {
                authenticationModes,
                chargingFacilities,
                chargingModes,
-               operators,
                paymentOptions,
                plugs,
                valueAddedServices) => {
@@ -83,7 +79,6 @@ export class DataImporter {
         this.authenticationModes = authenticationModes;
         this.chargingFacilities = chargingFacilities;
         this.chargingModes = chargingModes;
-        this.operators = operators;
         this.paymentOptions = paymentOptions;
         this.plugs = plugs;
         this.valueAddedServices = valueAddedServices;
@@ -108,9 +103,12 @@ export class DataImporter {
 
     const operators: IOperator[] = this.mapOperatorDataToOperators(operatorData);
 
-    return bookshelf.knex('Operator')
-      .insertOrUpdate(operators)
-      .then(() => this.operators.add(operators));
+    return bookshelf.knex.transaction((trx: any) => {
+
+      return trx('Operator').delete()
+        .then(() => trx('Operator').insertOrUpdate(operators))
+        ;
+    });
   }
 
   /**
@@ -391,12 +389,13 @@ export class DataImporter {
    */
   private processPossibleSubOperatorsFromEvseData(evseData: IEvseDataRecord[], trx) {
 
+    const OPERATOR_ID_REGEX = /([A-Za-z]{2}\*?[A-Za-z0-9]{3})|(\+?[0-9]{1,3}\*[0-9]{3})/;
     const subOperators: IOperator[] = [];
 
     evseData.forEach(evseData => {
 
       // Calculate possible sup operator through evse id:
-      let possibleSupOperatorId = evseData.EvseId.substr(0, evseData.OperatorId.length);
+      let possibleSupOperatorId = OPERATOR_ID_REGEX.exec(evseData.EvseId)[0];
 
       // If the calculated operator id differs from the EVSE data
       // operator id property, this EVSE should be connected to this
