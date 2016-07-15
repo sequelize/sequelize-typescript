@@ -1,14 +1,18 @@
-import {bookshelf} from "../bookshelf";
+import {Table} from "../orm/annotations/Table";
+import {Column} from "../orm/annotations/Column";
+import {BelongsToMany} from "../orm/annotations/BelongsToMany";
+import {DataType} from "../orm/models/DataType";
+import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {EVSEPlug} from "./EVSEPlug";
-import {Table} from "../annotations/Table";
-import {Column} from "../annotations/Column";
-import {BelongsToMany} from "../annotations/BelongsToMany";
 
 @Table
-export class Plug extends bookshelf.Model<Plug> {
+export class Plug extends Model<Plug> {
 
-  @Column
+  @Column({
+    primaryKey: true,
+    type: DataType.INTEGER
+  })
   id: number;
 
   @Column
@@ -16,5 +20,4 @@ export class Plug extends bookshelf.Model<Plug> {
 
   @BelongsToMany(() => EVSE, () => EVSEPlug)
   evses;
-
 }

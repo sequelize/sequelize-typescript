@@ -1,18 +1,25 @@
-import {bookshelf} from "../bookshelf";
-import {Table} from "../annotations/Table";
-import {Column} from "../annotations/Column";
-import {ForeignKey} from "../annotations/ForeignKey";
+import {Table} from "../orm/annotations/Table";
+import {Column} from "../orm/annotations/Column";
+import {ForeignKey} from "../orm/annotations/ForeignKey";
+import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {Plug} from "./Plug";
+import {DataType} from "../orm/models/DataType";
 
 @Table
-export class EVSEPlug extends bookshelf.Model<EVSEPlug> {
+export class EVSEPlug extends Model<EVSEPlug> {
 
-  @Column
+  @Column({
+    primaryKey: true,
+    type: DataType.STRING
+  })
   @ForeignKey(() => EVSE)
   evseId: string;
 
-  @Column
+  @Column({
+    primaryKey: true,
+    type: DataType.INTEGER
+  })
   @ForeignKey(() => Plug)
   plugId: number;
 

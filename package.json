@@ -1,5 +1,5 @@
 {
-  "name": "goalazo-api",
+  "name": "intercharge-backend",
   "version": "0.0.0",
   "description": "Description for server-proto",
   "scripts": {
@@ -22,6 +22,7 @@
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "mysql": "^2.9.0",
+    "sequelize": "^3.23.4",
     "soap": "^0.16.0",
     "sqlite3": "~2.1.5",
     "tsd-http-status-codes": "git+https://github.com/RobinBuschmann/tsd-http-status-codes.git"

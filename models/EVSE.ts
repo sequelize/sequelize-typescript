@@ -1,16 +1,21 @@
-import {bookshelf} from "../bookshelf";
+import {Table} from "../orm/annotations/Table";
+import {Column} from "../orm/annotations/Column";
+import {BelongsToMany} from "../orm/annotations/BelongsToMany";
+import {DataType} from "../orm/models/DataType";
+import {Model} from "../orm/models/Model";
 import {Plug} from "./Plug";
 import {EVSEPlug} from "./EVSEPlug";
-import {Column} from "../annotations/Column";
-import {BelongsToMany} from "../annotations/BelongsToMany";
-import {PrimaryKey} from "../annotations/PrimaryKey";
-import {Table} from "../annotations/Table";
+import {Accessibility} from "./Accessibility";
+import {BelongsTo} from "../orm/annotations/BelongsTo";
+import {ForeignKey} from "../orm/annotations/ForeignKey";
 
 @Table
-export class EVSE extends bookshelf.Model<EVSE> implements IEVSE{
+export class EVSE extends Model<EVSE> {
 
-  @Column
-  @PrimaryKey
+  @Column({
+    primaryKey: true,
+    type: DataType.STRING
+  })
   id: string;
 
   // address
@@ -38,27 +43,33 @@ export class EVSE extends bookshelf.Model<EVSE> implements IEVSE{
   @Column
   timezone: string;
 
+
   // geo location
-  @Column
+  @Column({
+    type: DataType.DECIMAL
+  })
   longitude: number;
 
-  @Column
+  @Column({
+    type: DataType.DECIMAL
+  })
   latitude: number;
-  
-  @Column
+
+  @Column({
+    type: DataType.DECIMAL
+  })
   entranceLongitude: number;
 
-  @Column
+  @Column({
+    type: DataType.DECIMAL
+  })
   entranceLatitude: number;
 
   //
   @Column
   maxCapacity: number;
 
-  @Column // todo relation
-  accessibilityId: number;
-
-  @Column // todo relation
+  @Column
   operatorId: string;
 
   @Column
@@ -95,6 +106,13 @@ export class EVSE extends bookshelf.Model<EVSE> implements IEVSE{
   hotlinePhoneNum: string;
 
   @BelongsToMany(() => Plug, () => EVSEPlug)
-  plugs;
+  plugs: Plug[];
+
+  @Column
+  @ForeignKey(() => Accessibility)
+  accessibilityId: number;
+
+  @BelongsTo(() => Accessibility)
+  accessibility: Accessibility;
 
 }
