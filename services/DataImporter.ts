@@ -46,7 +46,7 @@ export class DataImporter {
   }
 
   /**
-   * Executes data import process, which includes filtering and mapping
+   * Executes data import processStates, which includes filtering and mapping
    * of hbs operator data and hbs evse data. The prepared data will finally
    * stored into database.
    */
@@ -62,7 +62,7 @@ export class DataImporter {
 
   /**
    * Loads enum data and operator data for setting relations during
-   * import process
+   * import processStates
    */
   private loadDependentData() {
 
@@ -166,7 +166,7 @@ export class DataImporter {
   }
 
   /**
-   * This process stores and resolved the fields EnChargingStationName
+   * This processStates stores and resolved the fields EnChargingStationName
    * and EnAdditionalInfo of the evse data records in a separate
    * translation table (EVSE_tr).
    */
@@ -178,10 +178,10 @@ export class DataImporter {
   }
 
   /**
-   * This process resolves the fields EnChargingStationName
+   * This processStates resolves the fields EnChargingStationName
    * and EnAdditionalInfo of the evse data records in a separate
    * entities.
-   * This process is a little bit problematic, because the
+   * This processStates is a little bit problematic, because the
    * EnChargingStationName field is a simple string with an english
    * translation(en-GB) of ChargingStationName. Whereas the
    * EnAdditionalInfo field consists of several information of several

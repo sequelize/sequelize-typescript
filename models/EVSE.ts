@@ -8,6 +8,8 @@ import {EVSEPlug} from "./EVSEPlug";
 import {Accessibility} from "./Accessibility";
 import {BelongsTo} from "../orm/annotations/BelongsTo";
 import {ForeignKey} from "../orm/annotations/ForeignKey";
+import {Status} from "./Status";
+import {EVSEStatus} from "./EVSEStatus";
 
 @Table
 export class EVSE extends Model<EVSE> {
@@ -107,6 +109,19 @@ export class EVSE extends Model<EVSE> {
 
   @BelongsToMany(() => Plug, () => EVSEPlug)
   plugs: Plug[];
+
+  // Actually EVSE - Status is a N:1 relation,
+  // but for simplicity in updating the
+  // status data, the states are persisted
+  // in a separate table
+  @BelongsToMany(() => Status, () => EVSEStatus)
+  states: Status[];
+  
+  @Column({
+    type: DataType.VIRTUAL,
+    get: function() { return (this.getDataValue('states') || [])[0] }
+  })
+  state: Status;
 
   @Column
   @ForeignKey(() => Accessibility)

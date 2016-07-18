@@ -26,5 +26,7 @@ certificates/*
 !Gruntfile.js
 
 # ..
-mock.json
+evseDataMock.json
+evseStatusMock.json
+playground.sql
 req.xml

@@ -4,6 +4,8 @@ import Promise = require('bluebird');
 import {Inject} from "di-ts";
 import {config} from "../config";
 import {Client} from "soap";
+import {IEvseStatusRoot} from "../interfaces/soap/IEvseStatusRoot";
+import {IEvseDataRoot} from "../interfaces/soap/IEvseDataRoot";
 
 const CERT = fs.readFileSync('./certificates/private.crt');
 const KEY = fs.readFileSync('./certificates/private.key');
@@ -20,9 +22,9 @@ export class SoapService {
     this.createEVSEStatusClient();
   }
 
-  eRoamingPullEvseData(providerId: string, geoFormat: string) {
+  eRoamingPullEvseData(providerId: string, geoFormat: string): Promise<IEvseDataRoot> {
 
-    return new Promise((resolve, reject) => {
+    return new Promise<IEvseDataRoot>((resolve, reject) => {
 
       this.evseDataClient['eRoamingPullEvseData'](
         {
@@ -46,9 +48,9 @@ export class SoapService {
 
   }
 
-  eRoamingPullEvseStatus(providerId: string) {
+  eRoamingPullEvseStatus(providerId: string): Promise<IEvseStatusRoot> {
 
-    return new Promise((resolve, reject) => {
+    return new Promise<IEvseStatusRoot>((resolve, reject) => {
 
       this.evseStatusClient['eRoamingPullEvseStatus'](
         {
