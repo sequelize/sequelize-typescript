@@ -4,6 +4,7 @@ import {Model} from "../models/Model";
 import {DefineOptions} from "sequelize";
 import {DataType} from "../models/DataType";
 import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
+import {DefineAttributeColumnOptions} from "sequelize";
 
 export class SequelizeModelService {
 
@@ -51,7 +52,14 @@ export class SequelizeModelService {
    */
   static getAttributes(_class: typeof Model) {
 
-    return Reflect.getMetadata(this.ATTRIBUTES_KEY, _class) || {};
+    let attributes = Reflect.getMetadata(this.ATTRIBUTES_KEY, _class);
+
+    if(!attributes) {
+      attributes = {};
+      Reflect.defineMetadata(this.ATTRIBUTES_KEY, attributes, _class);
+    }
+
+    return attributes;
   }
 
   /**
@@ -64,8 +72,20 @@ export class SequelizeModelService {
     let attributes = this.getAttributes(_class);
 
     attributes[name] = options;
+  }
 
-    return Reflect.defineMetadata(this.ATTRIBUTES_KEY, attributes, _class);
+  /**
+   * Returns attribute meta data of specified class and property name
+   */
+  static getAttributeOptions(_class: typeof Model, name: string): DefineAttributeColumnOptions {
+
+    let attributes = this.getAttributes(_class);
+
+    if(!attributes[name]) {
+      attributes[name] = {};
+    }
+
+    return attributes[name];
   }
 
   /**

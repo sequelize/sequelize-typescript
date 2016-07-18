@@ -3,13 +3,14 @@ import Sequelize = require("sequelize");
 import {Model} from "../models/Model";
 import {SequelizeModelService} from "./SequelizeModelService";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
-import {DefineOptions} from "sequelize";
 import {SequelizeAssociationService} from "./SequelizeAssociationService";
 import throttle = require("lodash/throttle");
+const fs = require('fs');
+const path = require('path');
 
 export class SequelizeService {
 
-  private sequelize: Sequelize.Sequelize;
+  public sequelize: Sequelize.Sequelize;
   private modelRegistry = {};
   private isInitialized = false;
 
@@ -41,7 +42,7 @@ export class SequelizeService {
 
     const modelName = SequelizeModelService.getModelName(_class);
 
-    if(!modelName) {
+    if (!modelName) {
 
       throw new Error(`No model name defined for specified class. 
       The class is probably not annotated with @Table annotation`);
@@ -49,7 +50,7 @@ export class SequelizeService {
 
     const _Model = this.modelRegistry[modelName];
 
-    if(!_Model) {
+    if (!_Model) {
 
       throw new Error(`Class '${modelName}' is not registered`);
     }
@@ -61,9 +62,12 @@ export class SequelizeService {
    * Registers specified classes by defining sequelize models
    * and processing their associations
    */
-  register(...classes: Array<typeof Model>) {
+  register(targetDir: string);
+  register(...classes: Array<typeof Model>);
+  register(arg: any) {
 
     this.checkInitialization();
+    let classes = this.getClasses(arg);
 
     this.defineModels(classes);
     this.associateModels(classes);
@@ -74,7 +78,7 @@ export class SequelizeService {
    */
   private checkInitialization() {
 
-    if(!this.isInitialized) {
+    if (!this.isInitialized) {
       throw new Error(`The SequelizeService has to be initialized before it can be used.
       Call init(config) to intialize`);
     }
@@ -114,7 +118,7 @@ export class SequelizeService {
         const relatedClass = association.relatedClassGetter();
         let through;
 
-        if(association.relation === SequelizeAssociationService.BELONGS_TO_MANY) {
+        if (association.relation === SequelizeAssociationService.BELONGS_TO_MANY) {
 
           through = association.through || this.model(association.throughClassGetter());
         }
@@ -127,6 +131,32 @@ export class SequelizeService {
 
       });
     });
+  }
+
+  /**
+   * Determines classes from value
+   */
+  private getClasses(value: string|Array<typeof Model>): Array<typeof Model> {
+
+    if (typeof value === 'string') {
+
+      let targetDir = value;
+
+      return fs
+        .readdirSync(targetDir)
+        .filter(file => ((file.indexOf('.') !== 0) && (file.slice(-3) == '.js')))
+        .map(file => {
+          const fullPath = path.join(targetDir, file);
+          const modelName = path.basename(file, '.js');
+
+          // use require main to require from root
+          return require.main.require('./' + fullPath)[modelName];
+        })
+      ;
+
+    }
+
+    return value as Array<typeof Model>;
   }
 
 }

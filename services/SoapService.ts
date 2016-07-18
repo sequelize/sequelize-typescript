@@ -5,62 +5,118 @@ import {Inject} from "di-ts";
 import {config} from "../config";
 import {Client} from "soap";
 
+const CERT = fs.readFileSync('./certificates/private.crt');
+const KEY = fs.readFileSync('./certificates/private.key');
+
 @Inject
 export class SoapService {
 
-    private client:Client;
+  private evseDataClient: Client;
+  private evseStatusClient: Client;
 
-    constructor() {
+  constructor() {
 
-        const cert = fs.readFileSync('./certificates/private.crt');
-        const key = fs.readFileSync('./certificates/private.key');
+    this.createEVSEDataClient();
+    this.createEVSEStatusClient();
+  }
 
-        soap.createClient(
-            config.hbsSoapEndpoint + '?wsdl',
-            {
-                envelopeKey: 'soapenv',
-                wsdl_options: {cert, key},
-                overrideRootElement: {
-                    namespace: "wsc",
-                }
-            },
-            (err, client:Client) => {
+  eRoamingPullEvseData(providerId: string, geoFormat: string) {
 
-                if (err) {
-                    throw new Error(err);
-                }
+    return new Promise((resolve, reject) => {
 
-                const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
-                client.setSecurity(new ClientSSLSecurity(key, cert, {}));
+      this.evseDataClient['eRoamingPullEvseData'](
+        {
+          "wsc:ProviderID": providerId,
+          "wsc:GeoCoordinatesResponseFormat": geoFormat
+        },
+        (err, data) => {
 
-                this.client = client;
-            }
-        )
-    }
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(data);
+        },
+        {timeout: config.soap.timeout},
+        {
+          'Connection': 'Keep-Alive'
+        }
+      )
+    });
 
-    eRoamingPullEvseData(providerId: string, geoFormat: string) {
+  }
 
-        return new Promise((resolve, reject) => {
+  eRoamingPullEvseStatus(providerId: string) {
 
-            this.client['eRoamingPullEvseData'](
-                {
-                    "wsc:ProviderID": providerId,
-                    "wsc:GeoCoordinatesResponseFormat": geoFormat
-                },
-                (err, data) => {
+    return new Promise((resolve, reject) => {
 
-                    if(err) {
-                        reject(err);
-                        return;
-                    }
-                    resolve(data);
-                },
-                {timeout: 1000 * 60 * 5},
-                {
-                    'Connection': 'Keep-Alive'
-                }
-            )
-        });
+      this.evseStatusClient['eRoamingPullEvseStatus'](
+        {
+          "wsc:ProviderID": providerId
+        },
+        (err, data) => {
 
-    }
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(data);
+        },
+        {timeout: config.soap.timeout},
+        {
+          'Connection': 'Keep-Alive'
+        }
+      )
+    });
+  }
+
+  private createEVSEDataClient() {
+
+    soap.createClient(
+      config.hbsEVSEDataEndpoint + '?wsdl',
+      {
+        envelopeKey: 'soapenv',
+        wsdl_options: {cert: CERT, key: KEY},
+        overrideRootElement: {
+          namespace: "wsc",
+        }
+      },
+      (err, client: Client) => {
+
+        if (err) {
+          throw new Error(err);
+        }
+
+        const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
+        client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
+
+        this.evseDataClient = client;
+      }
+    )
+  }
+
+  private createEVSEStatusClient() {
+
+    soap.createClient(
+      config.hbsEVSEStatusEndpoint + '?wsdl',
+      {
+        envelopeKey: 'soapenv',
+        wsdl_options: {cert: CERT, key: KEY},
+        overrideRootElement: {
+          namespace: "wsc",
+        }
+      },
+      (err, client: Client) => {
+
+        if (err) {
+          throw new Error(err);
+        }
+
+        const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
+        client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
+
+        this.evseStatusClient = client;
+      }
+    )
+  }
 }

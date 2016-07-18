@@ -14,6 +14,9 @@ export class SequelizeAssociationService {
   static HAS_MANY = 'hasMany';
   static HAS_ONE = 'hasOne';
 
+  /**
+   * Stores association meta data for specified class
+   */
   static addAssociation(_class: typeof Model,
                         relation: string,
                         relatedClassGetter: () => typeof Model,
@@ -38,7 +41,10 @@ export class SequelizeAssociationService {
       foreignKey
     });
   }
-  
+
+  /**
+   * Determines foreign key by specified association (relation)
+   */
   static getForeignKey(_class: typeof Model, association: ISequelizeAssociation) {
     
     // if foreign key is defined return this one

@@ -10,11 +10,6 @@ import methodOverride = require('method-override')
 import morgan         = require('morgan')
 import http           = require('http')
 import path           = require('path')
-import {SequelizeService} from "./orm/services/SequelizeService";
-import {EVSE} from "./models/EVSE";
-import {Plug} from "./models/Plug";
-import {EVSEPlug} from "./models/EVSEPlug";
-import {Accessibility} from "./models/Accessibility";
 
 var errorHandler = require('errorhandler');
 
@@ -63,42 +58,12 @@ app.use('/:apiVersion/', function (req: any, res: express.Response, next: Functi
   }
 });
 
-let db = new SequelizeService();
-
-db.init({
-  name: 'hb_dev',
-  dialect: 'mysql',
-  host: '127.0.0.1',
-  username: 'root',
-  password: ''
-});
-
-
-db.register(EVSE, Plug, EVSEPlug, Accessibility);
-
-db.model(EVSE)
-  .findById('+358*899*01173*01', {
-    include: [
-      {
-        model: db.model(Plug),
-        as: 'plugs'
-      },
-      {
-        model: db.model(Accessibility),
-        as: 'accessibility'
-      }
-    ]
-  })
-  .then((evse: EVSE) => {
-
-    console.log(evse.accessibility.toJSON());
-  });
-
 // app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkRequestFilterMiddleware(req, res, next));
 
 // AUTH RESTRICTED ROUTES
 
 app.get('/:apiVersion/data-import', (req: any, res: express.Response, next) => req.api.dataImport(req, res, next));
+app.get('/:apiVersion/status-import', (req: any, res: express.Response, next) => req.api.statusImport(req, res, next));
 
 http.createServer(app).listen(app.get('port'), () => {
   console.log('Express server listening on port ' + app.get('port'))
