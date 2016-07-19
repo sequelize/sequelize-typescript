@@ -16,12 +16,20 @@ let injector = new Injector();
 // Version-Api-Map
 let map: any = {};
 
+/**
+ * Reads current directory, searches for Api
+ * implementations and put them into version
+ * api map
+ */
 fs
     .readdirSync(__dirname)
     .filter(filename => filter(filename))
     .forEach(filename => addToMap(filename))
 ;
 
+/**
+ * Adds Api instance to map specified by filename
+ */
 function addToMap(filename: string) {
     let version = getVersion(filename);
     let className = getClassName(filename);
@@ -30,11 +38,23 @@ function addToMap(filename: string) {
     map[version.toLowerCase()] = injector.get(module[className]);
 }
 
+/**
+ * Returns class name by file name
+ * 
+ * @param filename
+ * @returns {string}
+ */
 function getClassName(filename: string) {
 
     return filename.replace('.js', '');
 }
 
+/**
+ * Retrieves version by filename and returns the version string
+ * 
+ * @param filename
+ * @returns {string}
+ */
 function getVersion(filename: string) {
     let VERSION_REGEX = new RegExp(`^${API_PREFIX}(.+).js$`);
     let match = VERSION_REGEX.exec(filename);
@@ -46,6 +66,13 @@ function getVersion(filename: string) {
     throw new Error('Wrong naming convention for file ' + filename);
 }
 
+/**
+ * Filters by filename, so that only the Api implementations
+ * will be returned
+ * 
+ * @param filename
+ * @returns {boolean}
+ */
 function filter(filename: string) {
 
     return ((filename.indexOf('.') !== 0) &&

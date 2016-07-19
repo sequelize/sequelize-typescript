@@ -94,6 +94,9 @@ export class SoapService {
       ;
   }
 
+  /**
+   * Creates required soap clients
+   */
   private init() {
 
     Promise
