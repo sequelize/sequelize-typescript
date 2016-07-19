@@ -16,109 +16,125 @@ export class SoapService {
   private evseDataClient: Client;
   private evseStatusClient: Client;
 
+  private evseDataClientCreatePromise: Promise<void>;
+  private evseStatusClientCreatePromise: Promise<void>;
+
   constructor() {
 
     this.createEVSEDataClient();
     this.createEVSEStatusClient();
   }
 
-  eRoamingPullEvseData(providerId: string, geoFormat: string): Promise<IEvseDataRoot> {
+  eRoamingPullEvseData(): Promise<IEvseDataRoot> {
 
-    return new Promise<IEvseDataRoot>((resolve, reject) => {
+    return this.evseDataClientCreatePromise
+      .then(() => new Promise<IEvseDataRoot>((resolve, reject) => {
 
-      this.evseDataClient['eRoamingPullEvseData'](
-        {
-          "wsc:ProviderID": providerId,
-          "wsc:GeoCoordinatesResponseFormat": geoFormat
-        },
-        (err, data) => {
+        this.evseDataClient['eRoamingPullEvseData'](
+          {
+            "wsc:ProviderID": config.soap.providerId,
+            "wsc:GeoCoordinatesResponseFormat": config.soap.geoFormat
+          },
+          (err, data) => {
 
-          if (err) {
-            reject(err);
-            return;
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(data);
+          },
+          {timeout: config.soap.timeout},
+          {
+            'Connection': 'Keep-Alive'
           }
-          resolve(data);
-        },
-        {timeout: config.soap.timeout},
-        {
-          'Connection': 'Keep-Alive'
-        }
-      )
-    });
-
+        )
+      }))
+      ;
   }
 
-  eRoamingPullEvseStatus(providerId: string): Promise<IEvseStatusRoot> {
+  eRoamingPullEvseStatus(): Promise<IEvseStatusRoot> {
 
-    return new Promise<IEvseStatusRoot>((resolve, reject) => {
+    return this.evseStatusClientCreatePromise
+      .then(() => new Promise<IEvseStatusRoot>((resolve, reject) => {
 
-      this.evseStatusClient['eRoamingPullEvseStatus'](
-        {
-          "wsc:ProviderID": providerId
-        },
-        (err, data) => {
+        this.evseStatusClient['eRoamingPullEvseStatus'](
+          {
+            "wsc:ProviderID": config.soap.providerId
+          },
+          (err, data) => {
 
-          if (err) {
-            reject(err);
-            return;
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(data);
+          },
+          {timeout: config.soap.timeout},
+          {
+            'Connection': 'Keep-Alive'
           }
-          resolve(data);
-        },
-        {timeout: config.soap.timeout},
-        {
-          'Connection': 'Keep-Alive'
-        }
-      )
-    });
+        )
+      }))
+      ;
   }
 
   private createEVSEDataClient() {
 
-    soap.createClient(
-      config.hbsEVSEDataEndpoint + '?wsdl',
-      {
-        envelopeKey: 'soapenv',
-        wsdl_options: {cert: CERT, key: KEY},
-        overrideRootElement: {
-          namespace: "wsc",
+    this.evseDataClientCreatePromise = new Promise<void>((resolve, reject) => {
+
+      soap.createClient(
+        config.soap.evseDataEndpoint + '?wsdl',
+        {
+          envelopeKey: 'soapenv',
+          wsdl_options: {cert: CERT, key: KEY},
+          overrideRootElement: {
+            namespace: "wsc",
+          }
+        },
+        (err, client: Client) => {
+
+          if (err) {
+            reject(err);
+            throw new Error(err);
+          }
+
+          const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
+          client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
+
+          this.evseDataClient = client;
+          resolve();
         }
-      },
-      (err, client: Client) => {
-
-        if (err) {
-          throw new Error(err);
-        }
-
-        const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
-        client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
-
-        this.evseDataClient = client;
-      }
-    )
+      )
+    });
   }
 
   private createEVSEStatusClient() {
 
-    soap.createClient(
-      config.hbsEVSEStatusEndpoint + '?wsdl',
-      {
-        envelopeKey: 'soapenv',
-        wsdl_options: {cert: CERT, key: KEY},
-        overrideRootElement: {
-          namespace: "wsc",
+    this.evseStatusClientCreatePromise = new Promise<void>((resolve, reject) => {
+
+      soap.createClient(
+        config.soap.evseStatusEndpoint + '?wsdl',
+        {
+          envelopeKey: 'soapenv',
+          wsdl_options: {cert: CERT, key: KEY},
+          overrideRootElement: {
+            namespace: "wsc",
+          }
+        },
+        (err, client: Client) => {
+
+          if (err) {
+            reject(err);
+            throw new Error(err);
+          }
+
+          const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
+          client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
+
+          this.evseStatusClient = client;
+          resolve();
         }
-      },
-      (err, client: Client) => {
-
-        if (err) {
-          throw new Error(err);
-        }
-
-        const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
-        client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
-
-        this.evseStatusClient = client;
-      }
-    )
+      )
+    });
   }
 }

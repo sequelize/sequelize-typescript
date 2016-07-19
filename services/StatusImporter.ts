@@ -44,6 +44,9 @@ export class StatusImporter {
       ;
   }
 
+  /**
+   * Removes all states of evse data
+   */
   private clearStates(transaction: Transaction) {
 
     return db.model(EVSEStatus).destroy({transaction, where: {}});
@@ -66,6 +69,9 @@ export class StatusImporter {
       ;
   }
 
+  /**
+   * Retrieves evse states from operator evse data
+   */
   private retrieveEvseStatesFromOperatorEvseStates(operatorEvseStates: IOperatorEvseStatus[]) {
 
     let evseStates: IEvseStatusRecord[] = [];
@@ -78,6 +84,9 @@ export class StatusImporter {
     return evseStates;
   }
 
+  /**
+   * Maps evse states from soap call to db data schema
+   */
   private mapEvseStates(evseStates: IEvseStatusRecord[]): IEVSEStatus[] {
 
     return evseStates.map(evseStatus => ({

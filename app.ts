@@ -1,6 +1,7 @@
 ///<reference path="typings/tsd.d.ts"/>
 ///<reference path="./node_modules/tsd-http-status-codes/HttpStatus.d.ts"/>
 
+import {config} from "./config";
 import {ApiAbstract} from './api/ApiAbstract';
 import apis from './api/api';
 
@@ -11,14 +12,18 @@ import morgan         = require('morgan')
 import http           = require('http')
 import path           = require('path')
 
-var errorHandler = require('errorhandler');
+const errorHandler = require('errorhandler');
+const app = express();
 
-var app = express();
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
+// EXPRESS ENVIRONMENT VARIABLES
+// ----------------------------------------------
+app.set('port', config.port);
+app.set('ens', config.environment);
+
+
+// GENERAL MIDDLEWARE CONFIGURATION
+// ----------------------------------------------
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({
   extended: true
@@ -32,7 +37,9 @@ if ('development' === app.get('env')) {
   app.use(errorHandler())
 }
 
-//CORS middleware
+
+// CROSS-ORIGIN RESOURCE SHARING CONFIGURATION
+// ----------------------------------------------
 app.use(function (req, res, next) {
 
   res.header("Access-Control-Allow-Origin", "*");
@@ -42,7 +49,9 @@ app.use(function (req, res, next) {
   next();
 });
 
-// resolves api version
+
+// API VERSION MIDDLEWARE
+// ----------------------------------------------
 app.use('/:apiVersion/', function (req: any, res: express.Response, next: Function) {
 
   var apiVersion = req.params['apiVersion'];
@@ -50,7 +59,7 @@ app.use('/:apiVersion/', function (req: any, res: express.Response, next: Functi
 
   if (!api) {
 
-    res.status(404).send('the api version ' + apiVersion + ' doesn\'t exist');
+    res.status(404).send('The api version ' + apiVersion + ' does not exist');
   } else {
 
     req.api = api;
@@ -58,15 +67,16 @@ app.use('/:apiVersion/', function (req: any, res: express.Response, next: Functi
   }
 });
 
-// app.use((req: ApiRequest, res: express.Response, next: Function) => req.api.checkRequestFilterMiddleware(req, res, next));
 
-// AUTH RESTRICTED ROUTES
+// ROUTE DEFINITIONS
+// ----------------------------------------------
+app.get('/:apiVersion/evses', (req: any, res: express.Response, next) => req.api.getEVSEs(req, res, next));
 
-app.get('/:apiVersion/data-import', (req: any, res: express.Response, next) => req.api.dataImport(req, res, next));
-app.get('/:apiVersion/status-import', (req: any, res: express.Response, next) => req.api.statusImport(req, res, next));
 
+// SERVER CREATION AND EXECUTION
+// ----------------------------------------------
 http.createServer(app).listen(app.get('port'), () => {
-  console.log('Express server listening on port ' + app.get('port'))
+  console.log('Server listening on port ' + app.get('port'))
 });
 
 

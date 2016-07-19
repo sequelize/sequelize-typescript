@@ -6,7 +6,7 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "node/node.d.ts": {
-      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
+      "commit": "5ccabc86eca6cfcda2b7ec83cca31dbd07c8a31b"
     },
     "serve-static/serve-static.d.ts": {
       "commit": "76ed26e95e91f1c91f2d11819c44b55b617e859a"
@@ -61,6 +61,9 @@
     },
     "sequelize/sequelize.d.ts": {
       "commit": "a59cec35c61820b421d31ae91f9f02cad41ed197"
+    },
+    "winston/winston.d.ts": {
+      "commit": "5ccabc86eca6cfcda2b7ec83cca31dbd07c8a31b"
     }
   }
 }
