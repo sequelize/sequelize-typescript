@@ -5,9 +5,10 @@ import {PrimaryKey} from "../orm/annotations/PrimaryKey";
 import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {AuthenticationMode} from "./AuthenticationMode";
+import {IEVSEAuthenticationMode} from "../interfaces/IEVSEAuthenticationMode";
 
 @Table
-export class EVSEAuthenticationMode extends Model<EVSEAuthenticationMode> {
+export class EVSEAuthenticationMode extends Model<EVSEAuthenticationMode> implements IEVSEAuthenticationMode{
 
   @Column
   @PrimaryKey

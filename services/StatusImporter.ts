@@ -20,8 +20,8 @@ export class StatusImporter {
   }
 
   /**
-   * Executes data import processStates, which includes filtering and mapping
-   * of hbs operator data and hbs evse data. The prepared data will finally
+   * Executes data import process, which includes filtering and mapping
+   * of HBS operator data and hbs EVSE data. The prepared data will finally
    * stored into database.
    */
   execute(data: IEvseStatusRoot) {
@@ -45,7 +45,7 @@ export class StatusImporter {
   }
 
   /**
-   * Removes all states of evse data
+   * Removes all states of EVSE data from database
    */
   private clearStates(transaction: Transaction) {
 
@@ -53,8 +53,7 @@ export class StatusImporter {
   }
 
   /**
-   * Loads enum data and operator data for setting relations during
-   * import processStates
+   * Loads enum data for setting relations during import process
    */
   private loadDependentData() {
 
@@ -70,7 +69,7 @@ export class StatusImporter {
   }
 
   /**
-   * Retrieves evse states from operator evse data
+   * Retrieves EVSE states from operator EVSE data
    */
   private retrieveEvseStatesFromOperatorEvseStates(operatorEvseStates: IOperatorEvseStatus[]) {
 
@@ -85,7 +84,7 @@ export class StatusImporter {
   }
 
   /**
-   * Maps evse states from soap call to db data schema
+   * Maps EVSE states from soap call to db data schema
    */
   private mapEvseStates(evseStates: IEvseStatusRecord[]): IEVSEStatus[] {
 

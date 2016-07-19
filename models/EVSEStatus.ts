@@ -8,7 +8,7 @@ import {Status} from "./Status";
 import {IEVSEStatus} from "../interfaces/IEVSEStatus";
 
 @Table
-export class EVSEStatus extends Model<EVSEStatus> implements IEVSEStatus{
+export class EVSEStatus extends Model<EVSEStatus> implements IEVSEStatus {
 
   @Column
   @PrimaryKey

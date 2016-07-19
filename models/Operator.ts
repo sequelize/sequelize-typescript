@@ -3,9 +3,10 @@ import {Column} from "../orm/annotations/Column";
 import {Model} from "../orm/models/Model";
 import {PrimaryKey} from "../orm/annotations/PrimaryKey";
 import {ForeignKey} from "../orm/annotations/ForeignKey";
+import {IOperator} from "../interfaces/IOperator";
 
 @Table
-export class Operator extends Model<Operator> {
+export class Operator extends Model<Operator> implements IOperator {
 
   @Column
   @PrimaryKey

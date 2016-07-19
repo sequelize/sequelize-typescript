@@ -46,7 +46,7 @@ export class DataImporter {
   }
 
   /**
-   * Executes data import processStates, which includes filtering and mapping
+   * Executes data import for evse data, which includes filtering and mapping
    * of hbs operator data and hbs evse data. The prepared data will finally
    * stored into database.
    */
@@ -62,7 +62,7 @@ export class DataImporter {
 
   /**
    * Loads enum data and operator data for setting relations during
-   * import processStates
+   * import process
    */
   private loadDependentData() {
 
@@ -105,8 +105,8 @@ export class DataImporter {
 
   /**
    * Processes operator data.
-   *  - Maps hbs structure to internal model.
-   *  - stores new operators into database
+   *  - Maps hbs structure to internal model
+   *  - Stores new operators into database
    */
   private processOperatorData(operatorData: IOperatorEvseData[]): Promise<void> {
 
@@ -135,13 +135,13 @@ export class DataImporter {
 
 
   /**
-   * Processes evse data:
-   * - retrieves evse data from operator data
-   * - creates sub operators from evse data
-   * - maps evse data
-   * - stores mapped evse data into database
-   * - processes international data
-   * - processes relational enum types from evse data
+   * Processes EVSE data:
+   * - Retrieves EVSE data from operator data
+   * - Creates sub operators from EVSE data
+   * - Maps EVSE data
+   * - Stores mapped EVSE data into database
+   * - Processes international data
+   * - processes relational enum types from EVSE data
    */
   private processEvseData(operatorData: IOperatorEvseData[]) {
 
@@ -166,7 +166,7 @@ export class DataImporter {
   }
 
   /**
-   * This processStates stores and resolved the fields EnChargingStationName
+   * This process stores and resolved the fields EnChargingStationName
    * and EnAdditionalInfo of the evse data records in a separate
    * translation table (EVSE_tr).
    */
@@ -178,10 +178,10 @@ export class DataImporter {
   }
 
   /**
-   * This processStates resolves the fields EnChargingStationName
-   * and EnAdditionalInfo of the evse data records in a separate
+   * This process resolves the fields EnChargingStationName
+   * and EnAdditionalInfo of the EVSE data records in separate
    * entities.
-   * This processStates is a little bit problematic, because the
+   * This process is a little bit problematic, because the
    * EnChargingStationName field is a simple string with an english
    * translation(en-GB) of ChargingStationName. Whereas the
    * EnAdditionalInfo field consists of several information of several
@@ -258,6 +258,9 @@ export class DataImporter {
     return Promise.all(evseTrsPromises);
   }
 
+  /**
+   * Maps specified data to IEVSE_tr interface
+   */
   private getEvseTr(alpha3: string, evseId: string, chargingStationName: string, additionalInfo: string) {
 
     return this.dataImportHelper.getLanguageCodeByISO3166Alpha3(alpha3)
@@ -273,8 +276,8 @@ export class DataImporter {
   }
 
   /**
-   * Connects the enum types with the corresponding evse data records;
-   * Background: Each evse data record consists of several type
+   * Connects the enum types with the corresponding EVSE data records;
+   * Background: Each EVSE data record consists of several type
    * options instead of an type identifier. Therefor a N:M Relation
    * for e.g. the AuthenticationModes will be resolved like this:
    *
@@ -330,7 +333,7 @@ export class DataImporter {
   }
 
   /**
-   * Maps the evse data records to the database model
+   * Maps the EVSE data records to the database model
    */
   private mapEvseDataToEvses(evseData: IEvseDataRecord[]): IEVSE[] {
 
@@ -367,8 +370,8 @@ export class DataImporter {
   }
 
   /**
-   * Retrieves the evse data records from the operator data and
-   * stores the corresponding operator id to the evse data record object.
+   * Retrieves the EVSE data records from the operator data and
+   * stores the corresponding operator id to the EVSE data record object.
    */
   private retrieveEvseDataFromOperatorData(operatorData: IOperatorEvseData[]): IEvseDataRecord[] {
 
@@ -390,13 +393,13 @@ export class DataImporter {
 
   /**
    * An EVSE record can be related to a sub operator. This relation
-   * can only be detected by comparing the evse id with its operator
-   * id. If the evse id does not consist of the operator id, the
-   * evse belongs to an sub operator, which also can be calculated
-   * by the evse id. For this created sup operator, an entry will
+   * can only be detected by comparing the EVSE id with its operator
+   * id. If the EVSE id does not consist of the operator id, the
+   * EVSE belongs to an sub operator, which also can be calculated
+   * by the EVSE id. For this calculated sup operator, an entry will
    * be created and stored into the database. The operator id of
-   * the evse will be adjusted with the sub operator id. So that
-   * the evse will only be directly connected with its sub operator.
+   * the EVSE will be adjusted with the sub operator id. So that
+   * the EVSE will only be directly connected with its sub operator.
    */
   private processPossibleSubOperatorsFromEvseData(evseData: IEvseDataRecord[], transaction: Transaction) {
 

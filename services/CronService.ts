@@ -6,6 +6,9 @@ import {SoapService} from "./SoapService";
 import {logger} from "../logger";
 const CronJob = require('cron').CronJob;
 
+/**
+ * This cron service implements specific jobs for data imports
+ */
 @Inject
 export class CronService {
 
@@ -15,6 +18,9 @@ export class CronService {
 
   }
 
+  /**
+   * Schedules evse data import specified by configured time period
+   */
   scheduleEvseDataImport() {
 
     new CronJob(
@@ -35,6 +41,9 @@ export class CronService {
     logger.info('EVSE data import job scheduled');
   }
 
+  /**
+   * Schedules evse status import specified by configured time period
+   */
   scheduleEvseStatusImport() {
 
     new CronJob(

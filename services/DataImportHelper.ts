@@ -168,12 +168,20 @@ export class DataImportHelper {
     return 0;
   }
 
+  /**
+   * The HB system provides some corrupt alpha 3 code values.
+   * This is a map to correct these values and map them to
+   * an existing alpha 3 value
+   */
   private ISO3166Alpha3ExceptionMap = {
     'FRZ': 'FRA',
     'ENG': 'GBR',
     'SLO': 'SVN'
   };
 
+  /**
+   * Converts ISO3166 alpha3 code to a language code
+   */
   getLanguageCodeByISO3166Alpha3(alpha3: string): Promise<string> {
 
     return new Promise<string>((resolve, reject) => {

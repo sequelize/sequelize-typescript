@@ -5,9 +5,10 @@ import {PrimaryKey} from "../orm/annotations/PrimaryKey";
 import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {ChargingMode} from "./ChargingMode";
+import {IEVSEChargingMode} from "../interfaces/IEVSEChargingMode";
 
 @Table
-export class EVSEChargingMode extends Model<EVSEChargingMode> {
+export class EVSEChargingMode extends Model<EVSEChargingMode> implements IEVSEChargingMode {
 
   @Column
   @PrimaryKey

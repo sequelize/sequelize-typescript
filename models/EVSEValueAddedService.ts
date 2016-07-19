@@ -5,9 +5,10 @@ import {PrimaryKey} from "../orm/annotations/PrimaryKey";
 import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {ValueAddedService} from "./ValueAddedService";
+import {IEVSEValueAddedService} from "../interfaces/IEVSEValueAddedService";
 
 @Table
-export class EVSEValueAddedService extends Model<EVSEValueAddedService> {
+export class EVSEValueAddedService extends Model<EVSEValueAddedService> implements IEVSEValueAddedService {
 
   @Column
   @PrimaryKey

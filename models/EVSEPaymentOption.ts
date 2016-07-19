@@ -5,9 +5,10 @@ import {PrimaryKey} from "../orm/annotations/PrimaryKey";
 import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {PaymentOption} from "./PaymentOption";
+import {IEVSEPaymentOption} from "../interfaces/IEVSEPaymentOption";
 
 @Table
-export class EVSEPaymentOption extends Model<EVSEPaymentOption> {
+export class EVSEPaymentOption extends Model<EVSEPaymentOption> implements IEVSEPaymentOption {
 
   @Column
   @PrimaryKey

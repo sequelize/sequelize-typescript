@@ -25,6 +25,10 @@ export class SoapService {
     this.createEVSEStatusClient();
   }
 
+  /**
+   * Processes an eRoamingPullEvseData request by configured
+   * Provided id and geo format
+   */
   eRoamingPullEvseData(): Promise<IEvseDataRoot> {
 
     return this.evseDataClientCreatePromise
@@ -52,6 +56,10 @@ export class SoapService {
       ;
   }
 
+  /**
+   * Processes an eRoamingPullEvseStatus request by configured
+   * Provided id
+   */
   eRoamingPullEvseStatus(): Promise<IEvseStatusRoot> {
 
     return this.evseStatusClientCreatePromise
@@ -78,19 +86,17 @@ export class SoapService {
       ;
   }
 
+  /**
+   * Creates a soap client for eRoamingEVSEData service by loading
+   * WSDL data from the specified soap endpoint
+   */
   private createEVSEDataClient() {
 
     this.evseDataClientCreatePromise = new Promise<void>((resolve, reject) => {
 
       soap.createClient(
         config.soap.evseDataEndpoint + '?wsdl',
-        {
-          envelopeKey: 'soapenv',
-          wsdl_options: {cert: CERT, key: KEY},
-          overrideRootElement: {
-            namespace: "wsc",
-          }
-        },
+        this.getSoapWSDLClientConfiguration(),
         (err, client: Client) => {
 
           if (err) {
@@ -98,29 +104,26 @@ export class SoapService {
             throw new Error(err);
           }
 
-          const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
-          client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
-
+          this.setClientSecurity(client);
           this.evseDataClient = client;
+
           resolve();
         }
       )
     });
   }
 
+  /**
+   * Creates a soap client for eRoamingEVSEStatus service by loading
+   * WSDL data from the specified soap endpoint
+   */
   private createEVSEStatusClient() {
 
     this.evseStatusClientCreatePromise = new Promise<void>((resolve, reject) => {
 
       soap.createClient(
         config.soap.evseStatusEndpoint + '?wsdl',
-        {
-          envelopeKey: 'soapenv',
-          wsdl_options: {cert: CERT, key: KEY},
-          overrideRootElement: {
-            namespace: "wsc",
-          }
-        },
+        this.getSoapWSDLClientConfiguration(),
         (err, client: Client) => {
 
           if (err) {
@@ -128,13 +131,37 @@ export class SoapService {
             throw new Error(err);
           }
 
-          const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
-          client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
-
+          this.setClientSecurity(client);
           this.evseStatusClient = client;
+
           resolve();
         }
       )
     });
+  }
+
+  /**
+   * Returns configuration for soap client implementations.
+   */
+  private getSoapWSDLClientConfiguration() {
+
+    return {
+      envelopeKey: 'soapenv',
+      // The Request needs a client certificate for authentication
+      wsdl_options: {cert: CERT, key: KEY},
+      overrideRootElement: {
+        // 'wsc' is the specified namespace from WSDL
+        namespace: "wsc",
+      }
+    };
+  }
+
+  /**
+   * Configures ssl certificate for soap requests
+   */
+  private setClientSecurity(client: Client) {
+
+    const ClientSSLSecurity = <any>soap.ClientSSLSecurity;
+    client.setSecurity(new ClientSSLSecurity(KEY, CERT, {}));
   }
 }
