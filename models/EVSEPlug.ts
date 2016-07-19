@@ -5,7 +5,7 @@ import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {Plug} from "./Plug";
 import {DataType} from "../orm/models/DataType";
-import {IEVSEPlug} from "../interfaces/IEVSEPlug";
+import {IEVSEPlug} from "../interfaces/models/IEVSEPlug";
 
 @Table
 export class EVSEPlug extends Model<EVSEPlug> implements IEVSEPlug {

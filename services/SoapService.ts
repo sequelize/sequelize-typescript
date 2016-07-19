@@ -6,6 +6,7 @@ import {config} from "../config";
 import {Client} from "soap";
 import {IEvseStatusRoot} from "../interfaces/soap/IEvseStatusRoot";
 import {IEvseDataRoot} from "../interfaces/soap/IEvseDataRoot";
+import {logger} from "../logger";
 
 const CERT = fs.readFileSync('./certificates/private.crt');
 const KEY = fs.readFileSync('./certificates/private.key');
@@ -21,8 +22,7 @@ export class SoapService {
 
   constructor() {
 
-    this.createEVSEDataClient();
-    this.createEVSEStatusClient();
+    this.init();
   }
 
   /**
@@ -33,6 +33,8 @@ export class SoapService {
 
     return this.evseDataClientCreatePromise
       .then(() => new Promise<IEvseDataRoot>((resolve, reject) => {
+
+        logger.info('Starts processing eRoamingPullEvseData request');
 
         this.evseDataClient['eRoamingPullEvseData'](
           {
@@ -45,6 +47,8 @@ export class SoapService {
               reject(err);
               return;
             }
+
+            logger.info('eRoamingPullEvseData request successfully finished');
             resolve(data);
           },
           {timeout: config.soap.timeout},
@@ -65,6 +69,8 @@ export class SoapService {
     return this.evseStatusClientCreatePromise
       .then(() => new Promise<IEvseStatusRoot>((resolve, reject) => {
 
+        logger.info('Starts processing eRoamingPullEvseData request');
+
         this.evseStatusClient['eRoamingPullEvseStatus'](
           {
             "wsc:ProviderID": config.soap.providerId
@@ -75,6 +81,8 @@ export class SoapService {
               reject(err);
               return;
             }
+
+            logger.info('eRoamingPullEvseStatus request successfully finished');
             resolve(data);
           },
           {timeout: config.soap.timeout},
@@ -86,6 +94,16 @@ export class SoapService {
       ;
   }
 
+  private init() {
+
+    Promise
+      .all([
+        this.createEVSEDataClient(),
+        this.createEVSEStatusClient()
+      ])
+      .catch(err => logger.error(err));
+  }
+
   /**
    * Creates a soap client for eRoamingEVSEData service by loading
    * WSDL data from the specified soap endpoint
@@ -94,18 +112,22 @@ export class SoapService {
 
     this.evseDataClientCreatePromise = new Promise<void>((resolve, reject) => {
 
+      logger.info('Creating processing eRoamingEVSEData soap client');
+
       soap.createClient(
         config.soap.evseDataEndpoint + '?wsdl',
         this.getSoapWSDLClientConfiguration(),
         (err, client: Client) => {
 
           if (err) {
+
             reject(err);
-            throw new Error(err);
           }
 
           this.setClientSecurity(client);
           this.evseDataClient = client;
+
+          logger.info('eRoamingEVSEData soap client successfully created');
 
           resolve();
         }
@@ -121,18 +143,22 @@ export class SoapService {
 
     this.evseStatusClientCreatePromise = new Promise<void>((resolve, reject) => {
 
+      logger.info('Creating processing eRoamingEVSEStatus soap client');
+
       soap.createClient(
         config.soap.evseStatusEndpoint + '?wsdl',
         this.getSoapWSDLClientConfiguration(),
         (err, client: Client) => {
 
           if (err) {
+
             reject(err);
-            throw new Error(err);
           }
 
           this.setClientSecurity(client);
           this.evseStatusClient = client;
+
+          logger.info('eRoamingEVSEStatus soap client successfully created');
 
           resolve();
         }

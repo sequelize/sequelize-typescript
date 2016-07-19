@@ -9,15 +9,15 @@ import {Plug} from "../models/Plug";
 import {ValueAddedService} from "../models/ValueAddedService";
 import {IOperatorEvseData} from "../interfaces/soap/IOperatorEvseData";
 import {IEvseDataRecord} from "../interfaces/soap/IEvseDataRecord";
-import {IOperator} from "../interfaces/IOperator";
+import {IOperator} from "../interfaces/models/IOperator";
 import {DataImportHelper} from "./DataImportHelper";
-import {IEnum} from "../interfaces/IEnum";
-import {IEVSEAuthenticationMode} from "../interfaces/IEVSEAuthenticationMode";
-import {IEVSEChargingMode} from "../interfaces/IEVSEChargingMode";
-import {IEVSEPaymentOption} from "../interfaces/IEVSEPaymentOption";
+import {IEnum} from "../interfaces/models/IEnum";
+import {IEVSEAuthenticationMode} from "../interfaces/models/IEVSEAuthenticationMode";
+import {IEVSEChargingMode} from "../interfaces/models/IEVSEChargingMode";
+import {IEVSEPaymentOption} from "../interfaces/models/IEVSEPaymentOption";
 import {PaymentOption} from "../models/PaymentOption";
-import {IEVSEPlug} from "../interfaces/IEVSEPlug";
-import {IEVSEValueAddedService} from "../interfaces/IEVSEValueAddedService";
+import {IEVSEPlug} from "../interfaces/models/IEVSEPlug";
+import {IEVSEValueAddedService} from "../interfaces/models/IEVSEValueAddedService";
 import {db} from "../db";
 import {EVSE} from "../models/EVSE";
 import {Transaction} from "sequelize";
@@ -29,6 +29,7 @@ import {EVSEChargingMode} from "../models/EVSEChargingMode";
 import {EVSEPaymentOption} from "../models/EVSEPaymentOption";
 import {EVSEPlug} from "../models/EVSEPlug";
 import {EVSEValueAddedService} from "../models/EVSEValueAddedService";
+import {logger} from "../logger";
 
 @Inject
 export class DataImporter {
@@ -51,6 +52,8 @@ export class DataImporter {
    * stored into database.
    */
   execute(data: IEvseDataRoot) {
+
+    logger.info('Starts EvseData import process');
 
     const operatorData: IOperatorEvseData[] = data.EvseData.OperatorEvseData;
 
@@ -91,6 +94,8 @@ export class DataImporter {
         this.paymentOptions = paymentOptions;
         this.plugs = plugs;
         this.valueAddedServices = valueAddedServices;
+
+        logger.info('Dependent types (Accessibility, AuthenticationMode, ...) successfully loaded');
       })
       ;
   }
@@ -100,7 +105,7 @@ export class DataImporter {
    */
   private clearData(transaction: Transaction) {
 
-    return db.model(EVSE).destroy({transaction, where:{}});
+    return db.model(EVSE).destroy({transaction, where: {}});
   }
 
   /**
@@ -110,14 +115,23 @@ export class DataImporter {
    */
   private processOperatorData(operatorData: IOperatorEvseData[]): Promise<void> {
 
+    logger.info('Starts processing operator data');
+
     let operators: IOperator[] = this.mapOperatorDataToOperators(operatorData);
 
-    return db.sequelize.transaction((transaction: Transaction) => {
+    logger.info(`Operator data successfully mapped to fulfil IOperator interface (Count: ${operators.length})`);
 
-      return db.model(Operator).destroy({transaction, where:{}})
-        .then(() => db.model(Operator).bulkCreate(operators, {transaction}))
-        ;
-    });
+    return db.sequelize
+      .transaction((transaction: Transaction) => {
+
+        return db.model(Operator).destroy({transaction, where: {}})
+          .then(() => db.model(Operator).bulkCreate(operators, {transaction}))
+          ;
+      })
+      .then(() => {
+        logger.info(`Operator data successfully processed (Count: ${operators.length})`)
+      })
+      ;
   }
 
   /**
@@ -145,6 +159,8 @@ export class DataImporter {
    */
   private processEvseData(operatorData: IOperatorEvseData[]) {
 
+    logger.info('Starts processing evse data');
+
     const evseData: IEvseDataRecord[] = this.retrieveEvseDataFromOperatorData(operatorData);
 
     return db.sequelize.transaction((transaction: Transaction) => {
@@ -154,6 +170,8 @@ export class DataImporter {
         .then(() => {
 
           const evses = this.mapEvseDataToEvses(evseData);
+
+          logger.info(`Evse data successfully mapped (Count: ${evses.length})`);
 
           return db.model(EVSE).bulkCreate(evses, {transaction});
         })
@@ -174,6 +192,7 @@ export class DataImporter {
 
     return this.getInternationalData(evseData)
       .then((evseTrs: IEVSE_tr[]) => db.model(EVSE_tr).bulkCreate(evseTrs, {transaction, ignoreDuplicates: true}))
+      .then(() => logger.info('International data processed'))
       ;
   }
 
@@ -322,14 +341,31 @@ export class DataImporter {
 
     const ignoreDuplicates = true;
 
-    return Promise.all([
-      evseAuthenticationModes.length ? db.model(EVSEAuthenticationMode).bulkCreate(evseAuthenticationModes, {transaction, ignoreDuplicates}) : null,
-      evseChargingFacilities.length ? db.model(EVSEChargingFacility).bulkCreate(evseChargingFacilities, {transaction, ignoreDuplicates}) : null,
-      evseChargingModes.length ? db.model(EVSEChargingMode).bulkCreate(evseChargingModes, {transaction, ignoreDuplicates}) : null,
-      evsePaymentOptions.length ? db.model(EVSEPaymentOption).bulkCreate(evsePaymentOptions, {transaction, ignoreDuplicates}) : null,
-      evsePlugs.length ? db.model(EVSEPlug).bulkCreate(evsePlugs, {transaction, ignoreDuplicates}) : null,
-      evseValueAddedServices.length ? db.model(EVSEValueAddedService).bulkCreate(evseValueAddedServices, {transaction, ignoreDuplicates}) : null
-    ])
+    return Promise
+      .all([
+        evseAuthenticationModes.length ? db.model(EVSEAuthenticationMode).bulkCreate(evseAuthenticationModes, {
+          transaction,
+          ignoreDuplicates
+        }) : null,
+        evseChargingFacilities.length ? db.model(EVSEChargingFacility).bulkCreate(evseChargingFacilities, {
+          transaction,
+          ignoreDuplicates
+        }) : null,
+        evseChargingModes.length ? db.model(EVSEChargingMode).bulkCreate(evseChargingModes, {
+          transaction,
+          ignoreDuplicates
+        }) : null,
+        evsePaymentOptions.length ? db.model(EVSEPaymentOption).bulkCreate(evsePaymentOptions, {
+          transaction,
+          ignoreDuplicates
+        }) : null,
+        evsePlugs.length ? db.model(EVSEPlug).bulkCreate(evsePlugs, {transaction, ignoreDuplicates}) : null,
+        evseValueAddedServices.length ? db.model(EVSEValueAddedService).bulkCreate(evseValueAddedServices, {
+          transaction,
+          ignoreDuplicates
+        }) : null
+      ])
+      .then(() => logger.info('EVSE types processed'))
   }
 
   /**
@@ -375,6 +411,8 @@ export class DataImporter {
    */
   private retrieveEvseDataFromOperatorData(operatorData: IOperatorEvseData[]): IEvseDataRecord[] {
 
+    logger.info('Starts retrieving evse data from operator data');
+
     let evseData: IEvseDataRecord[] = [];
 
     operatorData.forEach(operatorData => {
@@ -387,6 +425,8 @@ export class DataImporter {
         return evseData;
       }));
     });
+
+    logger.info(`Evse records retrieved from operator data (Count: ${evseData.length})`);
 
     return evseData;
   }
@@ -431,6 +471,7 @@ export class DataImporter {
 
     return db.model(Operator)
       .bulkCreate(subOperators, {transaction, ignoreDuplicates: true})
+      .then(() => logger.info('Possible sub operators processed ()'))
       ;
   }
 

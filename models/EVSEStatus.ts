@@ -5,7 +5,7 @@ import {PrimaryKey} from "../orm/annotations/PrimaryKey";
 import {Model} from "../orm/models/Model";
 import {EVSE} from "./EVSE";
 import {Status} from "./Status";
-import {IEVSEStatus} from "../interfaces/IEVSEStatus";
+import {IEVSEStatus} from "../interfaces/models/IEVSEStatus";
 
 @Table
 export class EVSEStatus extends Model<EVSEStatus> implements IEVSEStatus {

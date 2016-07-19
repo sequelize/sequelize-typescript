@@ -8,7 +8,8 @@ import {IEvseStatusRoot} from "../interfaces/soap/IEvseStatusRoot";
 import {IOperatorEvseStatus} from "../interfaces/soap/IOperatorEvseStatus";
 import {IEvseStatusRecord} from "../interfaces/soap/IEvseStatusRecord";
 import {EVSEStatus} from "../models/EVSEStatus";
-import {IEVSEStatus} from "../interfaces/IEVSEStatus";
+import {IEVSEStatus} from "../interfaces/models/IEVSEStatus";
+import {logger} from "../logger";
 
 @Inject
 export class StatusImporter {
@@ -26,6 +27,8 @@ export class StatusImporter {
    */
   execute(data: IEvseStatusRoot) {
 
+    logger.info('Starts EvseStatus import process');
+
     const operatorEvseStates: IOperatorEvseStatus[] = data.EvseStatuses.OperatorEvseStatus;
 
     return this.loadDependentData()
@@ -41,6 +44,7 @@ export class StatusImporter {
         })
 
       })
+      .then(() => logger.info('EvseStatus import successfully processed'))
       ;
   }
 
@@ -79,6 +83,8 @@ export class StatusImporter {
 
       evseStates = evseStates.concat(this.dataImportHelper.getArrayByValue_Array(operatorEvseState.EvseStatusRecord));
     });
+
+    logger.info(`Evse status data retrieved from operator evse states (Count: ${evseStates.length})`);
 
     return evseStates;
   }

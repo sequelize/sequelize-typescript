@@ -27,7 +27,7 @@ export class CronService {
       config.cronjob.evseData,
       () => {
 
-        logger.info('Starts EVSE data import');
+        logger.info('Starts EVSE data import job');
 
         this.soapService.eRoamingPullEvseData()
           .then(data => this.dataImporter.execute(data))
@@ -50,7 +50,7 @@ export class CronService {
       config.cronjob.evseStatus,
       () => {
 
-        logger.info('Starts EVSE status import');
+        logger.info('Starts EVSE status import job');
 
         this.soapService.eRoamingPullEvseStatus()
           .then(data => this.statusImporter.execute(data))

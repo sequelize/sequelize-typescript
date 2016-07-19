@@ -1,10 +1,10 @@
 import Promise = require('bluebird');
 import {Inject} from "di-ts";
 import {IEvseGeoCoordinates} from "../interfaces/soap/IEvseGeoCoordinates";
-import {IEnum} from "../interfaces/IEnum";
+import {IEnum} from "../interfaces/models/IEnum";
 import {IEvseDataRecord} from "../interfaces/soap/IEvseDataRecord";
-import {IOperator} from "../interfaces/IOperator";
-import {IEVSEChargingFacility} from "../interfaces/IEVSEChargingFacility";
+import {IOperator} from "../interfaces/models/IOperator";
+import {IEVSEChargingFacility} from "../interfaces/models/IEVSEChargingFacility";
 const CountryLanguage = require('country-language');
 
 @Inject
