@@ -141,6 +141,21 @@ export class SequelizeModelService {
   }
 
   /**
+   * Extends currently set options with specified additional options
+   */
+  static extendOptions(_class: any, additionalOptions: DefineOptions<any>) {
+    
+    const options = this.getOptions(_class);
+    
+    for(let key in additionalOptions) {
+      if(additionalOptions.hasOwnProperty(key)) {
+        
+        options[key] = additionalOptions[key];
+      }
+    }
+  }
+
+  /**
    * Returns foreign key meta data from specified class
    */
   private static getForeignKeys(_class: typeof Model): ISequelizeForeignKeyConfig[] {

@@ -31,12 +31,12 @@ export class SequelizeService {
 
     this.isInitialized = true;
   }
-
+  
   /**
    * Returns sequelize Model by specified class from
    * registered classes
    */
-  model(_class: typeof Model): typeof Model {
+  model<T>(_class: typeof Model&T): typeof Model&T {
 
     this.checkInitialization();
 

@@ -116,12 +116,22 @@ export class EVSE extends Model<EVSE> {
   // in a separate table
   @BelongsToMany(() => Status, () => EVSEStatus)
   states: Status[];
-  
+
   @Column({
     type: DataType.VIRTUAL,
-    get: function() { return (this.getDataValue('states') || [])[0] }
+    get: function() {
+
+      const status = (this.getDataValue('states') || [])[0];
+
+      // remove states, since there will only be one state;
+      // a getter cannot be set on states, thats why this
+      // separate virtual property is necessary
+      delete this.dataValues.states;
+      
+      return status;
+    }
   })
-  state: Status;
+  status: Status;
 
   @Column
   @ForeignKey(() => Accessibility)

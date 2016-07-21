@@ -10,9 +10,10 @@ import path = require('path');
 
 import {IApiRequest} from "./interfaces/IApiRequest";
 import {config} from "./config";
-import {ApiAbstract} from './api/ApiAbstract';
-import apis from './api/api';
+import {ApiAbstract} from "./api/ApiAbstract";
+import apis from "./api/api";
 import {logger} from "./logger";
+import {ICoordinate} from "./interfaces/ICoordinate";
 
 
 const errorHandler = require('errorhandler');
@@ -94,6 +95,3 @@ http.createServer(app).listen(
   app.get('port'),
   () => logger.info('Server listening on port ' + app.get('port'))
 );
-
-
-

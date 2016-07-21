@@ -24,7 +24,7 @@ export class CronService {
   scheduleEvseDataImport() {
 
     new CronJob(
-      config.cronjob.evseData,
+      config.cronjob.evseData.tab,
       () => {
 
         logger.info('Starts EVSE data import job');
@@ -35,7 +35,7 @@ export class CronService {
         ;
       },
       () => null, // This function is executed when the job stops
-      true // Start the job right now
+      config.cronjob.evseData.run // start job automatically
     );
 
     logger.info('EVSE data import job scheduled');
@@ -47,7 +47,7 @@ export class CronService {
   scheduleEvseStatusImport() {
 
     new CronJob(
-      config.cronjob.evseStatus,
+      config.cronjob.evseStatus.tab,
       () => {
 
         logger.info('Starts EVSE status import job');
@@ -58,7 +58,7 @@ export class CronService {
         ;
       },
       () => null, // This function is executed when the job stops
-      true // Start the job right now
+      config.cronjob.evseStatus.run // start job automatically
     );
 
     logger.info('EVSE status import job scheduled');

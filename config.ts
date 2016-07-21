@@ -18,8 +18,14 @@ export var config = {
     evseStatusEndpoint: getEnvVariable('HBS_EVSE_STATUS_ENDPOINT')
   },
   cronjob: {
-    evseData: '00 00 01 * * *', // every day at 01:00
-    evseStatus: '00 */5 * * * *', // every 5 minutes
+    evseData: {
+      tab: '00 00 01 * * *', // every day at 01:00
+      run: getEnvVariable('START_EVSE_DATA_CRON') === 'true'
+    },
+    evseStatus: {
+      tab: '00 */5 * * * *', // every 5 minutes
+      run: getEnvVariable('START_EVSE_STATUS_CRON') === 'true'
+    }
   },
 };
 

@@ -22,7 +22,7 @@ export class SoapService {
 
   constructor() {
 
-    this.init();
+    // this.init();
   }
 
   /**
@@ -115,7 +115,7 @@ export class SoapService {
 
     this.evseDataClientCreatePromise = new Promise<void>((resolve, reject) => {
 
-      logger.info('Creating processing eRoamingEVSEData soap client');
+      logger.info('Creating eRoamingEVSEData soap client');
 
       soap.createClient(
         config.soap.evseDataEndpoint + '?wsdl',
@@ -125,6 +125,7 @@ export class SoapService {
           if (err) {
 
             reject(err);
+            return;
           }
 
           this.setClientSecurity(client);
@@ -146,7 +147,7 @@ export class SoapService {
 
     this.evseStatusClientCreatePromise = new Promise<void>((resolve, reject) => {
 
-      logger.info('Creating processing eRoamingEVSEStatus soap client');
+      logger.info('Creating eRoamingEVSEStatus soap client');
 
       soap.createClient(
         config.soap.evseStatusEndpoint + '?wsdl',
@@ -156,6 +157,7 @@ export class SoapService {
           if (err) {
 
             reject(err);
+            return;
           }
 
           this.setClientSecurity(client);

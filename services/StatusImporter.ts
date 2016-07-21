@@ -10,14 +10,18 @@ import {IEvseStatusRecord} from "../interfaces/soap/IEvseStatusRecord";
 import {EVSEStatus} from "../models/EVSEStatus";
 import {IEVSEStatus} from "../interfaces/models/IEVSEStatus";
 import {logger} from "../logger";
+import {EventEmitter} from "events";
+
+const IMPORT_SUCCEEDED_EVENT = 'import_succeeded';
 
 @Inject
-export class StatusImporter {
+export class StatusImporter extends EventEmitter {
 
   private states;
 
   constructor(protected dataImportHelper: DataImportHelper) {
 
+    super();
   }
 
   /**
@@ -44,8 +48,20 @@ export class StatusImporter {
         })
 
       })
-      .then(() => logger.info('EvseStatus import successfully processed'))
+      .then(() => {
+        
+        this.emit(IMPORT_SUCCEEDED_EVENT);
+        logger.info('EvseStatus import successfully processed')
+      })
       ;
+  }
+
+  /**
+   * Registers an event listener, which will be called when import is succeeded
+   */
+  onImportSucceeded(listener: Function) {
+    
+    this.on(IMPORT_SUCCEEDED_EVENT, listener);
   }
 
   /**
