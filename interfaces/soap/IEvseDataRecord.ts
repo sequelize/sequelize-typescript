@@ -6,6 +6,7 @@ export interface IEvseDataRecord {
   // ---------------------------
   
   OperatorId?: string; // will be set during data mapping and importing
+  ChargingLocationId: number;
   
   
   // xml data:

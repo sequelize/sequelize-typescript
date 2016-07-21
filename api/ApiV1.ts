@@ -29,9 +29,8 @@ export class ApiV1 extends ApiAbstract {
   // REST implementations
   // ------------------------------
 
-  getEVSEs(req: express.Request, res: express.Response, next: any): void {
-
-
+  getChargingLocations(req: express.Request, res: express.Response, next: any): void {
+    
     Promise.resolve()
       .then(() => {
 
@@ -42,7 +41,7 @@ export class ApiV1 extends ApiAbstract {
           throw new ParametersMissingError(requiredParameters);
         }
       })
-      .then(() => this.evseService.getEVSEsByCoordinates(
+      .then(() => this.evseService.getChargingLocationsByCoordinates(
         parseFloat(req.query['longitude1']),
         parseFloat(req.query['latitude1']),
         parseFloat(req.query['longitude2']),

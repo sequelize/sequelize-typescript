@@ -30,6 +30,7 @@ import {EVSEPaymentOption} from "../models/EVSEPaymentOption";
 import {EVSEPlug} from "../models/EVSEPlug";
 import {EVSEValueAddedService} from "../models/EVSEValueAddedService";
 import {logger} from "../logger";
+import {ChargingLocation} from "../models/ChargingLocation";
 
 @Inject
 export class DataImporter {
@@ -105,7 +106,7 @@ export class DataImporter {
    */
   private clearData(transaction: Transaction) {
 
-    return db.model(EVSE).destroy({transaction, where: {}});
+    return db.model(ChargingLocation).destroy({transaction, where: {}});
   }
 
   /**
@@ -147,7 +148,6 @@ export class DataImporter {
       );
   }
 
-
   /**
    * Processes EVSE data:
    * - Retrieves EVSE data from operator data
@@ -166,6 +166,7 @@ export class DataImporter {
     return db.sequelize.transaction((transaction: Transaction) => {
 
       return this.clearData(transaction)
+        .then(() => this.processChargingLocations(evseData, transaction))
         .then(() => this.processPossibleSubOperatorsFromEvseData(evseData, transaction))
         .then(() => {
 
@@ -182,6 +183,53 @@ export class DataImporter {
     });
 
   }
+
+  private processChargingLocations(evseData: IEvseDataRecord[], transaction: Transaction) {
+
+    // since the charging locations table is empty,
+    // we are able to define the ids in the code;
+    // why? for performance: after all charging
+    // locations are determined, we will insert all
+    // at once, which in turn would prevent us from
+    // retrieving the ids of all inserted values.
+    // so there is only the option of defining
+    // them here
+    let ids = 1;
+    const chargingLocations: IChargingLocation[]&{[coord: string]: any} = [];
+
+    evseData.forEach(evseData => {
+
+      const longitude = this.dataImportHelper.getLongitudeByEvseDataRecord(evseData.GeoCoordinates);
+      const latitude = this.dataImportHelper.getLatitudeByEvseDataRecord(evseData.GeoCoordinates);
+
+      // the concatination of longitude and latitude will
+      // identify one charging location
+      const coord = this.dataImportHelper.concat(longitude, '|',latitude);
+
+      let chargingLocation: IChargingLocation = chargingLocations[coord];
+
+      // check if charging location already exist
+      if (!chargingLocation) {
+
+        // if not create one
+        chargingLocation = {
+          id: ids++,
+          longitude,
+          latitude
+        };
+
+        chargingLocations.push(chargingLocation);
+        chargingLocations[coord] = chargingLocation; // for fast identification
+      }
+
+      // store charging location id to evse data
+      evseData.ChargingLocationId = chargingLocation.id;
+    });
+
+    return db.model(ChargingLocation).bulkCreate(chargingLocations, {transaction});
+  }
+
+
 
   /**
    * This process stores and resolved the fields EnChargingStationName
@@ -383,6 +431,7 @@ export class DataImporter {
       floor: evseData.Address.Floor,
       region: evseData.Address.Region,
       timezone: evseData.Address.TimeZone,
+      chargingLocationId: evseData.ChargingLocationId,
       longitude: this.dataImportHelper.getLongitudeByEvseDataRecord(evseData.GeoCoordinates),
       latitude: this.dataImportHelper.getLatitudeByEvseDataRecord(evseData.GeoCoordinates),
       entranceLongitude: this.dataImportHelper.getLongitudeByEvseDataRecord(evseData.GeoChargingPointEntrance),

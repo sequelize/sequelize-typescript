@@ -10,9 +10,10 @@ import {BelongsTo} from "../orm/annotations/BelongsTo";
 import {ForeignKey} from "../orm/annotations/ForeignKey";
 import {Status} from "./Status";
 import {EVSEStatus} from "./EVSEStatus";
+import {ChargingLocation} from "./ChargingLocation";
 
 @Table
-export class EVSE extends Model<EVSE> {
+export class EVSE extends Model<EVSE> implements IEVSE{
 
   @Column({
     primaryKey: true,
@@ -44,19 +45,7 @@ export class EVSE extends Model<EVSE> {
 
   @Column
   timezone: string;
-
-
-  // geo location
-  @Column({
-    type: DataType.DECIMAL
-  })
-  longitude: number;
-
-  @Column({
-    type: DataType.DECIMAL
-  })
-  latitude: number;
-
+  
   @Column({
     type: DataType.DECIMAL
   })
@@ -123,11 +112,12 @@ export class EVSE extends Model<EVSE> {
 
       const status = (this.getDataValue('states') || [])[0];
 
-      // remove states, since there will only be one state;
-      // a getter cannot be set on states, thats why this
+      // remove states, since there will always be one state
+      // only;
+      // a getter cannot be set on states, that's why this
       // separate virtual property is necessary
       delete this.dataValues.states;
-      
+
       return status;
     }
   })
@@ -139,5 +129,12 @@ export class EVSE extends Model<EVSE> {
 
   @BelongsTo(() => Accessibility)
   accessibility: Accessibility;
+
+  @Column
+  @ForeignKey(() => ChargingLocation)
+  chargingLocationId: number;
+
+  @BelongsTo(() => ChargingLocation)
+  chargingLocation: ChargingLocation;
 
 }

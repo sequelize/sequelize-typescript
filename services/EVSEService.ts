@@ -6,8 +6,8 @@ import {db} from "../db";
 import {ICoordinate} from "../interfaces/ICoordinate";
 import {GeoService} from "./GeoService";
 import {Status} from "../models/Status";
+import {ChargingLocation} from "../models/ChargingLocation";
 
-let i = 0;
 
 @Inject
 export class EVSEService {
@@ -17,16 +17,24 @@ export class EVSEService {
 
   }
 
-  getEVSEsByCoordinates(longitude1: number, latitude1: number, longitude2: number, latitude2: number, zoom: number) {
+  getChargingLocationsByCoordinates(longitude1: number, latitude1: number, longitude2: number, latitude2: number, zoom: number) {
 
-    return db.model(EVSE)
-      .findAll<EVSE>({
-        attributes: ['id', 'longitude', 'latitude'],
+    return db.model(ChargingLocation)
+      .findAll<ChargingLocation>({
         include: [
           {
-            model: db.model(Status),
-            through: {attributes: []}, // removes EVSEStatus property from status
-            as: 'states'
+            model: db.model(EVSE),
+            attributes: ['id'],
+            as: 'evses',
+            required: true,
+            include: [
+              {
+                model: db.model(Status),
+                as: 'states',
+                through: {attributes: []}, // removes EVSEStatus property from status
+                required: true
+              }
+            ]
           }
         ],
         where: {
@@ -40,13 +48,13 @@ export class EVSEService {
           }
         }
       })
-      .then(evses => {
+      .then(chargingLocations => {
 
         if (zoom >= 12) {
-          return evses;
+          return chargingLocations;
         }
 
-        return this.geoService.getClusteredCoordinates(evses, zoom);
+        return this.geoService.getClusteredCoordinates(chargingLocations, zoom);
       })
       ;
   }

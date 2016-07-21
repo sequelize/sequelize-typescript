@@ -13,7 +13,8 @@ import {config} from "./config";
 import {ApiAbstract} from "./api/ApiAbstract";
 import apis from "./api/api";
 import {logger} from "./logger";
-import {ICoordinate} from "./interfaces/ICoordinate";
+import {Injector} from 'di-ts'
+import {DataImporter} from "./services/DataImporter";
 
 
 const errorHandler = require('errorhandler');
@@ -86,7 +87,7 @@ app.use('/:apiVersion/', function (req: IApiRequest, res: express.Response, next
 
 // ROUTE DEFINITIONS
 // ----------------------------------------------
-app.get('/:apiVersion/evses', (req: IApiRequest, res, next) => req.api.getEVSEs(req, res, next));
+app.get('/:apiVersion/charging-locations', (req: IApiRequest, res, next) => req.api.getChargingLocations(req, res, next));
 
 
 // SERVER CREATION AND EXECUTION
@@ -95,3 +96,21 @@ http.createServer(app).listen(
   app.get('port'),
   () => logger.info('Server listening on port ' + app.get('port'))
 );
+
+
+// SOME PREPARATION FOR DEVELOPMENT
+// ----------------------------------------------
+
+if ('development' === app.get('env')) {
+
+  if (config.dev.importMockData) {
+
+    const injector = new Injector();
+    const dataImporter = injector.get(DataImporter);
+
+    dataImporter.execute(require('./evseDataMock.json'))
+      .then(() => logger.info('(DEV) mock data successfully imported'))
+      .catch(err => logger.error('(DEV) mock data could not have been imported', err));
+  }
+
+}

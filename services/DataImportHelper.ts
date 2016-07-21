@@ -29,6 +29,14 @@ export class DataImportHelper {
   }
 
   /**
+   * TypeScript is complaining about concatenating
+   * numbers to a string; That's why is method exists
+   */
+  concat(...values: any[]) {
+    return ''.concat(...values);
+  }
+
+  /**
    * WORKAROUND
    */
   getChargingFacilityIdByOptionString(enums: IEnum[], enumOption: string) {

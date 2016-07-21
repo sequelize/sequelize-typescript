@@ -17,6 +17,9 @@ export var config = {
     evseDataEndpoint: getEnvVariable('HBS_EVSE_DATA_ENDPOINT'),
     evseStatusEndpoint: getEnvVariable('HBS_EVSE_STATUS_ENDPOINT')
   },
+  dev: {
+    importMockData: false
+  },
   cronjob: {
     evseData: {
       tab: '00 00 01 * * *', // every day at 01:00

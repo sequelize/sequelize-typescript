@@ -11,7 +11,7 @@ export abstract class ApiAbstract extends WebSocket {
   /**
    * Not implemented evse get method
    */
-  getEVSEs(req: express.Request, res: express.Response, next: any): void {
+  getChargingLocations(req: express.Request, res: express.Response, next: any): void {
 
     throw new NotImplementedError();
   }

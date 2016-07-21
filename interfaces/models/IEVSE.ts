@@ -10,8 +10,6 @@ interface IEVSE {
   floor: string;
   region: string;
   timezone: string;
-  longitude: number;
-  latitude: number;
   entranceLongitude: number;
   entranceLatitude: number;
   maxCapacity: number;

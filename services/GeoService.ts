@@ -5,10 +5,12 @@ export class GeoService {
 
   /**
    * Clusters specified coordinates, calculates a central geo
-   * coordinate for each cluster and returns these coordinates
+   * coordinate for each cluster and returns these coordinates;
+   * If one cluster consists of one coordinate, this coordinate
+   * will be returned as it is
    */
   getClusteredCoordinates(coordinates: ICoordinate[], zoom: number): Promise<ICoordinate[]> {
-    
+
     return new Promise<ICoordinate[]>((resolve, reject) => {
 
       try {
@@ -37,11 +39,11 @@ export class GeoService {
       case 10:
         return 0.02;
       case 9:
-        return 0.025;
-      case 8:
         return 0.03;
+      case 8:
+        return 0.09;
       case 7:
-        return 0.05;
+        return 0.15;
       case 6:
         return 0.2;
       case 5:
@@ -65,9 +67,15 @@ export class GeoService {
   private getClusters(coordinates: ICoordinate[], radius: number) {
     const coordinatePairs = coordinates.map(c => [c.longitude, c.latitude]);
 
+    // number of points in neighborhood to form a cluster;
+    // should always be 1; otherwise in some constellation
+    // a coordinate will be handled as noise and will
+    // disappear
+    const MIN_POINTS_IN_NH = 1;
+
     const dbscan = new clustering.DBSCAN();
     const clusters = [];
-    const clusterIndizes = dbscan.run(coordinatePairs, radius, 2);
+    const clusterIndizes = dbscan.run(coordinatePairs, radius, MIN_POINTS_IN_NH);
 
     clusterIndizes.forEach((cluster: number[]) => {
 
@@ -79,7 +87,8 @@ export class GeoService {
 
   /**
    * Calculates one central geo coordinate for a list of
-   * coordinates
+   * coordinates, if list contains only one element,
+   * this element will be returned
    */
   private getCentralGeoCoordinate(coordinates: ICoordinate[]) {
 
