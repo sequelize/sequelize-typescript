@@ -10,7 +10,6 @@ import {ApiAbstract} from "./ApiAbstract";
 import {CronService} from "../services/CronService";
 import {EVSEService} from "../services/EVSEService";
 import Namespace = SocketIO.Namespace;
-import {ParametersMissingError} from "../errors/ParametersMissingError";
 
 @Inject
 export class ApiV1 extends ApiAbstract {
@@ -29,18 +28,41 @@ export class ApiV1 extends ApiAbstract {
   // REST implementations
   // ------------------------------
 
+
+    getEVSEs(req: express.Request, res: express.Response, next: any): void {
+
+      Promise.resolve()
+        .then(() => this.checkRequiredParameters(req.query, ['searchTerm']))
+        .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm']))
+        .then(evses => res.json(evses))
+        .catch(next);
+    }
+
+    getEVSE(req: express.Request, res: express.Response, next: any): void {
+
+    this.evseService.getEVSEById(req.params['id'])
+      .then(evse => res.json(evse))
+      .catch(next);
+  }
+
+  getChargingLocationEVSEs(req: express.Request, res: express.Response, next: any): void {
+
+    this.evseService.getEVSEsByChargingLocation(req.params['id'])
+      .then(evse => res.json(evse))
+      .catch(next);
+  }
+
+  getChargingLocation(req: express.Request, res: express.Response, next: any): void {
+
+    this.evseService.getChargingLocationById(req.params['id'])
+      .then(chargingLocation => res.json(chargingLocation))
+      .catch(next);
+  }
+
   getChargingLocations(req: express.Request, res: express.Response, next: any): void {
-    
+
     Promise.resolve()
-      .then(() => {
-
-        const requiredParameters = ['longitude1', 'latitude1', 'longitude2', 'latitude2', 'zoom'];
-
-        if (!this.hasParameters(req.query, requiredParameters)) {
-
-          throw new ParametersMissingError(requiredParameters);
-        }
-      })
+      .then(() => this.checkRequiredParameters(req.query, ['longitude1', 'latitude1', 'longitude2', 'latitude2', 'zoom']))
       .then(() => this.evseService.getChargingLocationsByCoordinates(
         parseFloat(req.query['longitude1']),
         parseFloat(req.query['latitude1']),
@@ -48,7 +70,7 @@ export class ApiV1 extends ApiAbstract {
         parseFloat(req.query['latitude2']),
         parseInt(req.query['zoom'])
       ))
-      .then(evses => res.json(evses))
+      .then(chargingLocations => res.json(chargingLocations))
       .catch(next)
     ;
   }

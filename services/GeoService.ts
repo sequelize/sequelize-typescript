@@ -1,4 +1,5 @@
 import {ICoordinate} from "../interfaces/ICoordinate";
+import {IClusteredCoordinate} from "../interfaces/IClusteredCoordinate";
 const clustering = require('density-clustering');
 
 export class GeoService {
@@ -9,7 +10,7 @@ export class GeoService {
    * If one cluster consists of one coordinate, this coordinate
    * will be returned as it is
    */
-  getClusteredCoordinates(coordinates: ICoordinate[], zoom: number): Promise<ICoordinate[]> {
+  getClusteredCoordinates(coordinates: ICoordinate[], zoom: number): Promise<IClusteredCoordinate[]> {
 
     return new Promise<ICoordinate[]>((resolve, reject) => {
 
@@ -90,7 +91,7 @@ export class GeoService {
    * coordinates, if list contains only one element,
    * this element will be returned
    */
-  private getCentralGeoCoordinate(coordinates: ICoordinate[]) {
+  private getCentralGeoCoordinate(coordinates: ICoordinate[]): IClusteredCoordinate {
 
     if (coordinates.length == 1) {
       return coordinates[0];
@@ -119,6 +120,6 @@ export class GeoService {
     let centralSquareRoot = Math.sqrt(x * x + y * y);
     let centralLatitude = Math.atan2(z, centralSquareRoot);
 
-    return {latitude: centralLatitude * 180 / Math.PI, longitude: centralLongitude * 180 / Math.PI};
+    return {latitude: centralLatitude * 180 / Math.PI, longitude: centralLongitude * 180 / Math.PI, groupCount: coordinates.length};
   }
 }

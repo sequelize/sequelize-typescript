@@ -1,6 +1,7 @@
 import express = require('express');
 import {NotImplementedError} from "../errors/NotImplementedError";
 import {WebSocket} from "../websockets/WebSocket";
+import {ParametersMissingError} from "../errors/ParametersMissingError";
 
 export abstract class ApiAbstract extends WebSocket {
 
@@ -9,7 +10,39 @@ export abstract class ApiAbstract extends WebSocket {
   }
 
   /**
-   * Not implemented evse get method
+   * Not implemented method
+   */
+  getEVSE(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+  
+  /**
+   * Not implemented method
+   */
+  getEVSEs(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
+  /**
+   * Not implemented method
+   */
+  getChargingLocationEVSEs(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
+  /**
+   * Not implemented method
+   */
+  getChargingLocation(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
+  /**
+   * Not implemented method
    */
   getChargingLocations(req: express.Request, res: express.Response, next: any): void {
 
@@ -38,6 +71,14 @@ export abstract class ApiAbstract extends WebSocket {
     }
     
     return true;
+  }
+  
+  protected checkRequiredParameters(target: any, requiredParamKeys: string[]) {
+    
+    if (!this.hasParameters(target, requiredParamKeys)) {
+
+      throw new ParametersMissingError(requiredParamKeys);
+    }
   }
 
 }

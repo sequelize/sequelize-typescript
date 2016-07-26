@@ -22,7 +22,7 @@ export class SoapService {
 
   constructor() {
 
-    // this.init();
+    this.init();
   }
 
   /**
@@ -69,7 +69,7 @@ export class SoapService {
     return this.evseStatusClientCreatePromise
       .then(() => new Promise<IEvseStatusRoot>((resolve, reject) => {
 
-        logger.info('Starts processing eRoamingPullEvseData request');
+        logger.info('Starts processing eRoamingPullEvseStatus request');
 
         this.evseStatusClient['eRoamingPullEvseStatus'](
           {

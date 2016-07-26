@@ -26,7 +26,8 @@ export var config = {
       run: getEnvVariable('START_EVSE_DATA_CRON') === 'true'
     },
     evseStatus: {
-      tab: '00 */5 * * * *', // every 5 minutes
+      // tab: '00 */5 * * * *', // every 5 minutes
+      tab: '00 */1 * * * *', // every 5 minutes
       run: getEnvVariable('START_EVSE_STATUS_CRON') === 'true'
     }
   },

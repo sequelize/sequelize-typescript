@@ -11,6 +11,8 @@ import {ForeignKey} from "../orm/annotations/ForeignKey";
 import {Status} from "./Status";
 import {EVSEStatus} from "./EVSEStatus";
 import {ChargingLocation} from "./ChargingLocation";
+import {ChargingFacility} from "./ChargingFacility";
+import {EVSEChargingFacility} from "./EVSEChargingFacility";
 
 @Table
 export class EVSE extends Model<EVSE> implements IEVSE{
@@ -45,7 +47,7 @@ export class EVSE extends Model<EVSE> implements IEVSE{
 
   @Column
   timezone: string;
-  
+
   @Column({
     type: DataType.DECIMAL
   })
@@ -98,6 +100,9 @@ export class EVSE extends Model<EVSE> implements IEVSE{
 
   @BelongsToMany(() => Plug, () => EVSEPlug)
   plugs: Plug[];
+
+  @BelongsToMany(() => ChargingFacility, () => EVSEChargingFacility)
+  chargingFacilities: ChargingFacility[];
 
   // Actually EVSE - Status is a N:1 relation,
   // but for simplicity in updating the

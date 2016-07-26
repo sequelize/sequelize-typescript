@@ -87,6 +87,10 @@ app.use('/:apiVersion/', function (req: IApiRequest, res: express.Response, next
 
 // ROUTE DEFINITIONS
 // ----------------------------------------------
+app.get('/:apiVersion/evses', (req: IApiRequest, res, next) => req.api.getEVSEs(req, res, next));
+app.get('/:apiVersion/evses/:id', (req: IApiRequest, res, next) => req.api.getEVSE(req, res, next));
+app.get('/:apiVersion/charging-locations/:id', (req: IApiRequest, res, next) => req.api.getChargingLocation(req, res, next));
+app.get('/:apiVersion/charging-locations/:id/evses', (req: IApiRequest, res, next) => req.api.getChargingLocationEVSEs(req, res, next));
 app.get('/:apiVersion/charging-locations', (req: IApiRequest, res, next) => req.api.getChargingLocations(req, res, next));
 
 
