@@ -29,7 +29,6 @@
     "sequelize": "^3.23.4",
     "soap": "^0.16.0",
     "socket.io": "^1.4.8",
-    "sqlite3": "~2.1.5",
     "tsd-http-status-codes": "git+https://github.com/RobinBuschmann/tsd-http-status-codes.git",
     "typescript": "^1.8.10",
     "winston": "^2.2.0"
