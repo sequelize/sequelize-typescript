@@ -13,6 +13,10 @@ import {EVSEStatus} from "./EVSEStatus";
 import {ChargingLocation} from "./ChargingLocation";
 import {ChargingFacility} from "./ChargingFacility";
 import {EVSEChargingFacility} from "./EVSEChargingFacility";
+import {AuthenticationMode} from "./AuthenticationMode";
+import {EVSEAuthenticationMode} from "./EVSEAuthenticationMode";
+import {PaymentOption} from "./PaymentOption";
+import {EVSEPaymentOption} from "./EVSEPaymentOption";
 
 @Table
 export class EVSE extends Model<EVSE> implements IEVSE{
@@ -103,6 +107,12 @@ export class EVSE extends Model<EVSE> implements IEVSE{
 
   @BelongsToMany(() => ChargingFacility, () => EVSEChargingFacility)
   chargingFacilities: ChargingFacility[];
+
+  @BelongsToMany(() => AuthenticationMode, () => EVSEAuthenticationMode)
+  authenticationModes: AuthenticationMode[];
+
+  @BelongsToMany(() => PaymentOption, () => EVSEPaymentOption)
+  paymentOptions: PaymentOption[];
 
   // Actually EVSE - Status is a N:1 relation,
   // but for simplicity in updating the

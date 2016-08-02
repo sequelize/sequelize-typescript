@@ -9,6 +9,8 @@ import {Status} from "../models/Status";
 import {ChargingLocation} from "../models/ChargingLocation";
 import {Plug} from "../models/Plug";
 import {ChargingFacility} from "../models/ChargingFacility";
+import {AuthenticationMode} from "../models/AuthenticationMode";
+import {PaymentOption} from "../models/PaymentOption";
 
 
 @Inject
@@ -23,7 +25,7 @@ export class EVSEService {
 
     return db.model(EVSE)
       .findById(id, {
-        attributes: ['id', 'country', 'city', 'street', 'postalCode', 'houseNum', 'floor'],
+        attributes: ['id', 'country', 'city', 'street', 'postalCode', 'houseNum', 'floor', 'openingTime'],
         include: [
           {
             model: db.model(Plug),
@@ -36,9 +38,23 @@ export class EVSEService {
             through: {attributes: []}, // removes EVSEPlug property from plugs
           },
           {
+            model: db.model(PaymentOption),
+            as: 'paymentOptions',
+            through: {attributes: []}, // removes EVSEPlug property from plugs
+          },
+          {
+            model: db.model(AuthenticationMode),
+            as: 'authenticationModes',
+            through: {attributes: []}, // removes EVSEPlug property from plugs
+          },
+          {
             model: db.model(Status),
             as: 'states',
             through: {attributes: []}, // removes EVSEStatus property from states
+          },
+          {
+            model: db.model(ChargingLocation),
+            as: 'chargingLocation'
           }
         ]
       })
@@ -150,7 +166,7 @@ export class EVSEService {
                 model: db.model(Status),
                 as: 'states',
                 through: {attributes: []}, // removes EVSEStatus property from status
-                required: true
+                // required: true
               }
             ]
           }

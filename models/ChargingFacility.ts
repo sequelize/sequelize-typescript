@@ -18,13 +18,9 @@ export class ChargingFacility extends Model<ChargingFacility> {
   option: string;
 
   @Column({
-    type: DataType.VIRTUAL,
-    get() {
-      // todo
-      return this.getDataValue('option');
-    }
+    type: DataType.FLOAT
   })
-  kw: string;
+  power: number;
 
   @BelongsToMany(() => EVSE, () => EVSEChargingFacility)
   evses;
