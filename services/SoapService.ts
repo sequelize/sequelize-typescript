@@ -17,8 +17,7 @@ export class SoapService {
   private evseDataClient: Client;
   private evseStatusClient: Client;
 
-  private evseDataClientCreatePromise: Promise<void>;
-  private evseStatusClientCreatePromise: Promise<void>;
+  private initPromise: Promise<any>;
 
   constructor() {
 
@@ -31,7 +30,7 @@ export class SoapService {
    */
   eRoamingPullEvseData(): Promise<IEvseDataRoot> {
 
-    return this.evseDataClientCreatePromise
+    return this.initPromise
       .then(() => new Promise<IEvseDataRoot>((resolve, reject) => {
 
         logger.info('Starts processing eRoamingPullEvseData request');
@@ -66,7 +65,7 @@ export class SoapService {
    */
   eRoamingPullEvseStatus(): Promise<IEvseStatusRoot> {
 
-    return this.evseStatusClientCreatePromise
+    return this.initPromise
       .then(() => new Promise<IEvseStatusRoot>((resolve, reject) => {
 
         logger.info('Starts processing eRoamingPullEvseStatus request');
@@ -99,12 +98,18 @@ export class SoapService {
    */
   private init() {
 
-    Promise
-      .all([
-        this.createEVSEDataClient(),
-        this.createEVSEStatusClient()
-      ])
-      .catch(err => logger.error(err));
+    if(config.soap.initialize) {
+
+      this.initPromise = Promise
+        .all([
+          this.createEVSEDataClient(),
+          this.createEVSEStatusClient()
+        ]);
+    } else {
+
+      // will never fulfilled
+      this.initPromise = new Promise(() => null);
+    }
   }
 
   /**
@@ -113,7 +118,7 @@ export class SoapService {
    */
   private createEVSEDataClient() {
 
-    this.evseDataClientCreatePromise = new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
 
       logger.info('Creating eRoamingEVSEData soap client');
 
@@ -145,7 +150,7 @@ export class SoapService {
    */
   private createEVSEStatusClient() {
 
-    this.evseStatusClientCreatePromise = new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
 
       logger.info('Creating eRoamingEVSEStatus soap client');
 
