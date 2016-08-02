@@ -41,16 +41,7 @@
     "soap/soap.d.ts": {
       "commit": "8df97176d2f27399ffc562098409223fef6c2304"
     },
-    "knex/knex.d.ts": {
-      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
-    },
-    "bookshelf/bookshelf.d.ts": {
-      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
-    },
     "create-error/create-error.d.ts": {
-      "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
-    },
-    "lodash/lodash-3.10.d.ts": {
       "commit": "de82425735f84a10b43921ae4b1d085b3752a626"
     },
     "reflect-metadata/reflect-metadata.d.ts": {

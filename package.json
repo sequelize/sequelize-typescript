@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Description for server-proto",
   "scripts": {
-    "build": "tsc",
+    "build": "tsd install && tsc",
     "prestart": "npm run build",
     "start": "node app.js"
   },
@@ -16,7 +16,7 @@
     "cron": "^1.1.0",
     "crypto-js": "^3.1.5",
     "density-clustering": "^1.3.0",
-    "di-ts": "git+https://github.com/EddyLane/di-ts.git",
+    "di-ts": "git+https://github.com/RobinBuschmann/di-ts.git",
     "errorhandler": "^1.4.2",
     "express": "^4.13.3",
     "grunt-env": "^0.4.4",
@@ -29,6 +29,7 @@
     "sequelize": "^3.23.4",
     "soap": "^0.16.0",
     "socket.io": "^1.4.8",
+    "tsd": "^0.6.5",
     "tsd-http-status-codes": "git+https://github.com/RobinBuschmann/tsd-http-status-codes.git",
     "typescript": "^1.8.10",
     "winston": "^2.2.0"
