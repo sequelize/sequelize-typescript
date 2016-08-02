@@ -8,8 +8,8 @@ import {IEvseStatusRoot} from "../interfaces/soap/IEvseStatusRoot";
 import {IEvseDataRoot} from "../interfaces/soap/IEvseDataRoot";
 import {logger} from "../logger";
 
-const CERT = fs.readFileSync('./certificates/private.crt');
-const KEY = fs.readFileSync('./certificates/private.key');
+const CERT = '';//fs.readFileSync('./certificates/private.crt');
+const KEY = '';//fs.readFileSync('./certificates/private.key');
 
 @Inject
 export class SoapService {
