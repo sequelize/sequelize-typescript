@@ -40,7 +40,25 @@ The application needs some environment variables for configuration.
  **NODE_TLS_REJECT_UNAUTHORIZED** has to be set to 0. Otherwise the self-signed certificates for the hubject 
  communication will not work.
  
-## Starting server
+## Deployment (AWS)
+
+### VPN (VPC)
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/vpc-rds.html#vpc-rds-create-env TODO
+
+### .ebextensions
+`deployment.config` TODO; description
+
+### RDS access
+The security group of the EC2 instance has to be added to the security group of RDS (http://serverfault.com/a/655124). Otherwise RDS will not be accessible from the EC2 instance.
+
+````
+Type         | Protocol | Port Range | Source
+-------------+----------+------------+-----------
+MYSQL/Aurora | TCP      | 3306       | sg-?????
+
+````
+
+## Running node.js server
 
 To start the server use `ENVIRONMENT={development|production} ... DB_HOST={string} npm start` in command line.
 
