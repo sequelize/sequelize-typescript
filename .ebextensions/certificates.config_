@@ -1,10 +1,11 @@
-"/certificates/private.crt" :
+files:
+  "/certificates/private.crt":
     mode: "000777"
     owner: ec2-user
     group: ec2-user
     source: https://s3.eu-central-1.amazonaws.com/intercharge-backend-certificates/private.crt
 
-"/certificates/private.key" :
+  "/certificates/private.key":
     mode: "000777"
     owner: ec2-user
     group: ec2-user
