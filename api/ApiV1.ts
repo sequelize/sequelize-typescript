@@ -10,12 +10,18 @@ import {ApiAbstract} from "./ApiAbstract";
 import {CronService} from "../services/CronService";
 import {EVSEService} from "../services/EVSEService";
 import Namespace = SocketIO.Namespace;
+import {UserService} from "../services/UserService";
+import {ParametersMissingError} from "../errors/ParametersMissingError";
+import {BadRequestError} from "../errors/BadRequestError";
+import {config} from "../config";
+import {IApiRequest} from "../interfaces/IApiRequest";
 
 @Inject
 export class ApiV1 extends ApiAbstract {
 
   constructor(protected cronService: CronService,
-              protected evseService: EVSEService) {
+              protected evseService: EVSEService,
+              protected userService: UserService) {
 
     super();
 
@@ -26,24 +32,89 @@ export class ApiV1 extends ApiAbstract {
   }
 
   // REST implementations
-  // ------------------------------
+  // ===============================
+
+  // User
+  // -------------------------------
+
+  createUser(req: express.Request, res: express.Response, next: any): void {
+
+    var data = req.body;
+
+    Promise.resolve()
+      .then(() => {
+
+        if (!((!data.evcoId && !data.password) ||
+          (data.evcoId && data.password))) {
+
+          throw new BadRequestError('Both evcoId and password should be provided ' +
+            'or none of these parameters for creating an auto generated user')
+        }
+
+        if (!data.languageCode) {
+
+          throw new ParametersMissingError(['languageCode']);
+        }
+
+      })
+      .then(() => this.userService.register(data.languageCode, data.evcoId, data.password))
+      .then((user) => res.json(user))
+      .catch(next)
+    ;
+  }
 
 
-    getEVSEs(req: express.Request, res: express.Response, next: any): void {
+  updateUser(req: IApiRequest, res: express.Response, next: any): void {
 
-      Promise.resolve()
-        .then(() => this.checkRequiredParameters(req.query, ['searchTerm']))
-        .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm']))
-        .then(evses => res.json(evses))
-        .catch(next);
-    }
+    var data = req.body;
 
-    getEVSE(req: express.Request, res: express.Response, next: any): void {
+    this.userService.update(req.user, data)
+      .then(() => res.sendStatus(HttpStatus.OK))
+      .catch(next)
+    ;
+
+  }
+
+  authUser(req: express.Request, res: express.Response, next: any): void {
+
+    var data = req.body;
+
+    Promise.resolve()
+      .then(() => {
+
+        if (!data.code && !data.evcoId && !data.password) {
+
+          throw new BadRequestError('Both evcoId and password should be provided ' +
+            'or code')
+        }
+      })
+      .then(() => this.userService.authenticate(data.evcoId || data.code, data.password))
+      .then((user) => res.json(user))
+      .catch(next)
+    ;
+  }
+
+// EVSEs
+// -------------------------------
+
+  getEVSEs(req: express.Request, res: express.Response, next: any): void {
+
+    Promise.resolve()
+      .then(() => this.checkRequiredParameters(req.query, ['searchTerm']))
+      .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm']))
+      .then(evses => res.json(evses))
+      .catch(next);
+  }
+
+  getEVSE(req: express.Request, res: express.Response, next: any): void {
 
     this.evseService.getEVSEById(req.params['id'])
       .then(evse => res.json(evse))
       .catch(next);
   }
+
+// ChargingLocations
+// -------------------------------
 
   getChargingLocationEVSEs(req: express.Request, res: express.Response, next: any): void {
 
@@ -75,15 +146,39 @@ export class ApiV1 extends ApiAbstract {
     ;
   }
 
-  // Middleware implementations
-  // ------------------------------
+// Middleware implementations
+// ===============================
 
 
-  // WebSocket namespaces
-  // ------------------------------
+  checkAuthentication(req: IApiRequest, res: express.Response, next: any): void {
+
+    let rawToken = req.headers[config.request.accessTokenHeader];
+    let match = config.request.authTokenRegex.exec(rawToken);
+    let token;
+
+    if (match && match.length > 1) {
+
+      token = match[1];
+    }
+
+    if (!token) {
+
+      res.sendStatus(HttpStatus.Unauthorized);
+    }
+
+    this.userService.checkAuthentication(token)
+      .then((user) => {
+
+        req.user = user;
+        next();
+      })
+      .catch(next)
+  }
+
+// WebSocket namespaces
+// ===============================
 
   @SocketNamespace
   evseStates: Namespace;
-
 
 }

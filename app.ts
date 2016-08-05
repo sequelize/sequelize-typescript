@@ -87,8 +87,17 @@ app.use('/:apiVersion/', function (req: IApiRequest, res: express.Response, next
 
 // ROUTE DEFINITIONS
 // ----------------------------------------------
+app.post('/:apiVersion/users', (req: IApiRequest, res, next) => req.api.createUser(req, res, next));
+app.post('/:apiVersion/users/auth', (req: IApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
+
+// Authentication middleware
+app.use((req: IApiRequest, res: express.Response, next: Function) => req.api.checkAuthentication(req, res, next));
+
+app.put('/:apiVersion/users/me', (req: IApiRequest, res: express.Response, next) => req.api.updateUser(req, res, next));
+
 app.get('/:apiVersion/evses', (req: IApiRequest, res, next) => req.api.getEVSEs(req, res, next));
 app.get('/:apiVersion/evses/:id', (req: IApiRequest, res, next) => req.api.getEVSE(req, res, next));
+
 app.get('/:apiVersion/charging-locations/:id', (req: IApiRequest, res, next) => req.api.getChargingLocation(req, res, next));
 app.get('/:apiVersion/charging-locations/:id/evses', (req: IApiRequest, res, next) => req.api.getChargingLocationEVSEs(req, res, next));
 app.get('/:apiVersion/charging-locations', (req: IApiRequest, res, next) => req.api.getChargingLocations(req, res, next));

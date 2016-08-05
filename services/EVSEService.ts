@@ -3,7 +3,6 @@ import Namespace = SocketIO.Namespace;
 import {StatusImporter} from "./StatusImporter";
 import {EVSE} from "../models/EVSE";
 import {db} from "../db";
-import {ICoordinate} from "../interfaces/ICoordinate";
 import {GeoService} from "./GeoService";
 import {Status} from "../models/Status";
 import {ChargingLocation} from "../models/ChargingLocation";

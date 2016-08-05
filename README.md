@@ -37,8 +37,8 @@ The application needs some environment variables for configuration.
 
 ````
  
- **NODE_TLS_REJECT_UNAUTHORIZED** has to be set to 0. Otherwise the self-signed certificates for the hubject 
- communication will not work.
+ **NODE_TLS_REJECT_UNAUTHORIZED** has to be set to 0. Otherwise the self-signed certificates for the 
+ communication with hubject system will not work.
  
 ## Deployment (AWS)
 

@@ -3,6 +3,15 @@
 export var config = {
   port: getEnvVariable('PORT', true) || 3000,
   environment: getEnvVariable('ENVIRONMENT'),
+  passwordPepper: getEnvVariable('PWD_PEPPER'),
+  jwtSecret: getEnvVariable('JWT_SECRET'),
+  jwtExpiresIn: getEnvVariable('JWT_EXPIRES_IN'), // minutes
+  request: {
+    maxLimit: 100,
+    defaultLanguageCode: 'de-DE',
+    accessTokenHeader: 'authorization',
+    authTokenRegex: /^Bearer (.*)$/
+  },
   database: {
     name: getEnvVariable('DB_NAME'),
     dialect: getEnvVariable('DB_DIALECT'),

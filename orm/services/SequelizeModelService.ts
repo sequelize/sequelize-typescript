@@ -120,6 +120,8 @@ export class SequelizeModelService {
         return DataType.INTEGER;
       case Boolean:
         return DataType.BOOLEAN;
+      case Date:
+        return DataType.TIME;
       default:
         throw new Error(`Specified type of property '${propertyName}' 
             cannot be automatically resolved to a sequelize data type. Please

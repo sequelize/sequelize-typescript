@@ -17,6 +17,7 @@ import {AuthenticationMode} from "./AuthenticationMode";
 import {EVSEAuthenticationMode} from "./EVSEAuthenticationMode";
 import {PaymentOption} from "./PaymentOption";
 import {EVSEPaymentOption} from "./EVSEPaymentOption";
+import {IEVSE} from "../interfaces/models/IEVSE";
 
 @Table
 export class EVSE extends Model<EVSE> implements IEVSE{

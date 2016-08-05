@@ -52,17 +52,27 @@ export abstract class Model<T> {
   /**
    * Get an object representing the query for this instance, use with `options.where`
    */
-  where: () => Object;
+  where(): Object {
+    return {}  as Object
+  }
 
   /**
    * Get the value of the underlying data value
    */
-  getDataValue: (key: string) => any;
+  getDataValue(key: string): any {
+    return {}  as any
+  }
 
   /**
    * Update the underlying data value
    */
-  setDataValue: (key: string, value: any) => void;
+  setDataValue(key: string, value: any): void {
+  }
+
+  /**
+   * Date values of current instance
+   */
+  dataValues: any;
 
   /**
    * If no key is given, returns all values of the instance, also invoking virtual getters.
@@ -72,8 +82,11 @@ export abstract class Model<T> {
    *
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
-  get: ((key: string, options?: { plain?: boolean, clone?: boolean }) => any) |
-    ((options?: { plain?: boolean, clone?: boolean }) => T);
+
+  get(options?: { plain?: boolean, clone?: boolean }): T;
+  get(key: string, options?: { plain?: boolean, clone?: boolean }): any {
+    return {} as any;
+  }
 
   /**
    * Set is used to update values on the instance (the sequelize representation of the instance that is,
@@ -99,10 +112,16 @@ export abstract class Model<T> {
    * @param options.raw If set to true, field and virtual setters will be ignored
    * @param options.reset Clear all previously set data values
    */
-  set: ((key: string, value: any, options?: InstanceSetOptions) => this) |
-    ((keys: Object, options?: InstanceSetOptions) => this);
-  setAttributes: ((key: string, value: any, options?: InstanceSetOptions) => this) |
-    ((keys: Object, options?: InstanceSetOptions) => this);
+  set(keys: Object, options?: InstanceSetOptions): this;
+  set(key: string, value: any, options?: InstanceSetOptions): this {
+
+    return this;
+  }
+
+  setAttributes(keys: Object, options?: InstanceSetOptions): this
+  setAttributes(key: string, value: any, options?: InstanceSetOptions): this {
+    return this;
+  }
 
   /**
    * If changed is called with a string it will return a boolean indicating whether the value of that key in
@@ -112,13 +131,18 @@ export abstract class Model<T> {
    *
    * If changed is called without an argument and no keys have changed, it will return `false`.
    */
-  changed: ((key: string) => boolean) |
-    (() => boolean | string[]);
+  changed(): boolean|string[];
+  changed(key: string): boolean;
+  changed(any?: any): any {
+
+  }
 
   /**
    * Returns the previous value for key from `_previousDataValues`.
    */
-  previous: (key: string) => any;
+  previous(key: string): any {
+    return {}  as any
+  }
 
   /**
    * Validate this instance, and if the validation passes, persist it to the database.
@@ -127,7 +151,9 @@ export abstract class Model<T> {
    * called with an instance of `Sequelize.ValidationError`. This error will have a property for each of the
    * fields for which validation failed, with the error message for that field.
    */
-  save: (options?: InstanceSaveOptions) => Promise<this>;
+  save(options?: InstanceSaveOptions): Promise<this> {
+    return {}  as Promise<this>
+  }
 
   /**
    * Refresh the current instance in-place, i.e. update the object with current data from the DB and return
@@ -135,7 +161,9 @@ export abstract class Model<T> {
    * return a new instance. With this method, all references to the Instance are updated with the new data
    * and no new objects are created.
    */
-  reload: (options?: IFindOptions) => Promise<this>;
+  reload(options?: IFindOptions): Promise<this> {
+    return {}  as Promise<this>
+  }
 
   /**
    * Validate the attribute of this instance according to validation rules set in the model definition.
@@ -145,26 +173,40 @@ export abstract class Model<T> {
    *
    * @param options.skip An array of strings. All properties that are in this array will not be validated
    */
-  validate: (options?: { skip?: string[] }) => Promise<ValidationError>;
+  validate(options?: { skip?: string[] }): Promise<ValidationError> {
+    return {}  as Promise<ValidationError>
+  }
 
   /**
    * This is the same as calling `set` and then calling `save`.
    */
-  update: ((key: string, value: any, options?: InstanceUpdateOptions) => Promise<this>) |
-    ((keys: Object, options?: InstanceUpdateOptions) => Promise<this>);
-  updateAttributes: ((key: string, value: any, options?: InstanceUpdateOptions) => Promise<this>) |
-    ((keys: Object, options?: InstanceUpdateOptions) => Promise<this>);
+  update(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
+  update(key: string, value: any, options?: InstanceUpdateOptions): Promise<this> {
+
+      return {} as Promise<this>;
+  }
+
+  updateAttributes(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
+  updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): Promise<this> {
+
+    return {} as Promise<this>;
+  }
+
 
   /**
    * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
    * either be completely deleted, or have its deletedAt timestamp set to the current time.
    */
-  destroy: (options?: InstanceDestroyOptions) => Promise<void>;
+  destroy(options?: InstanceDestroyOptions): Promise<void> {
+    return {}  as Promise<void>
+  }
 
   /**
    * Restore the row corresponding to this instance. Only available for paranoid models.
    */
-  restore: (options?: InstanceRestoreOptions) => Promise<void>;
+  restore(options?: InstanceRestoreOptions): Promise<void> {
+    return {}  as Promise<void>
+  }
 
   /**
    * Increment the value of one or more columns. This is done in the database, which means it does not use
@@ -186,8 +228,9 @@ export abstract class Model<T> {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is incremented by the value given.
    */
-  increment: (fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions) => Promise<this>;
+  increment(fields: string | string[] | Object, options?: InstanceIncrementDecrementOptions): Promise<this> {
+    return {}  as Promise<this>
+  }
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -209,24 +252,31 @@ export abstract class Model<T> {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is decremented by the value given
    */
-  decrement: (fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions) => Promise<this>;
+  decrement(fields: string | string[] | Object, options?: InstanceIncrementDecrementOptions): Promise<this> {
+    return {}  as Promise<this>
+  }
 
   /**
    * Check whether all values of this and `other` Instance are the same
    */
-  equals: (other: Model<any>) => boolean;
+  equals(other: Model<any>): boolean {
+    return {}  as boolean
+  }
 
   /**
    * Check if this is eqaul to one of `others` by calling equals
    */
-  equalsOneOf: (others: Model<any>[]) => boolean;
+  equalsOneOf(others: Model<any>[]): boolean {
+    return {}  as boolean
+  }
 
   /**
    * Convert the instance to a JSON representation. Proxies to calling `get` with no keys. This means get all
    * values gotten from the DB, and apply all custom getters.
    */
-  toJSON: () => T;
+  toJSON<JT>(): JT {
+    return {}  as JT
+  }
 
   /**
    * The Instance class
@@ -323,7 +373,7 @@ export abstract class Model<T> {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope: <T>(options?: string | Array<string> | ScopeOptions | WhereOptions) => Model<T>;
+  static scope: <T>(options?: string | Array<string> | ScopeOptions | WhereOptions | boolean) => typeof Model;
 
   /**
    * Search for multiple instances.

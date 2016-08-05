@@ -1,5 +1,5 @@
 
-interface IEVSE_tr {
+export interface IEVSE_tr {
 
   evseId: string;
   languageCode: string;

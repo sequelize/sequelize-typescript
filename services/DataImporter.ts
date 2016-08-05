@@ -31,6 +31,8 @@ import {EVSEPlug} from "../models/EVSEPlug";
 import {EVSEValueAddedService} from "../models/EVSEValueAddedService";
 import {logger} from "../logger";
 import {ChargingLocation} from "../models/ChargingLocation";
+import {IEVSE_tr} from "../interfaces/models/IEVSE_tr";
+import {IEVSE} from "../interfaces/models/IEVSE";
 
 @Inject
 export class DataImporter {

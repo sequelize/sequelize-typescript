@@ -4,7 +4,7 @@ import {SequelizeModelService} from "../services/SequelizeModelService";
 import {DataTypeAbstract} from "sequelize";
 
 /**
- * Sets ype option for annotated property to specified value.
+ * Sets type option for annotated property to specified value.
  * This annotation will not work together with Column(options) annotation,
  * but has to be used with Column (Please notice the difference with and
  * without options)

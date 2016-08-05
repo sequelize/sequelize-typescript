@@ -1,5 +1,5 @@
 
-interface IEVSE {
+export interface IEVSE {
 
   id: string;
   country: string;

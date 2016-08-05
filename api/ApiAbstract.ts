@@ -9,6 +9,32 @@ export abstract class ApiAbstract extends WebSocket {
     super();
   }
 
+  // REST implementations
+  // ===============================
+
+  /**
+   * Not implemented method
+   */
+  createUser(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+  /**
+   * Not implemented method
+   */
+  updateUser(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
+  /**
+   * Not implemented method
+   */
+  authUser(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
   /**
    * Not implemented method
    */
@@ -16,7 +42,7 @@ export abstract class ApiAbstract extends WebSocket {
 
     throw new NotImplementedError();
   }
-  
+
   /**
    * Not implemented method
    */
@@ -60,25 +86,40 @@ export abstract class ApiAbstract extends WebSocket {
 
     return constructor.name.replace(PREFIX, '').toLocaleLowerCase();
   }
-  
+
+  // Middleware implementations
+  // ===============================
+
+  /**
+   * Not implemented middlewares will be ignored 
+   */
+  checkAuthentication(req: express.Request, res: express.Response, next: any): void {
+
+    next();
+  }
+
+  // Helper
+  // ===============================
+
   protected hasParameters(target: any, paramKeys: string[]) {
-    
-    for(let key of paramKeys) {
-    
-      if(!(key in target)) {
+
+    for (let key of paramKeys) {
+
+      if (!(key in target)) {
         return false;
       }
     }
-    
+
     return true;
   }
-  
+
   protected checkRequiredParameters(target: any, requiredParamKeys: string[]) {
-    
+
     if (!this.hasParameters(target, requiredParamKeys)) {
 
       throw new ParametersMissingError(requiredParamKeys);
     }
   }
+
 
 }
