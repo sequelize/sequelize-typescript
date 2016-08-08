@@ -19,10 +19,19 @@ export abstract class ApiAbstract extends WebSocket {
 
     throw new NotImplementedError();
   }
+
   /**
    * Not implemented method
    */
   updateUser(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
+  /**
+   * Not implemented method
+   */
+  convertUser(req: express.Request, res: express.Response, next: any): void {
 
     throw new NotImplementedError();
   }
@@ -91,7 +100,7 @@ export abstract class ApiAbstract extends WebSocket {
   // ===============================
 
   /**
-   * Not implemented middlewares will be ignored 
+   * Not implemented middlewares will be ignored
    */
   checkAuthentication(req: express.Request, res: express.Response, next: any): void {
 
@@ -101,6 +110,9 @@ export abstract class ApiAbstract extends WebSocket {
   // Helper
   // ===============================
 
+  /**
+   * Checks if specified target object has specified parameter keys
+   */
   protected hasParameters(target: any, paramKeys: string[]) {
 
     for (let key of paramKeys) {
@@ -112,14 +124,29 @@ export abstract class ApiAbstract extends WebSocket {
 
     return true;
   }
+  
+  /**
+   * Checks if specified target object has specified parameter keys,
+   * if not, it throws an ParametersMissingError error;
+   * If you specify more than one array of keys, that means, that 
+   * only one of these arrays has to be valid
+   */
+  protected checkRequiredParameters(target: any, ...requiredParamKeys: string[][]) {
 
-  protected checkRequiredParameters(target: any, requiredParamKeys: string[]) {
+    let isValid = false;
 
-    if (!this.hasParameters(target, requiredParamKeys)) {
+    requiredParamKeys.forEach(params => {
 
-      throw new ParametersMissingError(requiredParamKeys);
+      if (this.hasParameters(target, params)) {
+        isValid = true;
+      }
+    });
+
+    if (!isValid) {
+
+      throw new ParametersMissingError(...requiredParamKeys);
     }
   }
-
-
+  
 }
+

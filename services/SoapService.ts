@@ -7,15 +7,17 @@ import {Client} from "soap";
 import {IEvseStatusRoot} from "../interfaces/soap/IEvseStatusRoot";
 import {IEvseDataRoot} from "../interfaces/soap/IEvseDataRoot";
 import {logger} from "../logger";
+import {IMobileAuthorizationStart} from "../interfaces/soap/IMobileAuthorizationStart";
 
-const CERT = '';//fs.readFileSync('./certificates/private.crt');
-const KEY = '';//fs.readFileSync('./certificates/private.key');
+const CERT = fs.readFileSync('./certificates/private.crt');
+const KEY = fs.readFileSync('./certificates/private.key');
 
 @Inject
 export class SoapService {
 
   private evseDataClient: Client;
   private evseStatusClient: Client;
+  private authorizationClient: Client;
 
   private initPromise: Promise<any>;
 
@@ -94,6 +96,44 @@ export class SoapService {
   }
 
   /**
+   * Processes an eRoamingAuthorizeStart request by configured
+   * Provided id
+   */
+  eRoamingMobileAuthorizeStart(evcoId: string, password: string): Promise<IMobileAuthorizationStart> {
+
+    return this.initPromise
+      .then(() => new Promise<any>((resolve, reject) => {
+
+        logger.info('Starts processing eRoamingMobileAuthorizeStart request');
+
+        this.authorizationClient['eRoamingMobileAuthorizeStart'](
+          {
+            "wsc:EvseID": config.soap.authorizeEvseId,
+            "wsc:QRCodeIdentification": {
+              "cmn:EVCOID": evcoId,
+              "cmn:PIN": password
+            }
+          },
+          (err, data) => {
+
+            if (err) {
+              reject(err);
+              return;
+            }
+
+            logger.info('eRoamingMobileAuthorizeStart request successfully finished');
+            resolve(data);
+          },
+          {timeout: config.soap.timeout},
+          {
+            'Connection': 'Keep-Alive'
+          }
+        )
+      }))
+      ;
+  }
+
+  /**
    * Creates required soap clients
    */
   private init() {
@@ -102,6 +142,7 @@ export class SoapService {
 
       this.initPromise = Promise
         .all([
+          this.createAuthorizationClient(),
           this.createEVSEDataClient(),
           this.createEVSEStatusClient()
         ]);
@@ -137,6 +178,38 @@ export class SoapService {
           this.evseDataClient = client;
 
           logger.info('eRoamingEVSEData soap client successfully created');
+
+          resolve();
+        }
+      )
+    });
+  }
+
+  /**
+   * Creates a soap client for eRoamingAuthorization service by loading
+   * WSDL data from the specified soap endpoint
+   */
+  private createAuthorizationClient() {
+
+    return new Promise<void>((resolve, reject) => {
+
+      logger.info('Creating eRoamingMobileAuthorization soap client');
+
+      soap.createClient(
+        config.soap.authorizationEndpoint + '?wsdl',
+        this.getSoapWSDLClientConfiguration(),
+        (err, client: Client) => {
+
+          if (err) {
+
+            reject(err);
+            return;
+          }
+
+          this.setClientSecurity(client);
+          this.authorizationClient = client;
+
+          logger.info('eRoamingMobileAuthorization soap client successfully created');
 
           resolve();
         }

@@ -20,6 +20,9 @@ export class User extends Model<User> implements IUser {
   id: number;
 
   @Column
+  providerId: string;
+  
+  @Column
   evcoId: string;
 
   @Column

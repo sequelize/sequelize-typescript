@@ -24,6 +24,8 @@ export var config = {
     timeout: 1000 * 60 * 5,
     providerId: 'DE*ICE',
     geoFormat: 'Google',
+    authorizeEvseId: 'DE*APP*E000123',
+    authorizationEndpoint: getEnvVariable('HBS_AUTHORIZATION_ENDPOINT'),
     evseDataEndpoint: getEnvVariable('HBS_EVSE_DATA_ENDPOINT'),
     evseStatusEndpoint: getEnvVariable('HBS_EVSE_STATUS_ENDPOINT')
   },
