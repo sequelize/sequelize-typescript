@@ -91,6 +91,7 @@ app.use('/:apiVersion/', (req: IApiRequest, res: express.Response, next: Functio
 // ----------------------------------------------
 app.post('/:apiVersion/users', (req: IApiRequest, res, next) => req.api.createUser(req, res, next));
 app.post('/:apiVersion/users/auth', (req: IApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
+app.post('/:apiVersion/logs', (req: IApiRequest, res: express.Response, next) => req.api.createLog(req, res, next));
 
 // Authentication middleware
 app.use((req: IApiRequest, res: express.Response, next: Function) => req.api.checkAuthentication(req, res, next));

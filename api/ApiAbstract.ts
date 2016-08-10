@@ -47,6 +47,14 @@ export abstract class ApiAbstract extends WebSocket {
   /**
    * Not implemented method
    */
+  createLog(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
+  /**
+   * Not implemented method
+   */
   getEVSE(req: express.Request, res: express.Response, next: any): void {
 
     throw new NotImplementedError();
