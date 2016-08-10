@@ -1,7 +1,7 @@
 import {Inject} from "di-ts";
 
 const EVCO_ID_REGEX = /([A-Za-z]{2}\-?[A-Za-z0-9]{3}\-?C[A-Za-z0-9]{8}\-?[\d|X])|([A-Za-z]{2}[\*|\-]?[A-Za-z0-9]{3}[\*|\-]?[A-Za-z0-9]{6}[\*|\-]?[\d|X])/;
-const PROVIDER_ID_REGEX = /[A-Za-z]{2}\-?[A-Za-z0-9]{3}|[A-Za-z]{2}[\*|-]?[A-Za-z0-9]{3}/;
+const PROVIDER_ID_REGEX = /([A-Za-z]{2}\-?[A-Za-z0-9]{3}|[A-Za-z]{2}[\*|-]?[A-Za-z0-9]{3})/;
 
 @Inject
 export class OICPHelper {

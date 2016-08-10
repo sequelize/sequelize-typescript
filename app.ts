@@ -55,21 +55,23 @@ if ('development' === app.get('env')) {
 // ----------------------------------------------
 
 // TODO consider to remove this for production
-app.use(function (req, res, next) {
+app.use((req: express.Request, res: express.Response, next: Function) => {
 
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Headers", "Content-Type,authorization");
 
   next();
 });
+
+app.options('*', (req: express.Request, res: express.Response) => res.sendStatus(HttpStatus.OK));
 
 
 // API VERSION MIDDLEWARE
 // ----------------------------------------------
 
 // middleware for retrieving api version from url and solving api version
-app.use('/:apiVersion/', function (req: IApiRequest, res: express.Response, next: Function) {
+app.use('/:apiVersion/', (req: IApiRequest, res: express.Response, next: Function) => {
 
   var apiVersion = req.params['apiVersion'];
   var api: ApiAbstract = apis[apiVersion];
