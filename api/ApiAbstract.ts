@@ -71,6 +71,14 @@ export abstract class ApiAbstract extends WebSocket {
   /**
    * Not implemented method
    */
+  getProviderBranding(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+
+  /**
+   * Not implemented method
+   */
   getChargingLocationEVSEs(req: express.Request, res: express.Response, next: any): void {
 
     throw new NotImplementedError();

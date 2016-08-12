@@ -17,12 +17,14 @@ import {config} from "../config";
 import {IApiRequest} from "../interfaces/IApiRequest";
 import {ChargingLocationService} from "../services/ChargingLocationService";
 import {LogService} from "../services/LogService";
+import {ProviderService} from "../services/ProviderService";
 
 @Inject
 export class ApiV1 extends ApiAbstract {
 
   constructor(protected cronService: CronService,
               protected evseService: EVSEService,
+              protected providerService: ProviderService,
               protected chargingLocationService: ChargingLocationService,
               protected logService: LogService,
               protected userService: UserService) {
@@ -136,8 +138,8 @@ export class ApiV1 extends ApiAbstract {
     ;
   }
 
-// EVSEs
-// -------------------------------
+  // EVSEs
+  // -------------------------------
 
   getEVSEs(req: express.Request, res: express.Response, next: any): void {
 
@@ -155,8 +157,19 @@ export class ApiV1 extends ApiAbstract {
       .catch(next);
   }
 
-// ChargingLocations
-// -------------------------------
+  // Providers
+  // -------------------------------
+  
+  getProviderBranding(req: express.Request, res: express.Response, next: any): void {
+    
+    this.providerService.getBranding(req.params['id'])
+      .then(branding => res.json(branding))
+      .catch(next)
+    ;
+  }
+
+  // ChargingLocations
+  // -------------------------------
 
   getChargingLocationEVSEs(req: express.Request, res: express.Response, next: any): void {
 

@@ -94,11 +94,12 @@ app.post('/:apiVersion/users/auth', (req: IApiRequest, res: express.Response, ne
 app.post('/:apiVersion/logs', (req: IApiRequest, res: express.Response, next) => req.api.createLog(req, res, next));
 
 // Authentication middleware
-app.use((req: IApiRequest, res: express.Response, next: Function) => req.api.checkAuthentication(req, res, next));
+// app.use((req: IApiRequest, res: express.Response, next: Function) => req.api.checkAuthentication(req, res, next));
 
 app.put('/:apiVersion/users/me', (req: IApiRequest, res: express.Response, next) => req.api.updateUser(req, res, next));
 app.post('/:apiVersion/users/me/convert', (req: IApiRequest, res: express.Response, next) => req.api.convertUser(req, res, next));
-app.post('/:apiVersion/users/me/branding', (req: IApiRequest, res: express.Response, next) => req.api.convertUser(req, res, next));
+
+app.get('/:apiVersion/providers/:id/branding', (req: IApiRequest, res: express.Response, next) => req.api.getProviderBranding(req, res, next));
 
 app.get('/:apiVersion/evses', (req: IApiRequest, res, next) => req.api.getEVSEs(req, res, next));
 app.get('/:apiVersion/evses/:id', (req: IApiRequest, res, next) => req.api.getEVSE(req, res, next));
