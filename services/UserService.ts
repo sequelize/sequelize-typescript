@@ -35,6 +35,8 @@ export class UserService {
       .then(user => {
 
         if (user) {
+          
+          // TODO consider what happens, if password has changed
 
           return this.authenticate(evcoId, password);
         }
