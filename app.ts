@@ -94,7 +94,7 @@ app.post('/:apiVersion/users/auth', (req: IApiRequest, res: express.Response, ne
 app.post('/:apiVersion/logs', (req: IApiRequest, res: express.Response, next) => req.api.createLog(req, res, next));
 
 // Authentication middleware
-// app.use((req: IApiRequest, res: express.Response, next: Function) => req.api.checkAuthentication(req, res, next));
+app.use((req: IApiRequest, res: express.Response, next: Function) => req.api.checkAuthentication(req, res, next));
 
 app.put('/:apiVersion/users/me', (req: IApiRequest, res: express.Response, next) => req.api.updateUser(req, res, next));
 app.post('/:apiVersion/users/me/convert', (req: IApiRequest, res: express.Response, next) => req.api.convertUser(req, res, next));
@@ -107,6 +107,8 @@ app.get('/:apiVersion/evses/:id', (req: IApiRequest, res, next) => req.api.getEV
 app.get('/:apiVersion/charging-locations', (req: IApiRequest, res, next) => req.api.getChargingLocations(req, res, next));
 app.get('/:apiVersion/charging-locations/:id', (req: IApiRequest, res, next) => req.api.getChargingLocation(req, res, next));
 app.get('/:apiVersion/charging-locations/:id/evses', (req: IApiRequest, res, next) => req.api.getChargingLocationEVSEs(req, res, next));
+
+
 // SERVER CREATION AND EXECUTION
 // ----------------------------------------------
 http.createServer(app).listen(

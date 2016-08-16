@@ -159,10 +159,10 @@ export class ApiV1 extends ApiAbstract {
 
   // Providers
   // -------------------------------
-  
+
   getProviderBranding(req: express.Request, res: express.Response, next: any): void {
-    
-    this.providerService.getBranding(req.params['id'])
+
+    this.providerService.getBranding(req.params['id'], req.query['attributes'])
       .then(branding => res.json(branding))
       .catch(next)
     ;

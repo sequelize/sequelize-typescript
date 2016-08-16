@@ -10,10 +10,11 @@ export class ProviderService {
 
   }
 
-  getBranding(id: string): Promise<Branding> {
+  getBranding(id: string, attributes?: string[]): Promise<Branding> {
 
     return db.model(Branding)
       .findOne({
+        attributes,
         include: [
           {
             model: db.model(Provider),
