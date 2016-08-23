@@ -42,7 +42,7 @@ app.use(bodyParser.json());
 // http://www.hanselman.com/blog/HTTPPUTOrDELETENotAllowedUseXHTTPMethodOverrideForYourRESTServiceWithASPNETWebAPI.aspx
 app.use(methodOverride('X-HTTP-Method-Override'));
 
-// middleware for static content TODO
+// middleware for api documentation
 app.use(express.static(path.join(__dirname, 'documentation')));
 
 // middleware for logging errors (errors will only be logged in dev mode)

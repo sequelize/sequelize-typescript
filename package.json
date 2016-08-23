@@ -3,11 +3,15 @@
   "version": "0.0.0",
   "description": "Description for server-proto",
   "scripts": {
-    "build": "tsd install && tsc",
+    "docs": "apidoc -i api/ -o documentation/",
+    "compile": "tsc",
+    "typings": "tsd install",
+    "build": "npm run docs && npm run typings && npm run compile",
     "prestart": "npm run build",
     "start": "node app.js"
   },
   "dependencies": {
+    "apidoc": "^0.16.1",
     "bcrypt": "^0.8.5",
     "bluebird": "^3.2.1",
     "body-parser": "^1.13.3",
