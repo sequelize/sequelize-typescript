@@ -19,6 +19,9 @@ test
 # certificates
 certificates/*
 
+# documentation
+documentation
+
 # js files
 **/*.js
 **/*.js.map
