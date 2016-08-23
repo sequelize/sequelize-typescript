@@ -19,7 +19,9 @@ export class SoapService {
   private evseStatusClient: Client;
   private authorizationClient: Client;
 
-  private initPromise: Promise<any>;
+  private evseDataClientPromise: Promise<any>;
+  private evseStatusClientPromise: Promise<any>;
+  private authorizationClientPromise: Promise<any>;
 
   constructor() {
 
@@ -32,7 +34,7 @@ export class SoapService {
    */
   eRoamingPullEvseData(): Promise<IEvseDataRoot> {
 
-    return this.initPromise
+    return this.evseDataClientPromise
       .then(() => new Promise<IEvseDataRoot>((resolve, reject) => {
 
         logger.info('Starts processing eRoamingPullEvseData request');
@@ -67,7 +69,7 @@ export class SoapService {
    */
   eRoamingPullEvseStatus(): Promise<IEvseStatusRoot> {
 
-    return this.initPromise
+    return this.evseStatusClientPromise
       .then(() => new Promise<IEvseStatusRoot>((resolve, reject) => {
 
         logger.info('Starts processing eRoamingPullEvseStatus request');
@@ -101,7 +103,7 @@ export class SoapService {
    */
   eRoamingMobileAuthorizeStart(evcoId: string, password: string): Promise<IMobileAuthorizationStart> {
 
-    return this.initPromise
+    return this.authorizationClientPromise
       .then(() => new Promise<any>((resolve, reject) => {
 
         logger.info('Starts processing eRoamingMobileAuthorizeStart request');
@@ -140,16 +142,15 @@ export class SoapService {
 
     if(config.soap.initialize) {
 
-      this.initPromise = Promise
-        .all([
-          this.createAuthorizationClient(),
-          this.createEVSEDataClient(),
-          this.createEVSEStatusClient()
-        ]);
+      this.evseDataClientPromise = this.createEVSEDataClient();
+      this.evseStatusClientPromise = this.createEVSEStatusClient();
+      this.authorizationClientPromise = this.createAuthorizationClient();
     } else {
 
       // will never fulfilled
-      this.initPromise = new Promise(() => null);
+      this.evseDataClientPromise = new Promise(() => null);
+      this.evseStatusClientPromise = new Promise(() => null);
+      this.authorizationClientPromise = new Promise(() => null);
     }
   }
 

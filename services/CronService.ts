@@ -38,7 +38,7 @@ export class CronService {
       config.cronjob.evseData.run // start job automatically
     );
 
-    logger.info('EVSE data import job scheduled');
+    if(config.cronjob.evseData.run) logger.info('EVSE data import job scheduled');
   }
 
   /**
@@ -61,6 +61,6 @@ export class CronService {
       config.cronjob.evseStatus.run // start job automatically
     );
 
-    logger.info('EVSE status import job scheduled');
+    if(config.cronjob.evseStatus.run) logger.info('EVSE status import job scheduled');
   }
 }
