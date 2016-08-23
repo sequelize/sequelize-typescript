@@ -149,7 +149,7 @@ class Person {
 
   ... 
   
-  @BelongsToMany(() => Person, () => Friend)
+  @BelongsToMany(() => Group, () => PersonGroup)
   groups: Group[];
   
 }
@@ -159,7 +159,7 @@ class Group {
 
   ...
 
-  @BelongsToMany(() => Person, () => Friend)
+  @BelongsToMany(() => Person, () => PersonGroup)
   persons: Person[];
   
 }
