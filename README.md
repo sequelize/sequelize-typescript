@@ -53,7 +53,7 @@ http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/vpc-rds.html#vpc-rds-creat
 
 **certificates.config**
 
-In addition to the certificates.config file, the bucket policy for the specified files has to be configured to allow elastic beanstalk to download the certificates from the source bucket. 
+In addition to the `certificates.config` file, the bucket policy for the specified files has to be configured to allow elastic beanstalk to download the certificates from the source bucket. 
 The policy should look like this:
 
 ````
@@ -92,7 +92,7 @@ MYSQL/Aurora | TCP      | 3306       | sg-?????
 To start the server use `ENVIRONMENT={development|production} ... DB_HOST={string} npm start` in command line.
 
 ## Stack
-The application is implemented in TypeScript. For the server implementation express.js is used. The framework sequelize 
+The application is implemented in _TypeScript_. For the server implementation _express.js_ is used. The framework _sequelize_ 
 provides the orm implementation. 
 
 ### TypeScript
@@ -137,7 +137,7 @@ class Person {
 
 #### Associations
 
-For Relations between entities there some annotations like `BelongsTo`, `HasOne` or `BelongsToMany` that can be used. To define
+For Relations between entities there are some annotations like `BelongsTo`, `HasOne` or `BelongsToMany` that can be used. To define
 foreign keys, use the `ForeignKey` annotation. 
 
 **Many-To-Many**
