@@ -53,6 +53,9 @@ http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/vpc-rds.html#vpc-rds-creat
 
 **certificates.config**
 
+The certificates for hb authentication will be downloaded from s3 bucket to certificates directory. (Unfortunately it is not possible to download the files directly to the target dir, 
+that's why the certificates.config contains a container command for moving the files to the final dir)
+
 In addition to the `certificates.config` file, the bucket policy for the specified files has to be configured to allow elastic beanstalk to download the certificates from the source bucket. 
 The policy should look like this:
 
