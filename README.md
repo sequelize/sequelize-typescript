@@ -46,7 +46,36 @@ The application needs some environment variables for configuration.
 http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/vpc-rds.html#vpc-rds-create-env TODO
 
 ### .ebextensions
+
+**deployment.config**
+
 `deployment.config` TODO; description
+
+**certificates.config**
+
+In addition to the certificates.config file, the bucket policy for the specified files has to be configured to allow elastic beanstalk to download the certificates from the source bucket. 
+The policy should look like this:
+
+````
+{
+	"Id": "Policy1471940803024",
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "Stmt1471940796552",
+			"Action": [
+				"s3:GetObject"
+			],
+			"Effect": "Allow",
+			"Resource": "arn:aws:s3:::intercharge-backend/*",
+			"Principal": {
+				"AWS": "arn:aws:iam::356886944671:role/aws-elasticbeanstalk-ec2-role"
+			}
+		}
+	]
+}
+````
+
 
 ### RDS access
 The security group of the EC2 instance has to be added to the security group of RDS (http://serverfault.com/a/655124). Otherwise RDS will not be accessible from the EC2 instance.
