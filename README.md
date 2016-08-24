@@ -3,6 +3,7 @@
 This application provides a REST API for the _intercharge_ app and the _Ladestationsfinder_. It also provides a
  cron job scheduled data importer for _eRoamingEVSEData_ and _eRoamingEVSEStatus_ services. 
  
+
 ## Server Configuration
 
 ### Certificates
@@ -48,7 +49,6 @@ The policy should look like this:
 }
 ````
 
-
 ### Environment variables
 
 The application needs some environment variables for configuration.
@@ -66,9 +66,10 @@ The application needs some environment variables for configuration.
 
 ````
  
- **NODE_TLS_REJECT_UNAUTHORIZED** has to be set to 0. Otherwise the self-signed certificates for the 
+`NODE_TLS_REJECT_UNAUTHORIZED` has to be set to 0. Otherwise the self-signed certificates for the 
  communication with hubject system will not work.
- 
+
+
 ## Deployment (AWS)
 
 ### VPN (VPC)
@@ -88,7 +89,6 @@ All incoming traffic will hit your ELB and funnel to your EC2 instances. When yo
 
 `.ebextensions/deployment.config`
 
-
 ### RDS access
 The security group of the EC2 instance or the VPC has to be added to the security group of RDS (http://serverfault.com/a/655124). Otherwise RDS will not be accessible from the EC2 instance.
 
@@ -106,26 +106,16 @@ To start the server use `ENVIRONMENT={development|production} ... DB_HOST={strin
 ## Stack
 The application is implemented in _TypeScript_. For the server implementation _express.js_ is used. The framework _sequelize_ 
 provides the orm implementation. 
-
 ### TypeScript
-
 The documentation for TypeScript can befound [here](https://www.typescriptlang.org/docs/tutorial.html)
-
 ### express.js (server framework)
-
 Documentation for the integrated ORM _Sequelize_ can be found [here](http://expressjs.com/en/4x/api.html)
-
 ### sequelize (orm)
-
 Documentation for the integrated ORM _Sequelize_ can be found [here](http://docs.sequelizejs.com/en/latest/)
-
 ### ORM wrapper for sequelize
-
 For simplicity and to prevent an interface chaos for the interaction of _TypeScript_ and _Sequelize_, a wrapper on top 
 of both is implemented. The implementation is currently found in `orm/`.
-
 #### Definition of database models
-
 To define a database model you have to annotate the class(which represents you specific entity) with the `Table` and
 `Column` annotations. `Table` for defining the entity and `Column` for defining the column/property of the entity.
  For example:
@@ -146,14 +136,11 @@ class Person {
 
 
 ````
-
 #### Associations
-
 For Relations between entities there are some annotations like `BelongsTo`, `HasOne` or `BelongsToMany` that can be used. To define
 foreign keys, use the `ForeignKey` annotation. 
 
 **Many-To-Many**
-
 ````
 
 @Table
@@ -189,6 +176,3 @@ class PersonGroup {
 
 
 ````
-
-
-<!-- TODO -->
