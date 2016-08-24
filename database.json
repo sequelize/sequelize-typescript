@@ -1,0 +1,11 @@
+{
+  "//": "This is the config file for database migrations",
+  "db": {
+    "driver": "mysql",
+    "multipleStatements": true,
+    "host": {"ENV": "DB_HOST"},
+    "database": {"ENV": "DB_NAME"},
+    "user": {"ENV": "DB_USERNAME"},
+    "password": {"ENV": "DB_PWD"}
+  }
+}

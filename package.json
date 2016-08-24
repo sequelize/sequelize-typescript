@@ -6,7 +6,8 @@
     "docs": "apidoc -i api/ -o documentation/",
     "compile": "tsc",
     "typings": "tsd install",
-    "build": "npm run docs && npm run typings && npm run compile",
+    "migrate": "db-migrate up -e db",
+    "build": "npm run docs && npm run typings && npm run compile && npm run migrate",
     "prestart": "npm run build",
     "start": "node app.js"
   },
@@ -19,6 +20,8 @@
     "country-language": "^0.1.7",
     "cron": "^1.1.0",
     "crypto-js": "^3.1.5",
+    "db-migrate": "^0.10.0-beta.15",
+    "db-migrate-mysql": "^1.1.7",
     "density-clustering": "^1.3.0",
     "di-ts": "git+https://github.com/RobinBuschmann/di-ts.git",
     "errorhandler": "^1.4.2",

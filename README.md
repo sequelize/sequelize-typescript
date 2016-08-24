@@ -20,38 +20,7 @@ Before you can start any server, you have to provide a certificate and a private
 
 ````
 
-### Environment variables
-
-The application needs some environment variables for configuration.
-
-````
-  ENVIRONMENT={development|production}
-  HBS_EVSE_DATA_ENDPOINT={string}
-  NODE_TLS_REJECT_UNAUTHORIZED=0
-  HBS_EVSE_STATUS_ENDPOINT={string}
-  DB_NAME={string}
-  DB_DIALECT=mysql
-  DB_USERNAME={string}
-  DB_PWD={string}
-  DB_HOST={string}
-
-````
- 
- **NODE_TLS_REJECT_UNAUTHORIZED** has to be set to 0. Otherwise the self-signed certificates for the 
- communication with hubject system will not work.
- 
-## Deployment (AWS)
-
-### VPN (VPC)
-http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/vpc-rds.html#vpc-rds-create-env TODO
-
-### .ebextensions
-
-**deployment.config**
-
-`deployment.config` TODO; description
-
-**certificates.config**
+#### Add certificates via .ebextensions (certificates.config)
 
 The certificates for hb authentication will be downloaded from s3 bucket to certificates directory. (Unfortunately it is not possible to download the files directly to the target dir, 
 that's why the certificates.config contains a container command for moving the files to the final dir)
@@ -80,8 +49,48 @@ The policy should look like this:
 ````
 
 
+### Environment variables
+
+The application needs some environment variables for configuration.
+
+````
+  ENVIRONMENT={development|production}
+  HBS_EVSE_DATA_ENDPOINT={string}
+  NODE_TLS_REJECT_UNAUTHORIZED=0
+  HBS_EVSE_STATUS_ENDPOINT={string}
+  DB_NAME={string}
+  DB_DIALECT=mysql
+  DB_USERNAME={string}
+  DB_PWD={string}
+  DB_HOST={string}
+
+````
+ 
+ **NODE_TLS_REJECT_UNAUTHORIZED** has to be set to 0. Otherwise the self-signed certificates for the 
+ communication with hubject system will not work.
+ 
+## Deployment (AWS)
+
+### VPN (VPC)
+
+#### How to create VPN via VPC
+
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/vpc-rds.html
+
+1. Use a VPC with public and private subnets.
+2. Add a NAT to a public subnet and give it an Elastic IP address.
+3. Ensure all traffic from the private subnets goes through your NAT.
+4. Create your Elastic Beanstalk application, placing the ELB in a public subnet and the EC2 instances in one or more private subnets.
+All incoming traffic will hit your ELB and funnel to your EC2 instances. When your EC2 instances access the web service API, traffic will go through the NAT, thus appearing to originate from the static IP address.
+(Source: http://serverfault.com/a/638627)
+
+#### VPC settings can be found in deployment config
+
+`.ebextensions/deployment.config`
+
+
 ### RDS access
-The security group of the EC2 instance has to be added to the security group of RDS (http://serverfault.com/a/655124). Otherwise RDS will not be accessible from the EC2 instance.
+The security group of the EC2 instance or the VPC has to be added to the security group of RDS (http://serverfault.com/a/655124). Otherwise RDS will not be accessible from the EC2 instance.
 
 ````
 Type         | Protocol | Port Range | Source
