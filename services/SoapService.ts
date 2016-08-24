@@ -114,7 +114,13 @@ export class SoapService {
             "wsc:QRCodeIdentification": {
               "cmn:EVCOID": evcoId,
               "cmn:PIN": password
-            }
+            },
+            // true is required, because of an issue on the hubject system:
+            // If the user is authorized once, it does not matter which
+            // PIN is used on another eRoamingMobileAuthorizeStart;
+            // It seems so, that the PIN is not validated anymore.
+            // With GetNewSession: true, the PIN will always be validated
+            "wsc:GetNewSession": "true"
           },
           (err, data) => {
 
