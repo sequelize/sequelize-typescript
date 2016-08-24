@@ -89,6 +89,21 @@ app.use('/:apiVersion/', (req: IApiRequest, res: express.Response, next: Functio
 
 // ROUTE DEFINITIONS
 // ----------------------------------------------
+
+app.get('/:apiVersion/ip', (req: IApiRequest, res: express.Response, next) => {
+  const request = require('request');
+
+  request('http://icanhazip.com/', (error, response, body) => {
+    if (!error && response.statusCode == 200) {
+
+      res.send(body);
+      return;
+    }
+
+    res.send(error);
+  })
+});
+
 app.post('/:apiVersion/users', (req: IApiRequest, res, next) => req.api.createUser(req, res, next));
 app.post('/:apiVersion/users/auth', (req: IApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
 app.post('/:apiVersion/logs', (req: IApiRequest, res: express.Response, next) => req.api.createLog(req, res, next));
