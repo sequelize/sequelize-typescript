@@ -49,9 +49,9 @@ function getEnvVariable(key: string, defaultValue?: any) {
   const variable = process.env[key];
 
   if (variable === void 0) {
-    
-    if (defaultValue) {
-      
+
+    if (defaultValue !== void 0) {
+
       return defaultValue;
     }
     throw new Error('Environment variable is missing: ' + key);

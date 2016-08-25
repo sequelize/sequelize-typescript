@@ -7,6 +7,7 @@ import methodOverride = require('method-override');
 import morgan = require('morgan');
 import http = require('http');
 import path = require('path');
+const nodeadmin = require('nodeadmin');
 
 import {IApiRequest} from "./interfaces/IApiRequest";
 import {config} from "./config";
@@ -45,10 +46,13 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 // middleware for api documentation
 app.use(express.static(path.join(__dirname, 'documentation')));
 
-// middleware for logging errors (errors will only be logged in dev mode)
+// middleware showing errors as http response (errors will only shon in dev mode)
 if ('development' === app.get('env')) {
   app.use(errorHandler())
 }
+
+// admin tool, accessible through "NodeAdmin/"
+app.use(nodeadmin(app));
 
 
 // CROSS-ORIGIN RESOURCE SHARING CONFIGURATION
