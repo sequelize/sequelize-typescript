@@ -89,7 +89,6 @@ app.use('/:apiVersion/', (req: IApiRequest, res: express.Response, next: Functio
 
 // ROUTE DEFINITIONS
 // ----------------------------------------------
-
 app.get('/:apiVersion/out-ip', (req: IApiRequest, res: express.Response, next) => req.api.getOutComingIp(req, res, next));
 
 app.post('/:apiVersion/users', (req: IApiRequest, res, next) => req.api.createUser(req, res, next));
@@ -101,6 +100,10 @@ app.use((req: IApiRequest, res: express.Response, next: Function) => req.api.che
 
 app.put('/:apiVersion/users/me', (req: IApiRequest, res: express.Response, next) => req.api.updateUser(req, res, next));
 app.post('/:apiVersion/users/me/convert', (req: IApiRequest, res: express.Response, next) => req.api.convertUser(req, res, next));
+app.post('/:apiVersion/users/me/chargings', (req: IApiRequest, res: express.Response, next) => req.api.createUserCharging(req, res, next));
+app.get('/:apiVersion/users/me/chargings', (req: IApiRequest, res: express.Response, next) => req.api.getUserChargings(req, res, next));
+app.get('/:apiVersion/users/me/chargings/:id', (req: IApiRequest, res: express.Response, next) => req.api.getUserCharging(req, res, next));
+app.put('/:apiVersion/users/me/chargings/:id', (req: IApiRequest, res: express.Response, next) => req.api.updateUserCharging(req, res, next));
 
 app.get('/:apiVersion/providers/:id/branding', (req: IApiRequest, res: express.Response, next) => req.api.getProviderBranding(req, res, next));
 

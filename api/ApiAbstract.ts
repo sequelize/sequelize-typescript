@@ -19,7 +19,7 @@ export abstract class ApiAbstract extends WebSocket {
 
     throw new NotImplementedError();
   }
-  
+
   /**
    * Not implemented method
    */
@@ -40,6 +40,37 @@ export abstract class ApiAbstract extends WebSocket {
    * Not implemented method
    */
   convertUser(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+  /**
+   * Not implemented method
+   */
+  getUserChargings(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+  
+  /**
+   * Not implemented method
+   */
+  getUserCharging(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+  
+  /**
+   * Not implemented method
+   */
+  updateUserCharging(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+  
+  /**
+   * Not implemented method
+   */
+  createUserCharging(req: express.Request, res: express.Response, next: any): void {
 
     throw new NotImplementedError();
   }
@@ -148,11 +179,11 @@ export abstract class ApiAbstract extends WebSocket {
 
     return true;
   }
-  
+
   /**
    * Checks if specified target object has specified parameter keys,
    * if not, it throws an ParametersMissingError error;
-   * If you specify more than one array of keys, that means, that 
+   * If you specify more than one array of keys, that means, that
    * only one of these arrays has to be valid
    */
   protected checkRequiredParameters(target: any, ...requiredParamKeys: string[][]) {
@@ -171,6 +202,6 @@ export abstract class ApiAbstract extends WebSocket {
       throw new ParametersMissingError(...requiredParamKeys);
     }
   }
-  
+
 }
 

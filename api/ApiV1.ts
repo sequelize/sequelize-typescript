@@ -18,6 +18,7 @@ import {IApiRequest} from "../interfaces/IApiRequest";
 import {ChargingLocationService} from "../services/ChargingLocationService";
 import {LogService} from "../services/LogService";
 import {ProviderService} from "../services/ProviderService";
+import {UserChargingService} from "../services/UserChargingService";
 const request = require('request');
 
 @Inject
@@ -28,6 +29,7 @@ export class ApiV1 extends ApiAbstract {
               protected providerService: ProviderService,
               protected chargingLocationService: ChargingLocationService,
               protected logService: LogService,
+              protected userChargingService: UserChargingService,
               protected userService: UserService) {
 
     super();
@@ -43,7 +45,7 @@ export class ApiV1 extends ApiAbstract {
 
 
   getOutComingIp(req: express.Request, res: express.Response, next: any): void {
-    
+
     request('http://icanhazip.com/', (error, response, body) => {
       if (!error && response.statusCode == 200) {
 
@@ -158,6 +160,56 @@ export class ApiV1 extends ApiAbstract {
       .catch(next)
     ;
   }
+
+  createUserCharging(req: IApiRequest, res: express.Response, next: any): void {
+
+    const data = req.body;
+    
+    Promise.resolve()
+      .then(() => this.checkRequiredParameters(data, ['evseId', 'session', 'startedAt']))
+      .then(() => this.userChargingService.createCharging(req.user.id, data.evseId, data.session, data.startedAt))
+      .then(charging => res.json(charging))
+      .catch(next)
+    ;
+  }
+  
+  getUserChargings(req: IApiRequest, res: express.Response, next: any): void {
+
+    Promise.resolve()
+      .then(() => this.userChargingService.getChargings(req.user.id))
+      .then(chargings => res.json(chargings))
+      .catch(next)
+    ;
+  }
+  
+  getUserCharging(req: express.Request, res: express.Response, next: any): void {
+    
+    Promise.resolve()
+      .then(() => {
+
+        if(req.params.id === 'active') {
+
+          return this.userChargingService.getActiveCharging(req.user.id);
+        }
+
+        return this.userChargingService.getCharging(req.params.id, req.user.id);
+      })
+      .then(charging => res.json(charging))
+      .catch(next)
+    ;
+  }
+  
+  updateUserCharging(req: express.Request, res: express.Response, next: any): void {
+    
+    const data = req.body;
+
+    Promise.resolve()
+      .then(() => this.userChargingService.updateCharging(req.params.id, req.user.id, data))
+      .then(chargings => res.sendStatus(HttpStatus.OK))
+      .catch(next)
+    ;
+  }
+
 
 // Logs
 // -------------------------------
