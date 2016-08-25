@@ -7,14 +7,14 @@ import methodOverride = require('method-override');
 import morgan = require('morgan');
 import http = require('http');
 import path = require('path');
-const nodeadmin = require('nodeadmin');
+// const nodeadmin = require('nodeadmin');
 
 import {IApiRequest} from "./interfaces/IApiRequest";
 import {config} from "./config";
 import {ApiAbstract} from "./api/ApiAbstract";
 import apis from "./api/api";
 import {logger} from "./logger";
-import {Injector} from 'di-ts'
+import {Injector} from 'di-ts';
 import {DataImporter} from "./services/DataImporter";
 
 
