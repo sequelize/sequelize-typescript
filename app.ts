@@ -52,7 +52,7 @@ if ('development' === app.get('env')) {
 }
 
 // admin tool, accessible through "NodeAdmin/"
-app.use(nodeadmin(app));
+// app.use(nodeadmin(app));
 
 
 // CROSS-ORIGIN RESOURCE SHARING CONFIGURATION
