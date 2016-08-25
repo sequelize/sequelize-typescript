@@ -73,8 +73,8 @@ app.options('*', (req: express.Request, res: express.Response) => res.sendStatus
 // middleware for retrieving api version from url and solving api version
 app.use('/:apiVersion/', (req: IApiRequest, res: express.Response, next: Function) => {
 
-  var apiVersion = req.params['apiVersion'];
-  var api: ApiAbstract = apis[apiVersion];
+  const apiVersion = req.params['apiVersion'];
+  const api: ApiAbstract = apis[apiVersion];
 
   if (!api) {
 
@@ -90,19 +90,7 @@ app.use('/:apiVersion/', (req: IApiRequest, res: express.Response, next: Functio
 // ROUTE DEFINITIONS
 // ----------------------------------------------
 
-app.get('/:apiVersion/ip', (req: IApiRequest, res: express.Response, next) => {
-  const request = require('request');
-
-  request('http://icanhazip.com/', (error, response, body) => {
-    if (!error && response.statusCode == 200) {
-
-      res.send(body);
-      return;
-    }
-
-    res.send(error);
-  })
-});
+app.get('/:apiVersion/out-ip', (req: IApiRequest, res: express.Response, next) => req.api.getOutComingIp(req, res, next));
 
 app.post('/:apiVersion/users', (req: IApiRequest, res, next) => req.api.createUser(req, res, next));
 app.post('/:apiVersion/users/auth', (req: IApiRequest, res: express.Response, next) => req.api.authUser(req, res, next));
@@ -146,5 +134,4 @@ if ('development' === app.get('env')) {
       .then(() => logger.info('(DEV) mock data successfully imported'))
       .catch(err => logger.error('(DEV) mock data could not have been imported', err));
   }
-
 }

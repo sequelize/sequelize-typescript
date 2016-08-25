@@ -15,6 +15,14 @@ export abstract class ApiAbstract extends WebSocket {
   /**
    * Not implemented method
    */
+  getOutComingIp(req: express.Request, res: express.Response, next: any): void {
+
+    throw new NotImplementedError();
+  }
+  
+  /**
+   * Not implemented method
+   */
   createUser(req: express.Request, res: express.Response, next: any): void {
 
     throw new NotImplementedError();

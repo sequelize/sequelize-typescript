@@ -11,7 +11,7 @@ This application provides a REST API for the _intercharge_ app and the _Ladestat
 Before you can start any server, you have to provide a certificate and a private key for the communication with
  the hubject system under `certificates`.
  
-**Notation**
+#### Directory structure
 
 ````
   root
@@ -140,7 +140,7 @@ class Person {
 For Relations between entities there are some annotations like `BelongsTo`, `HasOne` or `BelongsToMany` that can be used. To define
 foreign keys, use the `ForeignKey` annotation. 
 
-**Many-To-Many**
+##### Many-To-Many
 ````
 
 @Table

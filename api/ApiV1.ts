@@ -18,6 +18,7 @@ import {IApiRequest} from "../interfaces/IApiRequest";
 import {ChargingLocationService} from "../services/ChargingLocationService";
 import {LogService} from "../services/LogService";
 import {ProviderService} from "../services/ProviderService";
+const request = require('request');
 
 @Inject
 export class ApiV1 extends ApiAbstract {
@@ -40,7 +41,21 @@ export class ApiV1 extends ApiAbstract {
   // REST implementations
   // ===============================
 
-  // User
+
+  getOutComingIp(req: express.Request, res: express.Response, next: any): void {
+    
+    request('http://icanhazip.com/', (error, response, body) => {
+      if (!error && response.statusCode == 200) {
+
+        res.send(body);
+        return;
+      }
+
+      res.send(error);
+    })
+  }
+
+// User
   // -------------------------------
 
   /**
