@@ -1,7 +1,7 @@
 ///<reference path="typings/node/node.d.ts"/>
 
 export var config = {
-  port: getEnvVariable('PORT', true) || 3000,
+  port: getEnvVariable('PORT', 3000),
   environment: getEnvVariable('ENVIRONMENT'),
   passwordPepper: getEnvVariable('PWD_PEPPER'),
   jwtSecret: getEnvVariable('JWT_SECRET'),
@@ -30,7 +30,7 @@ export var config = {
     evseStatusEndpoint: getEnvVariable('HBS_EVSE_STATUS_ENDPOINT')
   },
   dev: {
-    importMockData: false
+    importMockData: getEnvVariable('IMPORT_MOCK_DATA', false)
   },
   cronjob: {
     evseData: {
@@ -44,13 +44,18 @@ export var config = {
   },
 };
 
-function getEnvVariable(key: string, isOptional = false) {
+function getEnvVariable(key: string, defaultValue?: any) {
 
   const variable = process.env[key];
 
-  if (variable === void 0 && !isOptional) {
-
+  if (variable === void 0) {
+    
+    if (defaultValue) {
+      
+      return defaultValue;
+    }
     throw new Error('Environment variable is missing: ' + key);
   }
+
   return variable;
 }
