@@ -7,7 +7,6 @@ import methodOverride = require('method-override');
 import morgan = require('morgan');
 import http = require('http');
 import path = require('path');
-// const nodeadmin = require('nodeadmin');
 
 import {IApiRequest} from "./interfaces/IApiRequest";
 import {config} from "./config";
@@ -17,7 +16,7 @@ import {logger} from "./logger";
 import {Injector} from 'di-ts';
 import {DataImporter} from "./services/DataImporter";
 
-
+const nodeadmin = require('nodeadmin');
 const errorHandler = require('errorhandler');
 const app = express();
 
@@ -52,7 +51,7 @@ if ('development' === app.get('env')) {
 }
 
 // admin tool, accessible through "NodeAdmin/"
-// app.use(nodeadmin(app));
+app.use(nodeadmin(app));
 
 
 // CROSS-ORIGIN RESOURCE SHARING CONFIGURATION

@@ -34,6 +34,7 @@
     "morgan": "^1.6.1",
     "mysql": "^2.9.0",
     "node-uuid": "^1.4.7",
+    "nodeadmin": "git+https://github.com/RobinBuschmann/nodeadmin.git",
     "reflect-metadata": "^0.1.3",
     "request": "^2.74.0",
     "sequelize": "^3.23.4",
