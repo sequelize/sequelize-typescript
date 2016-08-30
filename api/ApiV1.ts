@@ -164,7 +164,7 @@ export class ApiV1 extends ApiAbstract {
   createUserCharging(req: IApiRequest, res: express.Response, next: any): void {
 
     const data = req.body;
-    
+
     Promise.resolve()
       .then(() => this.checkRequiredParameters(data, ['evseId', 'session', 'startedAt']))
       .then(() => this.userChargingService.createCharging(req.user.id, data.evseId, data.session, data.startedAt))
@@ -172,7 +172,7 @@ export class ApiV1 extends ApiAbstract {
       .catch(next)
     ;
   }
-  
+
   getUserChargings(req: IApiRequest, res: express.Response, next: any): void {
 
     Promise.resolve()
@@ -181,9 +181,9 @@ export class ApiV1 extends ApiAbstract {
       .catch(next)
     ;
   }
-  
+
   getUserCharging(req: express.Request, res: express.Response, next: any): void {
-    
+
     Promise.resolve()
       .then(() => {
 
@@ -198,9 +198,9 @@ export class ApiV1 extends ApiAbstract {
       .catch(next)
     ;
   }
-  
+
   updateUserCharging(req: express.Request, res: express.Response, next: any): void {
-    
+
     const data = req.body;
 
     Promise.resolve()
@@ -233,14 +233,14 @@ export class ApiV1 extends ApiAbstract {
 
     Promise.resolve()
       .then(() => this.checkRequiredParameters(req.query, ['searchTerm']))
-      .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm']))
+      .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm'], this.ensureArrayIfTruthy(req.query['attributes'])))
       .then(evses => res.json(evses))
       .catch(next);
   }
 
   getEVSE(req: express.Request, res: express.Response, next: any): void {
 
-    this.evseService.getEVSEById(req.params['id'])
+    this.evseService.getEVSEById(req.params['id'], this.ensureArrayIfTruthy(req.query['attributes']))
       .then(evse => res.json(evse))
       .catch(next);
   }
@@ -261,7 +261,7 @@ export class ApiV1 extends ApiAbstract {
 
   getChargingLocationEVSEs(req: express.Request, res: express.Response, next: any): void {
 
-    this.evseService.getEVSEsByChargingLocation(req.params['id'])
+    this.evseService.getEVSEsByChargingLocation(req.params['id'], this.ensureArrayIfTruthy(req.query['attributes']))
       .then(evse => res.json(evse))
       .catch(next);
   }

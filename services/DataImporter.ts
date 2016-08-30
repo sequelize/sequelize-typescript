@@ -63,12 +63,12 @@ export class DataImporter {
     return this.loadDependentData()
       .then(() => this.processOperatorData(operatorData))
       .then(() => this.processEvseData(operatorData))
+      .then(() => logger.info('EvseData import successfully processed'))
       ;
   }
 
   /**
-   * Loads enum data and operator data for setting relations during
-   * import process
+   * Loads enum data for setting relations during import process
    */
   private loadDependentData() {
 
@@ -188,14 +188,15 @@ export class DataImporter {
 
   private processChargingLocations(evseData: IEvseDataRecord[], transaction: Transaction) {
 
-    // since the charging locations table is empty,
+    // Since the charging locations table is empty,
     // we are able to define the ids in the code;
-    // why? for performance: after all charging
+    // Why? For performance reasons: after all charging
     // locations are determined, we will insert all
     // at once, which in turn would prevent us from
-    // retrieving the ids of all inserted values.
-    // so there is only the option of defining
-    // them here
+    // retrieving the ids of each inserted value.
+    // So there is only the option of defining
+    // them here, to have the ability to use them
+    // as a foreign key for the evse entities.
     let ids = 1;
     const chargingLocations: IChargingLocation[]&{[coord: string]: any} = [];
 

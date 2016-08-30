@@ -15,16 +15,15 @@ import {PaymentOption} from "../models/PaymentOption";
 @Inject
 export class EVSEService {
 
-  constructor(protected statusImporter: StatusImporter,
-              protected geoService: GeoService) {
+  constructor(protected statusImporter: StatusImporter) {
 
   }
 
-  getEVSEById(id: string) {
+  getEVSEById(id: string, attributes?: string[]) {
 
     return db.model(EVSE)
       .findById(id, {
-        attributes: ['id', 'country', 'city', 'street', 'postalCode', 'houseNum', 'floor', 'openingTime'],
+        attributes: attributes || ['id', 'country', 'city', 'street', 'postalCode', 'houseNum', 'floor', 'openingTime'],
         include: [
           {
             model: db.model(Plug),
@@ -59,11 +58,16 @@ export class EVSEService {
       })
   }
 
-  getEVSEBySearchTerm(term: string) {
+  getEVSEBySearchTerm(term: string, attributes?: string[]) {
+
+    if(attributes && attributes.indexOf('chargingLocationId') === -1) {
+      // required
+      attributes.push('chargingLocationId');
+    }
 
     return db.model(EVSE)
       .findAll({
-        attributes: ['id', 'chargingLocationId'],
+        attributes: attributes || ['id', 'chargingLocationId'],
         include: [
           {
             model: db.model(Plug),
@@ -90,11 +94,11 @@ export class EVSEService {
       })
   }
 
-  getEVSEsByChargingLocation(chargingLocationId: number) {
+  getEVSEsByChargingLocation(chargingLocationId: number, attributes?: string[]) {
 
     return db.model(EVSE)
       .findAll<EVSE>({
-        attributes: ['id'],
+        attributes: attributes || ['id'],
         include: [
           {
             model: db.model(Plug),
