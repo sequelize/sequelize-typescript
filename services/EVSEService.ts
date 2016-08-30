@@ -10,6 +10,8 @@ import {Plug} from "../models/Plug";
 import {ChargingFacility} from "../models/ChargingFacility";
 import {AuthenticationMode} from "../models/AuthenticationMode";
 import {PaymentOption} from "../models/PaymentOption";
+import {Operator} from "../models/Operator";
+import {Accessibility} from "../models/Accessibility";
 
 
 @Inject
@@ -29,6 +31,20 @@ export class EVSEService {
             model: db.model(Plug),
             as: 'plugs',
             through: {attributes: []}, // removes EVSEPlug property from plugs
+          },
+          {
+            model: db.model(Operator),
+            as: 'operator',
+            include: [
+              {
+                model: db.model(Operator),
+                as: 'parent'
+              }
+            ]
+          },
+          {
+            model: db.model(Accessibility),
+            as: 'accessibility'
           },
           {
             model: db.model(ChargingFacility),
