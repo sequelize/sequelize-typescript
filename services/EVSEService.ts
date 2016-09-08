@@ -21,11 +21,11 @@ export class EVSEService {
 
   }
 
-  getEVSEById(id: string, attributes?: string[]) {
+  getEVSEById(id: string, attributes: string[] = ['id', 'country', 'city', 'street', 'postalCode', 'houseNum', 'floor', 'openingTime']) {
 
     return db.model(EVSE)
       .findById(id, {
-        attributes: attributes || ['id', 'country', 'city', 'street', 'postalCode', 'houseNum', 'floor', 'openingTime'],
+        attributes: (attributes || []).concat(['chargingLocationId', 'operatorId']), // sequelize issue, did not add these ids automatically
         include: [
           {
             model: db.model(Plug),
@@ -74,16 +74,11 @@ export class EVSEService {
       })
   }
 
-  getEVSEBySearchTerm(term: string, attributes?: string[]) {
-
-    if(attributes && attributes.indexOf('chargingLocationId') === -1) {
-      // required
-      attributes.push('chargingLocationId');
-    }
+  getEVSEBySearchTerm(term: string, attributes: string[] = ['id']) {
 
     return db.model(EVSE)
       .findAll({
-        attributes: attributes || ['id', 'chargingLocationId'],
+        attributes: (attributes || []).concat(['chargingLocationId', 'operatorId']), // sequelize issue, did not add these ids automatically
         include: [
           {
             model: db.model(Plug),
@@ -120,11 +115,11 @@ export class EVSEService {
       })
   }
 
-  getEVSEsByChargingLocation(chargingLocationId: number, attributes?: string[]) {
+  getEVSEsByChargingLocation(chargingLocationId: number, attributes: string[] = ['id']) {
 
     return db.model(EVSE)
       .findAll<EVSE>({
-        attributes: attributes || ['id'],
+        attributes: (attributes || []).concat(['chargingLocationId', 'operatorId']), // sequelize issue, did not add these ids automatically
         include: [
           {
             model: db.model(Plug),
