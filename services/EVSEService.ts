@@ -137,6 +137,16 @@ export class EVSEService {
             through: {attributes: []}, // removes EVSEPlug property from plugs
           },
           {
+            model: db.model(Operator),
+            as: 'operator',
+            include: [
+              {
+                model: db.model(Operator),
+                as: 'parent'
+              }
+            ]
+          },
+          {
             model: db.model(Status),
             as: 'states',
             through: {attributes: []}, // removes EVSEStatus property from states
