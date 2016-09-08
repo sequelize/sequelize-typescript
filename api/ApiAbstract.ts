@@ -50,7 +50,7 @@ export abstract class ApiAbstract extends WebSocket {
 
     throw new NotImplementedError();
   }
-  
+
   /**
    * Not implemented method
    */
@@ -58,7 +58,7 @@ export abstract class ApiAbstract extends WebSocket {
 
     throw new NotImplementedError();
   }
-  
+
   /**
    * Not implemented method
    */
@@ -66,7 +66,7 @@ export abstract class ApiAbstract extends WebSocket {
 
     throw new NotImplementedError();
   }
-  
+
   /**
    * Not implemented method
    */
@@ -164,19 +164,6 @@ export abstract class ApiAbstract extends WebSocket {
 
   // Helper
   // ===============================
-  
-  protected ensureArrayIfTruthy(values: any) {
-    
-    return this.ensureArray(values, null);
-  }
-  
-  protected ensureArray(values: any, _default = []) {
-    if(!values) {
-      return _default;
-    }
-
-    return [].concat(values);
-  }
 
   /**
    * Checks if specified target object has specified parameter keys

@@ -240,14 +240,14 @@ export class ApiV1 extends ApiAbstract {
 
     Promise.resolve()
       .then(() => this.checkRequiredParameters(req.query, ['searchTerm']))
-      .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm'], this.ensureArrayIfTruthy(req.query['attributes'])))
+      .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm'], req.query['attributes']))
       .then(evses => res.json(evses))
       .catch(next);
   }
 
   getEVSE(req: express.Request, res: express.Response, next: any): void {
 
-    this.evseService.getEVSEById(req.params['id'], this.ensureArrayIfTruthy(req.query['attributes']))
+    this.evseService.getEVSEById(req.params['id'], req.query['attributes'])
       .then(evse => res.json(evse))
       .catch(next);
   }
@@ -268,7 +268,7 @@ export class ApiV1 extends ApiAbstract {
 
   getChargingLocationEVSEs(req: express.Request, res: express.Response, next: any): void {
 
-    this.evseService.getEVSEsByChargingLocation(req.params['id'], this.ensureArrayIfTruthy(req.query['attributes']))
+    this.evseService.getEVSEsByChargingLocation(req.params['id'], req.query['attributes'])
       .then(evse => res.json(evse))
       .catch(next);
   }
