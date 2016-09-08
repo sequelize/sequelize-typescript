@@ -101,6 +101,16 @@ export class EVSEService {
             through: {attributes: []}, // removes EVSEStatus property from states
           },
           {
+            model: db.model(Operator),
+            as: 'operator',
+            include: [
+              {
+                model: db.model(Operator),
+                as: 'parent'
+              }
+            ]
+          },
+          {
             model: db.model(ChargingLocation),
             as: 'chargingLocation'
           }
