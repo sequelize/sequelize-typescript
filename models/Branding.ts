@@ -24,15 +24,15 @@ export class Branding extends Model<Branding> {
   @Column({
     type: DataType.BLOB,
     get: function () {
-      const backgroundImage = this.getDataValue('backgroundImage');
+      const image = this.getDataValue('logoIcon');
 
-      if (backgroundImage) {
+      if (image) {
         // convert buffer/blob data to image URL
-        return this.getDataValue('backgroundImage').toString('utf8');
+        return this.getDataValue('logoIcon').toString('utf8');
       }
     }
   })
-  backgroundImage: string;
+  logoIcon: string;
 
   @HasMany(() => Provider)
   providers: Provider[];
