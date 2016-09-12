@@ -12,6 +12,7 @@ import {AuthenticationMode} from "../models/AuthenticationMode";
 import {PaymentOption} from "../models/PaymentOption";
 import {Operator} from "../models/Operator";
 import {Accessibility} from "../models/Accessibility";
+import {OperatorInterchargeDirect} from "../models/OperatorInterchargeDirect";
 
 
 @Inject
@@ -38,7 +39,17 @@ export class EVSEService {
             include: [
               {
                 model: db.model(Operator),
-                as: 'parent'
+                as: 'parent',
+                include: [
+                  {
+                    model: db.model(OperatorInterchargeDirect),
+                    as: 'interchargeDirect'
+                  }
+                ]
+              },
+              {
+                model: db.model(OperatorInterchargeDirect),
+                as: 'interchargeDirect'
               }
             ]
           },
