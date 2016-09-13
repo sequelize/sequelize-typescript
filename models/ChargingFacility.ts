@@ -6,6 +6,8 @@ import {EVSEChargingFacility} from "./EVSEChargingFacility";
 import {EVSE} from "./EVSE";
 import {BelongsToMany} from "../orm/annotations/BelongsToMany";
 import {DataType} from "../orm/models/DataType";
+import {Plug} from "./Plug";
+import {PlugChargingFacility} from "./PlugChargingFacility";
 
 @Table
 export class ChargingFacility extends Model<ChargingFacility> {
@@ -17,11 +19,12 @@ export class ChargingFacility extends Model<ChargingFacility> {
   @Column
   option: string;
 
-  @Column({
-    type: DataType.FLOAT
-  })
-  power: number;
+  @Column
+  power: string;
 
   @BelongsToMany(() => EVSE, () => EVSEChargingFacility)
   evses;
+
+  @BelongsToMany(() => Plug, () => PlugChargingFacility)
+  plugs;
 }

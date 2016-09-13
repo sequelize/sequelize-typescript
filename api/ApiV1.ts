@@ -19,14 +19,18 @@ import {ChargingLocationService} from "../services/ChargingLocationService";
 import {LogService} from "../services/LogService";
 import {ProviderService} from "../services/ProviderService";
 import {UserChargingService} from "../services/UserChargingService";
+import {UtilityService} from "../services/UtilityService";
+import {PlugService} from "../services/PlugService";
 const request = require('request');
 
 @Inject
 export class ApiV1 extends ApiAbstract {
 
-  constructor(protected cronService: CronService,
+  constructor(protected utilityService: UtilityService,
+              protected cronService: CronService,
               protected evseService: EVSEService,
               protected providerService: ProviderService,
+              protected plugService: PlugService,
               protected chargingLocationService: ChargingLocationService,
               protected logService: LogService,
               protected userChargingService: UserChargingService,
@@ -124,7 +128,7 @@ export class ApiV1 extends ApiAbstract {
     const data = req.body;
 
     if ('newPassword' in data) {
-      
+
       this.userService.updatePassword(req.user, data['newPassword'])
         .then(() => res.sendStatus(HttpStatus.OK))
         .catch(next);
@@ -289,12 +293,26 @@ export class ApiV1 extends ApiAbstract {
         parseFloat(req.query['latitude1']),
         parseFloat(req.query['longitude2']),
         parseFloat(req.query['latitude2']),
-        parseInt(req.query['zoom'])
+        parseInt(req.query['zoom']),
+        this.utilityService.toBoolean(req.query['isOpen24Hours']),
+        this.utilityService.toArray<number>(req.query['chargingFacilityIds']),
+        this.utilityService.toArray<number>(req.query['plugIds'])
       ))
       .then(chargingLocations => res.json(chargingLocations))
       .catch(next)
     ;
   }
+
+  // Plugs
+  // -------------------------------
+
+  getPlugs(req: express.Request, res: express.Response, next: any): void {
+
+    this.plugService.getPlugs()
+      .then(evse => res.json(evse))
+      .catch(next);
+  }
+
 
 // Middleware implementations
 // ===============================

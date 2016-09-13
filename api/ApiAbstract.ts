@@ -150,6 +150,11 @@ export abstract class ApiAbstract extends WebSocket {
 
     return constructor.name.replace(PREFIX, '').toLocaleLowerCase();
   }
+  
+  getPlugs(req: express.Request, res: express.Response, next: any): void {
+    
+    throw new NotImplementedError();
+  }
 
   // Middleware implementations
   // ===============================

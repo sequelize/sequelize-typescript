@@ -19,6 +19,9 @@ export class Branding extends Model<Branding> {
   timestamp: string;
 
   @Column
+  imprint: string;
+
+  @Column
   primaryColor: string;
 
   @Column({
@@ -28,7 +31,7 @@ export class Branding extends Model<Branding> {
 
       if (image) {
         // convert buffer/blob data to image URL
-        return this.getDataValue('logoIcon').toString('utf8');
+        return image.toString('utf8');
       }
     }
   })
