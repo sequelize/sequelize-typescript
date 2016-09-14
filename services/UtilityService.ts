@@ -18,9 +18,8 @@ export class UtilityService {
       case 'object':
         return true;
       case 'boolean':
-        return value;
       default:
-        return null;
+        return value;
     }
   }
 
