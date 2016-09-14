@@ -58,7 +58,7 @@ export class ChargingLocationService {
                                     isOpen24Hours?: boolean,
                                     chargingFacilityIds?: number[],
                                     plugIds?: number[]) {
-    
+
     const evseWhere: any = {};
     const evseInclude: IIncludeOptions[] = [
       {
@@ -68,22 +68,22 @@ export class ChargingLocationService {
         // required: true
       }
     ];
-    
+
     if(isOpen24Hours !== void 0) {
-      
+
       evseWhere.isOpen24Hours = isOpen24Hours;
     }
-    
+
     if(chargingFacilityIds) {
-      
+
       evseInclude.push({
         model: db.model(ChargingFacility),
-        as: 'chargingFacility',
+        as: 'chargingFacilities',
         through: {attributes: []}, // removes EVSEChargingFacility property from status,
         where: {id: {$in: chargingFacilityIds}}
       })
     }
-    
+
     if(plugIds) {
       evseInclude.push({
         model: db.model(Plug),
