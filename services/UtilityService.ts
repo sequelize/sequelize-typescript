@@ -3,9 +3,9 @@ import {Inject} from "di-ts";
 @Inject
 export class UtilityService {
 
-  toBoolean(value: any) {
+  toBoolean(value: any, ensureBoolean = false) {
 
-    if(value === void 0) {
+    if(value === void 0 && ensureBoolean) {
 
       return false;
     }
