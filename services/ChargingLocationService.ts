@@ -101,7 +101,8 @@ export class ChargingLocationService {
             attributes: ['id'],
             as: 'evses',
             required: true,
-            include: evseInclude
+            include: evseInclude,
+            where: evseWhere
           }
         ],
         where: {
