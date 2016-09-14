@@ -111,6 +111,7 @@ app.put('/:apiVersion/users/me/chargings/:id', (req: IApiRequest, res: express.R
 app.get('/:apiVersion/providers/:id/branding', (req: IApiRequest, res: express.Response, next) => req.api.getProviderBranding(req, res, next));
 
 app.get('/:apiVersion/plugs', (req: IApiRequest, res, next) => req.api.getPlugs(req, res, next));
+app.get('/:apiVersion/charging-facilities', (req: IApiRequest, res, next) => req.api.getChargingFacilities(req, res, next));
 
 app.get('/:apiVersion/evses', (req: IApiRequest, res, next) => req.api.getEVSEs(req, res, next));
 app.get('/:apiVersion/evses/:id', (req: IApiRequest, res, next) => req.api.getEVSE(req, res, next));

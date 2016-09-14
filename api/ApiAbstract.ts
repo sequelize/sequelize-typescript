@@ -155,6 +155,11 @@ export abstract class ApiAbstract extends WebSocket {
     
     throw new NotImplementedError();
   }
+  
+  getChargingFacilities(req: express.Request, res: express.Response, next: any): void {
+    
+    throw new NotImplementedError();
+  }
 
   // Middleware implementations
   // ===============================

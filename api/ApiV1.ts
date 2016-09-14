@@ -21,6 +21,7 @@ import {ProviderService} from "../services/ProviderService";
 import {UserChargingService} from "../services/UserChargingService";
 import {UtilityService} from "../services/UtilityService";
 import {PlugService} from "../services/PlugService";
+import {ChargingFacilityService} from "../services/ChargingFacilityService";
 const request = require('request');
 
 @Inject
@@ -32,6 +33,7 @@ export class ApiV1 extends ApiAbstract {
               protected providerService: ProviderService,
               protected plugService: PlugService,
               protected chargingLocationService: ChargingLocationService,
+              protected chargingFaciliyService: ChargingFacilityService,
               protected logService: LogService,
               protected userChargingService: UserChargingService,
               protected userService: UserService) {
@@ -309,7 +311,17 @@ export class ApiV1 extends ApiAbstract {
   getPlugs(req: express.Request, res: express.Response, next: any): void {
 
     this.plugService.getPlugs()
-      .then(evse => res.json(evse))
+      .then(plugs => res.json(plugs))
+      .catch(next);
+  }
+
+  // ChargingFacilitites
+  // -------------------------------
+
+  getChargingFacilities(req: express.Request, res: express.Response, next: any): void {
+
+    this.chargingFaciliyService.getChargingFacilities()
+      .then(chargingFacilities => res.json(chargingFacilities))
       .catch(next);
   }
 
