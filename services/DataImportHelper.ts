@@ -16,11 +16,17 @@ export class DataImportHelper {
    */
   getEnumIdByString(enums: IEnum[], enumOption: string): number {
 
-    for (let _enum of enums) {
+    if (enumOption) {
 
-      if (_enum.option === enumOption) {
+      for (let _enum of enums) {
 
-        return _enum.id;
+        // why "toLowerCase"? for more tolerance;
+        // some enumOption values differ from specified
+        // case
+        if (_enum.option.toLowerCase() === enumOption.toLowerCase()) {
+
+          return _enum.id;
+        }
       }
     }
 
