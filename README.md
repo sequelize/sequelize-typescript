@@ -68,6 +68,13 @@ The application needs some environment variables for configuration.
  
 `NODE_TLS_REJECT_UNAUTHORIZED` has to be set to 0. Otherwise the self-signed certificates for the 
  communication with hubject system will not work.
+ 
+ ### DB Instances
+ 
+ #### max_allowed_packet
+ 
+ Since the data size of an evse data import exceeds the `max_allowed_packet` configured for a mysql database, it is necessary to increase this value. Therefor an DBParameterGroup has to be configured in the AWS console. (https://forums.aws.amazon.com/thread.jspa?threadID=37852)
+ The currently used parameter group is called `intercharge-db. 
 
 
 ## Deployment (AWS)
@@ -176,3 +183,4 @@ class PersonGroup {
 
 
 ````
+

@@ -2,6 +2,11 @@ import {Inject} from "di-ts";
 
 @Inject
 export class UtilityService {
+  
+  isNumber(value: any) {
+    
+    return typeof value === 'number';
+  }
 
   toBoolean(value: any, ensureBoolean = false) {
 
@@ -21,6 +26,34 @@ export class UtilityService {
       default:
         return value;
     }
+  }
+  
+  toFloat(value: string, ensureFloat = false) {
+    
+    if(isFinite(<any>value)) {
+      
+      return parseFloat(value);
+      
+    } else if(ensureFloat) {
+      
+      return 0.0;
+    }
+    
+    return null;
+  }
+  
+  toInt(value: string, ensureInt = false) {
+    
+    if(isFinite(<any>value)) {
+      
+      return parseInt(value);
+      
+    } else if(ensureInt) {
+      
+      return 0;
+    }
+    
+    return null;
   }
 
   toArray<T>(value: any, ensureArray = false): T[] {

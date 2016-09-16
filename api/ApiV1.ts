@@ -245,8 +245,29 @@ export class ApiV1 extends ApiAbstract {
   getEVSEs(req: express.Request, res: express.Response, next: any): void {
 
     Promise.resolve()
-      .then(() => this.checkRequiredParameters(req.query, ['searchTerm']))
-      .then(() => this.evseService.getEVSEBySearchTerm(req.query['searchTerm'], req.query['attributes']))
+      .then(() => this.checkRequiredParameters(req.query, ['searchTerm', 'limit'], ['latitude', 'longitude', 'limit']))
+      .then(() => {
+
+        if ('latitude' in req.query) {
+
+          return this.evseService.getNearestEVSEsByPosition(
+            this.utilityService.toFloat(req.query['latitude']),
+            this.utilityService.toFloat(req.query['longitude']),
+            this.utilityService.toInt(req.query['limit']),
+            this.utilityService.toArray<string>(req.query['attributes'])
+          );
+
+        }
+
+        if ('searchTerm' in req.query) {
+
+          return this.evseService.getEVSEBySearchTerm(
+            req.query['searchTerm'],
+            this.utilityService.toInt(req.query['limit']),
+            this.utilityService.toArray<string>(req.query['attributes'])
+          )
+        }
+      })
       .then(evses => res.json(evses))
       .catch(next);
   }

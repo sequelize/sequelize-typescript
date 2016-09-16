@@ -194,7 +194,7 @@ export abstract class ApiAbstract extends WebSocket {
    * Checks if specified target object has specified parameter keys,
    * if not, it throws an ParametersMissingError error;
    * If you specify more than one array of keys, that means, that
-   * only one of these arrays has to be valid
+   * only one of these arrays need to be valid
    */
   protected checkRequiredParameters(target: any, ...requiredParamKeys: string[][]) {
 
