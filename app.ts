@@ -15,6 +15,7 @@ import apis from "./api/api";
 import {logger} from "./logger";
 import {Injector} from 'di-ts';
 import {DataImporter} from "./services/DataImporter";
+import {SoapService} from "./services/SoapService";
 
 const nodeadmin = require('nodeadmin');
 const errorHandler = require('errorhandler');
@@ -132,15 +133,25 @@ http.createServer(app).listen(
 // SOME PREPARATION FOR DEVELOPMENT
 // ----------------------------------------------
 
+const injector = new Injector();
+const dataImporter = injector.get(DataImporter);
+
 if ('development' === app.get('env')) {
 
   if (config.dev.importMockData) {
 
-    const injector = new Injector();
-    const dataImporter = injector.get(DataImporter);
 
     dataImporter.execute(require('./evseDataMock.json'))
       .then(() => logger.info('(DEV) mock data successfully imported'))
       .catch(err => logger.error('(DEV) mock data could not have been imported', err));
   }
 }
+
+// temporarily for testing purposes
+
+const soapService = injector.get(SoapService);
+
+soapService.eRoamingPullEvseData()
+  .then(data => this.dataImporter.execute(data))
+  .catch(err => console.log(err))
+;
