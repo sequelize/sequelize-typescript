@@ -152,6 +152,6 @@ if ('development' === app.get('env')) {
 const soapService = injector.get(SoapService);
 
 soapService.eRoamingPullEvseData()
-  .then(data => this.dataImporter.execute(data))
+  .then(data => dataImporter.execute(data))
   .catch(err => console.log(err))
 ;
