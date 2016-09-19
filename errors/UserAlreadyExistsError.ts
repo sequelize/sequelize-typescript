@@ -1,10 +1,12 @@
-export class UserAlreadyExistsError extends Error {
+import {BaseError} from "./BaseError";
+
+export class UserAlreadyExistsError extends BaseError {
 
   statusCode = HttpStatus.Conflict;
   message: string;
 
   constructor(evcoId: string){
-    super();
+    super(true);
 
       this.message = `User with EVCOID '${evcoId}' already exists`;
   }

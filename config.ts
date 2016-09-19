@@ -21,7 +21,7 @@ export var config = {
   },
   soap: {
     initialize: getEnvVariable('SOAP_INIT') === 'true',
-    timeout: 1000 * 60 * 5,
+    timeout: 1000 * 60 * 15, // 15min
     providerId: 'DE*ICE',
     geoFormat: 'Google',
     authorizeEvseId: 'DE*APP*E000123',

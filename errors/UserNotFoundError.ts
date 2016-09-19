@@ -1,8 +1,10 @@
-export class UserNotFoundError extends Error {
+import {BaseError} from "./BaseError";
+
+export class UserNotFoundError extends BaseError {
   
   code = HttpStatus.NotFound;
 
   constructor(public message: string = 'User not found') {
-    super();
+    super(true);
   }
 }

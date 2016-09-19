@@ -15,6 +15,7 @@ import {OICPHelper} from "./OICPHelper";
 import {SoapService} from "./SoapService";
 import {IMobileAuthorizationStart} from "../interfaces/soap/IMobileAuthorizationStart";
 import {InvalidDataError} from "../errors/InvalidDataError";
+import {HubjectError} from "../errors/HubjectError";
 const uuid = require('node-uuid');
 
 
@@ -291,6 +292,15 @@ export class UserService {
       .then((mobileAuthStart: IMobileAuthorizationStart) => {
 
         if (!mobileAuthStart || mobileAuthStart.AuthorizationStatus !== SUCCESS_STATUS) {
+
+          if(mobileAuthStart && mobileAuthStart.StatusCode) {
+
+            throw new HubjectError(
+              mobileAuthStart.StatusCode.Code,
+              mobileAuthStart.StatusCode.Description,
+              HttpStatus.Unauthorized
+            );
+          }
 
           throw new NotAuthorizedError('EVCOID or password is not valid');
         }

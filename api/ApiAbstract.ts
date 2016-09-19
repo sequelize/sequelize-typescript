@@ -150,14 +150,14 @@ export abstract class ApiAbstract extends WebSocket {
 
     return constructor.name.replace(PREFIX, '').toLocaleLowerCase();
   }
-  
+
   getPlugs(req: express.Request, res: express.Response, next: any): void {
-    
+
     throw new NotImplementedError();
   }
-  
+
   getChargingFacilities(req: express.Request, res: express.Response, next: any): void {
-    
+
     throw new NotImplementedError();
   }
 
@@ -170,6 +170,11 @@ export abstract class ApiAbstract extends WebSocket {
   checkAuthentication(req: express.Request, res: express.Response, next: any): void {
 
     next();
+  }
+
+  processErrors(err: any, req: express.Request, res: express.Response, next: any) {
+
+    res.sendStatus(HttpStatus.InternalServerError);
   }
 
   // Helper

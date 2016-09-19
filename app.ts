@@ -10,16 +10,16 @@ import path = require('path');
 
 import {IApiRequest} from "./interfaces/IApiRequest";
 import {config} from "./config";
+import {logger} from "./logger";
 import {ApiAbstract} from "./api/ApiAbstract";
 import apis from "./api/api";
-import {logger} from "./logger";
-import {Injector} from 'di-ts';
-import {DataImporter} from "./services/DataImporter";
-import {SoapService} from "./services/SoapService";
 
 const nodeadmin = require('nodeadmin');
-const errorHandler = require('errorhandler');
 const app = express();
+
+// GENERAL CONFIGURATIONS
+// ----------------------------------------------
+app.disable('x-powered-by');
 
 
 // EXPRESS ENVIRONMENT VARIABLES
@@ -46,12 +46,7 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 // middleware for api documentation
 app.use(express.static(path.join(__dirname, 'documentation')));
 
-// middleware showing errors as http response (errors will only shon in dev mode)
-if ('development' === app.get('env')) {
-  app.use(errorHandler())
-}
-
-// admin tool, accessible through "NodeAdmin/"
+// admin tool, accessible via "NodeAdmin/"
 app.use(nodeadmin(app));
 
 
@@ -121,6 +116,9 @@ app.get('/:apiVersion/charging-locations', (req: IApiRequest, res, next) => req.
 app.get('/:apiVersion/charging-locations/:id', (req: IApiRequest, res, next) => req.api.getChargingLocation(req, res, next));
 app.get('/:apiVersion/charging-locations/:id/evses', (req: IApiRequest, res, next) => req.api.getChargingLocationEVSEs(req, res, next));
 
+// error handler
+app.use((err, req: IApiRequest, res, next) => req.api.processErrors(err, req, res, next));
+
 
 // SERVER CREATION AND EXECUTION
 // ----------------------------------------------
@@ -128,20 +126,3 @@ http.createServer(app).listen(
   app.get('port'),
   () => logger.info('Server listening on port ' + app.get('port'))
 );
-
-
-// SOME PREPARATION FOR DEVELOPMENT
-// ----------------------------------------------
-
-if ('development' === app.get('env')) {
-
-  if (config.dev.importMockData) {
-
-    const injector = new Injector();
-    const dataImporter = injector.get(DataImporter);
-
-    dataImporter.execute(require('./evseDataMock.json'))
-      .then(() => logger.info('(DEV) mock data successfully imported'))
-      .catch(err => logger.error('(DEV) mock data could not have been imported', err));
-  }
-}

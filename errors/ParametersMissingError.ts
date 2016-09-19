@@ -1,10 +1,12 @@
-export class ParametersMissingError extends Error {
+import {BaseError} from "./BaseError";
+
+export class ParametersMissingError extends BaseError {
 
   statusCode = HttpStatus.BadRequest;
   message: string;
 
   constructor(...paramKeys: string[][]) {
-    super();
+    super(true);
 
     if (paramKeys.length === 1) {
 

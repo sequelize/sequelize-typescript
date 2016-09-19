@@ -11,7 +11,6 @@ import {ApiAbstract} from "./ApiAbstract";
 import {CronService} from "../services/CronService";
 import {EVSEService} from "../services/EVSEService";
 import {UserService} from "../services/UserService";
-import {ParametersMissingError} from "../errors/ParametersMissingError";
 import {BadRequestError} from "../errors/BadRequestError";
 import {config} from "../config";
 import {IApiRequest} from "../interfaces/IApiRequest";
@@ -22,6 +21,8 @@ import {UserChargingService} from "../services/UserChargingService";
 import {UtilityService} from "../services/UtilityService";
 import {PlugService} from "../services/PlugService";
 import {ChargingFacilityService} from "../services/ChargingFacilityService";
+import {db} from "../db";
+import {logger} from "../logger";
 const request = require('request');
 
 @Inject
@@ -98,13 +99,7 @@ export class ApiV1 extends ApiAbstract {
     const data = req.body;
 
     Promise.resolve()
-      .then(() => {
-
-        if (!data.languageCode) {
-
-          throw new ParametersMissingError(['languageCode']);
-        }
-      })
+      .then(() => this.checkRequiredParameters(data, ['languageCode']))
       .then(() => this.userService.registerOrAuthenticate(
         data.languageCode, data.providerId, data.evcoId, data.password))
       .then((user) => res.json(user))
@@ -374,6 +369,46 @@ export class ApiV1 extends ApiAbstract {
         next();
       })
       .catch(next)
+  }
+
+  processErrors(err: any, req: express.Request, res: express.Response, next: any): any {
+
+    // log errors
+    // ------------------
+    logger.error(err);
+
+    // http response
+    // ------------------
+
+    // Security header for content sniffing
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+
+    err = err || {message: 'unknown'};
+    const status = err.statusCode || HttpStatus.InternalServerError;
+    const secureToShow = err.secureToShow;
+
+    delete err.secureToShow;
+    delete err.statusCode;
+
+      if (secureToShow) {
+
+        res
+          .status(status)
+          .json(err)
+        ;
+      } else {
+
+        if (config.environment === 'development') {
+
+          res
+            .status(status)
+            .send(err && err.toString ? err.toString() : '')
+          ;
+        } else {
+
+          res.sendStatus(status);
+        }
+      }
   }
 
 // WebSocket namespaces
