@@ -24,17 +24,29 @@ export class Branding extends Model<Branding> {
 
   @Column({
     type: DataType.BLOB,
-    get() {
-      const image = this.getDataValue('logoIcon');
-
-      if (image) {
-        // convert buffer/blob data to image URL
-        return image.toString('utf8');
-      }
-    }
+    get: blobToImageUrlConverter('logoIcon')
   })
   logoIcon: string;
 
+  @Column({
+    type: DataType.BLOB,
+    get: blobToImageUrlConverter('markerIcon')
+  })
+  markerIcon: string;
+
   @HasMany(() => Provider)
   providers: Provider[];
+}
+
+function blobToImageUrlConverter(key: string) {
+
+  return function () {
+
+    const image = this.getDataValue(key);
+
+    if (image) {
+      // convert buffer/blob data to image URL
+      return image.toString('utf8');
+    }
+  }
 }

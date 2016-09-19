@@ -5,9 +5,9 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -17,12 +17,12 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
 
   return db.runSql(`
-    ALTER TABLE Branding ADD imprint TEXT;
+    ALTER TABLE Branding ADD markerIcon LONGBLOB;
   `);
 };
 
 exports.down = function(db) {
   return db.runSql(`
-    ALTER TABLE Branding DROP COLUMN imprint;
+    ALTER TABLE Branding DROP COLUMN markerIcon;
   `);
 };
