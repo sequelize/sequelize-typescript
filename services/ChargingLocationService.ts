@@ -161,7 +161,7 @@ export class ChargingLocationService {
         SELECT longitude, latitude
         FROM (SELECT longitude, latitude
         FROM (
-        	SELECT ROUND(longitude, 2) AS longitude, ROUND(latitude, 2) AS latitude FROM ChargingLocation
+        	SELECT ROUND(longitude, ${zoom >= 5 ? 0 : 2}) AS longitude, ROUND(latitude, ${zoom >= 5 ? 0 : 2}) AS latitude FROM ChargingLocation
         	) AS CL GROUP BY longitude, latitude) AS CL
         WHERE
           longitude >= :longitude1 AND
