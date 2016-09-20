@@ -59,70 +59,127 @@ export class ChargingLocationService {
                                     chargingFacilityIds?: number[],
                                     plugIds?: number[]) {
 
-    const evseWhere: any = {};
-    const evseInclude: IIncludeOptions[] = [
-      {
-        model: db.model(Status),
-        as: 'states',
-        through: {attributes: []}, // removes EVSEStatus property from status
-        // required: true
+
+    // return db.sequelize
+    //   .query(`
+    //     SELECT longitude, latitude
+    //     FROM ChargingLocation
+    //     WHERE
+    //       longitude >= :longitude1 AND
+    //       longitude <= :longitude2 AND
+    //       latitude >= :latitude1 AND
+    //       latitude <= :latitude2
+    // `, {
+    //     replacements: {longitude1, latitude1, longitude2, latitude2}
+    //   })
+    //   .then(data => {
+    //
+    //     if(data && data.length) {
+    //       // return data[0];
+    //       return this.geoService.getClusteredCoordinates(data[0], zoom);
+    //     }
+    //
+    //     return [];
+    //   })
+    //   ;
+
+    if (zoom > 8) {
+      // return chargingLocations;
+
+
+      const evseWhere: any = {};
+      const evseInclude: IIncludeOptions[] = [
+        {
+          model: db.model(Status),
+          as: 'states',
+          through: {attributes: []}, // removes EVSEStatus property from status
+          // required: true
+        }
+      ];
+
+      if (isOpen24Hours !== void 0) {
+
+        evseWhere.isOpen24Hours = isOpen24Hours;
       }
-    ];
 
-    if(isOpen24Hours !== void 0) {
+      if (chargingFacilityIds) {
 
-      evseWhere.isOpen24Hours = isOpen24Hours;
-    }
+        evseInclude.push({
+          model: db.model(ChargingFacility),
+          as: 'chargingFacilities',
+          through: {attributes: []}, // removes EVSEChargingFacility property from status,
+          where: {id: {$in: chargingFacilityIds}}
+        })
+      }
 
-    if(chargingFacilityIds) {
+      if (plugIds) {
+        evseInclude.push({
+          model: db.model(Plug),
+          as: 'plugs',
+          through: {attributes: []}, // removes EVSEPlug property from status
+          where: {id: {$in: plugIds}}
+        })
+      }
 
-      evseInclude.push({
-        model: db.model(ChargingFacility),
-        as: 'chargingFacilities',
-        through: {attributes: []}, // removes EVSEChargingFacility property from status,
-        where: {id: {$in: chargingFacilityIds}}
-      })
-    }
 
-    if(plugIds) {
-      evseInclude.push({
-        model: db.model(Plug),
-        as: 'plugs',
-        through: {attributes: []}, // removes EVSEPlug property from status
-        where: {id: {$in: plugIds}}
-      })
-    }
-
-    return db.model(ChargingLocation)
-      .findAll<ChargingLocation>({
-        include: [
-          {
-            model: db.model(EVSE),
-            attributes: ['id'],
-            as: 'evses',
-            required: true,
-            include: evseInclude,
-            where: evseWhere
+      return db.model(ChargingLocation)
+        .findAll<ChargingLocation>({
+          include: [
+            {
+              model: db.model(EVSE),
+              attributes: ['id'],
+              as: 'evses',
+              required: true,
+              include: evseInclude,
+              where: evseWhere
+            }
+          ],
+          where: {
+            longitude: {
+              $gte: longitude1,
+              $lte: longitude2
+            },
+            latitude: {
+              $gte: latitude1,
+              $lte: latitude2
+            }
           }
-        ],
-        where: {
-          longitude: {
-            $gte: longitude1,
-            $lte: longitude2
-          },
-          latitude: {
-            $gte: latitude1,
-            $lte: latitude2
+        })
+        .then(chargingLocations => {
+
+          if (zoom >= 12) {
+            return chargingLocations;
           }
-        }
+
+          return this.geoService.getClusteredCoordinates(chargingLocations, zoom);
+        })
+        ;
+    }
+
+    return db.sequelize
+      .query(`
+        SELECT longitude, latitude
+        FROM (SELECT longitude, latitude
+        FROM (
+        	SELECT ROUND(longitude, 2) AS longitude, ROUND(latitude, 2) AS latitude FROM ChargingLocation
+        	) AS CL GROUP BY longitude, latitude) AS CL
+        WHERE
+          longitude >= :longitude1 AND
+          longitude <= :longitude2 AND
+          latitude >= :latitude1 AND
+          latitude <= :latitude2
+          ;
+    `, {
+        replacements: {longitude1, latitude1, longitude2, latitude2}
       })
-      .then(chargingLocations => {
+      .then(data => {
 
-        if (zoom >= 12) {
-          return chargingLocations;
+        if (data && data.length) {
+          // return data[0];
+          return this.geoService.getClusteredCoordinates(data[0], zoom);
         }
 
-        return this.geoService.getClusteredCoordinates(chargingLocations, zoom);
+        return [];
       })
       ;
   }
