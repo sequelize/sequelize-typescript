@@ -126,3 +126,20 @@ http.createServer(app).listen(
   app.get('port'),
   () => logger.info('Server listening on port ' + app.get('port'))
 );
+
+
+import {Injector} from 'di-ts';
+import {SoapService} from "./services/SoapService";
+import {DataImporter} from "./services/DataImporter";
+
+if (process.env['INITIAL_IMPORT']) {
+
+  let injector = new Injector();
+  const soapService = injector.get(SoapService);
+  const dataImporter = injector.get(DataImporter);
+
+  soapService.eRoamingPullEvseData()
+    .then(data => dataImporter.execute(data))
+    .catch(err => console.log(err))
+  ;
+}

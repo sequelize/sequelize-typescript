@@ -33,6 +33,9 @@ import {logger} from "../logger";
 import {ChargingLocation} from "../models/ChargingLocation";
 import {IEVSE_tr} from "../interfaces/models/IEVSE_tr";
 import {IEVSE} from "../interfaces/models/IEVSE";
+import {GeoService} from "./GeoService";
+import {LocationCluster} from "../models/LocationCluster";
+import {LocationClusterChargingLocation} from "../models/LocationClusterChargingLocation";
 
 @Inject
 export class DataImporter {
@@ -45,7 +48,8 @@ export class DataImporter {
   private plugs;
   private valueAddedServices;
 
-  constructor(protected dataImportHelper: DataImportHelper) {
+  constructor(protected dataImportHelper: DataImportHelper,
+              protected geoService: GeoService) {
 
   }
 
@@ -60,9 +64,16 @@ export class DataImporter {
 
     const operatorData: IOperatorEvseData[] = data.EvseData.OperatorEvseData;
 
+
     return this.loadDependentData()
-      .then(() => this.processOperatorData(operatorData))
-      .then(() => this.processEvseData(operatorData))
+      .then(() => {
+        return db.sequelize.transaction((transaction: Transaction) => {
+
+          return this.clearData(transaction)
+            .then(() => this.processOperatorData(operatorData, transaction))
+            .then(() => this.processEvseData(operatorData, transaction))
+        });
+      })
       .then(() => logger.info('EvseData import successfully processed'))
       ;
   }
@@ -104,11 +115,16 @@ export class DataImporter {
   }
 
   /**
-   * Removes all EVSE data including their relational data
+   * Removes all ChargingLocation data including their relational data
+   * and LocationClusters
    */
   private clearData(transaction: Transaction) {
 
-    return db.model(ChargingLocation).destroy({transaction, where: {}});
+    return db.model(LocationClusterChargingLocation).destroy({transaction, where: {}})
+      .then(() => db.model(LocationCluster).destroy({transaction, where: {}}))
+      .then(() => db.model(ChargingLocation).destroy({transaction, where: {}}))
+      .then(() => db.model(Operator).destroy({transaction, where: {}}))
+      ;
   }
 
   /**
@@ -116,7 +132,7 @@ export class DataImporter {
    *  - Maps hbs structure to internal model
    *  - Stores new operators into database
    */
-  private processOperatorData(operatorData: IOperatorEvseData[]): Promise<void> {
+  private processOperatorData(operatorData: IOperatorEvseData[], transaction: Transaction): Promise<void> {
 
     logger.info('Starts processing operator data');
 
@@ -124,13 +140,7 @@ export class DataImporter {
 
     logger.info(`Operator data successfully mapped to fulfil IOperator interface (Count: ${operators.length})`);
 
-    return db.sequelize
-      .transaction((transaction: Transaction) => {
-
-        return db.model(Operator).destroy({transaction, where: {}})
-          .then(() => db.model(Operator).bulkCreate(operators, {transaction}))
-          ;
-      })
+    return db.model(Operator).bulkCreate(operators, {transaction})
       .then(() => {
         logger.info(`Operator data successfully processed (Count: ${operators.length})`)
       })
@@ -159,34 +169,64 @@ export class DataImporter {
    * - Processes international data
    * - processes relational enum types from EVSE data
    */
-  private processEvseData(operatorData: IOperatorEvseData[]) {
+  private processEvseData(operatorData: IOperatorEvseData[], transaction: Transaction) {
 
     logger.info('Starts processing evse data');
 
     const evseData: IEvseDataRecord[] = this.retrieveEvseDataFromOperatorData(operatorData);
 
-    return db.sequelize.transaction((transaction: Transaction) => {
+    return this.processChargingLocations(evseData, transaction)
+      .then(chargingLocations => this.processLocationClusters(chargingLocations, transaction))
+      .then(() => this.processPossibleSubOperatorsFromEvseData(evseData, transaction))
+      .then(() => {
 
-      return this.clearData(transaction)
-        .then(() => this.processChargingLocations(evseData, transaction))
-        .then(() => this.processPossibleSubOperatorsFromEvseData(evseData, transaction))
-        .then(() => {
+        const evses = this.mapEvseDataToEvses(evseData);
 
-          const evses = this.mapEvseDataToEvses(evseData);
+        logger.info(`Evse data successfully mapped (Count: ${evses.length})`);
 
-          logger.info(`Evse data successfully mapped (Count: ${evses.length})`);
-
-          return db.model(EVSE).bulkCreate(evses, {transaction});
-        })
-        .then(() => this.processInternationalData(evseData, transaction))
-        .then(() => this.processEVSERelationalData(evseData, transaction))
-        ;
-
-    });
-
+        return db.model(EVSE).bulkCreate(evses, {transaction});
+      })
+      .then(() => this.processInternationalData(evseData, transaction))
+      .then(() => this.processEVSERelationalData(evseData, transaction))
+      ;
   }
 
-  private processChargingLocations(evseData: IEvseDataRecord[], transaction: Transaction) {
+  /**
+   * Clusters charging locations and stores these location clusters into database
+   */
+  private processLocationClusters(chargingLocations: IChargingLocation[], transaction: Transaction) {
+
+    const idObject = {id: 1};
+    const epsilons = [0.01, 0.02, 0.03, 0.09, 0.15, 0.2, 0.35, 0.55, 0.7, 0.85, 1];
+
+    return Promise.all(epsilons.map(epsilon =>
+      this.geoService.getLocationClusters(chargingLocations, epsilon, idObject)
+    ))
+      .then((locationClusterArrays: LocationCluster[][]) => {
+
+        const locationClusters: LocationCluster[] = [].concat(...locationClusterArrays);
+        const locationClusterChargingLocations: ILocationClusterChargingLocation[] = [];
+
+        locationClusters.forEach(locationCluster => {
+
+          locationCluster.chargingLocations.forEach(chargingLocation => {
+
+            locationClusterChargingLocations.push({
+              locationClusterId: locationCluster.id,
+              chargingLocationId: chargingLocation.id
+            })
+          });
+
+          delete locationCluster.chargingLocations;
+        });
+
+        return db.model(LocationCluster).bulkCreate(locationClusters, {transaction})
+          .then(() => db.model(LocationClusterChargingLocation).bulkCreate(locationClusterChargingLocations, {transaction, ignoreDuplicates: true}))
+      })
+      ;
+  }
+
+  private processChargingLocations(evseData: IEvseDataRecord[], transaction: Transaction): Promise<IChargingLocation[]> {
 
     // Since the charging locations table is empty,
     // we are able to define the ids in the code;
@@ -207,7 +247,7 @@ export class DataImporter {
 
       // the concatination of longitude and latitude will
       // identify one charging location
-      const coord = this.dataImportHelper.concat(longitude, '|',latitude);
+      const coord = this.dataImportHelper.concat(longitude, '|', latitude);
 
       let chargingLocation: IChargingLocation = chargingLocations[coord];
 
@@ -229,9 +269,11 @@ export class DataImporter {
       evseData.ChargingLocationId = chargingLocation.id;
     });
 
-    return db.model(ChargingLocation).bulkCreate(chargingLocations, {transaction});
+    return db.model(ChargingLocation)
+      .bulkCreate(chargingLocations, {transaction})
+      .then(() => chargingLocations)
+      ;
   }
-
 
 
   /**

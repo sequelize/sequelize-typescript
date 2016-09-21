@@ -10,29 +10,28 @@ export class GeoService {
    * If one cluster consists of one coordinate, this coordinate
    * will be returned as it is
    */
-  getClusteredCoordinates(coordinates: ICoordinate[], zoom: number): Promise<IClusteredCoordinate[]> {
+  getLocationClusters(chargingLocations: IChargingLocation[], epsilon: number, idObject: {id: number}): Promise<ILocationCluster[]> {
 
-    return new Promise<ICoordinate[]>((resolve, reject) => {
+    return new Promise<ILocationCluster[]>((resolve, reject) => {
 
       try {
 
-        const radius = this.getRadiusByZoom(zoom);
-        const clusters = this.getClusters(coordinates, radius);
-        const clusteredCoordinates = clusters.map(cluster => this.getCentralGeoCoordinate(cluster));
+        const clusters = this.getClusters(chargingLocations, epsilon);
+        const clusteredCoordinates = clusters.map(cluster => this.getLocationCluster(cluster, epsilon, idObject));
 
         resolve(clusteredCoordinates);
 
-      }catch(e) {
+      } catch (e) {
         reject(e);
       }
     });
   }
 
   /**
-   * Maps google maps zoom value to a radius for
+   * Maps google maps zoom value to a epsilon for
    * coordinate clustering
    */
-  private getRadiusByZoom(zoom: number) {
+  getEpsilonByZoom(zoom: number) {
 
     switch (zoom) {
       case 11:
@@ -65,8 +64,8 @@ export class GeoService {
   /**
    * Clusters specified coordinates by givin' radius
    */
-  private getClusters(coordinates: ICoordinate[], radius: number) {
-    const coordinatePairs = coordinates.map(c => [c.longitude, c.latitude]);
+  private getClusters(chargingLocations: IChargingLocation[], radius: number) {
+    const coordinatePairs = chargingLocations.map(c => [c.longitude, c.latitude]);
 
     // number of points in neighborhood to form a cluster;
     // should always be 1; otherwise in some constellation
@@ -80,7 +79,7 @@ export class GeoService {
 
     clusterIndizes.forEach((cluster: number[]) => {
 
-      clusters.push(cluster.map(index => coordinates[index]));
+      clusters.push(cluster.map(index => chargingLocations[index]));
     });
 
     return clusters;
@@ -91,17 +90,28 @@ export class GeoService {
    * coordinates, if list contains only one element,
    * this element will be returned
    */
-  private getCentralGeoCoordinate(coordinates: ICoordinate[]): IClusteredCoordinate {
+  private getLocationCluster(chargingLocations: IChargingLocation[], epsilon: number, idObject: {id:number}): ILocationCluster {
 
-    if (coordinates.length == 1) {
-      return coordinates[0];
+    const id = idObject.id++;
+
+    if (chargingLocations.length == 1) {
+
+      const chargingLocation: IChargingLocation = chargingLocations[0];
+
+      return {
+        id,
+        longitude: chargingLocation.longitude,
+        latitude: chargingLocation.latitude,
+        epsilon,
+        chargingLocations: [chargingLocation]
+      };
     }
 
     let x = 0;
     let y = 0;
     let z = 0;
 
-    for (let coordinate of coordinates) {
+    for (let coordinate of chargingLocations) {
       let latitude = coordinate.latitude * Math.PI / 180;
       let longitude = coordinate.longitude * Math.PI / 180;
 
@@ -110,7 +120,7 @@ export class GeoService {
       z += Math.sin(latitude);
     }
 
-    let total = coordinates.length;
+    let total = chargingLocations.length;
 
     x = x / total;
     y = y / total;
@@ -120,6 +130,12 @@ export class GeoService {
     let centralSquareRoot = Math.sqrt(x * x + y * y);
     let centralLatitude = Math.atan2(z, centralSquareRoot);
 
-    return {latitude: centralLatitude * 180 / Math.PI, longitude: centralLongitude * 180 / Math.PI, groupCount: coordinates.length};
+    return {
+      id,
+      latitude: centralLatitude * 180 / Math.PI,
+      longitude: centralLongitude * 180 / Math.PI,
+      epsilon,
+      chargingLocations
+    };
   }
 }
