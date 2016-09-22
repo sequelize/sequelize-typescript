@@ -18,6 +18,12 @@ export class Plug extends Model<Plug> {
   @Column
   option: string;
 
+  @Column
+  category: string;
+
+  @Column
+  label: string;
+
   @BelongsToMany(() => EVSE, () => EVSEPlug)
   evses;
 

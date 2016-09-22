@@ -42,6 +42,9 @@ export class LocationCluster extends Model<LocationCluster> implements ILocation
   @Column({
     type: DataType.VIRTUAL,
     get() {
+      
+      // TODO Hier gehört nicht alles hin ;)
+      
       const chargingLocations = this.getDataValue('chargingLocations');
       const groupCount = chargingLocations.length;
       let evses;

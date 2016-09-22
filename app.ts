@@ -128,6 +128,8 @@ http.createServer(app).listen(
 );
 
 
+// FOR INITIAL DATA IMPORT
+// ----------------------------------------------
 import {Injector} from 'di-ts';
 import {SoapService} from "./services/SoapService";
 import {DataImporter} from "./services/DataImporter";
