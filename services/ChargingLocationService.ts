@@ -60,8 +60,13 @@ export class ChargingLocationService {
                                     chargingFacilityIds?: number[],
                                     plugIds?: number[]): Promise<ChargingLocation[]|LocationCluster[]> {
 
-
+    const epsilon = this.geoService.getEpsilonByZoom(zoom);
     let evseWhere: any;
+    let evseChargingFacilityJoin: string = '';
+    let evsePlugJoin: string = '';
+    let evseWhereStr: string = '';
+    const replacements: any = {longitude1, longitude2, latitude1, latitude2, epsilon};
+
     const evseInclude: IIncludeOptions[] = [
       {
         model: db.model(Status),
@@ -71,10 +76,14 @@ export class ChargingLocationService {
         // required: true
       }
     ];
+
     if (isOpen24Hours !== void 0) {
       evseWhere = {};
       evseWhere.isOpen24Hours = isOpen24Hours;
+      evseWhereStr += `AND e.isOpen24Hours = :isOpen24Hours`;
+      replacements.isOpen24Hours = isOpen24Hours;
     }
+
     const chargingLocationInclude = [{
       model: db.model(EVSE),
       attributes: ['id'],
@@ -83,6 +92,7 @@ export class ChargingLocationService {
       include: evseInclude,
       where: evseWhere
     }];
+
     const where = <any>{
       longitude: {
         $gte: longitude1,
@@ -101,7 +111,12 @@ export class ChargingLocationService {
         as: 'chargingFacilities',
         through: {attributes: []}, // removes EVSEChargingFacility property from status,
         where: {id: {$in: chargingFacilityIds}}
-      })
+      });
+      evseChargingFacilityJoin = `
+        INNER JOIN EVSEChargingFacility ecf ON ecf.evseId = e.id
+        AND ecf.chargingFacilityId IN (:chargingFacilityIds)
+      `;
+      replacements.chargingFacilityIds = chargingFacilityIds;
     }
 
     if (plugIds) {
@@ -110,7 +125,12 @@ export class ChargingLocationService {
         as: 'plugs',
         through: {attributes: []}, // removes EVSEPlug property from status
         where: {id: {$in: plugIds}}
-      })
+      });
+      evsePlugJoin = `
+        INNER JOIN EVSEPlug ep ON ep.evseId = e.id
+        AND ep.plugId IN (:plugIds)
+      `;
+      replacements.plugIds = plugIds;
     }
 
     if (zoom >= 12) {
@@ -123,22 +143,50 @@ export class ChargingLocationService {
         ;
     }
 
-    where.epsilon = this.geoService.getEpsilonByZoom(zoom);
+    if (zoom > 9) {
 
-    return db.model(LocationCluster)
-      .findAll<LocationCluster>({
-        attributes: ['latitude', 'longitude'],
-        include: [
-          {
-            model: db.model(ChargingLocation),
-            attributes: ['id'],
-            as: 'chargingLocations',
-            include: chargingLocationInclude
-          }
-        ],
-        where
-      })
-      ;
+      where.epsilon = epsilon;
+
+      return db.model(LocationCluster)
+        .findAll<LocationCluster>({
+          attributes: ['latitude', 'longitude'],
+          include: [
+            {
+              model: db.model(ChargingLocation),
+              attributes: ['id'],
+              as: 'chargingLocations',
+              include: chargingLocationInclude
+            }
+          ],
+          where
+        })
+        ;
+    }
+
+    return db.sequelize
+      .query(`
+        SELECT 
+          lc.id, 
+          lc.latitude, 
+          lc.longitude, 
+          COUNT(cl.id) AS groupCount
+        FROM LocationCluster lc
+          INNER JOIN LocationClusterChargingLocation lccl ON lccl.locationClusterId = lc.id
+          INNER JOIN ChargingLocation cl ON cl.id = lccl.chargingLocationId
+          INNER JOIN EVSE e ON e.chargingLocationId = cl.id ${evseWhereStr}
+          ${evseChargingFacilityJoin}
+          ${evsePlugJoin}
+        WHERE
+          lc.longitude >= :longitude1 
+          AND lc.longitude <= :longitude2 
+          AND lc.latitude >= :latitude1
+          AND lc.latitude <= :latitude2
+          AND lc.epsilon = :epsilon
+        GROUP BY lc.id
+        HAVING groupCount > 1
+    `, {replacements})
+      .then(res => res && res.length ? res[0] : [])
+    ;
   }
 
 }
