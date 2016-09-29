@@ -33,15 +33,21 @@ export class GeoService {
    */
   getEpsilonByZoom(zoom: number) {
 
+    if(zoom > 16){
+      return 0.0007;
+    }
+
     switch (zoom) {
+      case 16:
+        return 0.0008;
       case 15:
-        return 0.002;
+        return 0.001;
       case 14:
-        return 0.003;
+        return 0.0025;
       case 13:
-        return 0.006;
+        return 0.005;
       case 12:
-        return 0.0089;
+        return 0.008;
       case 11:
         return 0.01;
       case 10:
@@ -145,12 +151,12 @@ export class GeoService {
       epsilon,
       chargingLocations
     };
-    
+
     if(addGroupCount) {
-      
+
       locationCluster.groupCount = total;
     }
-    
+
     return locationCluster;
   }
 }
