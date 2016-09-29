@@ -147,7 +147,7 @@ export class ChargingLocationService {
 
           if(chargingLocations.length > 400) {
 
-            return <any>this.geoService.getLocationClusters(chargingLocations, epsilon);
+            return <any>this.geoService.getLocationClusters(chargingLocations, epsilon, null, true);
           }
 
           return chargingLocations;

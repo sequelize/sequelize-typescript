@@ -10,7 +10,7 @@ export class GeoService {
    * If one cluster consists of one coordinate, this coordinate
    * will be returned as it is
    */
-  getLocationClusters(chargingLocations: IChargingLocation[], epsilon: number, idObject?: {id: number}): Promise<ILocationCluster[]> {
+  getLocationClusters(chargingLocations: IChargingLocation[], epsilon: number, idObject?: {id: number}, addGroupCount = false): Promise<ILocationCluster[]> {
 
     return new Promise<ILocationCluster[]>((resolve, reject) => {
 
@@ -98,7 +98,7 @@ export class GeoService {
    * coordinates, if list contains only one element,
    * this element will be returned
    */
-  private getLocationCluster(chargingLocations: IChargingLocation[], epsilon: number, idObject?: {id:number}): ILocationCluster {
+  private getLocationCluster(chargingLocations: IChargingLocation[], epsilon: number, idObject?: {id:number}, addGroupCount = false): ILocationCluster {
 
     const id = idObject ? idObject.id++ : null;
 
@@ -138,12 +138,19 @@ export class GeoService {
     let centralSquareRoot = Math.sqrt(x * x + y * y);
     let centralLatitude = Math.atan2(z, centralSquareRoot);
 
-    return {
+    const locationCluster: ILocationCluster = {
       id,
       latitude: centralLatitude * 180 / Math.PI,
       longitude: centralLongitude * 180 / Math.PI,
       epsilon,
       chargingLocations
     };
+    
+    if(addGroupCount) {
+      
+      locationCluster.groupCount = total;
+    }
+    
+    return locationCluster;
   }
 }
