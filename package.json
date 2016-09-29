@@ -1,6 +1,6 @@
 {
   "name": "intercharge-backend",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "description": "Description for server-proto",
   "scripts": {
     "docs": "apidoc -i api/ -o documentation/",

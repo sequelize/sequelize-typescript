@@ -1,7 +1,7 @@
 
 interface ILocationCluster {
 
-  id: number;
+  id?: number;
   longitude: number;
   latitude: number;
   epsilon: number;

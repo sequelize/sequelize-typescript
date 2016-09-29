@@ -10,7 +10,7 @@ export class GeoService {
    * If one cluster consists of one coordinate, this coordinate
    * will be returned as it is
    */
-  getLocationClusters(chargingLocations: IChargingLocation[], epsilon: number, idObject: {id: number}): Promise<ILocationCluster[]> {
+  getLocationClusters(chargingLocations: IChargingLocation[], epsilon: number, idObject?: {id: number}): Promise<ILocationCluster[]> {
 
     return new Promise<ILocationCluster[]>((resolve, reject) => {
 
@@ -34,6 +34,14 @@ export class GeoService {
   getEpsilonByZoom(zoom: number) {
 
     switch (zoom) {
+      case 15:
+        return 0.002;
+      case 14:
+        return 0.003;
+      case 13:
+        return 0.006;
+      case 12:
+        return 0.0089;
       case 11:
         return 0.01;
       case 10:
@@ -90,9 +98,9 @@ export class GeoService {
    * coordinates, if list contains only one element,
    * this element will be returned
    */
-  private getLocationCluster(chargingLocations: IChargingLocation[], epsilon: number, idObject: {id:number}): ILocationCluster {
+  private getLocationCluster(chargingLocations: IChargingLocation[], epsilon: number, idObject?: {id:number}): ILocationCluster {
 
-    const id = idObject.id++;
+    const id = idObject ? idObject.id++ : null;
 
     if (chargingLocations.length == 1) {
 

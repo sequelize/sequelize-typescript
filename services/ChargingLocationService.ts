@@ -80,6 +80,7 @@ export class ChargingLocationService {
     if (isOpen24Hours !== void 0) {
       evseWhere = {};
       evseWhere.isOpen24Hours = isOpen24Hours;
+
       evseWhereStr += `AND e.isOpen24Hours = :isOpen24Hours`;
       replacements.isOpen24Hours = isOpen24Hours;
     }
@@ -112,6 +113,7 @@ export class ChargingLocationService {
         through: {attributes: []}, // removes EVSEChargingFacility property from status,
         where: {id: {$in: chargingFacilityIds}}
       });
+
       evseChargingFacilityJoin = `
         INNER JOIN EVSEChargingFacility ecf ON ecf.evseId = e.id
         AND ecf.chargingFacilityId IN (:chargingFacilityIds)
@@ -126,6 +128,7 @@ export class ChargingLocationService {
         through: {attributes: []}, // removes EVSEPlug property from status
         where: {id: {$in: plugIds}}
       });
+
       evsePlugJoin = `
         INNER JOIN EVSEPlug ep ON ep.evseId = e.id
         AND ep.plugId IN (:plugIds)
@@ -139,6 +142,15 @@ export class ChargingLocationService {
         .findAll<ChargingLocation>({
           include: chargingLocationInclude,
           where
+        })
+        .then(chargingLocations => {
+
+          if(chargingLocations.length > 400) {
+
+            return <any>this.geoService.getLocationClusters(chargingLocations, epsilon);
+          }
+
+          return chargingLocations;
         })
         ;
     }
