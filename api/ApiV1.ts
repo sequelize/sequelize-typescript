@@ -306,16 +306,43 @@ export class ApiV1 extends ApiAbstract {
 
     Promise.resolve()
       .then(() => this.checkRequiredParameters(req.query, ['longitude1', 'latitude1', 'longitude2', 'latitude2', 'zoom']))
-      .then(() => this.chargingLocationService.getChargingLocationsByCoordinates(
-        parseFloat(req.query['longitude1']),
-        parseFloat(req.query['latitude1']),
-        parseFloat(req.query['longitude2']),
-        parseFloat(req.query['latitude2']),
-        parseInt(req.query['zoom']),
-        this.utilityService.toBoolean(req.query['isOpen24Hours']),
-        this.utilityService.toArray<number>(req.query['chargingFacilityIds']),
-        this.utilityService.toArray<number>(req.query['plugIds'])
-      ))
+      .then(() => {
+
+        // TODO  This is an ugly fix, which adjusts the specified coordinates by the intercharge-app
+        // TODO  if zoom is larger than 12
+        // TODO  This has to be adjusted in the app instead of the backend in the next version
+
+        // TODO  Additionally: The zoom value shouldn't be used as well; So there shouldn't be a
+        // TODO  mapping from zoom value to epsilon. The epsilon value should be provided instead
+
+        let longitude1 = parseFloat(req.query['longitude1']);
+        let latitude1 = parseFloat(req.query['latitude1']);
+        let longitude2 = parseFloat(req.query['longitude2']);
+        let latitude2 = parseFloat(req.query['latitude2']);
+        let zoom = parseInt(req.query['zoom']);
+
+        if (zoom > 11) {
+
+          const WRONG_APP_ADJUSTMENT_VALUE = 0.08;
+          const newAdjustmentValue = this.getAdjustValueForCoordinates(zoom);
+
+          longitude1 = longitude1 + WRONG_APP_ADJUSTMENT_VALUE - newAdjustmentValue;
+          latitude1 = latitude1 + WRONG_APP_ADJUSTMENT_VALUE - newAdjustmentValue;
+          longitude2 = longitude2 - WRONG_APP_ADJUSTMENT_VALUE + newAdjustmentValue;
+          latitude2 = latitude2 - WRONG_APP_ADJUSTMENT_VALUE + newAdjustmentValue;
+        }
+
+        return this.chargingLocationService.getChargingLocationsByCoordinates(
+          longitude1,
+          latitude1,
+          longitude2,
+          latitude2,
+          zoom,
+          this.utilityService.toBoolean(req.query['isOpen24Hours']),
+          this.utilityService.toArray<number>(req.query['chargingFacilityIds']),
+          this.utilityService.toArray<number>(req.query['plugIds'])
+        )
+      })
       .then(chargingLocations => res.json(chargingLocations))
       .catch(next)
     ;
@@ -390,31 +417,57 @@ export class ApiV1 extends ApiAbstract {
     delete err.secureToShow;
     delete err.statusCode;
 
-      if (secureToShow) {
+    if (secureToShow) {
+
+      res
+        .status(status)
+        .json(err)
+      ;
+    } else {
+
+      if (config.environment === 'development') {
 
         res
           .status(status)
-          .json(err)
+          .send(err && err.toString ? err.toString() : '')
         ;
       } else {
 
-        if (config.environment === 'development') {
-
-          res
-            .status(status)
-            .send(err && err.toString ? err.toString() : '')
-          ;
-        } else {
-
-          res.sendStatus(status);
-        }
+        res.sendStatus(status);
       }
+    }
   }
 
-// WebSocket namespaces
-// ===============================
+  // WebSocket namespaces
+  // ===============================
 
   @SocketNamespace
   evseStates: Namespace;
 
+
+  // Helper
+  // ===============================
+
+  /**
+   * TODO to fix an issue for front end, see getChargingLocations
+   */
+  private getAdjustValueForCoordinates(zoom: number) {
+
+    if (zoom > 15) {
+      return 0.005;
+    }
+
+    switch (zoom) {
+      case 15:
+        return 0.01;
+      case 14:
+        return 0.015;
+      case 13:
+        return 0.02;
+      case 12:
+        return 0.07;
+      default:
+        return 0;
+    }
+  }
 }
