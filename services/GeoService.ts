@@ -34,18 +34,18 @@ export class GeoService {
   getEpsilonByZoom(zoom: number) {
 
     if(zoom > 16){
-      return 0.0008;
+      return 0.00095;
     }
 
     switch (zoom) {
       case 16:
-        return 0.0001;
+        return 0.001;
       case 15:
-        return 0.0015;
+        return 0.002;
       case 14:
-        return 0.0025;
+        return 0.00275;
       case 13:
-        return 0.003;
+        return 0.0035;
       case 12:
         return 0.008;
       case 11:
