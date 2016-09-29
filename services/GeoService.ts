@@ -17,7 +17,7 @@ export class GeoService {
       try {
 
         const clusters = this.getClusters(chargingLocations, epsilon);
-        const clusteredCoordinates = clusters.map(cluster => this.getLocationCluster(cluster, epsilon, idObject));
+        const clusteredCoordinates = clusters.map(cluster => this.getLocationCluster(cluster, epsilon, idObject, addGroupCount));
 
         resolve(clusteredCoordinates);
 
