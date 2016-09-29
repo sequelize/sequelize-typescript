@@ -49,6 +49,12 @@ The policy should look like this:
 }
 ````
 
+#### Saved configurations (aws)
+
+There are currently 2 saved configurations for the intercharge application:
+ - `intercharge-dev`
+ - `intercharge-prod`
+
 ### Environment variables
 
 The application needs some environment variables for configuration.
@@ -105,6 +111,16 @@ Type         | Protocol | Port Range | Source
 MYSQL/Aurora | TCP      | 3306       | sg-?????
 
 ````
+
+### Deployment via eb-cli
+
+#### Creating new environment in elasticbeanstalk via eb-cli
+
+From the repo directory call `eb create <ENVIRONMENT_NAME> --cfg <SAVED_CONFIG_NAME>` to create a new environment. Pass one of the available configurations to create either a production or a development/qa instance.
+
+#### Deploy new versions
+
+From the repo directory select the environment, which should be updated (`eb use <ENVIRONMENT_NAME>`) and call `eb deploy`. Therefore the last changes have to be pushed to the remote repo.
 
 ## Running node.js server
 
