@@ -1,0 +1,19 @@
+{
+  "name": "sequelize-typescript",
+  "version": "1.0.1",
+  "description": "Wrapper for sequelize to annotate classes",
+  "scripts": {},
+  "main": "dist",
+  "dependencies": {
+    "@types/node": "^6.0.41",
+    "@types/reflect-metadata": "0.0.4",
+    "@types/sequelize": "^4.0.36",
+    "sequelize": "git+https://github.com/RobinBuschmann/sequelize.git"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.3"
+  },
+  "engines": {
+    "node": ">=0.8.15"
+  }
+}
