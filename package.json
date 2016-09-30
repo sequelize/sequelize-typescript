@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "Wrapper for sequelize to annotate classes",
   "scripts": {},
-  "main": "dist",
+  "main": "dist/main.js",
   "dependencies": {
     "@types/node": "^6.0.41",
     "@types/reflect-metadata": "0.0.4",

@@ -5,6 +5,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
+    "declaration": true,
     "pretty": true,
     "outDir": "dist/",
     "skipLibCheck": true
