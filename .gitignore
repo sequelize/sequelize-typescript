@@ -8,33 +8,7 @@
 node_modules
 typings
 
-# cache
-.temp
-.sass-cache
-
 # testing
 coverage
 test
 
-# certificates
-certificates/*
-
-# documentation
-documentation
-
-# js files
-**/*.js
-**/*.js.map
-# expect
-!Gruntfile.js
-
-# ..
-evseDataMock.json
-evseStatusMock.json
-playground.sql
-req.xml
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml

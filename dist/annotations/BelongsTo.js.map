@@ -1,0 +1,1 @@
+{"version":3,"file":"BelongsTo.js","sourceRoot":"","sources":["../../src/annotations/BelongsTo.ts"],"names":[],"mappings":";AACA,4CAA0C,yCAAyC,CAAC,CAAA;AAEpF,mBAA0B,kBAAsC,EAAE,UAAmB;IAEnF,MAAM,CAAC,UAAU,MAAW,EAAE,YAAoB;QAEhD,yDAA2B,CAAC,cAAc,CACxC,MAAM,CAAC,WAAW,EAClB,yDAA2B,CAAC,UAAU,EACtC,kBAAkB,EAClB,YAAY,EACZ,UAAU,CACX,CAAA;IACH,CAAC,CAAA;AACH,CAAC;AAZe,iBAAS,YAYxB,CAAA"}
