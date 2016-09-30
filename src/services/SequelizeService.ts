@@ -5,8 +5,8 @@ import {SequelizeModelService} from "./SequelizeModelService";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {SequelizeAssociationService} from "./SequelizeAssociationService";
 import throttle = require("lodash/throttle");
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class SequelizeService {
 
@@ -31,7 +31,7 @@ export class SequelizeService {
 
     this.isInitialized = true;
   }
-  
+
   /**
    * Returns sequelize Model by specified class from
    * registered classes

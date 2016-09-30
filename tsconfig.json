@@ -5,12 +5,17 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
-    "rootDir": ".",
-    "pretty": true
+    "pretty": true,
+    "outDir": "dist/",
+    "skipLibCheck": true
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "node_modules",
     "documentation",
     "test"
-  ]
+  ],
+  "compileOnSave": false
 }

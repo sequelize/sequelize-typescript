@@ -24,6 +24,7 @@ import {InstanceIncrementDecrementOptions} from "sequelize";
 import {Sequelize} from "sequelize";
 import {DestroyOptions} from "sequelize";
 import {IFindOptions} from "../interfaces/IFindOptions";
+import * as Promise from "bluebird";
 
 export abstract class Model<T> {
 
