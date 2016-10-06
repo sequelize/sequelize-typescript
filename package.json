@@ -2,9 +2,11 @@
   "name": "sequelize-typescript",
   "version": "1.0.1",
   "description": "Wrapper for sequelize to annotate classes",
-  "scripts": {},
-  "main": "./dist/main.js",
-  "types": "./dist/main.d.ts",
+  "scripts": {
+    "compile": "tsc"
+  },
+  "main": "./main.js",
+  "types": "./main.d.ts",
   "dependencies": {
     "@types/node": "^6.0.41",
     "@types/reflect-metadata": "0.0.4",

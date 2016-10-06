@@ -1,1 +1,0 @@
-{"version":3,"file":"PrimaryKey.js","sourceRoot":"","sources":["../../src/annotations/PrimaryKey.ts"],"names":[],"mappings":";AAAA,QAAO,kBAAkB,CAAC,CAAA;AAE1B,sCAAoC,mCAAmC,CAAC,CAAA;AAExE;;;;;GAKG;AACH,oBAA2B,MAAW,EAAE,YAAoB;IAE1D,IAAI,OAAO,GAAG,6CAAqB,CAAC,mBAAmB,CAAC,MAAM,CAAC,WAAW,EAAE,YAAY,CAAC,CAAC;IAE1F,OAAO,CAAC,UAAU,GAAG,IAAI,CAAC;AAC5B,CAAC;AALe,kBAAU,aAKzB,CAAA"}

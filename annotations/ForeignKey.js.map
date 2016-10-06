@@ -1,0 +1,1 @@
+{"version":3,"file":"ForeignKey.js","sourceRoot":"","sources":["ForeignKey.ts"],"names":[],"mappings":";AACA,4CAA0C,yCAAyC,CAAC,CAAA;AAEpF,oBAA2B,kBAAsC;IAE/D,MAAM,CAAC,UAAU,MAAW,EAAE,YAAoB;QAEhD,yDAA2B,CAAC,aAAa,CAAC,MAAM,CAAC,WAAW,EAAE,kBAAkB,EAAE,YAAY,CAAC,CAAC;IAClG,CAAC,CAAA;AACH,CAAC;AANe,kBAAU,aAMzB,CAAA"}

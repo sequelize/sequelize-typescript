@@ -7,12 +7,9 @@
     "sourceMap": true,
     "declaration": true,
     "pretty": true,
-    "outDir": "dist/",
+    "rootDir": ".",
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*"
-  ],
   "exclude": [
     "node_modules",
     "documentation",
