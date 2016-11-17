@@ -4,7 +4,7 @@ import { col } from "sequelize";
 import { and } from "sequelize";
 import { or } from "sequelize";
 import { WhereOptions } from "sequelize";
-import { FindOptionsAttriburesArray } from "sequelize";
+import { FindOptionsAttributesArray } from "sequelize";
 import { IIncludeOptions } from "./IIncludeOptions";
 import { literal } from "sequelize";
 import { SearchPathOptions } from "sequelize";
@@ -20,8 +20,8 @@ export interface IFindOptions extends LoggingOptions, SearchPathOptions {
      * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
      * have in the returned instance
      */
-    attributes?: FindOptionsAttriburesArray | {
-        include?: FindOptionsAttriburesArray;
+    attributes?: FindOptionsAttributesArray | {
+        include?: FindOptionsAttributesArray;
         exclude?: Array<string>;
     };
     /**

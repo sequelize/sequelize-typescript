@@ -97,7 +97,7 @@ var SequelizeService = (function () {
                 var fullPath = path.join(targetDir_1, file);
                 var modelName = path.basename(file, '.js');
                 // use require main to require from root
-                return require.main.require('./' + fullPath)[modelName];
+                return require.main.require(fullPath)[modelName];
             });
         }
         return value;
