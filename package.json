@@ -11,9 +11,10 @@
     "@types/node": "^6.0.41",
     "@types/reflect-metadata": "0.0.4",
     "@types/sequelize": "^4.0.36",
-    "sequelize": "git+https://github.com/RobinBuschmann/sequelize.git"
+    "sequelize": "git+https://github.com/RobinBuschmann/sequelize.git#mysql-jsonp"
   },
   "devDependencies": {
+    "tslint": "^3.15.1",
     "typescript": "^2.0.3"
   },
   "engines": {
