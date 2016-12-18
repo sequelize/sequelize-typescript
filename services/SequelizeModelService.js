@@ -10,7 +10,8 @@ var SequelizeModelService = (function () {
      */
     SequelizeModelService.setTableName = function (_class, tableName) {
         var options = this.getOptions(_class);
-        options.tableName = tableName;
+        if (!options.tableName)
+            options.tableName = tableName;
     };
     /**
      * Sets model name from class by storing this
