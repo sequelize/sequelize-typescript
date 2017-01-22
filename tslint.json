@@ -1,0 +1,45 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "arrow-parens": false,
+    "class-name": false,
+    "no-empty": false,
+    "no-trailing-whitespace": false,
+    "object-literal-sort-keys": false,
+    "interface-name": true,
+    "no-consecutive-blank-lines": false,
+    "trailing-comma": false,
+    "ordered-imports": false,
+    "max-line-length": [
+      true,
+      140
+    ],
+    "member-access": false,
+    "no-string-literal": false,
+    "curly": false,
+    "only-arrow-functions": false,
+    "typedef": [
+      true,
+      "call-signature",
+      "parameter"
+    ],
+    "no-var-requires": false,
+    "quotemark": [
+      "single"
+    ],
+    "triple-equals": true,
+    "member-ordering": [
+      true,
+      "public-before-private",
+      "static-before-instance",
+      "variables-before-functions"
+    ],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ]
+  }
+}

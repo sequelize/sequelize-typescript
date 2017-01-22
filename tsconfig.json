@@ -5,15 +5,19 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
-    "declaration": true,
+//    "declaration": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
     "pretty": true,
-    "rootDir": ".",
     "skipLibCheck": true
   },
+  "include": [
+    "lib/**/*",
+    "test/**/*"
+  ],
   "exclude": [
     "node_modules",
     "documentation",
     "test"
-  ],
-  "compileOnSave": false
+  ]
 }

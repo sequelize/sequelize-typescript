@@ -5,8 +5,8 @@
   "scripts": {
     "compile": "tsc"
   },
-  "main": "./main.js",
-  "types": "./main.d.ts",
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
   "dependencies": {
     "@types/node": "6.0.41",
     "@types/reflect-metadata": "0.0.4",
@@ -14,6 +14,8 @@
     "sequelize": "git+https://github.com/RobinBuschmann/sequelize.git#mysql-jsonb"
   },
   "devDependencies": {
+    "reflect-metadata": "0.1.9",
+    "tslint": "4.3.1",
     "typescript": "2.0.3"
   },
   "engines": {
