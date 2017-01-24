@@ -32,6 +32,24 @@ export class SequelizeService {
   }
 
   /**
+   * Initializes sequelize with specified configuration
+   */
+  _init(config: ISequelizeConfig,
+        paths: string[]): void {
+
+    this.sequelize = new Sequelize(
+      config.name,
+      config.username,
+      config.password,
+      config
+    );
+
+
+
+
+  }
+
+  /**
    * Returns sequelize Model by specified class from
    * registered classes
    */
@@ -156,7 +174,7 @@ export class SequelizeService {
 
         return models;
       }, [])
-      ;
+        ;
 
     }
 
