@@ -14,7 +14,7 @@ export function Column(...args: any[]): Function|void {
     const propertyName = arguments[1];
 
     const sequelizeType = SequelizeModelService.getSequelizeTypeByDesignType(target, propertyName);
-    const options = SequelizeModelService.getAttributeOptions(target.constructor, propertyName);
+    const options = SequelizeModelService.getAttributeOptions(target, propertyName);
     options.type = sequelizeType;
 
     return;
@@ -22,6 +22,6 @@ export function Column(...args: any[]): Function|void {
 
   return function(target: any, propertyName: string): void {
 
-    SequelizeModelService.addAttribute(target.constructor, propertyName, args[0]);
+    SequelizeModelService.addAttribute(target, propertyName, args[0]);
   };
 }

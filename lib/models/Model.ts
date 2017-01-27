@@ -29,20 +29,41 @@ export const Model: IModel = (() => {
     _Model = class extends _SeqInstance {
     };
 
-    Object.defineProperty(_Model.prototype, 'Model', {
-      get(): never {
-        throw new Error('Sequelize not initialized');
-      },
-    });
+    // Object.defineProperty(_Model.prototype, 'Model', {
+    //   get(): never {
+    //     throw new Error('Sequelize not initialized');
+    //   },
+    // });
+    //
+    // Object.defineProperty(_Model, 'QueryGenerator', {
+    //   get(): never {
+    //     throw new Error('Sequelize not initialized');
+    //   },
+    //   enumerable: true
+    // });
 
-    Object.defineProperty(_Model, 'QueryGenerator', {
-      get(): never {
-        throw new Error('Sequelize not initialized');
-      },
-      enumerable: true
-    });
+    Object.keys(SeqModelProto).forEach(key => {
+      if (typeof SeqModelProto[key] === 'function') {
 
-    Object.keys(SeqModelProto).forEach(key => _Model[key] = SeqModelProto[key]);
+        _Model[key] = function(...args: any[]): any {
+
+          return SeqModelProto[key].call(this.Model || this, ...args);
+        };
+      } else {
+
+        Object.defineProperty(_Model, key, {
+          get(): any {
+            return (this.Model || this)[key];
+          },
+          set(value: any): void {
+            (this.Model || this)[key] = value;
+          },
+          enumerable: true
+        });
+
+        // _Model[key] = SeqModelProto[key];
+      }
+    });
   } else {
     /* tslint:disable:max-classes-per-file */
     _Model = class extends _SeqModel {

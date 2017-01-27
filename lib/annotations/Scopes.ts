@@ -1,18 +1,16 @@
 import 'reflect-metadata';
-import Sequelize = require("sequelize");
 import {SequelizeModelService} from "../services/SequelizeModelService";
-import {DataTypeAbstract} from "sequelize";
 import {DefineScopeOptions} from "sequelize";
 
 /**
  * Sets scopes for annotated class
  */
-export function Scopes(scopes: DefineScopeOptions) {
+export function Scopes(scopes: DefineScopeOptions): Function {
 
-  return function (target: any) {
+  return (target: any) => {
 
-    let options = SequelizeModelService.getOptions(target);
+    const options = SequelizeModelService.getOptions(target.prototype);
 
     options.scopes = scopes;
-  }
+  };
 }

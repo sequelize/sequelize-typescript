@@ -1,28 +1,26 @@
 import 'reflect-metadata';
-import Sequelize = require("sequelize");
 import {SequelizeModelService} from "../services/SequelizeModelService";
 import {DefineOptions} from "sequelize";
 
-export function Table(options: DefineOptions<any>);
-export function Table(target: any);
-export function Table(any: any) {
+export function Table(options: DefineOptions<any>): Function;
+export function Table(target: any): void;
+export function Table(arg: any): void|Function {
 
-  if(typeof any === 'function') {
-    let target = any;
+  if (typeof arg === 'function') {
+    const target = arg;
 
-    SequelizeModelService.setModelName(target, target.name);
-    SequelizeModelService.setTableName(target, target.name);
+    SequelizeModelService.setModelName(target.prototype, target.name);
+    SequelizeModelService.setTableName(target.prototype, target.name);
 
   } else {
 
-    let options = any;
+    const options = arg;
 
-    return function (target: any) {
+    return (target: any) => {
 
-      SequelizeModelService.extendOptions(target, options);
-      SequelizeModelService.setModelName(target, target.name);
-      SequelizeModelService.setTableName(target, target.name);
-    }
+      SequelizeModelService.extendOptions(target.prototype, options);
+      SequelizeModelService.setModelName(target.prototype, target.name);
+      SequelizeModelService.setTableName(target.prototype, target.name);
+    };
   }
-
 }

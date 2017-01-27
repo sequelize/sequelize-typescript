@@ -1,9 +1,10 @@
 import {Model} from "../models/Model";
 import {SequelizeAssociationService} from "../services/SequelizeAssociationService";
 
-export function HasOne(relatedClassGetter: () => typeof Model, foreignKey?: string) {
+export function HasOne(relatedClassGetter: () => typeof Model,
+                       foreignKey?: string): Function {
 
-  return function (target: any, propertyName: string) {
+  return (target: any, propertyName: string) => {
 
     SequelizeAssociationService.addAssociation(
       target.constructor,
@@ -11,6 +12,6 @@ export function HasOne(relatedClassGetter: () => typeof Model, foreignKey?: stri
       relatedClassGetter,
       propertyName,
       foreignKey
-    )
-  }
+    );
+  };
 }

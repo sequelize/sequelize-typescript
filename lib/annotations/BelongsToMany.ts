@@ -8,7 +8,7 @@ export function BelongsToMany(relatedClassGetter: () => typeof Model,
   return function(target: any, propertyName: string): void {
 
     SequelizeAssociationService.addAssociation(
-      target.constructor,
+      target,
       SequelizeAssociationService.BELONGS_TO_MANY,
       relatedClassGetter,
       propertyName,

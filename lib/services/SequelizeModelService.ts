@@ -18,9 +18,9 @@ export class SequelizeModelService {
    * Sets table name from class by storing this
    * information through reflect metadata
    */
-  static setTableName(prototype: any, tableName: string): void {
+  static setTableName(target: any, tableName: string): void {
 
-    const options = this.getOptions(prototype);
+    const options = this.getOptions(target);
 
     if (!options.tableName) options.tableName = tableName;
   }
@@ -29,34 +29,27 @@ export class SequelizeModelService {
    * Sets model name from class by storing this
    * information through reflect metadata
    */
-  static setModelName(prototype: any, modelName: string): void {
+  static setModelName(target: any, modelName: string): void {
 
-    Reflect.defineMetadata(this.MODEL_NAME_KEY, modelName, prototype);
+    Reflect.defineMetadata(this.MODEL_NAME_KEY, modelName, target);
   }
 
   /**
    * Returns model name from class by restoring this
    * information from reflect metadata
    */
-  static getModelName(prototype: any): string {
+  static getModelName(target: any): string {
 
-    return Reflect.getMetadata(this.MODEL_NAME_KEY, prototype);
+    return Reflect.getMetadata(this.MODEL_NAME_KEY, target);
   }
 
   /**
    * Returns model attributes from class by restoring this
    * information from reflect metadata
    */
-  static getAttributes(prototype: any): any {
+  static getAttributes(target: any): any {
 
-    let attributes = Reflect.getMetadata(this.ATTRIBUTES_KEY, prototype);
-
-    if (!attributes) {
-      attributes = {};
-      Reflect.defineMetadata(this.ATTRIBUTES_KEY, attributes, prototype);
-    }
-
-    return attributes;
+    return Reflect.getMetadata(this.ATTRIBUTES_KEY, target);
   }
 
   /**
@@ -64,9 +57,14 @@ export class SequelizeModelService {
    * sequelize attribute options and stores this information
    * through reflect metadata
    */
-  static addAttribute(prototype: any, name: string, options: any): void {
+  static addAttribute(target: any, name: string, options: any): void {
 
-    const attributes = this.getAttributes(prototype);
+    let attributes = this.getAttributes(target);
+
+    if (!attributes) {
+      attributes = {};
+      this.setAttributes(target, attributes);
+    }
 
     attributes[name] = options;
   }
@@ -74,9 +72,14 @@ export class SequelizeModelService {
   /**
    * Returns attribute meta data of specified class and property name
    */
-  static getAttributeOptions(prototype: any, name: string): DefineAttributeColumnOptions {
+  static getAttributeOptions(target: any, name: string): DefineAttributeColumnOptions {
 
-    const attributes = this.getAttributes(prototype);
+    let attributes = this.getAttributes(target);
+
+    if (!attributes) {
+      attributes = {};
+      this.setAttributes(target, attributes);
+    }
 
     if (!attributes[name]) {
       attributes[name] = {};
@@ -86,16 +89,24 @@ export class SequelizeModelService {
   }
 
   /**
+   * Sets attributes
+   */
+  static setAttributes(target: any, attributes: any): void {
+
+    Reflect.defineMetadata(this.ATTRIBUTES_KEY, attributes, target);
+  }
+
+  /**
    * Returns sequelize define options from class by restoring this
    * information from reflect metadata
    */
-  static getOptions(prototype: any): DefineOptions<any> {
+  static getOptions(target: any): DefineOptions<any> {
 
-    let options = Reflect.getMetadata(this.OPTIONS_KEY, prototype);
+    let options = Reflect.getMetadata(this.OPTIONS_KEY, target);
 
     if (!options) {
       options = this.createDefaultOptions();
-      Reflect.defineMetadata(this.OPTIONS_KEY, options, prototype);
+      Reflect.defineMetadata(this.OPTIONS_KEY, options, target);
     }
 
     return options;
@@ -106,9 +117,9 @@ export class SequelizeModelService {
    * @throws if design type cannot be automatically mapped to
    * a sequelize data type
    */
-  static getSequelizeTypeByDesignType(prototype: any, propertyName: string): DataTypeAbstract {
+  static getSequelizeTypeByDesignType(target: any, propertyName: string): DataTypeAbstract {
 
-    const type = Reflect.getMetadata('design:type', prototype, propertyName);
+    const type = Reflect.getMetadata('design:type', target, propertyName);
 
     switch (type) {
       case String:
@@ -129,9 +140,11 @@ export class SequelizeModelService {
   /**
    * Adds foreign key meta data for specified class
    */
-  static addForeignKey(prototype: any, relatedClassGetter: () => typeof Model, propertyName: string) {
+  static addForeignKey(target: any,
+                       relatedClassGetter: () => typeof Model,
+                       propertyName: string): void {
 
-    const foreignKeys = this.getForeignKeys(prototype);
+    const foreignKeys = this.getForeignKeys(target);
 
     foreignKeys.push({
       relatedClassGetter,
@@ -142,9 +155,9 @@ export class SequelizeModelService {
   /**
    * Extends currently set options with specified additional options
    */
-  static extendOptions(prototype: any, additionalOptions: DefineOptions<any>): void {
+  static extendOptions(target: any, additionalOptions: DefineOptions<any>): void {
 
-    const options = this.getOptions(prototype);
+    const options = this.getOptions(target);
 
     for (const key in additionalOptions) {
 
@@ -158,13 +171,13 @@ export class SequelizeModelService {
   /**
    * Returns foreign key meta data from specified class
    */
-  private static getForeignKeys(prototype: any): ISequelizeForeignKeyConfig[] {
+  private static getForeignKeys(target: any): ISequelizeForeignKeyConfig[] {
 
-    let foreignKeys = Reflect.getMetadata(this.FOREIGN_KEYS_KEY, prototype);
+    let foreignKeys = Reflect.getMetadata(this.FOREIGN_KEYS_KEY, target);
 
     if (!foreignKeys) {
       foreignKeys = [];
-      Reflect.defineMetadata(this.FOREIGN_KEYS_KEY, foreignKeys, prototype);
+      Reflect.defineMetadata(this.FOREIGN_KEYS_KEY, foreignKeys, target);
     }
 
     return foreignKeys;

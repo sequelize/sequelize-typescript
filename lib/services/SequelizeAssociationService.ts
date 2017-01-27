@@ -16,14 +16,20 @@ export class SequelizeAssociationService {
   /**
    * Stores association meta data for specified class
    */
-  static addAssociation(prototype: any,
+  static addAssociation(target: any,
                         relation: string,
                         relatedClassGetter: () => typeof Model,
                         as: string,
                         through?: (() => typeof Model)|string,
                         foreignKey?: string): void {
 
-    const associations = this.getAssociations(prototype);
+    let associations = this.getAssociations(target);
+
+    if (!associations) {
+      associations = [];
+      this.setAssociations(target, associations);
+    }
+
     let throughClassGetter;
 
     if (typeof through === 'function') {
@@ -59,8 +65,13 @@ export class SequelizeAssociationService {
 
     switch (association.relation) {
       case this.BELONGS_TO_MANY:
-        classWithForeignKey = association.throughClassGetter();
-        relatedClass = _class;
+        if (association.throughClassGetter) {
+
+          classWithForeignKey = association.throughClassGetter();
+          relatedClass = _class;
+        } else {
+          throw new Error(`ThroughClassGetter is missing on "${_class['name']}"`);
+        }
         break;
       case this.HAS_MANY:
       case this.HAS_ONE:
@@ -74,7 +85,7 @@ export class SequelizeAssociationService {
       default:
     }
 
-    const foreignKeys = this.getForeignKeys(classWithForeignKey);
+    const foreignKeys = this.getForeignKeys(classWithForeignKey) || [];
 
     for (const foreignKey of foreignKeys) {
 
@@ -90,26 +101,29 @@ export class SequelizeAssociationService {
   /**
    * Returns association meta data from specified class
    */
-  static getAssociations(prototype: any): ISequelizeAssociation[] {
+  static getAssociations(target: any): ISequelizeAssociation[]|undefined {
 
-    let associations = Reflect.getMetadata(this.ASSOCIATIONS_KEY, prototype);
+    return Reflect.getMetadata(this.ASSOCIATIONS_KEY, target);
+  }
 
-    if (!associations) {
-      associations = [];
-      Reflect.defineMetadata(this.ASSOCIATIONS_KEY, associations, prototype);
-    }
+  static setAssociations(target: any, associations: ISequelizeAssociation[]): void {
 
-    return associations;
+    Reflect.defineMetadata(this.ASSOCIATIONS_KEY, associations, target);
   }
 
   /**
    * Adds foreign key meta data for specified class
    */
-  static addForeignKey(prototype: any,
+  static addForeignKey(target: any,
                        relatedClassGetter: () => typeof Model,
                        propertyName: string): void {
 
-    const foreignKeys = this.getForeignKeys(prototype);
+    let foreignKeys = this.getForeignKeys(target);
+
+    if (!foreignKeys) {
+      foreignKeys = [];
+      this.setForeignKeys(target, foreignKeys);
+    }
 
     foreignKeys.push({
       relatedClassGetter,
@@ -120,16 +134,14 @@ export class SequelizeAssociationService {
   /**
    * Returns foreign key meta data from specified class
    */
-  private static getForeignKeys(prototype: any): ISequelizeForeignKeyConfig[] {
+  private static getForeignKeys(target: any): ISequelizeForeignKeyConfig[]|undefined {
 
-    let foreignKeys = Reflect.getMetadata(this.FOREIGN_KEYS_KEY, prototype);
+    return Reflect.getMetadata(this.FOREIGN_KEYS_KEY, target);
+  }
 
-    if (!foreignKeys) {
-      foreignKeys = [];
-      Reflect.defineMetadata(this.FOREIGN_KEYS_KEY, foreignKeys, prototype);
-    }
+  private static setForeignKeys(target: any, foreignKeys: any[]): void {
 
-    return foreignKeys;
+    Reflect.defineMetadata(this.FOREIGN_KEYS_KEY, foreignKeys, target);
   }
 
 }

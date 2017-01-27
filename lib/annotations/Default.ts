@@ -8,7 +8,7 @@ export function Default(value: any): Function {
 
   return (target: any, propertyName: string) => {
 
-    const options = SequelizeModelService.getAttributeOptions(target.constructor, propertyName);
+    const options = SequelizeModelService.getAttributeOptions(target, propertyName);
 
     options.defaultValue = value;
   };
