@@ -14,8 +14,6 @@ export {Table} from "./annotations/Table";
 export {Type} from "./annotations/Type";
 
 // interfaces
-export {IFindOptions} from "./interfaces/IFindOptions";
-export {IIncludeOptions} from "./interfaces/IIncludeOptions";
 export {ISequelizeAssociation} from "./interfaces/ISequelizeAssociation";
 export {ISequelizeConfig} from "./interfaces/ISequelizeConfig";
 export {ISequelizeForeignKeyConfig} from "./interfaces/ISequelizeForeignKeyConfig";
@@ -25,4 +23,4 @@ export {DataType} from "./models/DataType";
 export {Model} from "./models/Model";
 
 // services
-export {SequelizeService} from "./services/SequelizeService";
+export {SequelizeService} from "./services/Sequelize";

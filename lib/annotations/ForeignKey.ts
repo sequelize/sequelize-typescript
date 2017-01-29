@@ -1,10 +1,10 @@
 import {Model} from "../models/Model";
-import {SequelizeAssociationService} from "../services/SequelizeAssociationService";
+import * as associationUtil from "../utils/association";
 
 export function ForeignKey(relatedClassGetter: () => typeof Model): Function {
 
   return (target: any, propertyName: string) => {
 
-    SequelizeAssociationService.addForeignKey(target, relatedClassGetter, propertyName);
+    associationUtil.addForeignKey(target, relatedClassGetter, propertyName);
   };
 }

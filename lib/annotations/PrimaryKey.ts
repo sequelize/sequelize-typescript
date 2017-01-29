@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {SequelizeModelService} from "../services/SequelizeModelService";
+import {SequelizeModelService} from "../utils/SequelizeModelService";
 
 /**
  * Sets primary key option true for annotated property.

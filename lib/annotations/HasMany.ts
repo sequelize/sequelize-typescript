@@ -1,14 +1,15 @@
 import {Model} from "../models/Model";
-import {SequelizeAssociationService} from "../services/SequelizeAssociationService";
+import * as associationUtil from "../utils/association";
+import {HAS_MANY} from "../utils/association";
 
 export function HasMany(relatedClassGetter: () => typeof Model,
                         foreignKey?: string): Function {
 
   return (target: any, propertyName: string) => {
 
-    SequelizeAssociationService.addAssociation(
+    associationUtil.addAssociation(
       target,
-      SequelizeAssociationService.HAS_MANY,
+      HAS_MANY,
       relatedClassGetter,
       propertyName,
       foreignKey

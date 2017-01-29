@@ -7,4 +7,4 @@ import { DataTypeAbstract } from "sequelize";
  * but has to be used with Column (Please notice the difference with and
  * without options)
  */
-export declare function Type(type: string | DataTypeAbstract): (target: any, propertyName: string) => void;
+export declare function Type(type: string | DataTypeAbstract): Function;

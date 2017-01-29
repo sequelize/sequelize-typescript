@@ -4,4 +4,4 @@ import { FindOptions } from "sequelize";
 /**
  * Sets default scope for annotated class
  */
-export declare function DefaultScope(scope: FindOptions | Function): (target: any) => void;
+export declare function DefaultScope(scope: FindOptions | Function): Function;

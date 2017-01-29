@@ -1,15 +1,16 @@
 import {Model} from "../models/Model";
-import {SequelizeAssociationService} from "../services/SequelizeAssociationService";
+import * as associationUtil from '../utils/association';
+import {BELONGS_TO_MANY} from "../utils/association";
 
 export function BelongsToMany(relatedClassGetter: () => typeof Model,
                               through: (() => typeof Model)|string,
                               foreignKey?: string): Function {
 
-  return function(target: any, propertyName: string): void {
+  return (target: any, propertyName: string) => {
 
-    SequelizeAssociationService.addAssociation(
+    associationUtil.addAssociation(
       target,
-      SequelizeAssociationService.BELONGS_TO_MANY,
+      BELONGS_TO_MANY,
       relatedClassGetter,
       propertyName,
       through,

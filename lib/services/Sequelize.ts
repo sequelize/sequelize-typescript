@@ -1,19 +1,17 @@
 import 'reflect-metadata';
-import * as Sequelize from 'sequelize';
-import {Utils, Model as SeqModel} from 'sequelize';
+import * as SequelizeOrigin from 'sequelize';
 import * as fs from 'fs';
 import * as path from 'path';
 import {Model} from "../models/Model";
-import {SequelizeModelService} from "./SequelizeModelService";
+import * as modelsUtil from "../utils/models";
+import * as associationUtil from "../utils/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
-import {SequelizeAssociationService} from "./SequelizeAssociationService";
 
-export class SequelizeService {
+export class Sequelize {
 
-  public sequelize: Sequelize.Sequelize;
+  public sequelize: SequelizeOrigin.Sequelize;
 
-  constructor() {
-  }
+  constructor() {}
 
   /**
    * Initializes sequelize with specified configuration
@@ -21,7 +19,7 @@ export class SequelizeService {
   init(config: ISequelizeConfig,
        paths: string[]): void {
 
-    this.sequelize = new Sequelize(
+    this.sequelize = new SequelizeOrigin(
       config.name,
       config.username,
       config.password,
@@ -35,49 +33,6 @@ export class SequelizeService {
 
   }
 
-  defineOverride(sequelize: Sequelize.Sequelize&any,
-                 model: any,
-                 modelName: string,
-                 attributes: any,
-                 options: any): void {
-
-    options = options || {};
-    const globalOptions = sequelize.options;
-
-    if (globalOptions.define) {
-      options = Utils['merge'](globalOptions.define, options);
-    }
-
-    options = Utils['merge']({
-      name: {
-        plural: Utils['inflection'].pluralize(modelName),
-        singular: Utils['inflection'].singularize(modelName)
-      },
-      indexes: [],
-      omitNul: globalOptions.omitNull
-    }, options);
-
-    // if you call "define" multiple times for the same modelName, do not clutter the factory
-    if (sequelize.isDefined(modelName)) {
-      sequelize.modelManager.removeModel(sequelize.modelManager.getModel(modelName));
-    }
-
-    options.sequelize = sequelize;
-
-    options.modelName = modelName;
-    sequelize.runHooks('beforeDefine', attributes, options);
-    modelName = options.modelName;
-    delete options.modelName;
-
-    model.prototype.Model = model;
-    model.Model = model;
-    (SeqModel as any).call(model, modelName, attributes, options);
-    model = model.init(sequelize.modelManager);
-    sequelize.modelManager.addModel(model);
-
-    sequelize.runHooks('afterDefine', model);
-  }
-
   /**
    * Creates sequelize models and registers these models
    * in the registry
@@ -86,9 +41,9 @@ export class SequelizeService {
 
     classes.forEach(_class => {
 
-      const modelName = SequelizeModelService.getModelName(_class.prototype);
-      const attributes = SequelizeModelService.getAttributes(_class.prototype);
-      const options = SequelizeModelService.getOptions(_class.prototype);
+      const modelName = modelsUtil.getModelName(_class.prototype);
+      const attributes = modelsUtil.getAttributes(_class.prototype);
+      const options = modelsUtil.getOptions(_class.prototype);
 
       options.instanceMethods = _class.prototype;
       options.classMethods = _class;
@@ -96,8 +51,12 @@ export class SequelizeService {
       // this.defineOverride(this.sequelize, model, modelName, attributes, options);
       const model = this.sequelize.define(modelName, attributes, options);
 
+      // replace Instance model with the original model
       (model as any).Instance = _class;
+      // this initializes some stuff for Instance
       model['refreshAttributes']();
+
+      // the class needs to know its sequelize model
       _class['Model'] = model;
       _class.prototype['Model'] = _class.prototype['$Model'] = model;
     });
@@ -110,17 +69,17 @@ export class SequelizeService {
 
     classes.forEach(_class => {
 
-      const associations = SequelizeAssociationService.getAssociations(_class);
+      const associations = associationUtil.getAssociations(_class);
 
       if (!associations) return;
 
       associations.forEach(association => {
 
-        const foreignKey = association.foreignKey || SequelizeAssociationService.getForeignKey(_class, association);
+        const foreignKey = association.foreignKey || associationUtil.getForeignKey(_class, association);
         const relatedClass = association.relatedClassGetter();
         let through;
 
-        if (association.relation === SequelizeAssociationService.BELONGS_TO_MANY) {
+        if (association.relation === associationUtil.BELONGS_TO_MANY) {
 
           if (association.through) {
 
@@ -150,9 +109,7 @@ export class SequelizeService {
 
     if (arg && typeof arg[0] === 'string') {
 
-      const targetDirs = arg;
-
-      return targetDirs.reduce((models: any[], dir) => {
+      return arg.reduce((models: any[], dir) => {
 
         const _models = fs
           .readdirSync(dir)
@@ -170,7 +127,6 @@ export class SequelizeService {
         return models;
       }, [])
         ;
-
     }
 
     return arg as Array<typeof Model>;

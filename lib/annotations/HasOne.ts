@@ -1,5 +1,5 @@
 import {Model} from "../models/Model";
-import {SequelizeAssociationService} from "../services/SequelizeAssociationService";
+import {SequelizeAssociationService} from "../utils/SequelizeAssociationService";
 
 export function HasOne(relatedClassGetter: () => typeof Model,
                        foreignKey?: string): Function {

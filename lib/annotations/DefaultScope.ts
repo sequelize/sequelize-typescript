@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {SequelizeModelService} from "../services/SequelizeModelService";
+import * as modelUtil from "../utils/models";
 import {FindOptions} from "sequelize";
 
 /**
@@ -9,7 +9,7 @@ export function DefaultScope(scope: FindOptions | Function): Function {
 
   return (target: any) => {
 
-    const options = SequelizeModelService.getOptions(target);
+    const options = modelUtil.getOptions(target);
 
     options.defaultScope = scope;
   };
