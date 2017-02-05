@@ -1,6 +1,5 @@
 import {Model} from "../models/Model";
-import * as associationUtil from '../utils/association';
-import {BELONGS_TO_MANY} from "../utils/association";
+import {BELONGS_TO_MANY, addAssociation} from "../utils/association";
 
 export function BelongsToMany(relatedClassGetter: () => typeof Model,
                               through: (() => typeof Model)|string,
@@ -8,7 +7,7 @@ export function BelongsToMany(relatedClassGetter: () => typeof Model,
 
   return (target: any, propertyName: string) => {
 
-    associationUtil.addAssociation(
+    addAssociation(
       target,
       BELONGS_TO_MANY,
       relatedClassGetter,

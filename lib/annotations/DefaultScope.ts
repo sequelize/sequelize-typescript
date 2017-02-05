@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import * as modelUtil from "../utils/models";
 import {FindOptions} from "sequelize";
+import {addOptions} from "../utils/models";
 
 /**
  * Sets default scope for annotated class
@@ -9,8 +9,8 @@ export function DefaultScope(scope: FindOptions | Function): Function {
 
   return (target: any) => {
 
-    const options = modelUtil.getOptions(target);
-
-    options.defaultScope = scope;
+    addOptions(target.prototype, {
+      defaultScope: scope
+    });
   };
 }

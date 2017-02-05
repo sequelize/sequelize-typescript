@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {SequelizeModelService} from "../utils/SequelizeModelService";
+import {addAttributeOptions} from "../utils/models";
 
 /**
  * Sets primary key option true for annotated property.
@@ -9,7 +9,7 @@ import {SequelizeModelService} from "../utils/SequelizeModelService";
  */
 export function PrimaryKey(target: any, propertyName: string): void {
 
-  const options = SequelizeModelService.getAttributeOptions(target, propertyName);
-
-  options.primaryKey = true;
+  addAttributeOptions(target, propertyName, {
+    primaryKey: true
+  });
 }

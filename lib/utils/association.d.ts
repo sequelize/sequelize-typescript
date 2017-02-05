@@ -21,4 +21,4 @@ export declare function setAssociations(target: any, associations: ISequelizeAss
 /**
  * Adds foreign key meta data for specified class
  */
-export declare function addForeignKey(target: any, relatedClassGetter: () => typeof Model, propertyName: string): void;
+export declare function addForeignKey(target: any, relatedClassGetter: () => typeof Model, attrName: string): void;

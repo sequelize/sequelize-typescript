@@ -83,7 +83,7 @@ export function getForeignKey(_class: typeof Model,
     default:
   }
 
-  const foreignKeys = getForeignKeys(classWithForeignKey) || [];
+  const foreignKeys = getForeignKeys(classWithForeignKey.prototype) || [];
 
   for (const foreignKey of foreignKeys) {
 
@@ -93,7 +93,7 @@ export function getForeignKey(_class: typeof Model,
     }
   }
 
-  throw new Error(`No foreign key for '${(relatedClass as any).name}' found on '${(classWithForeignKey as any).name}'`);
+  throw new Error(`Foreign key for "${(relatedClass as any).name}" is missing on "${(classWithForeignKey as any).name}".`);
 }
 
 /**
@@ -114,7 +114,7 @@ export function setAssociations(target: any, associations: ISequelizeAssociation
  */
 export function addForeignKey(target: any,
                               relatedClassGetter: () => typeof Model,
-                              propertyName: string): void {
+                              attrName: string): void {
 
   let foreignKeys = getForeignKeys(target);
 
@@ -125,7 +125,7 @@ export function addForeignKey(target: any,
 
   foreignKeys.push({
     relatedClassGetter,
-    foreignKey: propertyName
+    foreignKey: attrName
   });
 }
 

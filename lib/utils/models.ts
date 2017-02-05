@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import {DataTypeAbstract, DefineOptions, DefineAttributeColumnOptions} from 'sequelize';
+import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
 import {DataType} from "../models/DataType";
 import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
+import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
@@ -11,17 +12,6 @@ const FOREIGN_KEYS_KEY = 'sequelize:foreignKey';
 const DEFAULT_OPTIONS: DefineOptions<any> = {
   timestamps: false
 };
-
-/**
- * Sets table name from class by storing this
- * information through reflect metadata
- */
-export function setTableName(target: any, tableName: string): void {
-
-  const options = getOptions(target);
-
-  if (!options.tableName) options.tableName = tableName;
-}
 
 /**
  * Sets model name from class by storing this
@@ -45,9 +35,17 @@ export function getModelName(target: any): string {
  * Returns model attributes from class by restoring this
  * information from reflect metadata
  */
-export function getAttributes(target: any): any {
+export function getAttributes(target: any): any|undefined {
 
   return Reflect.getMetadata(ATTRIBUTES_KEY, target);
+}
+
+/**
+ * Sets attributes
+ */
+export function setAttributes(target: any, attributes: any): void {
+
+  Reflect.defineMetadata(ATTRIBUTES_KEY, attributes, target);
 }
 
 /**
@@ -66,62 +64,46 @@ export function addAttribute(target: any,
     setAttributes(target, attributes);
   }
 
-  attributes[name] = options;
+  attributes[name] = Object.assign({}, options);
 }
 
-/**
- * Returns attribute meta data of specified class and property name
- */
-export function getAttributeOptions(target: any,
-                                    name: string): DefineAttributeColumnOptions {
+export function addAttributeOptions(target: any,
+                                    propertyName: string,
+                                    options: IPartialDefineAttributeColumnOptions): void {
 
   const attributes = getAttributes(target);
 
-  return attributes[name];
-}
-
-export function setAttributeOptions(target: any,
-                                    attrName: string,
-                                    options: DefineAttributeColumnOptions): void {
-  let attributes = getAttributes(target);
-
-  if (!attributes) {
-    attributes = {};
-    setAttributes(target, attributes);
+  if (!attributes || !attributes[propertyName]) {
+    throw new Error(`@Column annotation is missing for "${propertyName}" of class "${target.constructor.name}"` +
+    ` or annotation order is wrong.`);
   }
 
-  attributes[attrName] = options;
-}
-
-export function addAttributeOption(target: any,
-                                   attrName: string,
-                                   option: any): void {
-
-  let
+  attributes[propertyName] = Object.assign(attributes[propertyName], options);
 }
 
 /**
- * Sets attributes
+ * Returns sequelize define options from class prototype
+ * by restoring this information from reflect metadata
  */
-export function setAttributes(target: any, attributes: any): void {
+export function getOptions(target: any): DefineOptions<any>|undefined {
 
-  Reflect.defineMetadata(ATTRIBUTES_KEY, attributes, target);
+  return Reflect.getMetadata(OPTIONS_KEY, target);
 }
 
-/**
- * Returns sequelize define options from class by restoring this
- * information from reflect metadata
- */
-export function getOptions(target: any): DefineOptions<any> {
+export function setOptions(target: any, options: DefineOptions<any>): void {
 
-  let options = Reflect.getMetadata(OPTIONS_KEY, target);
+  Reflect.defineMetadata(OPTIONS_KEY, Object.assign({}, DEFAULT_OPTIONS, options), target);
+}
 
-  if (!options) {
-    options = createDefaultOptions();
-    Reflect.defineMetadata(OPTIONS_KEY, options, target);
+export function addOptions(target: any, options: DefineOptions<any>): void {
+
+  let _options = getOptions(target);
+
+  if (!_options) {
+    _options = {};
   }
 
-  return options;
+  setOptions(target, Object.assign(_options, options));
 }
 
 /**
@@ -156,7 +138,12 @@ export function addForeignKey(target: any,
                               relatedClassGetter: () => typeof Model,
                               propertyName: string): void {
 
-  const foreignKeys = getForeignKeys(target);
+  let foreignKeys = getForeignKeys(target);
+
+  if (!foreignKeys) {
+    foreignKeys = [];
+    setForeignKeys(target, foreignKeys);
+  }
 
   foreignKeys.push({
     relatedClassGetter,
@@ -165,48 +152,17 @@ export function addForeignKey(target: any,
 }
 
 /**
- * Extends currently set options with specified additional options
- */
-export function extendOptions(target: any, additionalOptions: DefineOptions<any>): void {
-
-  const options = getOptions(target);
-
-  for (const key in additionalOptions) {
-
-    if (additionalOptions.hasOwnProperty(key)) {
-
-      options[key] = additionalOptions[key];
-    }
-  }
-}
-
-/**
  * Returns foreign key meta data from specified class
  */
-function getForeignKeys(target: any): ISequelizeForeignKeyConfig[] {
+function getForeignKeys(target: any): ISequelizeForeignKeyConfig[]|undefined {
 
-  let foreignKeys = Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
-
-  if (!foreignKeys) {
-    foreignKeys = [];
-    Reflect.defineMetadata(FOREIGN_KEYS_KEY, foreignKeys, target);
-  }
-
-  return foreignKeys;
+  return Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
 }
 
 /**
- * Creates default options for sequelize define options
+ * Set foreign key meta data for specified prototype
  */
-function createDefaultOptions(): DefineOptions<any> {
+function setForeignKeys(target: any, foreignKeys: ISequelizeForeignKeyConfig[]): void {
 
-  const options = {};
-
-  for (const key in DEFAULT_OPTIONS) {
-    if (DEFAULT_OPTIONS.hasOwnProperty(key)) {
-      options[key] = DEFAULT_OPTIONS[key];
-    }
-  }
-
-  return options;
+  Reflect.defineMetadata(FOREIGN_KEYS_KEY, foreignKeys, target);
 }

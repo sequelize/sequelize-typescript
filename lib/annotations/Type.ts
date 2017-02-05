@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import {SequelizeModelService} from "../utils/SequelizeModelService";
 import {DataTypeAbstract} from "sequelize";
+import {addAttributeOptions} from "../utils/models";
 
 /**
  * Sets type option for annotated property to specified value.
@@ -12,8 +12,6 @@ export function Type(type: string | DataTypeAbstract): Function {
 
   return (target: any, propertyName: string) => {
 
-    const options = SequelizeModelService.getAttributeOptions(target, propertyName);
-
-    options.type = type;
+    addAttributeOptions(target, propertyName, {type});
   };
 }

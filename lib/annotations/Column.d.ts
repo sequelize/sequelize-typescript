@@ -1,5 +1,4 @@
-/// <reference types="sequelize" />
 import 'reflect-metadata';
-import { DefineAttributeColumnOptions } from "sequelize";
-export declare function Column(options: DefineAttributeColumnOptions): Function;
+import { IPartialDefineAttributeColumnOptions } from "../interfaces/IPartialDefineAttributeColumnOptions";
+export declare function Column(options: IPartialDefineAttributeColumnOptions): Function;
 export declare function Column(target: any, propertyName: string): void;

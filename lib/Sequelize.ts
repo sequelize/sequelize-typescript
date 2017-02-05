@@ -2,35 +2,29 @@ import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
 import * as fs from 'fs';
 import * as path from 'path';
-import {Model} from "../models/Model";
-import * as modelsUtil from "../utils/models";
-import * as associationUtil from "../utils/association";
-import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
+import {Model} from "./models/Model";
+import {ISequelizeConfig} from "./interfaces/ISequelizeConfig";
+import {getModelName, getAttributes, getOptions} from "./utils/models";
+import {getAssociations} from "./utils/association";
+import {getForeignKey} from "./utils/association";
+import {BELONGS_TO_MANY} from "./utils/association";
 
-export class Sequelize {
+export class Sequelize extends SequelizeOrigin {
 
-  public sequelize: SequelizeOrigin.Sequelize;
+  // to fix "$1" called with something that's not an instance of Sequelize.Model
+  Model: any = Function;
 
-  constructor() {}
-
-  /**
-   * Initializes sequelize with specified configuration
-   */
-  init(config: ISequelizeConfig,
-       paths: string[]): void {
-
-    this.sequelize = new SequelizeOrigin(
-      config.name,
+  constructor(config: ISequelizeConfig,
+              paths: string[]) {
+    super(config.name,
       config.username,
       config.password,
-      config
-    );
+      config);
 
     const classes = this.getClasses(paths);
 
     this.defineModels(classes);
     this.associateModels(classes);
-
   }
 
   /**
@@ -41,15 +35,17 @@ export class Sequelize {
 
     classes.forEach(_class => {
 
-      const modelName = modelsUtil.getModelName(_class.prototype);
-      const attributes = modelsUtil.getAttributes(_class.prototype);
-      const options = modelsUtil.getOptions(_class.prototype);
+      const modelName = getModelName(_class.prototype);
+      const attributes = getAttributes(_class.prototype);
+      const options = getOptions(_class.prototype);
+
+      if (!options) throw new Error(`@Table annotation is missing on class "${_class.name}"`);
 
       options.instanceMethods = _class.prototype;
       options.classMethods = _class;
 
       // this.defineOverride(this.sequelize, model, modelName, attributes, options);
-      const model = this.sequelize.define(modelName, attributes, options);
+      const model = this.define(modelName, attributes, options);
 
       // replace Instance model with the original model
       (model as any).Instance = _class;
@@ -59,6 +55,9 @@ export class Sequelize {
       // the class needs to know its sequelize model
       _class['Model'] = model;
       _class.prototype['Model'] = _class.prototype['$Model'] = model;
+
+      // to fix "$1" called with something that's not an instance of Sequelize.Model
+      _class['sequelize'] = this;
     });
   }
 
@@ -69,17 +68,17 @@ export class Sequelize {
 
     classes.forEach(_class => {
 
-      const associations = associationUtil.getAssociations(_class);
+      const associations = getAssociations(_class.prototype);
 
       if (!associations) return;
 
       associations.forEach(association => {
 
-        const foreignKey = association.foreignKey || associationUtil.getForeignKey(_class, association);
+        const foreignKey = association.foreignKey || getForeignKey(_class, association);
         const relatedClass = association.relatedClassGetter();
         let through;
 
-        if (association.relation === associationUtil.BELONGS_TO_MANY) {
+        if (association.relation === BELONGS_TO_MANY) {
 
           if (association.through) {
 

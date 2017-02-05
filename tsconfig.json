@@ -9,7 +9,8 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "pretty": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["es6"]
   },
   "include": [
     "lib/**/*",

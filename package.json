@@ -1,21 +1,25 @@
 {
-  "name": "sequelize-typescript",
+  "name": "sequelize-decorators",
   "version": "1.0.1",
-  "description": "Wrapper for sequelize to annotate classes",
+  "description": "Decorators for sequelize models",
   "scripts": {
-    "compile": "tsc"
+    "build": "tsc"
   },
-  "main": "./lib/main.js",
-  "types": "./lib/main.d.ts",
+  "main": "./main.js",
+  "types": "./main.d.ts",
+  "peerDependencies": {
+    "sequelize": "3.30.1"
+  },
   "dependencies": {
     "@types/node": "6.0.41",
     "@types/reflect-metadata": "0.0.4",
     "@types/sequelize": "4.0.39",
-    "sequelize": "git+https://github.com/RobinBuschmann/sequelize.git#mysql-jsonb"
+    "es6-shim": "0.35.3"
   },
   "devDependencies": {
     "mysql": "2.13.0",
     "reflect-metadata": "0.1.9",
+    "sequelize": "3.30.1",
     "tslint": "4.3.1",
     "typescript": "2.0.3"
   },

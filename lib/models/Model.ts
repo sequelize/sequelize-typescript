@@ -26,7 +26,12 @@ export const Model: IModel = (() => {
   let _Model;
 
   if (version < 4) {
-    _Model = class extends _SeqInstance {};
+    _Model = class extends _SeqInstance {
+      constructor(values: any,
+                  options?: any) {
+        super(values, options || {isNewRecord: true});
+      }
+    };
 
     Object.keys(SeqModelProto).forEach(key => {
 
