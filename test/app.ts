@@ -1,4 +1,6 @@
+import {User} from './models/User';
 import {Post} from './models/Post';
+import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
 
 const sequelize = new Sequelize({
@@ -14,15 +16,46 @@ const sequelize = new Sequelize({
 
 sequelize
   .sync()
-  .then(() => {
-
+  .then(() => User.create({name: 'elisa'}))
+  .then((user: User) =>
     Post
       .create({text: 'hey'})
-      .then(() => Post.findOne())
-      .then(post => console.log(post instanceof Post));
+      .then(post => Comment.create({
+        postId: post.id,
+        text: 'my comment',
+        userId: user.id
+      }))
+      .then(() => {
 
+        user.name = 'robin';
+
+        return user.save();
+      })
+  )
+  .then(() =>
+    Post
+      .findAll({
+        include: [{
+          model: Comment,
+          as: 'comments',
+          include: [{
+            model: User,
+            as: 'user'
+          }]
+        }
+        ]
+      })
+      .then(posts => console.log(JSON.stringify(posts)))
+  )
+  .then(() => {
     const post = new Post({text: 'hey2'});
 
-    post.save();
-  });
+    return post.save();
+  })
+  .then(() => {
+    Comment.drop();
+    User.drop();
+    Post.drop();
+  })
+;
 

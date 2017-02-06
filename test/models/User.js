@@ -13,12 +13,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var index_1 = require("../index");
-var Post_1 = require("./models/Post");
-var ForeignKey_1 = require("../lib/annotations/ForeignKey");
-var Comment = (function (_super) {
-    __extends(Comment, _super);
-    function Comment() {
+var index_1 = require("../../index");
+var User = (function (_super) {
+    __extends(User, _super);
+    function User() {
         _super.apply(this, arguments);
     }
     __decorate([
@@ -26,25 +24,16 @@ var Comment = (function (_super) {
         index_1.AutoIncrement,
         index_1.Column, 
         __metadata('design:type', Number)
-    ], Comment.prototype, "id", void 0);
+    ], User.prototype, "id", void 0);
     __decorate([
         index_1.Column, 
         __metadata('design:type', String)
-    ], Comment.prototype, "text", void 0);
-    __decorate([
-        ForeignKey_1.ForeignKey(function () { return Post_1.Post; }),
-        index_1.Column, 
-        __metadata('design:type', Number)
-    ], Comment.prototype, "postId", void 0);
-    __decorate([
-        index_1.BelongsTo(function () { return Post_1.Post; }), 
-        __metadata('design:type', Object)
-    ], Comment.prototype, "post", void 0);
-    Comment = __decorate([
+    ], User.prototype, "name", void 0);
+    User = __decorate([
         index_1.Table, 
         __metadata('design:paramtypes', [])
-    ], Comment);
-    return Comment;
+    ], User);
+    return User;
 }(index_1.Model));
-exports.Comment = Comment;
-//# sourceMappingURL=Comment.js.map
+exports.User = User;
+//# sourceMappingURL=User.js.map

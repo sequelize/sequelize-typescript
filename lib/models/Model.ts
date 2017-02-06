@@ -41,19 +41,9 @@ export const Model: IModel = (() => {
 
           return SeqModelProto[key].call(this.Model || this, ...args);
         };
-      } else {
-
-        Object.defineProperty(_Model, key, {
-          get(): any {
-            return (this.Model || this)[key];
-          },
-          set(value: any): void {
-            (this.Model || this)[key] = value;
-          },
-          enumerable: true
-        });
       }
     });
+
   } else {
     /* tslint:disable:max-classes-per-file */
     _Model = class extends _SeqModel {};

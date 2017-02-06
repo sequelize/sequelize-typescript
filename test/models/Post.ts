@@ -1,6 +1,8 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement} from "../../index";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany} from "../../index";
 import {HasMany} from "../../lib/annotations/HasMany";
-import {Comment} from "../Comment";
+import {Comment} from "./Comment";
+import {User} from "./User";
+import {PostAuthor} from "./PostAuthor";
 
 @Table
 export class Post extends Model {
@@ -13,7 +15,10 @@ export class Post extends Model {
   @Column
   text: string;
 
-  // @HasMany(() => Comment)
-  // comments;
+  @HasMany(() => Comment)
+  comments;
+
+  @BelongsToMany(() => User, () => PostAuthor)
+  authors: User[];
 
 }

@@ -14,13 +14,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var index_1 = require("../../index");
-var HasMany_1 = require("../../lib/annotations/HasMany");
-var Comment_1 = require("./Comment");
+var Post_1 = require("./Post");
+var ForeignKey_1 = require("../../lib/annotations/ForeignKey");
 var User_1 = require("./User");
-var PostAuthor_1 = require("./PostAuthor");
-var Post = (function (_super) {
-    __extends(Post, _super);
-    function Post() {
+var Comment = (function (_super) {
+    __extends(Comment, _super);
+    function Comment() {
         _super.apply(this, arguments);
     }
     __decorate([
@@ -28,24 +27,34 @@ var Post = (function (_super) {
         index_1.AutoIncrement,
         index_1.Column, 
         __metadata('design:type', Number)
-    ], Post.prototype, "id", void 0);
+    ], Comment.prototype, "id", void 0);
     __decorate([
         index_1.Column, 
         __metadata('design:type', String)
-    ], Post.prototype, "text", void 0);
+    ], Comment.prototype, "text", void 0);
     __decorate([
-        HasMany_1.HasMany(function () { return Comment_1.Comment; }), 
+        ForeignKey_1.ForeignKey(function () { return Post_1.Post; }),
+        index_1.Column, 
+        __metadata('design:type', Number)
+    ], Comment.prototype, "postId", void 0);
+    __decorate([
+        index_1.BelongsTo(function () { return Post_1.Post; }), 
         __metadata('design:type', Object)
-    ], Post.prototype, "comments", void 0);
+    ], Comment.prototype, "post", void 0);
     __decorate([
-        index_1.BelongsToMany(function () { return User_1.User; }, function () { return PostAuthor_1.PostAuthor; }), 
-        __metadata('design:type', Array)
-    ], Post.prototype, "authors", void 0);
-    Post = __decorate([
+        ForeignKey_1.ForeignKey(function () { return User_1.User; }),
+        index_1.Column, 
+        __metadata('design:type', Number)
+    ], Comment.prototype, "userId", void 0);
+    __decorate([
+        index_1.BelongsTo(function () { return User_1.User; }), 
+        __metadata('design:type', Object)
+    ], Comment.prototype, "user", void 0);
+    Comment = __decorate([
         index_1.Table, 
         __metadata('design:paramtypes', [])
-    ], Post);
-    return Post;
+    ], Comment);
+    return Comment;
 }(index_1.Model));
-exports.Post = Post;
-//# sourceMappingURL=Post.js.map
+exports.Comment = Comment;
+//# sourceMappingURL=Comment.js.map
