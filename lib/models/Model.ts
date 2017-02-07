@@ -46,7 +46,8 @@ export const Model: IModel = (() => {
 
   } else {
     /* tslint:disable:max-classes-per-file */
-    _Model = class extends _SeqModel {};
+    _Model = class extends _SeqModel {
+    };
   }
 
   return _Model as any;

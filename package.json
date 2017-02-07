@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-decorators",
+  "name": "sequelize-typescript",
   "version": "1.0.1",
   "description": "Decorators for sequelize models",
   "scripts": {

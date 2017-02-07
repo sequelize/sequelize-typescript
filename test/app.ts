@@ -2,6 +2,7 @@ import {User} from './models/User';
 import {Post} from './models/Post';
 import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
+import {PostAuthor} from "./models/PostAuthor";
 
 const sequelize = new Sequelize({
     name: 'blog',
@@ -53,6 +54,7 @@ sequelize
     return post.save();
   })
   .then(() => {
+    PostAuthor.drop();
     Comment.drop();
     User.drop();
     Post.drop();

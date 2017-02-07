@@ -13,27 +13,34 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var index_1 = require("../../index");
+var sequelize_typescript_1 = require("sequelize-typescript");
+var Post_1 = require("./Post");
+var BelongsToMany_1 = require("../../lib/annotations/BelongsToMany");
+var PostAuthor_1 = require("./PostAuthor");
 var User = (function (_super) {
     __extends(User, _super);
     function User() {
         _super.apply(this, arguments);
     }
     __decorate([
-        index_1.PrimaryKey,
-        index_1.AutoIncrement,
-        index_1.Column, 
+        sequelize_typescript_1.PrimaryKey,
+        sequelize_typescript_1.AutoIncrement,
+        sequelize_typescript_1.Column, 
         __metadata('design:type', Number)
     ], User.prototype, "id", void 0);
     __decorate([
-        index_1.Column, 
+        sequelize_typescript_1.Column, 
         __metadata('design:type', String)
     ], User.prototype, "name", void 0);
+    __decorate([
+        BelongsToMany_1.BelongsToMany(function () { return Post_1.Post; }, function () { return PostAuthor_1.PostAuthor; }), 
+        __metadata('design:type', Array)
+    ], User.prototype, "posts", void 0);
     User = __decorate([
-        index_1.Table, 
+        sequelize_typescript_1.Table, 
         __metadata('design:paramtypes', [])
     ], User);
     return User;
-}(index_1.Model));
+}(sequelize_typescript_1.Model));
 exports.User = User;
 //# sourceMappingURL=User.js.map

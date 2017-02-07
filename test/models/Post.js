@@ -13,7 +13,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var index_1 = require("../../index");
+var sequelize_typescript_1 = require("sequelize-typescript");
 var HasMany_1 = require("../../lib/annotations/HasMany");
 var Comment_1 = require("./Comment");
 var User_1 = require("./User");
@@ -24,13 +24,13 @@ var Post = (function (_super) {
         _super.apply(this, arguments);
     }
     __decorate([
-        index_1.PrimaryKey,
-        index_1.AutoIncrement,
-        index_1.Column, 
+        sequelize_typescript_1.PrimaryKey,
+        sequelize_typescript_1.AutoIncrement,
+        sequelize_typescript_1.Column, 
         __metadata('design:type', Number)
     ], Post.prototype, "id", void 0);
     __decorate([
-        index_1.Column, 
+        sequelize_typescript_1.Column, 
         __metadata('design:type', String)
     ], Post.prototype, "text", void 0);
     __decorate([
@@ -38,14 +38,14 @@ var Post = (function (_super) {
         __metadata('design:type', Object)
     ], Post.prototype, "comments", void 0);
     __decorate([
-        index_1.BelongsToMany(function () { return User_1.User; }, function () { return PostAuthor_1.PostAuthor; }), 
+        sequelize_typescript_1.BelongsToMany(function () { return User_1.User; }, function () { return PostAuthor_1.PostAuthor; }), 
         __metadata('design:type', Array)
     ], Post.prototype, "authors", void 0);
     Post = __decorate([
-        index_1.Table, 
+        sequelize_typescript_1.Table, 
         __metadata('design:paramtypes', [])
     ], Post);
     return Post;
-}(index_1.Model));
+}(sequelize_typescript_1.Model));
 exports.Post = Post;
 //# sourceMappingURL=Post.js.map

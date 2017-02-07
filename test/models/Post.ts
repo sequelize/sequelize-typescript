@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany} from "../../index";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany} from "sequelize-typescript";
 import {HasMany} from "../../lib/annotations/HasMany";
 import {Comment} from "./Comment";
 import {User} from "./User";

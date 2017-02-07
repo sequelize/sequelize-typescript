@@ -1,6 +1,5 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsTo} from "../../index";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsTo, ForeignKey} from "sequelize-typescript";
 import {Post} from "./Post";
-import {ForeignKey} from "../../lib/annotations/ForeignKey";
 import {User} from "./User";
 
 @Table

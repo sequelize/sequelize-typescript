@@ -3,6 +3,7 @@ var User_1 = require('./models/User');
 var Post_1 = require('./models/Post');
 var Comment_1 = require('./models/Comment');
 var index_1 = require("../index");
+var PostAuthor_1 = require("./models/PostAuthor");
 var sequelize = new index_1.Sequelize({
     name: 'blog',
     dialect: 'mysql',
@@ -48,6 +49,7 @@ sequelize
     return post.save();
 })
     .then(function () {
+    PostAuthor_1.PostAuthor.drop();
     Comment_1.Comment.drop();
     User_1.User.drop();
     Post_1.Post.drop();

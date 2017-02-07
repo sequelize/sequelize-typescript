@@ -1,4 +1,4 @@
-import {Model, Table, PrimaryKey, Column, ForeignKey} from "../../index";
+import {Model, Table, PrimaryKey, Column, ForeignKey} from "sequelize-typescript";
 import {User} from "./User";
 import {Post} from "./Post";
 
@@ -6,12 +6,8 @@ import {Post} from "./Post";
 export class PostAuthor extends Model {
 
   @ForeignKey(() => User)
-  @PrimaryKey
-  @Column
   authorId: number;
 
   @ForeignKey(() => Post)
-  @PrimaryKey
-  @Column
   postId: number;
 }

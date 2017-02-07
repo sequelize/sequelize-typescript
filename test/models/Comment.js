@@ -13,9 +13,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var index_1 = require("../../index");
+var sequelize_typescript_1 = require("sequelize-typescript");
 var Post_1 = require("./Post");
-var ForeignKey_1 = require("../../lib/annotations/ForeignKey");
 var User_1 = require("./User");
 var Comment = (function (_super) {
     __extends(Comment, _super);
@@ -23,38 +22,38 @@ var Comment = (function (_super) {
         _super.apply(this, arguments);
     }
     __decorate([
-        index_1.PrimaryKey,
-        index_1.AutoIncrement,
-        index_1.Column, 
+        sequelize_typescript_1.PrimaryKey,
+        sequelize_typescript_1.AutoIncrement,
+        sequelize_typescript_1.Column, 
         __metadata('design:type', Number)
     ], Comment.prototype, "id", void 0);
     __decorate([
-        index_1.Column, 
+        sequelize_typescript_1.Column, 
         __metadata('design:type', String)
     ], Comment.prototype, "text", void 0);
     __decorate([
-        ForeignKey_1.ForeignKey(function () { return Post_1.Post; }),
-        index_1.Column, 
+        sequelize_typescript_1.ForeignKey(function () { return Post_1.Post; }),
+        sequelize_typescript_1.Column, 
         __metadata('design:type', Number)
     ], Comment.prototype, "postId", void 0);
     __decorate([
-        index_1.BelongsTo(function () { return Post_1.Post; }), 
+        sequelize_typescript_1.BelongsTo(function () { return Post_1.Post; }), 
         __metadata('design:type', Object)
     ], Comment.prototype, "post", void 0);
     __decorate([
-        ForeignKey_1.ForeignKey(function () { return User_1.User; }),
-        index_1.Column, 
+        sequelize_typescript_1.ForeignKey(function () { return User_1.User; }),
+        sequelize_typescript_1.Column, 
         __metadata('design:type', Number)
     ], Comment.prototype, "userId", void 0);
     __decorate([
-        index_1.BelongsTo(function () { return User_1.User; }), 
+        sequelize_typescript_1.BelongsTo(function () { return User_1.User; }), 
         __metadata('design:type', Object)
     ], Comment.prototype, "user", void 0);
     Comment = __decorate([
-        index_1.Table, 
+        sequelize_typescript_1.Table, 
         __metadata('design:paramtypes', [])
     ], Comment);
     return Comment;
-}(index_1.Model));
+}(sequelize_typescript_1.Model));
 exports.Comment = Comment;
 //# sourceMappingURL=Comment.js.map
