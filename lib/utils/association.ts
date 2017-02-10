@@ -19,7 +19,8 @@ export function addAssociation(target: any,
                                relatedClassGetter: () => typeof Model,
                                as: string,
                                through?: (() => typeof Model)|string,
-                               foreignKey?: string): void {
+                               foreignKey?: string,
+                               otherKey?: string): void {
 
   let associations = getAssociations(target);
 
@@ -41,7 +42,8 @@ export function addAssociation(target: any,
     throughClassGetter,
     through: through as string,
     as,
-    foreignKey
+    foreignKey,
+    otherKey
   });
 }
 

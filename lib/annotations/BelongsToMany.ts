@@ -3,7 +3,8 @@ import {BELONGS_TO_MANY, addAssociation} from "../utils/association";
 
 export function BelongsToMany(relatedClassGetter: () => typeof Model,
                               through: (() => typeof Model)|string,
-                              foreignKey?: string): Function {
+                              foreignKey?: string,
+                              otherKey?: string): Function {
 
   return (target: any, propertyName: string) => {
 
@@ -13,7 +14,8 @@ export function BelongsToMany(relatedClassGetter: () => typeof Model,
       relatedClassGetter,
       propertyName,
       through,
-      foreignKey
+      foreignKey,
+      otherKey
     );
   };
 }

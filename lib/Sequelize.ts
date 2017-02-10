@@ -39,7 +39,7 @@ export class Sequelize extends SequelizeOrigin {
       const attributes = getAttributes(_class.prototype);
       const options = getOptions(_class.prototype);
 
-      if (!options) throw new Error(`@Table annotation is missing on class "${_class.name}"`);
+      if (!options) throw new Error(`@Table annotation is missing on class "${_class['name']}"`);
 
       options.instanceMethods = _class.prototype;
       options.classMethods = _class;
@@ -79,8 +79,19 @@ export class Sequelize extends SequelizeOrigin {
         const foreignKey = association.foreignKey || getForeignKey(_class, association);
         const relatedClass = association.relatedClassGetter();
         let through;
+        let otherKey;
 
         if (association.relation === BELONGS_TO_MANY) {
+
+          if (association.otherKey) {
+
+            otherKey = association.otherKey;
+          } else {
+            if (!association.relatedClassGetter) {
+              throw new Error(`RelatedClassGetter missing on "${_class['name']}"`);
+            }
+            otherKey = getForeignKey(association.relatedClassGetter(), association);
+          }
 
           if (association.through) {
 
@@ -96,7 +107,8 @@ export class Sequelize extends SequelizeOrigin {
         _class[association.relation](relatedClass, {
           as: association.as,
           through,
-          foreignKey
+          foreignKey,
+          otherKey
         });
 
       });
@@ -113,7 +125,7 @@ export class Sequelize extends SequelizeOrigin {
       return arg.reduce((models: any[], dir) => {
 
         const _models = fs
-          .readdirSync(dir)
+          .readdirSync(dir as string)
           .filter(file => ((file.indexOf('.') !== 0) && (file.slice(-3) === '.js')))
           .map(file => {
             const fullPath = path.join(dir, file);

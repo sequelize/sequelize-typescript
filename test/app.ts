@@ -2,7 +2,8 @@ import {User} from './models/User';
 import {Post} from './models/Post';
 import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
-import {PostAuthor} from "./models/PostAuthor";
+import {PostTopic} from "./models/PostTopic";
+import {UserFriend} from "./models/UserFriend";
 
 const sequelize = new Sequelize({
     name: 'blog',
@@ -17,31 +18,59 @@ const sequelize = new Sequelize({
 
 sequelize
   .sync()
-  .then(() => User.create({name: 'elisa'}))
-  .then((user: User) =>
+  .then(() => Promise.all([
+      User.create({name: 'elisa'}),
+      User.create({name: 'nelly'}),
+      User.create({name: 'elisa'})
+    ])
+  )
+  .then(([robin, nelly, elisa]) =>
     Post
-      .create({text: 'hey'})
+      .create({text: 'hey', userId: nelly.id})
       .then(post => Comment.create({
         postId: post.id,
         text: 'my comment',
-        userId: user.id
+        userId: robin.id
       }))
       .then(() => {
 
-        user.name = 'robin';
+        robin.name = 'robin';
 
-        return user.save();
+        return Promise.all([
+          robin.addFriend(nelly),
+          robin.addFriend(elisa),
+          robin.save()
+        ]);
       })
   )
   .then(() =>
     Post
       .findAll({
+        attributes: ['id', 'text'],
         include: [{
           model: Comment,
           as: 'comments',
+          attributes: ['id', 'text'],
           include: [{
             model: User,
-            as: 'user'
+            as: 'user',
+            include: [{
+              model: User,
+              as: 'friends',
+              through: {
+                attributes: []
+              }
+            }]
+          }]
+        }, {
+          model: User,
+          as: 'user',
+          include: [{
+            model: User,
+            as: 'friends',
+            through: {
+              attributes: []
+            }
           }]
         }
         ]
@@ -54,10 +83,11 @@ sequelize
     return post.save();
   })
   .then(() => {
-    PostAuthor.drop();
+    UserFriend.drop();
+    PostTopic.drop();
     Comment.drop();
-    User.drop();
     Post.drop();
+    User.drop();
   })
 ;
 

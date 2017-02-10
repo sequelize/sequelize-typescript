@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsTo, ForeignKey} from "sequelize-typescript";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsTo, ForeignKey} from "../../index";
 import {Post} from "./Post";
 import {User} from "./User";
 

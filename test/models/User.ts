@@ -1,7 +1,6 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement} from "sequelize-typescript";
-import {Post} from "./Post";
+import {Table, Model, PrimaryKey, Column, AutoIncrement} from "../../index";
 import {BelongsToMany} from "../../lib/annotations/BelongsToMany";
-import {PostAuthor} from "./PostAuthor";
+import {UserFriend} from "./UserFriend";
 
 @Table
 export class User extends Model {
@@ -14,7 +13,7 @@ export class User extends Model {
   @Column
   name: string;
 
-  @BelongsToMany(() => Post, () => PostAuthor)
-  posts: Post[];
+  @BelongsToMany(() => User, () => UserFriend, 'userId', 'friendId')
+  friends: User[];
 
 }

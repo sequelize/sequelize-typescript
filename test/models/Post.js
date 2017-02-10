@@ -13,39 +13,50 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var sequelize_typescript_1 = require("sequelize-typescript");
+var index_1 = require("../../index");
 var HasMany_1 = require("../../lib/annotations/HasMany");
 var Comment_1 = require("./Comment");
+var PostTopic_1 = require("./PostTopic");
+var Topic_1 = require("./Topic");
+var ForeignKey_1 = require("../../lib/annotations/ForeignKey");
 var User_1 = require("./User");
-var PostAuthor_1 = require("./PostAuthor");
+var BelongsTo_1 = require("../../lib/annotations/BelongsTo");
 var Post = (function (_super) {
     __extends(Post, _super);
     function Post() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    __decorate([
-        sequelize_typescript_1.PrimaryKey,
-        sequelize_typescript_1.AutoIncrement,
-        sequelize_typescript_1.Column, 
-        __metadata('design:type', Number)
-    ], Post.prototype, "id", void 0);
-    __decorate([
-        sequelize_typescript_1.Column, 
-        __metadata('design:type', String)
-    ], Post.prototype, "text", void 0);
-    __decorate([
-        HasMany_1.HasMany(function () { return Comment_1.Comment; }), 
-        __metadata('design:type', Object)
-    ], Post.prototype, "comments", void 0);
-    __decorate([
-        sequelize_typescript_1.BelongsToMany(function () { return User_1.User; }, function () { return PostAuthor_1.PostAuthor; }), 
-        __metadata('design:type', Array)
-    ], Post.prototype, "authors", void 0);
-    Post = __decorate([
-        sequelize_typescript_1.Table, 
-        __metadata('design:paramtypes', [])
-    ], Post);
     return Post;
-}(sequelize_typescript_1.Model));
+}(index_1.Model));
+__decorate([
+    index_1.PrimaryKey,
+    index_1.AutoIncrement,
+    index_1.Column,
+    __metadata("design:type", Number)
+], Post.prototype, "id", void 0);
+__decorate([
+    index_1.Column,
+    __metadata("design:type", String)
+], Post.prototype, "text", void 0);
+__decorate([
+    HasMany_1.HasMany(function () { return Comment_1.Comment; }),
+    __metadata("design:type", Object)
+], Post.prototype, "comments", void 0);
+__decorate([
+    index_1.BelongsToMany(function () { return Topic_1.Topic; }, function () { return PostTopic_1.PostTopic; }),
+    __metadata("design:type", Array)
+], Post.prototype, "topics", void 0);
+__decorate([
+    ForeignKey_1.ForeignKey(function () { return User_1.User; }),
+    index_1.Column,
+    __metadata("design:type", Number)
+], Post.prototype, "userId", void 0);
+__decorate([
+    BelongsTo_1.BelongsTo(function () { return User_1.User; }),
+    __metadata("design:type", User_1.User)
+], Post.prototype, "user", void 0);
+Post = __decorate([
+    index_1.Table
+], Post);
 exports.Post = Post;
 //# sourceMappingURL=Post.js.map

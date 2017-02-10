@@ -13,27 +13,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var sequelize_typescript_1 = require("sequelize-typescript");
-var User_1 = require("./User");
+var index_1 = require("../../index");
 var Post_1 = require("./Post");
-var PostAuthor = (function (_super) {
-    __extends(PostAuthor, _super);
-    function PostAuthor() {
-        _super.apply(this, arguments);
+var Topic_1 = require("./Topic");
+var PostTopic = (function (_super) {
+    __extends(PostTopic, _super);
+    function PostTopic() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    __decorate([
-        sequelize_typescript_1.ForeignKey(function () { return User_1.User; }), 
-        __metadata('design:type', Number)
-    ], PostAuthor.prototype, "authorId", void 0);
-    __decorate([
-        sequelize_typescript_1.ForeignKey(function () { return Post_1.Post; }), 
-        __metadata('design:type', Number)
-    ], PostAuthor.prototype, "postId", void 0);
-    PostAuthor = __decorate([
-        sequelize_typescript_1.Table, 
-        __metadata('design:paramtypes', [])
-    ], PostAuthor);
-    return PostAuthor;
-}(sequelize_typescript_1.Model));
-exports.PostAuthor = PostAuthor;
-//# sourceMappingURL=PostAuthor.js.map
+    return PostTopic;
+}(index_1.Model));
+__decorate([
+    index_1.ForeignKey(function () { return Post_1.Post; }),
+    index_1.PrimaryKey,
+    index_1.Column,
+    __metadata("design:type", Number)
+], PostTopic.prototype, "postId", void 0);
+__decorate([
+    index_1.ForeignKey(function () { return Topic_1.Topic; }),
+    index_1.PrimaryKey,
+    index_1.Column,
+    __metadata("design:type", Number)
+], PostTopic.prototype, "topicId", void 0);
+PostTopic = __decorate([
+    index_1.Table
+], PostTopic);
+exports.PostTopic = PostTopic;
+//# sourceMappingURL=PostTopic.js.map

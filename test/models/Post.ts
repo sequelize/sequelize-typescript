@@ -1,8 +1,11 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany} from "sequelize-typescript";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany} from "../../index";
 import {HasMany} from "../../lib/annotations/HasMany";
 import {Comment} from "./Comment";
+import {PostTopic} from "./PostTopic";
+import {Topic} from "./Topic";
+import {ForeignKey} from "../../lib/annotations/ForeignKey";
 import {User} from "./User";
-import {PostAuthor} from "./PostAuthor";
+import {BelongsTo} from "../../lib/annotations/BelongsTo";
 
 @Table
 export class Post extends Model {
@@ -18,7 +21,14 @@ export class Post extends Model {
   @HasMany(() => Comment)
   comments;
 
-  @BelongsToMany(() => User, () => PostAuthor)
-  authors: User[];
+  @BelongsToMany(() => Topic, () => PostTopic)
+  topics: Topic[];
+
+  @ForeignKey(() => User)
+  @Column
+  userId: number;
+
+  @BelongsTo(() => User)
+  user: User;
 
 }

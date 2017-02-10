@@ -26,7 +26,6 @@ var Table_1 = require("./lib/annotations/Table");
 exports.Table = Table_1.Table;
 var Type_1 = require("./lib/annotations/Type");
 exports.Type = Type_1.Type;
-// interfaces
 // models
 var DataType_1 = require("./lib/models/DataType");
 exports.DataType = DataType_1.DataType;
