@@ -4,6 +4,7 @@
     "arrow-parens": false,
     "class-name": false,
     "no-empty": false,
+    "unified-signatures": false,
     "no-trailing-whitespace": false,
     "object-literal-sort-keys": false,
     "interface-name": true,

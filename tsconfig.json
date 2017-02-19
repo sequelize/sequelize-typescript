@@ -13,15 +13,13 @@
     "lib": ["es2015"]
   },
   "include": [
-    "lib/**/*",
-    "test/**/*"
+    "lib/**/*"
   ],
   "files": [
     "index.ts"
   ],
   "exclude": [
     "node_modules",
-    "documentation",
     "test"
   ]
 }

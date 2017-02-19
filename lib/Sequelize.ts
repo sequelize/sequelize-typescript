@@ -14,14 +14,20 @@ export class Sequelize extends SequelizeOrigin {
   // to fix "$1" called with something that's not an instance of Sequelize.Model
   Model: any = Function;
 
-  constructor(config: ISequelizeConfig,
-              paths: string[]) {
+  constructor(config: ISequelizeConfig) {
     super(config.name,
       config.username,
       config.password,
       config);
 
-    const classes = this.getClasses(paths);
+    if (config.modelPaths) this.addModels(config.modelPaths);
+  }
+
+  addModels(models: Array<typeof Model>): void;
+  addModels(modelPaths: string[]): void;
+  addModels(arg: Array<typeof Model|string>): void {
+
+    const classes = this.getClasses(arg);
 
     this.defineModels(classes);
     this.associateModels(classes);

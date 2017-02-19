@@ -13,6 +13,12 @@ export class User extends Model {
   @Column
   name: string;
 
+  @Column
+  aNumber: number;
+
+  @Column
+  bNumber: number;
+
   @BelongsToMany(() => User, () => UserFriend, 'userId', 'friendId')
   friends: User[];
 

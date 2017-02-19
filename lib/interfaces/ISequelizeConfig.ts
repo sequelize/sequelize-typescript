@@ -1,9 +1,9 @@
+import {Options} from 'sequelize';
 
-export interface ISequelizeConfig {
+export interface ISequelizeConfig extends Options {
 
   name: string;
-  dialect: string;
-  host: string;
   username: string;
   password: string;
+  modelPaths?: string[];
 }

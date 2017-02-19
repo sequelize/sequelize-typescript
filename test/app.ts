@@ -4,17 +4,19 @@ import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
 import {PostTopic} from "./models/PostTopic";
 import {UserFriend} from "./models/UserFriend";
+import {Topic} from "./models/Topic";
+import * as prettyjson from 'prettyjson';
 
 const sequelize = new Sequelize({
-    name: 'blog',
-    dialect: 'mysql',
-    host: 'localhost',
-    username: 'root',
-    password: ''
-  },
-  [
+  name: 'blog',
+  dialect: 'mysql',
+  host: 'localhost',
+  username: 'root',
+  password: '',
+  modelPaths: [
     __dirname + '/models'
-  ]);
+  ]
+});
 
 sequelize
   .sync()
@@ -75,7 +77,15 @@ sequelize
         }
         ]
       })
-      .then(posts => console.log(JSON.stringify(posts)))
+      .then(posts => {
+
+        // prettyjson.render(posts);
+
+        posts.forEach(post => {
+
+          console.log(post instanceof Post);
+        });
+      })
   )
   .then(() => {
     const post = new Post({text: 'hey2'});
@@ -83,8 +93,12 @@ sequelize
     return post.save();
   })
   .then(() => {
+    Post.build({text: 'hey3'});
+  })
+  .then(() => {
     UserFriend.drop();
     PostTopic.drop();
+    Topic.drop();
     Comment.drop();
     Post.drop();
     User.drop();

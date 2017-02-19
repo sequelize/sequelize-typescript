@@ -6,8 +6,11 @@
 
 # libraries
 node_modules
-typings
 
 # testing
 coverage
+
+**/*.js
+**/*.js.map
+**/*.d.ts
 

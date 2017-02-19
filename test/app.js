@@ -5,15 +5,17 @@ var Comment_1 = require("./models/Comment");
 var index_1 = require("../index");
 var PostTopic_1 = require("./models/PostTopic");
 var UserFriend_1 = require("./models/UserFriend");
+var Topic_1 = require("./models/Topic");
 var sequelize = new index_1.Sequelize({
     name: 'blog',
     dialect: 'mysql',
     host: 'localhost',
     username: 'root',
-    password: ''
-}, [
-    __dirname + '/models'
-]);
+    password: '',
+    modelPaths: [
+        __dirname + '/models'
+    ]
+});
 sequelize
     .sync()
     .then(function () { return Promise.all([
@@ -71,15 +73,24 @@ sequelize
             }
         ]
     })
-        .then(function (posts) { return console.log(JSON.stringify(posts)); });
+        .then(function (posts) {
+        // prettyjson.render(posts);
+        posts.forEach(function (post) {
+            console.log(post instanceof Post_1.Post);
+        });
+    });
 })
     .then(function () {
     var post = new Post_1.Post({ text: 'hey2' });
     return post.save();
 })
     .then(function () {
+    Post_1.Post.build({ text: 'hey3' });
+})
+    .then(function () {
     UserFriend_1.UserFriend.drop();
     PostTopic_1.PostTopic.drop();
+    Topic_1.Topic.drop();
     Comment_1.Comment.drop();
     Post_1.Post.drop();
     User_1.User.drop();
