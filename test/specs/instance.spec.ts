@@ -1,5 +1,7 @@
 import {expect} from 'chai';
-import {Model, Table, Column, PrimaryKey, AutoIncrement, Sequelize} from "../../index";
+import {InstanceError} from 'sequelize';
+import {Model, Table, Column, PrimaryKey, AutoIncrement, Sequelize, DataType, HasMany} from "../../index";
+import {BelongsTo} from "../../lib/annotations/BelongsTo";
 
 /* tslint:disable:max-classes-per-file */
 
@@ -40,7 +42,29 @@ describe('instance', () => {
     aNumber: number;
   }
 
-  sequelize.addModels([User, IncrementUser]);
+  @Table
+  class Book extends Model {
+
+    @Column
+    title: string;
+
+    @HasMany(() => Page)
+    pages: Page[];
+  }
+
+  @Table
+  class Page extends Model {
+
+    @Column({
+      type: DataType.TEXT
+    })
+    content: string;
+
+    @BelongsTo(() => Book)
+    book: Book;
+  }
+
+  sequelize.addModels([User, IncrementUser, Book, Page]);
 
   beforeEach(() => sequelize.sync({force: true}));
 
@@ -475,9 +499,9 @@ describe('instance', () => {
         .bind(this)
         .then(() => IncrementUser.create({aNumber: 1}))
         .then((user) => {
-        oldDate = user.updatedAt;
-        return user.decrement('aNumber', {by: 1});
-      })
+          oldDate = user.updatedAt;
+          return user.decrement('aNumber', {by: 1});
+        })
         .then(() => IncrementUser.findById(1))
         .then(user => {
           expect(user).to.have.property('updatedAt');
@@ -510,165 +534,180 @@ describe('instance', () => {
 
     if (sequelize['dialect']['supports']['transactions']) {
 
-      it('supports transactions', () => {
-        return Support.prepareTransactionTest(this.sequelize).bind({}).then((sequelize) => {
-          var User = sequelize.define('User', {username: Support.Sequelize.STRING});
-
-          return User.sync({force: true}).then(() => {
-            return User.create({username: 'foo'}).then((user) => {
-              return sequelize.transaction().then((t) => {
-                return User.update({username: 'bar'}, {where: {username: 'foo'}, transaction: t}).then(() => {
-                  return user.reload().then((user) => {
-                    expect(user.username).to.equal('foo');
-                    return user.reload({transaction: t}).then((user) => {
-                      expect(user.username).to.equal('bar');
-                      return t.rollback();
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
+      it('supports transactions', () =>
+        User
+          .sync({force: true})
+          .then(() =>
+            User
+              .create({username: 'foo'})
+              .then((user) =>
+                sequelize
+                  .transaction()
+                  .then((transaction) =>
+                    User
+                      .update({username: 'bar'}, {where: {username: 'foo'}, transaction})
+                      .then(() =>
+                        user
+                          .reload()
+                          .then((user1) => {
+                            expect(user1.username).to.equal('foo');
+                            return user1
+                              .reload({transaction})
+                              .then((user2) => {
+                                expect(user2.username).to.equal('bar');
+                                return transaction.rollback();
+                              });
+                          })
+                      )
+                  )
+              )
+          )
+      );
     }
 
-    it('should return a reference to the same DAO instead of creating a new one', () => {
-      User.create({username: 'John Doe'}).then((originalUser) => {
-        return originalUser.updateAttributes({username: 'Doe John'}).then(() => {
-          return originalUser.reload().then((updatedUser) => {
-            expect(originalUser === updatedUser).to.be.true;
-          });
-        });
-      });
-    });
+    it('should return a reference to the same DAO instead of creating a new one', () =>
+      User
+        .create({username: 'John Doe'})
+        .then((originalUser) =>
+          originalUser
+            .updateAttributes({username: 'Doe John'})
+            .then(() =>
+              originalUser
+                .reload()
+                .then((updatedUser) => {
+                  expect(originalUser === updatedUser).to.be.true;
+                })
+            )
+        )
+    );
 
-    it('should update the values on all references to the DAO', () => {
+    it('should update the values on all references to the DAO', () =>
+      User
+        .create({username: 'John Doe'})
+        .then((originalUser) =>
+          User
+            .findById(originalUser.id)
+            .then((updater) =>
+              updater
+                .updateAttributes({username: 'Doe John'})
+                .then(() => {
+                  // We used a different reference when calling updateAttributes, so originalUser is now out of sync
+                  expect(originalUser.username).to.equal('John Doe');
+                  return originalUser.reload().then((updatedUser) => {
+                    expect(originalUser.username).to.equal('Doe John');
+                    expect(updatedUser.username).to.equal('Doe John');
+                  });
+                })
+            )
+        )
+    );
 
-      User.create({username: 'John Doe'}).then((originalUser) => {
-        User.findById(originalUser.id).then((updater) => {
-          return updater.updateAttributes({username: 'Doe John'}).then(() => {
-            // We used a different reference when calling updateAttributes, so originalUser is now out of sync
-            expect(originalUser.username).to.equal('John Doe');
-            return originalUser.reload().then((updatedUser) => {
-              expect(originalUser.username).to.equal('Doe John');
-              expect(updatedUser.username).to.equal('Doe John');
-            });
-          });
-        });
-      });
-    });
-
-    it('should support updating a subset of attributes', function () {
-      User.create({
-        aNumber: 1,
-        bNumber: 1,
-      }).bind(this).tap(function (user) {
-        User.update({
-          bNumber: 2
-        }, {
-          where: {
-            id: user.get('id')
-          }
-        });
-      }).then(function (user) {
-        return user.reload({
-          attributes: ['bNumber']
-        });
-      }).then(function (user) {
-        expect(user.get('aNumber')).to.equal(1);
-        expect(user.get('bNumber')).to.equal(2);
-      });
-    });
+    it('should support updating a subset of attributes', () =>
+      User
+        .create({aNumber: 1, bNumber: 1})
+        .bind(this)
+        .tap((user) => User.update({bNumber: 2}, {where: {id: user.get('id')}}))
+        .then((user) => user.reload({attributes: ['bNumber']}))
+        .then((user) => {
+          expect(user.get('aNumber')).to.equal(1);
+          expect(user.get('bNumber')).to.equal(2);
+        })
+    );
 
     it('should update read only attributes as well (updatedAt)', () => {
-      User.create({username: 'John Doe'}).bind(this).then((originalUser) => {
-        this.originallyUpdatedAt = originalUser.updatedAt;
-        this.originalUser = originalUser;
+      let _originalUser;
+      let originallyUpdatedAt;
+      let _updatedUser;
 
-        // Wait for a second, so updatedAt will actually be different
-        this.clock.tick(1000);
-        User.findById(originalUser.id);
-      }).then((updater) => {
-        return updater.updateAttributes({username: 'Doe John'});
-      }).then((updatedUser) => {
-        this.updatedUser = updatedUser;
-        originalUser.reload();
-      }).then(() => {
-        expect(this.originalUser.updatedAt).to.be.above(this.originallyUpdatedAt);
-        expect(this.updatedUser.updatedAt).to.be.above(this.originallyUpdatedAt);
-      });
+      return User
+        .create({username: 'John Doe'})
+        .bind(this)
+        .then((originalUser) => {
+          originallyUpdatedAt = originalUser.updatedAt;
+          _originalUser = originalUser;
+
+          return User.findById(originalUser.id);
+        })
+        .then((updater) => updater.updateAttributes({username: 'Doe John'}))
+        .then((updatedUser) => {
+          _updatedUser = updatedUser;
+          _originalUser.reload();
+        })
+        .then(() => {
+          expect(_originalUser.updatedAt).to.be.above(originallyUpdatedAt);
+          expect(_updatedUser.updatedAt).to.be.above(originallyUpdatedAt);
+        });
     });
 
-    it('should update the associations as well', () => {
-      var Book = this.sequelize.define('Book', {title: DataTypes.STRING})
-        , Page = this.sequelize.define('Page', {content: DataTypes.TEXT});
-
-      Book.hasMany(Page);
-      Page.belongsTo(Book);
-
-      return Book.sync({force: true}).then(() => {
-        return Page.sync({force: true}).then(() => {
-          return Book.create({title: 'A very old book'}).then((book) => {
-            return Page.create({content: 'om nom nom'}).then((page) => {
-              return book.setPages([page]).then(() => {
-                return Book.findOne({
-                  where: {id: book.id},
-                  include: [Page]
-                }).then((leBook) => {
-                  return page.updateAttributes({content: 'something totally different'}).then((page) => {
-                    expect(leBook.Pages.length).to.equal(1);
-                    expect(leBook.Pages[0].content).to.equal('om nom nom');
-                    expect(page.content).to.equal('something totally different');
-                    return leBook.reload().then((leBook) => {
+    it('should update the associations as well', () =>
+      Book
+        .sync({force: true})
+        .then(() => Page.sync({force: true}))
+        .then(() => Book.create({title: 'A very old book'}))
+        .then((book) =>
+          Page
+            .create({content: 'om nom nom'})
+            .then((page) =>
+              book
+                .setPages([page])
+                .then(() => Book.findOne({where: {id: book.id}, include: [Page]}))
+                .then((leBook) =>
+                  page
+                    .updateAttributes({content: 'something totally different'})
+                    .then((_page) => {
                       expect(leBook.Pages.length).to.equal(1);
-                      expect(leBook.Pages[0].content).to.equal('something totally different');
-                      expect(page.content).to.equal('something totally different');
-                    });
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
+                      expect(leBook.Pages[0].content).to.equal('om nom nom');
+                      expect(_page.content).to.equal('something totally different');
 
-    it('should update internal options of the instance', () => {
-      var Book = this.sequelize.define('Book', {title: DataTypes.STRING})
-        , Page = this.sequelize.define('Page', {content: DataTypes.TEXT});
+                      return leBook
+                        .reload()
+                        .then((_leBook) => {
+                          expect(_leBook.Pages.length).to.equal(1);
+                          expect(_leBook.Pages[0].content).to.equal('something totally different');
+                          expect(_page.content).to.equal('something totally different');
+                        });
+                    })
+                )
+            )
+        )
+    );
 
-      Book.hasMany(Page);
-      Page.belongsTo(Book);
+    it('should update internal options of the instance', () =>
+      Book
+        .sync({force: true})
+        .then(() => Page.sync({force: true}))
+        .then(() => Book.create({title: 'A very old book'}))
+        .then((book) =>
+          Page
+            .create()
+            .then((page) =>
+              book.setPages([page])
+                .then(() =>
+                  Book
+                    .findOne({where: {id: book.id}})
+                    .then((leBook) => {
 
-      return Book.sync({force: true}).then(() => {
-        return Page.sync({force: true}).then(() => {
-          return Book.create({title: 'A very old book'}).then((book) => {
-            return Page.create().then((page) => {
-              return book.setPages([page]).then(() => {
-                return Book.findOne({
-                  where: {id: book.id}
-                }).then((leBook) => {
-                  var oldOptions = leBook._options;
-                  return leBook.reload({
-                    include: [Page]
-                  }).then((leBook) => {
-                    expect(oldOptions).not.to.equal(leBook._options);
-                    expect(leBook._options.include.length).to.equal(1);
-                    expect(leBook.Pages.length).to.equal(1);
-                    expect(leBook.get({plain: true}).Pages.length).to.equal(1);
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
+                      const oldOptions = leBook._options;
+                      return leBook.reload({include: [Page]})
+                        .then((_leBook) => {
+                          expect(oldOptions).not.to.equal(_leBook._options);
+                          expect(_leBook._options.include.length).to.equal(1);
+                          expect(_leBook.Pages.length).to.equal(1);
+                          expect(_leBook.get({plain: true}).Pages.length).to.equal(1);
+                        });
+                    })
+                )
+            )
+        )
+    );
 
-    it('should return an error when reload fails', () => {
-      User.create({username: 'John Doe'}).then((user) => {
-        return user.destroy().then(function () {
+    it('should return an error when reload fails', () =>
+      User
+        .create({username: 'John Doe'})
+        .then((user) =>
+        user
+          .destroy()
+          .then(() => {
           return expect(user.reload()).to.be.rejectedWith(
             Sequelize.InstanceError,
             'Instance could not be reloaded because it does not exist anymore (find call returned null)'
@@ -1722,7 +1761,12 @@ describe('instance', () => {
 
     it('returns a response that can be stringified and then parsed', () => {
       var user = this.User.build({username: 'test.user', age: 99, isAdmin: true});
-      expect(JSON.parse(JSON.stringify(user))).to.deep.equal({username: 'test.user', age: 99, isAdmin: true, id: null});
+      expect(JSON.parse(JSON.stringify(user))).to.deep.equal({
+        username: 'test.user',
+        age: 99,
+        isAdmin: true,
+        id: null
+      });
     });
 
     it('includes the eagerly loaded associations', () => {
