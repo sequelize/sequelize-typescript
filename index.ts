@@ -20,7 +20,7 @@ export {ISequelizeForeignKeyConfig} from "./lib/interfaces/ISequelizeForeignKeyC
 export {IPartialDefineAttributeColumnOptions} from "./lib/interfaces/IPartialDefineAttributeColumnOptions";
 
 // models
-export {DataType} from "./lib/models/DataType";
+export {DataType} from "./lib/enums/DataType";
 export {Model} from "./lib/models/Model";
 
 // services

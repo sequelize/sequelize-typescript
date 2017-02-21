@@ -4,7 +4,7 @@ import {Comment} from "./Comment";
 import {PostTopic} from "./PostTopic";
 import {Topic} from "./Topic";
 import {ForeignKey} from "../../lib/annotations/ForeignKey";
-import {User} from "./User";
+import {Author} from "./Author";
 import {BelongsTo} from "../../lib/annotations/BelongsTo";
 
 @Table
@@ -24,11 +24,11 @@ export class Post extends Model {
   @BelongsToMany(() => Topic, () => PostTopic)
   topics: Topic[];
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Author)
   @Column
   userId: number;
 
-  @BelongsTo(() => User)
-  user: User;
+  @BelongsTo(() => Author)
+  user: Author;
 
 }

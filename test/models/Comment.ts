@@ -1,6 +1,6 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsTo, ForeignKey} from "../../index";
 import {Post} from "./Post";
-import {User} from "./User";
+import {Author} from "./Author";
 
 @Table
 export class Comment extends Model {
@@ -20,11 +20,11 @@ export class Comment extends Model {
   @BelongsTo(() => Post)
   post;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Author)
   @Column
   userId: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => Author)
   user;
 
 }

@@ -111,6 +111,13 @@ export function setAssociations(target: any, associations: ISequelizeAssociation
   Reflect.defineMetadata(ASSOCIATIONS_KEY, associations, target);
 }
 
+export function getAssociationsByRelation(target: any, relatedClass: any): ISequelizeAssociation[] {
+
+  const associations = getAssociations(target);
+
+  return (associations || []).filter(association => association.relatedClassGetter() === relatedClass);
+}
+
 /**
  * Adds foreign key meta data for specified class
  */

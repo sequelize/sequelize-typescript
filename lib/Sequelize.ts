@@ -55,14 +55,20 @@ export class Sequelize extends SequelizeOrigin {
 
       // replace Instance model with the original model
       (model as any).Instance = _class;
+      (model as any).Instance.prototype.Model = _class;
+      (model as any).Instance.prototype.$Model = _class;
       // this initializes some stuff for Instance
       model['refreshAttributes']();
+
       // copy static fields to class
       Object.keys(model).forEach(key => key !== 'name' && (_class[key] = model[key]));
 
       // the class needs to know its sequelize model
       _class['Model'] = model;
       _class.prototype['Model'] = _class.prototype['$Model'] = model;
+
+      // model needs to know its original class
+      (model as any)._class = _class;
 
       // to fix "$1" called with something that's not an instance of Sequelize.Model
       _class['sequelize'] = this;

@@ -1,15 +1,15 @@
 import {Model, Table, PrimaryKey, Column, ForeignKey} from "../../index";
-import {User} from "./User";
+import {Author} from "./Author";
 
 @Table
-export class UserFriend extends Model {
+export class AuthorFriend extends Model {
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Author)
   @PrimaryKey
   @Column
   userId: number;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Author)
   @PrimaryKey
   @Column
   friendId: number;

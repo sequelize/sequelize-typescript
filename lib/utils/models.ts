@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
-import {DataType} from "../models/DataType";
+import {DataType} from "../enums/DataType";
 import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 
@@ -123,7 +123,7 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
     case Boolean:
       return DataType.BOOLEAN;
     case Date:
-      return DataType.TIME;
+      return DataType.DATE;
     default:
       throw new Error(`Specified type of property '${propertyName}' 
             cannot be automatically resolved to a sequelize data type. Please

@@ -1,48 +1,26 @@
 import 'reflect-metadata';
-import {
-  Instance as SeqInstance,
-  Model as SeqModel
-} from "sequelize";
+import {Instance as SeqInstance, Model as SeqModel} from "sequelize";
+import * as modelLessThanV4 from '../utils/model-less-than-v4';
 import * as sequelize from 'sequelize';
+import {IDummyConstructor} from "../interfaces/IDummyConstructor";
+import {IModel} from "../interfaces/IModel";
 
-export interface IDummyConstructor {
-  new(...args: any[]): Object;
-}
-export interface IModel extends SeqModel<any, any> {
-  new (...args: any[]): SeqInstance<any>;
-}
-export {
-  Instance,
-  Model as __SeqModel
-} from "sequelize";
+export {Instance, Model as __SeqModel} from "sequelize";
 
+const _SeqModel: IDummyConstructor = SeqModel as any;
+const _SeqInstance: IDummyConstructor = SeqInstance as any;
+const SeqModelProto = _SeqModel.prototype;
+
+/**
+ * Creates override for sequelize model to make the food
+ */
 export const Model: IModel = (() => {
-
-  const _SeqModel: IDummyConstructor = SeqModel as any;
-  const _SeqInstance: IDummyConstructor = SeqInstance as any;
-  const SeqModelProto = _SeqModel.prototype;
 
   const version = parseFloat(sequelize['version']);
   let _Model;
 
   if (version < 4) {
-    _Model = class extends _SeqInstance {
-      constructor(values: any,
-                  options?: any) {
-        super(values, options || {isNewRecord: true});
-      }
-    };
-
-    Object.keys(SeqModelProto).forEach(key => {
-
-      if (typeof SeqModelProto[key] === 'function') {
-
-        _Model[key] = function(...args: any[]): any {
-
-          return SeqModelProto[key].call(this.Model || this, ...args);
-        };
-      }
-    });
+    _Model = modelLessThanV4.create(_SeqInstance, SeqModelProto);
 
   } else {
     /* tslint:disable:max-classes-per-file */
