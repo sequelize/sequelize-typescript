@@ -1,7 +1,7 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType} from "../../index";
 
 @Table
-export class User extends Model {
+export class User extends Model<User> {
 
   @PrimaryKey
   @AutoIncrement
@@ -29,8 +29,10 @@ export class User extends Model {
   @Column
   bNumber: number;
 
-  @Column
-  isSuperUser: boolean;
+  @Column({
+    type: DataType.BOOLEAN
+  })
+  isSuperUser: boolean|number;
 
   @Column({
     defaultValue: DataType.NOW

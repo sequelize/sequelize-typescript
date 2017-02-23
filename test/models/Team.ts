@@ -1,8 +1,13 @@
-import {Table, Model, Column, HasMany} from "../../index";
+import {Table, Model, PrimaryKey, AutoIncrement, Column, HasMany} from "../../index";
 import {Player} from "./Player";
 
 @Table
-export class Team extends Model {
+export class Team extends Model<Team> {
+
+  @PrimaryKey
+  @AutoIncrement
+  @Column
+  id: number;
 
   @Column
   name: string;

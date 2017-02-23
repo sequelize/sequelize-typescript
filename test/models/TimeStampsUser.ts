@@ -1,9 +1,14 @@
-import {Table, Model, Column} from "../../index";
+import {Table, Model, PrimaryKey, AutoIncrement, Column} from "../../index";
 
 @Table({
   timestamps: true
 })
-export class TimeStampsUser extends Model {
+export class TimeStampsUser extends Model<TimeStampsUser> {
+
+  @PrimaryKey
+  @AutoIncrement
+  @Column
+  id: number;
 
   @Column
   aNumber: number;

@@ -1,14 +1,14 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany} from "../../index";
-import {HasMany} from "../../lib/annotations/HasMany";
+import {HasMany} from "../../lib/annotations/association/HasMany";
 import {Comment} from "./Comment";
 import {PostTopic} from "./PostTopic";
 import {Topic} from "./Topic";
 import {ForeignKey} from "../../lib/annotations/ForeignKey";
 import {Author} from "./Author";
-import {BelongsTo} from "../../lib/annotations/BelongsTo";
+import {BelongsTo} from "../../lib/annotations/association/BelongsTo";
 
 @Table
-export class Post extends Model {
+export class Post extends Model<Post> {
 
   @PrimaryKey
   @AutoIncrement

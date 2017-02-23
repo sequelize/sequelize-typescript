@@ -3,7 +3,7 @@ import {Post} from "./Post";
 import {Author} from "./Author";
 
 @Table
-export class Comment extends Model {
+export class Comment extends Model<Comment> {
 
   @PrimaryKey
   @AutoIncrement

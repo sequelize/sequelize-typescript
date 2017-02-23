@@ -1,18 +1,29 @@
-import {getAssociationsByRelation} from "./association";
+import {getAssociationsByRelation} from "../utils/association";
 import {IDummyConstructor} from "../interfaces/IDummyConstructor";
+import {Instance, Model as SeqModel} from 'sequelize';
+import * as Promise from 'bluebird';
+
+const SeqInstance: IDummyConstructor = (Instance as any);
+const SeqModelProto = (SeqModel as any).prototype;
 
 /**
- * Creates override for sequelize model for sequelize versions less than v4
+ * Sequelize model for sequelize versions less than v4
  */
-export function create(SeqInstance: IDummyConstructor, SeqModelProto: any): any {
+export const ModelLtV4: any = (() => {
 
   const _Model = class extends SeqInstance {
+
+    add<T>(relatedKey: string, value: T): Promise<this> {
+
+      return this['add' + relatedKey.charAt(0).toUpperCase() + relatedKey.substr(1, relatedKey.length)](value);
+    }
 
     constructor(values: any,
                 options?: any) {
       super(values, options ||
         {isNewRecord: true}); // when called with "new"
     }
+
   };
 
   Object
@@ -56,7 +67,7 @@ export function create(SeqInstance: IDummyConstructor, SeqModelProto: any): any 
     });
 
   return _Model;
-}
+})();
 
 /**
  * Pre conform includes, so that "as" value can be inferred from source

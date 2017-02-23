@@ -1,5 +1,5 @@
-import {Model} from "../models/Model";
-import {BELONGS_TO, addAssociation} from "../utils/association";
+import {Model} from "../../models/Model";
+import {BELONGS_TO, addAssociation} from "../../utils/association";
 
 export function BelongsTo(relatedClassGetter: () => typeof Model,
                           foreignKey?: string): Function {

@@ -65,7 +65,7 @@ export class Sequelize extends SequelizeOrigin {
 
       // the class needs to know its sequelize model
       _class['Model'] = model;
-      _class.prototype['Model'] = _class.prototype['$Model'] = model;
+      (_class as any).prototype['Model'] = _class.prototype['$Model'] = model;
 
       // model needs to know its original class
       (model as any)._class = _class;

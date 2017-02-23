@@ -3,7 +3,7 @@ import {Team} from "./Team";
 import {Shoe} from "./Shoe";
 
 @Table
-export class Player extends Model {
+export class Player extends Model<Player> {
 
   @PrimaryKey
   @AutoIncrement

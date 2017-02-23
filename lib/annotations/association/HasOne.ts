@@ -1,5 +1,5 @@
-import {Model} from "../models/Model";
-import {addAssociation, HAS_ONE} from "../utils/association";
+import {Model} from "../../models/Model";
+import {addAssociation, HAS_ONE} from "../../utils/association";
 
 export function HasOne(relatedClassGetter: () => typeof Model,
                        foreignKey?: string): Function {

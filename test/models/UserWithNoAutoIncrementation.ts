@@ -1,7 +1,7 @@
 import {Table, Model, Column, DataType} from "../../index";
 
 @Table
-export class UserWithNoAutoIncrementation extends Model {
+export class UserWithNoAutoIncrementation extends Model<UserWithNoAutoIncrementation> {
 
   @Column({
     type: DataType.INTEGER.UNSIGNED,

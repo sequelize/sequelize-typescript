@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@types/chai-as-promised": "0.0.29",
+    "@types/deep-assign": "0.1.0",
     "@types/node": "6.0.41",
     "@types/reflect-metadata": "0.0.4",
     "@types/sequelize": "4.0.39",
     "chai-as-promised": "6.0.0",
+    "deep-assign": "2.0.0",
     "es6-shim": "0.35.3"
   },
   "devDependencies": {

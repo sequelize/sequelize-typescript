@@ -3,9 +3,6 @@ import {Author} from './models/Author';
 import {Post} from './models/Post';
 import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
-import {PostTopic} from "./models/PostTopic";
-import {AuthorFriend} from "./models/AuthorFriend";
-import {Topic} from "./models/Topic";
 
 const sequelize = new Sequelize({
   name: 'blog',
@@ -19,17 +16,17 @@ const sequelize = new Sequelize({
 });
 
 sequelize
-  .sync()
+  .sync({force: true})
   .then(() => Promise.all([
-      Author.create({name: 'elisa'}),
-      Author.create({name: 'nelly'}),
-      Author.create({name: 'elisa'})
+      Author.create<Author>({name: 'elisa'}),
+      Author.create<Author>({name: 'nelly'}),
+      Author.create<Author>({name: 'elisa'})
     ])
   )
   .then(([robin, nelly, elisa]) =>
     Post
-      .create({text: 'hey', userId: nelly.id})
-      .then(post => Comment.create({
+      .create<Post>({text: 'hey', userId: nelly.id})
+      .then(post => Comment.create<Comment>({
         postId: post.id,
         text: 'my comment',
         userId: robin.id
@@ -39,9 +36,8 @@ sequelize
         robin.name = 'robin';
 
         return Promise.all([
-          robin.addFriend(nelly),
-          robin.addFriend(elisa),
-          robin.save()
+          robin.add('Friend', nelly),
+          robin.add('Friend', elisa)
         ]);
       })
   )
@@ -98,14 +94,6 @@ sequelize
   })
   .then(() => {
     Post.build({text: 'hey3'});
-  })
-  .then(() => {
-    AuthorFriend.drop();
-    PostTopic.drop();
-    Topic.drop();
-    Comment.drop();
-    Post.drop();
-    Author.drop();
   })
 ;
 

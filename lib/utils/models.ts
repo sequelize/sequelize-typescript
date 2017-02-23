@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import * as deepAssign from 'deep-assign';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
 import {DataType} from "../enums/DataType";
@@ -78,7 +79,7 @@ export function addAttributeOptions(target: any,
     ` or annotation order is wrong.`);
   }
 
-  attributes[propertyName] = Object.assign(attributes[propertyName], options);
+  attributes[propertyName] = deepAssign(attributes[propertyName], options);
 }
 
 /**

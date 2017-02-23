@@ -1,9 +1,9 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement} from "../../index";
-import {BelongsToMany} from "../../lib/annotations/BelongsToMany";
+import {BelongsToMany} from "../../lib/annotations/association/BelongsToMany";
 import {AuthorFriend} from "./AuthorFriend";
 
 @Table
-export class Author extends Model {
+export class Author extends Model<Author> {
 
   @PrimaryKey
   @AutoIncrement

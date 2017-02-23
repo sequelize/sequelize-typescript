@@ -3,7 +3,7 @@ import {Post} from "./Post";
 import {Topic} from "./Topic";
 
 @Table
-export class PostTopic extends Model {
+export class PostTopic extends Model<PostTopic> {
 
   @ForeignKey(() => Post)
   @PrimaryKey

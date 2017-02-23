@@ -3,7 +3,7 @@ import {Post} from "./Post";
 import {PostTopic} from "./PostTopic";
 
 @Table
-export class Topic extends Model {
+export class Topic extends Model<Topic> {
 
   @PrimaryKey
   @AutoIncrement

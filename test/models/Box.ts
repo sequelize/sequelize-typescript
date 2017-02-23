@@ -1,7 +1,7 @@
 import {Table, Model, Column} from "../../index";
 
 @Table
-export class Box extends Model {
+export class Box extends Model<Box> {
 
   @Column
   length: number;

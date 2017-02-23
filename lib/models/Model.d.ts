@@ -1,42 +1,31 @@
 import 'reflect-metadata';
-import * as sequelize from "sequelize";
-import Promise = sequelize.Promise;
-import BuildOptions = sequelize.BuildOptions;
-import SyncOptions = sequelize.SyncOptions;
-import FindOptions = sequelize.FindOptions;
-import UpsertOptions = sequelize.UpsertOptions;
-import BulkCreateOptions = sequelize.BulkCreateOptions;
-import UpdateOptions = sequelize.UpdateOptions;
-import RestoreOptions = sequelize.RestoreOptions;
-import DestroyOptions = sequelize.DestroyOptions;
-import TruncateOptions = sequelize.TruncateOptions;
-import FindCreateFindOptions = sequelize.FindCreateFindOptions;
-import FindOrInitializeOptions = sequelize.FindOrInitializeOptions;
-import CreateOptions = sequelize.CreateOptions;
-import InstanceIncrementDecrementOptions = sequelize.InstanceIncrementDecrementOptions;
-import DropOptions = sequelize.DropOptions;
-import SchemaOptions = sequelize.SchemaOptions;
-import GetTableNameOptions = sequelize.GetTableNameOptions;
-import AddScopeOptions = sequelize.AddScopeOptions;
-import ScopeOptions = sequelize.ScopeOptions;
-import WhereOptions = sequelize.WhereOptions;
-import AggregateOptions = sequelize.AggregateOptions;
-import CountOptions = sequelize.CountOptions;
-export { Instance, Model as __SeqModel, BuildOptions } from "sequelize";
+import {Sequelize} from '../Sequelize';
+import * as Promise from 'bluebird';
+import {BuildOptions, SyncOptions, FindOptions, UpsertOptions,
+  BulkCreateOptions, UpdateOptions, RestoreOptions, DestroyOptions,
+  TruncateOptions, FindCreateFindOptions, FindOrInitializeOptions,
+  CreateOptions, InstanceSaveOptions, InstanceSetOptions, AggregateOptions,
+  InstanceIncrementDecrementOptions, DropOptions, InstanceUpdateOptions,
+  InstanceDestroyOptions, InstanceRestoreOptions,
+  SchemaOptions, GetTableNameOptions, AddScopeOptions, ScopeOptions,
+  WhereOptions, AggregateOptionsm, CountOptions, ValidationError} from 'sequelize';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
+
+// Webstorm cannot resolve "Partial" type automatically,
+// so we write our own one
+type _Partial<T> = {
+  [P in keyof T]?: T[P];
+  };
 
 /**
  * Creates override for sequelize model to make the food
  */
 export declare class Model<T> {
 
-  /**
-   * The Instance class
-   */
-  static Instance(): T;
+  constructor(values?: _Partial<T>, options?: BuildOptions);
 
   /**
    * Remove attribute from model definition
@@ -49,7 +38,7 @@ export declare class Model<T> {
    * Sync this Model to the DB, that is create the table. Upon success, the callback will be called with the
    * model instance (this)
    */
-  static sync(options?: SyncOptions): Promise<this>;
+  static sync(options?: SyncOptions): Promise<any>;
 
   /**
    * Drop the table represented by this Model
@@ -79,7 +68,7 @@ export declare class Model<T> {
    *     subscribers_1, subscribers_2)
    * @param options.logging=false A function that gets executed while running the query to log the sql.
    */
-  getTableName(options?: GetTableNameOptions): string | Object;
+  static getTableName(options?: GetTableNameOptions): string | Object;
 
   /**
    * Add a new scope to the model. This is especially useful for adding scopes with includes, when the model you want to include is not available at the time this model is defined.
@@ -91,7 +80,7 @@ export declare class Model<T> {
    * @param {Object}          [options]
    * @param {Boolean}         [options.override=false]
    */
-  addScope(name: string, scope: FindOptions | Function, options?: AddScopeOptions): void;
+  static addScope(name: string, scope: FindOptions | Function, options?: AddScopeOptions): void;
 
   /**
    * Add a new scope to the model. This is especially useful for adding scopes with includes, when the model you want to include is not available at the time this model is defined.
@@ -103,7 +92,7 @@ export declare class Model<T> {
    * @param {Object}          [options]
    * @param {Boolean}         [options.override=false]
    */
-  addScope(name: string, scope: FindOptions | Function, options?: AddScopeOptions): void;
+  static addScope(name: string, scope: FindOptions | Function, options?: AddScopeOptions): void;
 
   /**
    * Apply a scope created in `define` to the model. First let's look at how to create scopes:
@@ -152,7 +141,7 @@ export declare class Model<T> {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  scope(options?: string | string[] | ScopeOptions | WhereOptions): this;
+  static scope(options?: string | string[] | ScopeOptions | WhereOptions): any;
 
   /**
    * Search for multiple instances.
@@ -216,22 +205,22 @@ export declare class Model<T> {
    *
    * @see    {Sequelize#query}
    */
-  static findAll(options?: FindOptions): Promise<T[]>;
-  static all(optionz?: FindOptions): Promise<T[]>;
+  static findAll<T>(options?: FindOptions): Promise<T[]>;
+  static all<T>(optionz?: FindOptions): Promise<T[]>;
 
   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById(identifier?: number | string, options?: FindOptions): Promise<T | null>;
-  static findByPrimary(identifier?: number | string, options?: FindOptions): Promise<T | null>;
+  static findById<T>(identifier?: number | string, options?: FindOptions): Promise<T | null>;
+  static findByPrimary<T>(identifier?: number | string, options?: FindOptions): Promise<T | null>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne(options?: FindOptions): Promise<T | null>;
-  static find(options?: FindOptions): Promise<T | null>;
+  static findOne<T>(options?: FindOptions): Promise<T | null>;
+  static find<T>(options?: FindOptions): Promise<T | null>;
 
   /**
    * Run an aggregation method on the specified field
@@ -286,8 +275,8 @@ export declare class Model<T> {
    * without
    * profiles will be counted
    */
-  static findAndCount(options?: FindOptions): Promise<{ rows: T[], count: number }>;
-  static findAndCountAll(options?: FindOptions): Promise<{ rows: T[], count: number }>;
+  static findAndCount<T>(options?: FindOptions): Promise<{ rows: T[], count: number }>;
+  static findAndCountAll<T>(options?: FindOptions): Promise<{ rows: T[], count: number }>;
 
   /**
    * Find the maximum value of field
@@ -307,24 +296,27 @@ export declare class Model<T> {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<T>(record?: TAttributes, options?: BuildOptions): T;
+  static build<T>(record?: any, options?: BuildOptions): T;
+  static build<T, A>(record?: A, options?: BuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild(records: TAttributes[], options?: BuildOptions): T[];
+  static bulkBuild<T>(records: any[], options?: BuildOptions): T[];
+  static bulkBuild<T, A>(records: A[], options?: BuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create(values?: TAttributes, options?: CreateOptions): Promise<T>;
+  static create<T>(values?: any, options?: CreateOptions): Promise<T>;
+  static create<T, A>(values?: A, options?: CreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize(options: FindOrInitializeOptions<TAttributes>): Promise<[T, boolean]>;
-  static findOrBuild(options: FindOrInitializeOptions<TAttributes>): Promise<[T, boolean]>;
+  static findOrInitialize<T>(options: FindOrInitializeOptions<_Partial<T>>): Promise<[T, boolean]>;
+  static findOrBuild<T>(options: FindOrInitializeOptions<_Partial<T>>): Promise<[T, boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -337,13 +329,13 @@ export declare class Model<T> {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate(options: FindOrInitializeOptions<TAttributes>): Promise<[T, boolean]>;
+  static findOrCreate<T>(options: FindOrInitializeOptions<T>): Promise<[T, boolean]>;
 
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
-  static findCreateFind(options: FindCreateFindOptions<TAttributes>): Promise<T>;
+  static findCreateFind<T>(options: FindCreateFindOptions<T>): Promise<T>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -364,8 +356,10 @@ export declare class Model<T> {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert(values: TAttributes, options?: UpsertOptions): Promise<boolean>;
-  static insertOrUpdate(values: TAttributes, options?: UpsertOptions): Promise<boolean>;
+  static upsert(values: any, options?: UpsertOptions): Promise<boolean>;
+  static upsert<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+  static insertOrUpdate(values: any, options?: UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<A>(values: A, options?: UpsertOptions): Promise<boolean>;
 
   /**
    * Create and insert multiple instances in bulk.
@@ -378,7 +372,7 @@ export declare class Model<T> {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate(records: TAttributes[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T>(records: T[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
@@ -402,7 +396,7 @@ export declare class Model<T> {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update(values: TAttributes, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T>(values: _Partial<T>, options: UpdateOptions): Promise<[number, Array<T>]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
@@ -413,8 +407,17 @@ export declare class Model<T> {
   /**
    * Unscope the model
    */
-  static unscoped(): this;
+  static unscoped(): any;
 
+  /**
+   * Creates relation between value and model instance
+   */
+  add<R>(relatedKey: string, value: R): Promise<this>;
+
+  /**
+   * Default id automatically created by sequelize
+   */
+  id?: number|any;
 
   /**
    * Returns true if this instance has not yet been persisted to the database
@@ -426,7 +429,7 @@ export declare class Model<T> {
    *
    * @see Model
    */
-  Model: Model<this, TAttributes>;
+  Model: Model<this>;
 
   /**
    * A reference to the sequelize instance
@@ -457,7 +460,7 @@ export declare class Model<T> {
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
   get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
-  get(options?: { plain?: boolean, clone?: boolean }): TAttributes;
+  get(options?: { plain?: boolean, clone?: boolean }): any;
 
   /**
    * Set is used to update values on the instance (the sequelize representation of the instance that is,
@@ -571,7 +574,7 @@ export declare class Model<T> {
    *               If and object is provided, each column is incremented by the value given.
    */
   increment(fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions): Promise<this>;
+            options?: InstanceIncrementDecrementOptions&{silent?: boolean}): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -594,22 +597,22 @@ export declare class Model<T> {
    *               If and object is provided, each column is decremented by the value given
    */
   decrement(fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions): Promise<this>;
+            options?: InstanceIncrementDecrementOptions&{silent?: boolean}): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same
    */
-  equals(other: Instance<any>): boolean;
+  equals(other: Model<T>): boolean;
 
   /**
    * Check if this is eqaul to one of `others` by calling equals
    */
-  equalsOneOf(others: Instance<any>[]): boolean;
+  equalsOneOf(others: Model<T>[]): boolean;
 
   /**
    * Convert the instance to a JSON representation. Proxies to calling `get` with no keys. This means get all
    * values gotten from the DB, and apply all custom getters.
    */
-  toJSON(): TAttributes;
+  toJSON(): any;
 
 }
