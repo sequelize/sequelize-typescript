@@ -4,7 +4,7 @@ import {IDummyConstructor} from "../interfaces/IDummyConstructor";
 /**
  * Creates override for sequelize model for sequelize versions less than v4
  */
-export function create(SeqInstance: IDummyConstructor, SeqModelProto): any {
+export function create(SeqInstance: IDummyConstructor, SeqModelProto: any): any {
 
   const _Model = class extends SeqInstance {
 
@@ -61,7 +61,7 @@ export function create(SeqInstance: IDummyConstructor, SeqModelProto): any {
 /**
  * Pre conform includes, so that "as" value can be inferred from source
  */
-function preConformIncludes(options: any, source) {
+function preConformIncludes(options: any, source: any): any {
 
   options = Object.assign({}, options);
 
@@ -77,7 +77,7 @@ function preConformIncludes(options: any, source) {
   }
 
   // convert all included elements to { model: Model } form
-  options.include = options.include.map(function(include) {
+  options.include = options.include.map((include) => {
     include = preConformInclude(include, source);
 
     return include;
@@ -89,13 +89,13 @@ function preConformIncludes(options: any, source) {
 /**
  * Pre conform include, so that alias ("as") value can be inferred from source class
  */
-function preConformInclude(include, source) {
+function preConformInclude(include: any, source: any): any {
 
   const isConstructorFn = include instanceof Function;
 
   if (isConstructorFn || (include.model && !include.as)) {
 
-    if(isConstructorFn) {
+    if (isConstructorFn) {
       include = {model: include};
     }
 

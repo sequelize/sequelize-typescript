@@ -3,6 +3,7 @@
 
 # ide
 .idea
+.vscode
 
 # libraries
 node_modules
@@ -13,4 +14,6 @@ coverage
 **/*.js
 **/*.js.map
 **/*.d.ts
+!lib/models/__Model.d.ts
+!lib/models/__Model.js
 

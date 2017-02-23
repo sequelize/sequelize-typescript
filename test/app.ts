@@ -1,3 +1,4 @@
+import {Promise} from 'sequelize';
 import {Author} from './models/Author';
 import {Post} from './models/Post';
 import {Comment} from './models/Comment';

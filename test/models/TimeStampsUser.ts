@@ -7,4 +7,10 @@ export class TimeStampsUser extends Model {
 
   @Column
   aNumber: number;
+
+  @Column
+  username: string;
+
+  @Column
+  updatedAt: Date;
 }

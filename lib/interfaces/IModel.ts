@@ -1,8 +1,9 @@
 import {
   Instance as SeqInstance,
-  Model as SeqModel
+  Model as SeqModel,
+  BuildOptions
 } from "sequelize";
 
 export interface IModel extends SeqModel<any, any> {
-  new (...args: any[]): SeqInstance<any>;
+  new (values?: any, options?: BuildOptions): SeqInstance<any>;
 }
