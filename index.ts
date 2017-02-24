@@ -24,6 +24,4 @@ export {DataType} from "./lib/enums/DataType";
 
 // models
 export {Model} from "./lib/models/Model";
-
-// services
-export {Sequelize} from "./lib/Sequelize";
+export {Sequelize} from "./lib/models/Sequelize";

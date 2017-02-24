@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {addAttributeOptions} from "../utils/models";
+import {addAttributeOptions} from "../services/models";
 
 /**
  * Sets auto increment true for annotated field

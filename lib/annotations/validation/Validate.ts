@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {DefineValidateOptions} from 'sequelize';
-import {addAttributeOptions} from "../../utils/models";
+import {addAttributeOptions} from "../../services/models";
 
 /**
  * Sets validation options for annotated field

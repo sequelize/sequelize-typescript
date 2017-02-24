@@ -1,5 +1,5 @@
 import {Model} from "../models/Model";
-import {addForeignKey} from "../utils/association";
+import {addForeignKey} from "../services/association";
 
 export function ForeignKey(relatedClassGetter: () => typeof Model): Function {
 

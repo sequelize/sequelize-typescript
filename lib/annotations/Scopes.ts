@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {DefineScopeOptions} from "sequelize";
-import {addOptions} from "../utils/models";
+import {addOptions} from "../services/models";
 
 /**
  * Sets scopes for annotated class

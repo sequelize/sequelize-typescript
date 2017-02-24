@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 import * as deepAssign from 'deep-assign';
+import * as fs from 'fs';
+import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
 import {DataType} from "../enums/DataType";
@@ -76,7 +78,7 @@ export function addAttributeOptions(target: any,
 
   if (!attributes || !attributes[propertyName]) {
     throw new Error(`@Column annotation is missing for "${propertyName}" of class "${target.constructor.name}"` +
-    ` or annotation order is wrong.`);
+      ` or annotation order is wrong.`);
   }
 
   attributes[propertyName] = deepAssign(attributes[propertyName], options);
@@ -150,6 +152,36 @@ export function addForeignKey(target: any,
     relatedClassGetter,
     foreignKey: propertyName
   });
+}
+
+/**
+ * Determines models from value
+ */
+export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> {
+
+  if (arg && typeof arg[0] === 'string') {
+
+    return arg.reduce((models: any[], dir) => {
+
+      const _models = fs
+        .readdirSync(dir as string)
+        .filter(file => ((file.indexOf('.') !== 0) && (file.slice(-3) === '.js')))
+        .map(file => {
+          const fullPath = path.join(dir, file);
+          const modelName = path.basename(file, '.js');
+
+          // use require main to require from root
+          return require.main.require(fullPath)[modelName];
+        });
+
+      models.push(..._models);
+
+      return models;
+    }, [])
+      ;
+  }
+
+  return arg as Array<typeof Model>;
 }
 
 /**

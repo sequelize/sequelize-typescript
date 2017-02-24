@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {addAttributeOptions} from "../../utils/models";
+import {addAttributeOptions} from "../../services/models";
 
 /**
  * Checks for IPv4 (129.89.23.1) or IPv6 format

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Sequelize} from '../Sequelize';
+import {Sequelize} from './Sequelize';
 import * as Promise from 'bluebird';
 import {BuildOptions, SyncOptions, FindOptions, UpsertOptions,
   BulkCreateOptions, UpdateOptions, RestoreOptions, DestroyOptions,
@@ -8,7 +8,7 @@ import {BuildOptions, SyncOptions, FindOptions, UpsertOptions,
   InstanceIncrementDecrementOptions, DropOptions, InstanceUpdateOptions,
   InstanceDestroyOptions, InstanceRestoreOptions,
   SchemaOptions, GetTableNameOptions, AddScopeOptions, ScopeOptions,
-  WhereOptions, AggregateOptionsm, CountOptions, ValidationError} from 'sequelize';
+  WhereOptions, CountOptions, ValidationError} from 'sequelize';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {setModelName, addOptions} from "../utils/models";
+import {setModelName, addOptions} from "../services/models";
 import {DefineOptions} from "sequelize";
 
 export function Table(options: DefineOptions<any>): Function;

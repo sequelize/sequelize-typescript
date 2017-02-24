@@ -139,6 +139,58 @@ export function addForeignKey(target: any,
 }
 
 /**
+ * Processes model associations
+ */
+export function associateModels(models: Array<typeof Model>): void {
+
+  models.forEach(model => {
+
+    const associations = getAssociations(model.prototype);
+
+    if (!associations) return;
+
+    associations.forEach(association => {
+
+      const foreignKey = association.foreignKey || getForeignKey(model, association);
+      const relatedClass = association.relatedClassGetter();
+      let through;
+      let otherKey;
+
+      if (association.relation === BELONGS_TO_MANY) {
+
+        if (association.otherKey) {
+
+          otherKey = association.otherKey;
+        } else {
+          if (!association.relatedClassGetter) {
+            throw new Error(`RelatedClassGetter missing on "${model['name']}"`);
+          }
+          otherKey = getForeignKey(association.relatedClassGetter(), association);
+        }
+
+        if (association.through) {
+
+          through = association.through;
+        } else {
+          if (!association.throughClassGetter) {
+            throw new Error(`ThroughClassGetter missing on "${model['name']}"`);
+          }
+          through = association.throughClassGetter();
+        }
+      }
+
+      model[association.relation](relatedClass, {
+        as: association.as,
+        through,
+        foreignKey,
+        otherKey
+      });
+
+    });
+  });
+}
+
+/**
  * Returns foreign key meta data from specified class
  */
 function getForeignKeys(target: any): ISequelizeForeignKeyConfig[]|undefined {

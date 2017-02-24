@@ -16,4 +16,6 @@ coverage
 **/*.d.ts
 !lib/models/Model.d.ts
 !lib/models/Model.js
+!lib/models/Sequelize.d.ts
+!lib/models/Sequelize.js
 

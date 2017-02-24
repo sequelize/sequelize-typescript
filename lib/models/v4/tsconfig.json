@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es5",
+    "target": "es6",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
@@ -9,19 +9,14 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "pretty": true,
-    "skipLibCheck": true,
-    "lib": ["es2015"]
+    "skipLibCheck": true
   },
-  "include": [
-    "lib/**/*"
-  ],
   "files": [
-    "index.ts"
+    "Sequelize.ts",
+    "Model.ts"
   ],
   "exclude": [
-    "node_modules",
-    "lib/models/v4/Sequelize.ts",
-    "lib/models/v4/Model.ts",
-    "test"
+    "../../../node_modules",
+    "../../../test"
   ]
 }

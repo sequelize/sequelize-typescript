@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {getSequelizeTypeByDesignType, addAttribute} from "../utils/models";
+import {getSequelizeTypeByDesignType, addAttribute} from "../services/models";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 
 export function Column(options: IPartialDefineAttributeColumnOptions): Function;

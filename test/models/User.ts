@@ -39,6 +39,9 @@ export class User extends Model<User> {
   })
   touchedAt: Date;
 
+  @Column
+  birthDate: Date;
+
   @Column({
     allowNull: true
   })

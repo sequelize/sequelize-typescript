@@ -1,15 +1,12 @@
 {
   "name": "sequelize-typescript",
-  "version": "1.0.1",
-  "description": "Decorators for sequelize models",
+  "version": "0.1.0",
+  "description": "Decorators and some other extras for sequelize (v3 + v4)",
   "scripts": {
     "build": "tsc"
   },
-  "main": "./main.js",
-  "types": "./main.d.ts",
-  "peerDependencies": {
-    "sequelize": "^3.30.1"
-  },
+  "main": "index.js",
+  "types": "index.d.ts",
   "dependencies": {
     "@types/chai-as-promised": "0.0.29",
     "@types/deep-assign": "0.1.0",

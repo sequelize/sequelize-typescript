@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {addAttributeOptions} from "../utils/models";
+import {addAttributeOptions} from "../services/models";
 
 /**
  * Sets the specified default value for the annotated field

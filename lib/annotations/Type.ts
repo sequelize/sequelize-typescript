@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {DataTypeAbstract} from "sequelize";
-import {addAttributeOptions} from "../utils/models";
+import {addAttributeOptions} from "../services/models";
 
 /**
  * Sets type option for annotated property to specified value.
