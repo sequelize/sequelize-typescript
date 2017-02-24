@@ -2,12 +2,12 @@ import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
 import * as fs from 'fs';
 import * as path from 'path';
-import {Model} from "./models/Model";
-import {ISequelizeConfig} from "./interfaces/ISequelizeConfig";
-import {getModelName, getAttributes, getOptions} from "./utils/models";
-import {getAssociations} from "./utils/association";
-import {getForeignKey} from "./utils/association";
-import {BELONGS_TO_MANY} from "./utils/association";
+import {Model} from "./Model";
+import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
+import {getModelName, getAttributes, getOptions} from "../utils/models";
+import {getAssociations} from "../utils/association";
+import {getForeignKey} from "../utils/association";
+import {BELONGS_TO_MANY} from "../utils/association";
 
 export class Sequelize extends SequelizeOrigin {
 

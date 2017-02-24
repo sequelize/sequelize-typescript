@@ -664,15 +664,15 @@ describe('instance', () => {
       Book
         .sync({force: true})
         .then(() => Page.sync({force: true}))
-        .then(() => Book.create({title: 'A very old book'}))
+        .then(() => Book.create<Book>({title: 'A very old book'}))
         .then((book) =>
           Page
-            .create()
+            .create<Page>()
             .then((page) =>
               book.setPages([page])
                 .then(() =>
                   Book
-                    .findOne({where: {id: book.id}})
+                    .findOne<Book>({where: {id: book.id}})
                     .then((leBook) => {
                       return leBook.reload({include: [Page]})
                         .then((_leBook: Book) => {
@@ -687,7 +687,7 @@ describe('instance', () => {
 
     it('should return an error when reload fails', () =>
       User
-        .create({username: 'John Doe'})
+        .create<User>({username: 'John Doe'})
         .then((user) =>
           user
             .destroy()
@@ -727,7 +727,7 @@ describe('instance', () => {
 
     it('should set an association to empty after all deletion, 1-N', () =>
       Team
-        .create({
+        .create<Team>({
           name: 'the team',
           players: [{
             name: 'the player1'
@@ -1009,7 +1009,7 @@ describe('instance', () => {
       const date = new Date(1990, 1, 1);
 
       return User
-        .create({
+        .create<User>({
           username: 'foo',
           touchedAt: new Date()
         })
@@ -1019,15 +1019,16 @@ describe('instance', () => {
 
           return user
             .save({fields: ['username']})
-            .then(() => {
-              // re-select user
-              User.findById(user.id).then((user2) => {
-                // name should have changed
-                expect(user2.username).to.equal('fizz');
-                // bio should be unchanged
-                expect(user2.birthDate).not.to.equal(date);
-              });
+            // re-select user
+            .then(() => User.findById<User>(user.id))
+            .then((user2) => {
+              // name should have changed
+              expect(user2.username).to.equal('fizz');
+              // bio should be unchanged
+              expect(user2).to.have.property('birthDate');
+              expect(user2.birthDate).not.to.equal(date);
             });
+
         });
     });
 
