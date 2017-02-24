@@ -637,7 +637,7 @@ describe('instance', () => {
             .create<Page>({content: 'om nom nom'})
             .then((page) =>
               book
-                .setPages([page])
+                ['setPages']([page]) // todo
                 .then(() => Book.findOne({where: {id: book.id}, include: [Page]}))
                 .then((leBook: Book) =>
                   page
@@ -669,7 +669,7 @@ describe('instance', () => {
           Page
             .create<Page>()
             .then((page) =>
-              book.setPages([page])
+              book['setPages']([page]) // todo
                 .then(() =>
                   Book
                     .findOne<Book>({where: {id: book.id}})
@@ -1047,7 +1047,7 @@ describe('instance', () => {
 
     it('only validates fields in passed array', () =>
       User
-        .build({
+        .build<User>({
           validateTest: 'cake', // invalid, but not saved
           validateCustom: '1'
         })
@@ -1059,15 +1059,16 @@ describe('instance', () => {
     describe('hooks', () => {
       it('should update attributes added in hooks when default fields are used', () => {
 
-        User.beforeUpdate((instance) => {
+        User
+          .beforeUpdate((instance) => {
           instance.set('email', 'B');
         });
 
         return User
           .sync({force: true})
-          .then(() => User.create({name: 'A', bio: 'A', email: 'A'}))
+          .then(() => User.create<User>({name: 'A', bio: 'A', email: 'A'}))
           .then((user) => user.set({name: 'B', bio: 'B'}).save())
-          .then(() => User.findOne({}))
+          .then(() => User.findOne<User>({}))
           .then((user) => {
             expect(user.get('name')).to.equal('B');
             expect(user.get('bio')).to.equal('B');
@@ -1085,9 +1086,9 @@ describe('instance', () => {
 
     return User
       .sync({force: true})
-      .then(() => User.create({name: 'A', bio: 'A', email: 'A'}))
+      .then(() => User.create<User>({name: 'A', bio: 'A', email: 'A'}))
       .then((user: User) => user.set({name: 'B', bio: 'B', email: 'B'}).save())
-      .then(() => User.findOne({}))
+      .then(() => User.findOne<User>({}))
       .then((user) => {
         expect(user.get('name')).to.equal('B');
         expect(user.get('bio')).to.equal('B');
@@ -1102,13 +1103,13 @@ describe('instance', () => {
 
     return UserWithValidation
       .sync({force: true})
-      .then(() => UserWithValidation.create({name: 'A', bio: 'A', email: 'valid.email@gmail.com'}))
+      .then(() => UserWithValidation.create<UserWithValidation>({name: 'A', bio: 'A', email: 'valid.email@gmail.com'}))
       .then((user) =>
         expect(user.set({
           name: 'B'
         }).save()).to.be.rejectedWith(Sequelize.ValidationError)
       )
-      .then(() => UserWithValidation.findOne({}))
+      .then(() => UserWithValidation.findOne<UserWithValidation>({}))
       .then((user) => {
         expect(user.get('email')).to.equal('valid.email@gmail.com');
       });
@@ -1122,14 +1123,14 @@ describe('instance', () => {
 
     return UserWithValidation
       .sync({force: true})
-      .then(() => UserWithValidation.create({name: 'A', bio: 'A', email: 'valid.email@gmail.com'}))
+      .then(() => UserWithValidation.create<UserWithValidation>({name: 'A', bio: 'A', email: 'valid.email@gmail.com'}))
       .then((user) =>
         expect(user.set({
           name: 'B',
           email: 'still.valid.email@gmail.com'
         }).save()).to.be.rejectedWith(Sequelize.ValidationError)
       )
-      .then(() => UserWithValidation.findOne({}))
+      .then(() => UserWithValidation.findOne<UserWithValidation>({}))
       .then((user) => {
         expect(user.get('email')).to.equal('valid.email@gmail.com');
       });

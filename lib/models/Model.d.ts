@@ -1,18 +1,21 @@
 import 'reflect-metadata';
 import {Sequelize} from './Sequelize';
 import * as Promise from 'bluebird';
-import {BuildOptions, SyncOptions, FindOptions, UpsertOptions,
+import {
+  BuildOptions, SyncOptions, FindOptions, UpsertOptions,
   BulkCreateOptions, UpdateOptions, RestoreOptions, DestroyOptions,
   TruncateOptions, FindCreateFindOptions, FindOrInitializeOptions,
   CreateOptions, InstanceSaveOptions, InstanceSetOptions, AggregateOptions,
   InstanceIncrementDecrementOptions, DropOptions, InstanceUpdateOptions,
   InstanceDestroyOptions, InstanceRestoreOptions,
   SchemaOptions, GetTableNameOptions, AddScopeOptions, ScopeOptions,
-  WhereOptions, CountOptions, ValidationError} from 'sequelize';
+  WhereOptions, CountOptions, ValidationError, DefineAttributes
+} from 'sequelize';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
+/* tslint:disable:max-classes-per-file */
 
 // Webstorm cannot resolve "Partial" type automatically,
 // so we write our own one
@@ -23,7 +26,7 @@ type _Partial<T> = {
 /**
  * Creates override for sequelize model to make the food
  */
-export declare class Model<T> {
+export declare class Model<T> extends Hooks<T> {
 
   constructor(values?: _Partial<T>, options?: BuildOptions);
 
@@ -205,7 +208,10 @@ export declare class Model<T> {
    *
    * @see    {Sequelize#query}
    */
+  static findAll(options?: FindOptions): Promise<any[]>;
   static findAll<T>(options?: FindOptions): Promise<T[]>;
+
+  static all(optionz?: FindOptions): Promise<any[]>;
   static all<T>(optionz?: FindOptions): Promise<T[]>;
 
   /**
@@ -213,13 +219,17 @@ export declare class Model<T> {
    * always be called with a single instance.
    */
   static findById<T>(identifier?: number | string, options?: FindOptions): Promise<T | null>;
+
   static findByPrimary<T>(identifier?: number | string, options?: FindOptions): Promise<T | null>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
+  static findOne(options?: FindOptions): Promise<any | null>;
   static findOne<T>(options?: FindOptions): Promise<T | null>;
+
+  static find(options?: FindOptions): Promise<any | null>;
   static find<T>(options?: FindOptions): Promise<T | null>;
 
   /**
@@ -275,8 +285,9 @@ export declare class Model<T> {
    * without
    * profiles will be counted
    */
-  static findAndCount<T>(options?: FindOptions): Promise<{ rows: T[], count: number }>;
-  static findAndCountAll<T>(options?: FindOptions): Promise<{ rows: T[], count: number }>;
+  static findAndCount<T>(options?: FindOptions): Promise<{rows: T[], count: number}>;
+
+  static findAndCountAll<T>(options?: FindOptions): Promise<{rows: T[], count: number}>;
 
   /**
    * Find the maximum value of field
@@ -296,18 +307,21 @@ export declare class Model<T> {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
+  static build(record?: any, options?: BuildOptions): any;
   static build<T>(record?: any, options?: BuildOptions): T;
   static build<T, A>(record?: A, options?: BuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
+  static bulkBuild(records: any[], options?: BuildOptions): any[];
   static bulkBuild<T>(records: any[], options?: BuildOptions): T[];
   static bulkBuild<T, A>(records: A[], options?: BuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
+  static create(values?: any, options?: CreateOptions): Promise<any>;
   static create<T>(values?: any, options?: CreateOptions): Promise<T>;
   static create<T, A>(values?: A, options?: CreateOptions): Promise<T>;
 
@@ -316,6 +330,7 @@ export declare class Model<T> {
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
   static findOrInitialize<T>(options: FindOrInitializeOptions<_Partial<T>>): Promise<[T, boolean]>;
+
   static findOrBuild<T>(options: FindOrInitializeOptions<_Partial<T>>): Promise<[T, boolean]>;
 
   /**
@@ -358,6 +373,7 @@ export declare class Model<T> {
    */
   static upsert(values: any, options?: UpsertOptions): Promise<boolean>;
   static upsert<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+
   static insertOrUpdate(values: any, options?: UpsertOptions): Promise<boolean>;
   static insertOrUpdate<A>(values: A, options?: UpsertOptions): Promise<boolean>;
 
@@ -459,8 +475,8 @@ export declare class Model<T> {
    *
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
-  get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
-  get(options?: { plain?: boolean, clone?: boolean }): any;
+  get(key: string, options?: {plain?: boolean, clone?: boolean}): any;
+  get(options?: {plain?: boolean, clone?: boolean}): any;
 
   /**
    * Set is used to update values on the instance (the sequelize representation of the instance that is,
@@ -488,6 +504,7 @@ export declare class Model<T> {
    */
   set(key: string, value: any, options?: InstanceSetOptions): this;
   set(keys: Object, options?: InstanceSetOptions): this;
+
   setAttributes(key: string, value: any, options?: InstanceSetOptions): this;
   setAttributes(keys: Object, options?: InstanceSetOptions): this;
 
@@ -532,13 +549,14 @@ export declare class Model<T> {
    *
    * @param options.skip An array of strings. All properties that are in this array will not be validated
    */
-  validate(options?: { skip?: string[] }): Promise<ValidationError>;
+  validate(options?: {skip?: string[]}): Promise<ValidationError>;
 
   /**
    * This is the same as calling `set` and then calling `save`.
    */
   update(key: string, value: any, options?: InstanceUpdateOptions): Promise<this>;
   update(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
+
   updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): Promise<this>;
   updateAttributes(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
 
@@ -615,4 +633,315 @@ export declare class Model<T> {
    */
   toJSON(): any;
 
+}
+
+declare class Hooks {
+  /**
+   * Add a hook to the model
+   *
+   * @param hookType
+   * @param name Provide a name for the hook function. It can be used to remove the hook later or to order
+   *     hooks based on some sort of priority system in the future.
+   * @param fn The hook function
+   *
+   * @alias hook
+   */
+  static addHook(hookType: string, name: string, fn: Function): Hooks<any>;
+  static addHook<T>(hookType: string, name: string, fn: Function): Hooks<T>;
+  static addHook(hookType: string, fn: Function): Hooks<any>;
+  static addHook<T>(hookType: string, fn: Function): Hooks<T>;
+
+  static hook(hookType: string, name: string, fn: Function): Hooks<any>;
+  static hook<T>(hookType: string, name: string, fn: Function): Hooks<T>;
+  static hook(hookType: string, fn: Function): Hooks<any>;
+  static hook<T>(hookType: string, fn: Function): Hooks<T>;
+
+  /**
+   * Remove hook from the model
+   *
+   * @param hookType
+   * @param name
+   */
+  static removeHook<T>(hookType: string, name: string): Hooks<T>;
+
+  /**
+   * Check whether the mode has any hooks of this type
+   *
+   * @param hookType
+   *
+   * @alias hasHooks
+   */
+  static hasHook(hookType: string): boolean;
+
+  static hasHooks(hookType: string): boolean;
+
+  /**
+   * A hook that is run before validation
+   *
+   * @param name
+   * @param fn A callback function that is called with instance, options
+   */
+  static beforeValidate<T>(name: string,
+                           fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeValidate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after validation
+   *
+   * @param name
+   * @param fn A callback function that is called with instance, options
+   */
+  static afterValidate<T>(name: string,
+                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterValidate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before creating a single instance
+   *
+   * @param name
+   * @param fn A callback function that is called with attributes, options
+   */
+  static beforeCreate<T>(name: string,
+                         fn: (attributes: T, options: Object, fn?: Function) => void): void;
+  static beforeCreate<T>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after creating a single instance
+   *
+   * @param name
+   * @param fn A callback function that is called with attributes, options
+   */
+  static afterCreate<T>(name: string,
+                        fn: (attributes: T, options: Object, fn?: Function) => void): void;
+  static afterCreate<T>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before destroying a single instance
+   *
+   * @param name
+   * @param fn A callback function that is called with instance, options
+   * @alias beforeDelete
+   */
+  static beforeDestroy<T>(name: string,
+                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeDestroy<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  static beforeDelete(name: string,
+                      fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeDelete<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after destroying a single instance
+   *
+   * @param name
+   * @param fn A callback function that is called with instance, options
+   * @alias afterDelete
+   */
+  static afterDestroy<T>(name: string,
+                         fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterDestroy<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  static afterDelete<T>(name: string, fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterDelete<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before updating a single instance
+   *
+   * @param name
+   * @param fn A callback function that is called with instance, options
+   */
+  static beforeUpdate(name: string,
+                      fn: (instance: any, options: Object, fn?: Function) => void): void;
+  static beforeUpdate(fn: (instance: any, options: Object, fn?: Function) => void): void;
+  static beforeUpdate<T>(name: string,
+                         fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeUpdate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after updating a single instance
+   *
+   * @param name
+   * @param fn A callback function that is called with instance, options
+   */
+  static afterUpdate<T>(name: string, fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterUpdate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before creating instances in bulk
+   *
+   * @param name
+   * @param fn A callback function that is called with instances, options
+   */
+  static beforeBulkCreate<T>(name: string,
+                             fn: (instances: T[], options: Object, fn?: Function) => void): void;
+  static beforeBulkCreate<T>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after creating instances in bulk
+   *
+   * @param name
+   * @param fn A callback function that is called with instances, options
+   * @name afterBulkCreate
+   */
+  static afterBulkCreate<T>(name: string,
+                            fn: (instances: T[], options: Object, fn?: Function) => void): void;
+  static afterBulkCreate<T>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before destroying instances in bulk
+   *
+   * @param name
+   * @param fn   A callback function that is called with options
+   *
+   * @alias beforeBulkDelete
+   */
+  static beforeBulkDestroy(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static beforeBulkDestroy(fn: (options: Object, fn?: Function) => void): void;
+
+  static beforeBulkDelete(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static beforeBulkDelete(fn: (options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after destroying instances in bulk
+   *
+   * @param name
+   * @param fn   A callback function that is called with options
+   *
+   * @alias afterBulkDelete
+   */
+  static afterBulkDestroy(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static afterBulkDestroy(fn: (options: Object, fn?: Function) => void): void;
+
+  static afterBulkDelete(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static afterBulkDelete(fn: (options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after updating instances in bulk
+   *
+   * @param name
+   * @param fn   A callback function that is called with options
+   */
+  static beforeBulkUpdate(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static beforeBulkUpdate(fn: (options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after updating instances in bulk
+   *
+   * @param name
+   * @param fn   A callback function that is called with options
+   */
+  static afterBulkUpdate(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static afterBulkUpdate(fn: (options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before a find (select) query
+   *
+   * @param name
+   * @param fn   A callback function that is called with options
+   */
+  static beforeFind(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static beforeFind(fn: (options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
+   *
+   * @param name
+   * @param fn   A callback function that is called with options
+   */
+  static beforeFindAfterExpandIncludeAll(name: string,
+                                         fn: (options: Object, fn?: Function) => void): void;
+  static beforeFindAfterExpandIncludeAll(fn: (options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before a find (select) query, after all option parsing is complete
+   *
+   * @param name
+   * @param fn   A callback function that is called with options
+   */
+  static beforeFindAfterOptions(name: string, fn: (options: Object, fn?: Function) => void): void;
+  static beforeFindAfterOptions(fn: (options: Object, fn?: Function) => void): void;
+
+  /**
+   * A hook that is run after a find (select) query
+   *
+   * @param name
+   * @param fn   A callback function that is called with instance(s), options
+   */
+  static afterFind<T>(name: string,
+                      fn: (instancesOrInstance: T[] | T, options: Object,
+                           fn?: Function) => void): void;
+  static afterFind<T>(fn: (instancesOrInstance: T[] | T, options: Object,
+                           fn?: Function) => void): void;
+
+  /**
+   * A hook that is run before a define call
+   *
+   * @param name
+   * @param fn   A callback function that is called with attributes, options
+   */
+  static beforeDefine(name: string, fn: (attributes: DefineAttributes, options: Object) => void): void;
+  static beforeDefine(fn: (attributes: DefineAttributes, options: Object) => void): void;
+
+  /**
+   * A hook that is run after a define call
+   *
+   * @param name
+   * @param fn   A callback function that is called with factory
+   */
+  static afterDefine<T>(name: string, fn: (model: Model<T, any>) => void): void;
+  static afterDefine<T>(fn: (model: Model<T, any>) => void): void;
+
+  /**
+   * A hook that is run before Sequelize() call
+   *
+   * @param name
+   * @param fn   A callback function that is called with config, options
+   */
+  static beforeInit(name: string, fn: (config: Object, options: Object) => void): void;
+  static beforeInit(fn: (config: Object, options: Object) => void): void;
+
+  /**
+   * A hook that is run after Sequelize() call
+   *
+   * @param name
+   * @param fn   A callback function that is called with sequelize
+   */
+  static afterInit(name: string, fn: (sequelize: Sequelize) => void): void;
+  static afterInit(fn: (sequelize: Sequelize) => void): void;
+
+  /**
+   * A hook that is run before Model.sync call
+   *
+   * @param name
+   * @param fn    A callback function that is called with options passed to Model.sync
+   */
+  static beforeSync(name: string, fn: (options: SyncOptions) => void): void;
+  static beforeSync(fn: (options: SyncOptions) => void): void;
+
+  /**
+   * A hook that is run after Model.sync call
+   *
+   * @param name
+   * @param fn    A callback function that is called with options passed to Model.sync
+   */
+  static afterSync(name: string, fn: (options: SyncOptions) => void): void;
+  static afterSync(fn: (options: SyncOptions) => void): void;
+
+  /**
+   * A hook that is run before sequelize.sync call
+   *
+   * @param name
+   * @param fn    A callback function that is called with options passed to sequelize.sync
+   */
+  static beforeBulkSync(name: string, fn: (options: SyncOptions) => void): void;
+  static beforeBulkSync(fn: (options: SyncOptions) => void): void;
+
+  /**
+   * A hook that is run after sequelize.sync call
+   *
+   * @param name
+   * @param fn   A callback function that is called with options passed to sequelize.sync
+   */
+  static afterBulkSync(name: string, fn: (options: SyncOptions) => void): void;
+  static afterBulkSync(fn: (options: SyncOptions) => void): void;
 }
