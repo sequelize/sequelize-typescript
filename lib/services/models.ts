@@ -4,9 +4,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
-import {DataType} from "../enums/DataType";
 import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
+import {inferDataType} from "../utils/data-type";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
@@ -70,6 +70,9 @@ export function addAttribute(target: any,
   attributes[name] = Object.assign({}, options);
 }
 
+/**
+ *
+ */
 export function addAttributeOptions(target: any,
                                     propertyName: string,
                                     options: IPartialDefineAttributeColumnOptions): void {
@@ -117,21 +120,16 @@ export function addOptions(target: any, options: DefineOptions<any>): void {
 export function getSequelizeTypeByDesignType(target: any, propertyName: string): DataTypeAbstract {
 
   const type = Reflect.getMetadata('design:type', target, propertyName);
+  const dataType = inferDataType(type);
 
-  switch (type) {
-    case String:
-      return DataType.STRING;
-    case Number:
-      return DataType.INTEGER;
-    case Boolean:
-      return DataType.BOOLEAN;
-    case Date:
-      return DataType.DATE;
-    default:
-      throw new Error(`Specified type of property '${propertyName}' 
+  if (dataType) {
+
+    return dataType;
+  }
+
+  throw new Error(`Specified type of property '${propertyName}' 
             cannot be automatically resolved to a sequelize data type. Please
             define the data type manually`);
-  }
 }
 
 /**

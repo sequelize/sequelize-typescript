@@ -1,12 +1,15 @@
 import 'reflect-metadata';
+import {DataTypeAbstract} from 'sequelize';
 import {getSequelizeTypeByDesignType, addAttribute} from "../services/models";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
+import {isDataType} from "../utils/data-type";
 
+export function Column(dataType: DataTypeAbstract): Function;
 export function Column(options: IPartialDefineAttributeColumnOptions): Function;
 export function Column(target: any, propertyName: string): void;
 export function Column(...args: any[]): Function|void {
 
-  // In case of no specified options, we retrieve the
+  // In case of no specified options, we infer the
   // sequelize data type by the type of the property
   if (args.length >= 2) {
 
@@ -24,12 +27,22 @@ export function Column(...args: any[]): Function|void {
 
 function annotate(target: any,
                   propertyName: string,
-                  options: IPartialDefineAttributeColumnOptions = {}): void {
+                  optionsOrDataType: IPartialDefineAttributeColumnOptions|DataTypeAbstract = {}): void {
 
-  options = Object.assign({}, options);
+  let options: IPartialDefineAttributeColumnOptions;
 
-  if (!options.type) {
-    options.type = getSequelizeTypeByDesignType(target, propertyName);
+  if (isDataType(optionsOrDataType)) {
+
+    options = {
+      type: optionsOrDataType as DataTypeAbstract
+    };
+  } else {
+
+    options = Object.assign({}, optionsOrDataType);
+
+    if (!options.type) {
+      options.type = getSequelizeTypeByDesignType(target, propertyName);
+    }
   }
 
   addAttribute(target, propertyName, options);

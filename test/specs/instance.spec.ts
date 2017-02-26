@@ -1,5 +1,6 @@
 import {expect, use} from 'chai';
 import {useFakeTimers} from 'sinon';
+import chaiDatetime = require('chai-datetime');
 import * as chaiAsPromised from 'chai-as-promised';
 import {InstanceError} from 'sequelize';
 import * as validateUUID from 'uuid-validate';
@@ -15,6 +16,10 @@ import {Person} from "../models/Person";
 import {Box} from "../models/Box";
 import {UserWithValidation} from "../models/UserWithValidation";
 import {UserWithNoAutoIncrementation} from "../models/UserWithNoAutoIncrementation";
+// import {UserWithSwag} from "../models/UserWithSwag";
+import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
+import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
+import {createSequelize} from "../utils/sequelize";
 
 declare module 'sequelize' {
   class InstanceError {
@@ -22,19 +27,13 @@ declare module 'sequelize' {
 }
 
 use(chaiAsPromised);
+use(chaiDatetime);
 
 /* tslint:disable:max-classes-per-file */
 
 describe('instance', () => {
 
-  const sequelize = new Sequelize({
-    name: 'blog',
-    dialect: 'sqlite',
-    username: 'root',
-    password: '',
-    storage: ':memory:',
-    modelPaths: [__dirname + '/../models']
-  });
+  const sequelize = createSequelize();
 
   beforeEach(() => sequelize.sync({force: true}));
 
@@ -870,15 +869,14 @@ describe('instance', () => {
             username: 'a user'
           })
           .save()
-          .then(() => {
+          .then(() =>
             User.findOne<User>({
               where: {
                 username: 'a user'
               }
-            })
-              .then((user) => {
-                expect(user.isSuperUser).to.be.false;
-              });
+            }))
+          .then((user) => {
+            expect(user.isSuperUser).to.be.false;
           })
       );
 
@@ -1055,14 +1053,14 @@ describe('instance', () => {
           fields: ['validateCustom']
         })
     );
-    //
+
     describe('hooks', () => {
       it('should update attributes added in hooks when default fields are used', () => {
 
         User
           .beforeUpdate((instance) => {
-          instance.set('email', 'B');
-        });
+            instance.set('email', 'B');
+          });
 
         return User
           .sync({force: true})
@@ -1075,307 +1073,336 @@ describe('instance', () => {
             expect(user.get('email')).to.equal('B');
           });
       });
-    }); // TODO remove this
-  }); // TODO remove this
-  //
-  it('should update attributes changed in hooks when default fields are used', () => {
 
-    User.beforeUpdate((instance) => {
-      instance.set('email', 'C');
+      it('should update attributes changed in hooks when default fields are used', () => {
+
+        User.beforeUpdate((instance) => {
+          instance.set('email', 'C');
+        });
+
+        return User
+          .sync({force: true})
+          .then(() => User.create<User>({name: 'A', bio: 'A', email: 'A'}))
+          .then((user: User) => user.set({name: 'B', bio: 'B', email: 'B'}).save())
+          .then(() => User.findOne<User>({}))
+          .then((user) => {
+            expect(user.get('name')).to.equal('B');
+            expect(user.get('bio')).to.equal('B');
+            expect(user.get('email')).to.equal('C');
+          });
+      });
+
+      it('should validate attributes added in hooks when default fields are used', () => {
+        UserWithValidation.beforeUpdate((instance) => {
+          instance.set('email', 'B');
+        });
+
+        return UserWithValidation
+          .sync({force: true})
+          .then(() => UserWithValidation.create<UserWithValidation>({
+            name: 'A',
+            bio: 'A',
+            email: 'valid.email@gmail.com'
+          }))
+          .then((user) =>
+            expect(user.set({
+              name: 'B'
+            }).save()).to.be.rejectedWith(Sequelize.ValidationError)
+          )
+          .then(() => UserWithValidation.findOne<UserWithValidation>({}))
+          .then((user) => {
+            expect(user.get('email')).to.equal('valid.email@gmail.com');
+          });
+      });
+
+      it('should validate attributes changed in hooks when default fields are used', () => {
+
+        UserWithValidation.beforeUpdate((instance) => {
+          instance.set('email', 'B');
+        });
+
+        return UserWithValidation
+          .sync({force: true})
+          .then(() => UserWithValidation.create<UserWithValidation>({
+            name: 'A',
+            bio: 'A',
+            email: 'valid.email@gmail.com'
+          }))
+          .then((user) =>
+            expect(user.set({
+              name: 'B',
+              email: 'still.valid.email@gmail.com'
+            }).save()).to.be.rejectedWith(Sequelize.ValidationError)
+          )
+          .then(() => UserWithValidation.findOne<UserWithValidation>({}))
+          .then((user) => {
+            expect(user.get('email')).to.equal('valid.email@gmail.com');
+          });
+      });
+
     });
 
-    return User
-      .sync({force: true})
-      .then(() => User.create<User>({name: 'A', bio: 'A', email: 'A'}))
-      .then((user: User) => user.set({name: 'B', bio: 'B', email: 'B'}).save())
-      .then(() => User.findOne<User>({}))
-      .then((user) => {
-        expect(user.get('name')).to.equal('B');
-        expect(user.get('bio')).to.equal('B');
-        expect(user.get('email')).to.equal('C');
+    it('stores an entry in the database', () => {
+      const username = 'user';
+      const user = User.build<User>({
+        username,
+        touchedAt: new Date(1984, 8, 23)
       });
-  });
 
-  it('should validate attributes added in hooks when default fields are used', () => {
-    UserWithValidation.beforeUpdate((instance) => {
-      instance.set('email', 'B');
+      return User.findAll()
+        .then((users) => {
+          expect(users).to.have.length(0);
+
+          return user.save();
+        })
+        .then(() => User.findAll<User>())
+        .then((users) => {
+
+          expect(users).to.have.length(1);
+          expect(users[0].username).to.equal(username);
+          expect(users[0].touchedAt).to.be.instanceof(Date);
+          expect(users[0].touchedAt.toString()).to.equal(new Date(1984, 8, 23).toString());
+        })
+        ;
     });
 
-    return UserWithValidation
-      .sync({force: true})
-      .then(() => UserWithValidation.create<UserWithValidation>({name: 'A', bio: 'A', email: 'valid.email@gmail.com'}))
-      .then((user) =>
-        expect(user.set({
-          name: 'B'
-        }).save()).to.be.rejectedWith(Sequelize.ValidationError)
-      )
-      .then(() => UserWithValidation.findOne<UserWithValidation>({}))
-      .then((user) => {
-        expect(user.get('email')).to.equal('valid.email@gmail.com');
-      });
-  });
+    it('handles an entry with primaryKey of zero', () => {
+      const username = 'user';
+      const newUsername = 'newUser';
 
-  it('should validate attributes changed in hooks when default fields are used', () => {
+      return UserWithNoAutoIncrementation.create<UserWithNoAutoIncrementation>({id: 0, username})
+        .then((user) => {
 
-    UserWithValidation.beforeUpdate((instance) => {
-      instance.set('email', 'B');
+          expect(user).to.be.ok;
+          expect(user.id).to.equal(0);
+          expect(user.username).to.equal(username);
+        })
+        .then(() => UserWithNoAutoIncrementation.findById<UserWithNoAutoIncrementation>(0))
+        .then((user) => {
+
+          expect(user).to.be.ok;
+          expect(user.id).to.equal(0);
+          expect(user.username).to.equal(username);
+
+          return user.updateAttributes({username: newUsername});
+        })
+        .then((user) => {
+
+          expect(user).to.be.ok;
+          expect(user.id).to.equal(0);
+          expect(user.username).to.equal(newUsername);
+        });
     });
 
-    return UserWithValidation
-      .sync({force: true})
-      .then(() => UserWithValidation.create<UserWithValidation>({name: 'A', bio: 'A', email: 'valid.email@gmail.com'}))
-      .then((user) =>
-        expect(user.set({
-          name: 'B',
-          email: 'still.valid.email@gmail.com'
-        }).save()).to.be.rejectedWith(Sequelize.ValidationError)
-      )
-      .then(() => UserWithValidation.findOne<UserWithValidation>({}))
-      .then((user) => {
-        expect(user.get('email')).to.equal('valid.email@gmail.com');
-      });
-  });
+    it('updates the timestamps', () => {
+      const clock = useFakeTimers();
+      const now = new Date();
 
-  it('stores an entry in the database', () => {
-    const username = 'user';
-    const user: User = User.build({
-      username,
-      touchedAt: new Date(1984, 8, 23)
+      const user = TimeStampsUser.build<TimeStampsUser>({username: 'user'});
+
+      clock.tick(1000);
+
+      return user
+        .save()
+        .then(() => {
+          expect(user).to.have.property('updatedAt');
+          expect(user.updatedAt).to.be.least(now as any);
+        })
+        ;
     });
 
-    return User.findAll()
-      .then((users) => {
-        expect(users).to.have.length(0);
+    it('does not update timestamps when passing silent=true', () => {
 
-        return user.save();
-      })
-      .then(() => User.findAll())
-      .then((users) => {
+      const clock = useFakeTimers();
 
-        expect(users).to.have.length(1);
-        expect(users[0].username).to.equal(username);
-        expect(users[0].touchedAt).to.be.instanceof(Date);
-        expect(users[0].touchedAt.toString()).to.equal(new Date(1984, 8, 23).toString());
-      })
-      ;
-  });
+      return TimeStampsUser
+        .create<TimeStampsUser>({username: 'user'})
+        .then((user) => {
 
-  it('handles an entry with primaryKey of zero', () => {
-    const username = 'user';
-    const newUsername = 'newUser';
+          const updatedAt = user.updatedAt;
 
-    return UserWithNoAutoIncrementation.create({id: 0, username})
-      .then((user) => {
+          clock.tick(1000);
 
-        expect(user).to.be.ok;
-        expect(user.id).to.equal(0);
-        expect(user.username).to.equal(username);
-      })
-      .then(() => UserWithNoAutoIncrementation.findById<UserWithNoAutoIncrementation>(0))
-      .then((user) => {
+          return user
+            .update({username: 'userman'}, {silent: true})
+            .then(() => {
+              expect(user).to.have.property('updatedAt').equalTime(updatedAt);
+            })
+            ;
+        })
+        ;
+    });
 
-        expect(user).to.be.ok;
-        expect(user.id).to.equal(0);
-        expect(user.username).to.equal(username);
+    it('does not update timestamps when passing silent=true in a bulk update', () => {
+      let updatedAtPeter;
+      let updatedAtPaul;
+      const clock = useFakeTimers();
+      const data = [
+        {username: 'Paul'},
+        {username: 'Peter'}
+      ];
 
-        return user.updateAttributes({username: newUsername});
-      })
-      .then((user) => {
+      return TimeStampsUser
+        .bulkCreate<TimeStampsUser>(data)
+        .then(() => TimeStampsUser.findAll<TimeStampsUser>())
+        .then((users) => {
+          updatedAtPaul = users[0].updatedAt;
+          updatedAtPeter = users[1].updatedAt;
+        })
+        .then(() => {
 
-        expect(user).to.be.ok;
-        expect(user.id).to.equal(0);
-        expect(user.username).to.equal(newUsername);
+          clock.tick(150);
+
+          return TimeStampsUser
+            .update(
+              {aNumber: 1},
+              {where: {}, silent: true}
+            );
+        })
+        .then(() => TimeStampsUser.findAll<TimeStampsUser>())
+        .then((users) => {
+          expect(users[0].updatedAt).to.equalTime(updatedAtPeter);
+          expect(users[1].updatedAt).to.equalTime(updatedAtPaul);
+        });
+    });
+
+    describe('when nothing changed', () => {
+
+      let clock;
+
+      beforeEach(() => clock = useFakeTimers());
+
+      afterEach(() => clock.restore());
+
+      it('does not update timestamps', () =>
+        TimeStampsUser
+          .create({username: 'John'})
+          .then(() => TimeStampsUser.findOne<TimeStampsUser>({where: {username: 'John'}}))
+          .then((user) => {
+
+            const updatedAt = user.updatedAt;
+            clock.tick(2000);
+
+            return user
+              .save()
+              .then((newlySavedUser) => {
+
+                expect(newlySavedUser.updatedAt).to.equalTime(updatedAt);
+
+                return TimeStampsUser
+                  .findOne<TimeStampsUser>({where: {username: 'John'}})
+                  .then((_newlySavedUser) => {
+
+                    expect(_newlySavedUser.updatedAt).to.equalTime(updatedAt);
+                  });
+              });
+          })
+      );
+
+      // Does not create an empty query but a corrupted one;
+      // Since "bio" is a virtual field, sequelize produces this
+      // query "UPDATE `UserWithSwag` SET  WHERE `id` = 1", which
+      // also throws
+      // "'SequelizeDatabaseError: SQLITE_ERROR: near "WHERE": syntax error'"
+      // TODO@robin check if sequelize-typescript causes this problem or not
+      // TODO@robin  - it does not seem so
+      // it('should not throw ER_EMPTY_QUERY if changed only virtual fields', () =>
+      //   UserWithSwag
+      //     .sync({force: true})
+      //     .then(() => UserWithSwag.create<UserWithSwag>({name: 'John', bio: 'swag 1'}))
+      //     .then((user) => expect(user.update({bio: 'swag 2'})).to.be.fulfilled)
+      // );
+    });
+
+    it('updates with function and column value', () =>
+      User
+        .create<User>({
+          aNumber: 42
+        })
+        .then((user) => {
+
+          user.bNumber = sequelize.col('aNumber') as any;
+          user.username = sequelize.fn('upper', 'sequelize') as any;
+
+          return user
+            .save()
+            .then(() => User.findById<User>(user.id))
+            .then((user2) => {
+              expect(user2.username).to.equal('SEQUELIZE');
+              expect(user2.bNumber).to.equal(42);
+            });
+        })
+    );
+
+    describe('without timestamps option', () => {
+
+      it("doesn't update the updatedAt column", () =>
+        UserWithCustomUpdatedAt
+          .sync()
+          .then(() => UserWithCustomUpdatedAt.create<UserWithCustomUpdatedAt>({username: 'john doe'}))
+          .then((johnDoe) => {
+            // sqlite and mysql return undefined, whereas postgres returns null
+            expect([undefined, null].indexOf(johnDoe.updatedAt)).not.to.be.equal(-1);
+          })
+      );
+    });
+
+    describe('with custom timestamp options', () => {
+
+      it('updates the createdAt column if updatedAt is disabled', () => {
+        const now = new Date();
+        const clock = useFakeTimers();
+        clock.tick(1000);
+
+        UserWithCreatedAtButWithoutUpdatedAt
+          .sync()
+          .then(() => UserWithCreatedAtButWithoutUpdatedAt
+            .create<UserWithCreatedAtButWithoutUpdatedAt>({username: 'john doe'}))
+          .then((johnDoe) => {
+            expect(johnDoe).not.to.have.property('updatedAt');
+            expect(now).to.be.beforeTime(johnDoe['createdAt']); // TODO@robin createdAt type safe (interface??)
+          })
+        ;
       });
-  });
 
-  it('updates the timestamps', () => {
-    const clock = useFakeTimers();
-    const now = new Date();
-
-    const user = TimeStampsUser.build<TimeStampsUser>({username: 'user'});
-
-    clock.tick(1000);
-
-    return user
-      .save()
-      .then(() => {
-        expect(user).to.have.property('updatedAt');
-        expect(user.updatedAt).to.be.least(now as any);
-      })
-      ;
-  });
-//
-//   it('does not update timestamps when passing silent=true', () => {
-//     User.create({username: 'user'}).bind(this).then((user) => {
-//       var updatedAt = user.updatedAt;
-//
-//       this.clock.tick(1000);
-//       return expect(user.update({
-//         username: 'userman'
-//       }, {
-//         silent: true
-//       })).to.eventually.have.property('updatedAt').equalTime(updatedAt);
-//     });
-//   });
-//
-//   it('does not update timestamps when passing silent=true in a bulk update', () => {
-//     var self = this
-//       , updatedAtPeter
-//       , updatedAtPaul
-//       , data = [
-//       {username: 'Paul'},
-//       {username: 'Peter'}
-//     ];
-//
-//     User.bulkCreate(data).bind(this).then(() => {
-//       User.findAll();
-//     }).then((users) => {
-//       updatedAtPaul = users[0].updatedAt;
-//       updatedAtPeter = users[1].updatedAt;
-//     })
-//       .then(() => {
-//         this.clock.tick(150);
-//         User.update(
-//           {aNumber: 1},
-//           {where: {}, silent: true}
-//         );
-//       }).then(() => {
-//       User.findAll();
-//     }).then((users) => {
-//       expect(users[0].updatedAt).to.equalTime(updatedAtPeter);
-//       expect(users[1].updatedAt).to.equalTime(updatedAtPaul);
-//     });
-//   });
-//
-//   describe('when nothing changed', () => {
-//
-//     beforeEach(function() {
-//       this.clock = sinon.useFakeTimers();
-//     });
-//
-//     afterEach(function() {
-//       this.clock.restore();
-//     });
-//
-//     it('does not update timestamps', () => {
-//
-//       User.create({username: 'John'}).then(() => {
-//         User.findOne({where: {username: 'John'}}).then((user) => {
-//           var updatedAt = user.updatedAt;
-//           self.clock.tick(2000);
-//           return user.save().then((newlySavedUser) => {
-//             expect(newlySavedUser.updatedAt).to.equalTime(updatedAt);
-//             User.findOne({where: {username: 'John'}}).then((newlySavedUser) => {
-//               expect(newlySavedUser.updatedAt).to.equalTime(updatedAt);
-//             });
-//           });
-//         });
-//       });
-//     });
-//
-//     it('should not throw ER_EMPTY_QUERY if changed only virtual fields', () => {
-//       const User = this.sequelize.define('User' + config.rand(), {
-//         name: DataTypes.STRING,
-//         bio: {
-//           type: DataTypes.VIRTUAL,
-//           get: () => 'swag'
-//         }
-//       }, {
-//         timestamps: false
-//       });
-//       return User.sync({force: true}).then(() => (
-//         User.create({name: 'John', bio: 'swag 1'}).then((user) => user.update({bio: 'swag 2'}).should.be.fulfilled)
-//       ));
-//     });
-//   });
-//
-//   it('updates with function and column value', () => {
-//
-//
-//     User.create({
-//       aNumber: 42
-//     }).then((user) => {
-//       user.bNumber = self.sequelize.col('aNumber');
-//       user.username = self.sequelize.fn('upper', 'sequelize');
-//       return user.save().then(() => {
-//         User.findById(user.id).then((user2) => {
-//           expect(user2.username).to.equal('SEQUELIZE');
-//           expect(user2.bNumber).to.equal(42);
-//         });
-//       });
-//     });
-//   });
-//
-//   describe('without timestamps option', () => {
-//     it("doesn't update the updatedAt column", () => {
-//       var User2 = this.sequelize.define('User2', {
-//         username: DataTypes.STRING,
-//         updatedAt: DataTypes.DATE
-//       }, {timestamps: false});
-//       user2.sync().then(() => {
-//         user2.create({username: 'john doe'}).then((johnDoe) => {
-//           // sqlite and mysql return undefined, whereas postgres returns null
-//           expect([undefined, null].indexOf(johnDoe.updatedAt)).not.to.be.equal(-1);
-//         });
-//       });
-//     });
-//   });
-//
-//   describe('with custom timestamp options', () => {
-//     it('updates the createdAt column if updatedAt is disabled', () => {
-//       var now = new Date();
-//       this.clock.tick(1000);
-//
-//       var User2 = this.sequelize.define('User2', {
-//         username: DataTypes.STRING
-//       }, {updatedAt: false});
-//
-//       user2.sync().then(() => {
-//         user2.create({username: 'john doe'}).then((johnDoe) => {
-//           expect(johnDoe.updatedAt).to.be.undefined;
-//           expect(now).to.be.beforeTime(johnDoe.createdAt);
-//         });
-//       });
-//     });
-//
-//     it('updates the updatedAt column if createdAt is disabled', () => {
-//       var now = new Date();
-//       this.clock.tick(1000);
-//
-//       var User2 = this.sequelize.define('User2', {
-//         username: DataTypes.STRING
-//       }, {createdAt: false});
-//
-//       user2.sync().then(() => {
-//         user2.create({username: 'john doe'}).then((johnDoe) => {
-//           expect(johnDoe.createdAt).to.be.undefined;
-//           expect(now).to.be.beforeTime(johnDoe.updatedAt);
-//         });
-//       });
-//     });
-//
-//     it('works with `allowNull: false` on createdAt and updatedAt columns', () => {
-//       var User2 = this.sequelize.define('User2', {
-//         username: DataTypes.STRING,
-//         createdAt: {
-//           type: DataTypes.DATE,
-//           allowNull: false
-//         },
-//         updatedAt: {
-//           type: DataTypes.DATE,
-//           allowNull: false
-//         }
-//       }, {timestamps: true});
-//
-//       user2.sync().then(() => {
-//         user2.create({username: 'john doe'}).then((johnDoe) => {
-//           expect(johnDoe.createdAt).to.be.an.instanceof(Date);
-//           expect(!isNaN(johnDoe.createdAt.valueOf())).to.be.ok;
-//           expect(johnDoe.createdAt).to.equalTime(johnDoe.updatedAt);
-//         });
-//       });
-//     });
-//   });
+      // it('updates the updatedAt column if createdAt is disabled', () => {
+      //   var now = new Date();
+      //   this.clock.tick(1000);
+      //
+      //   var User2 = this.sequelize.define('User2', {
+      //     username: DataTypes.STRING
+      //   }, {createdAt: false});
+      //
+      //   user2.sync().then(() => {
+      //     user2.create({username: 'john doe'}).then((johnDoe) => {
+      //       expect(johnDoe.createdAt).to.be.undefined;
+      //       expect(now).to.be.beforeTime(johnDoe.updatedAt);
+      //     });
+      //   });
+      // });
+      //
+      // it('works with `allowNull: false` on createdAt and updatedAt columns', () => {
+      //   var User2 = this.sequelize.define('User2', {
+      //     username: DataTypes.STRING,
+      //     createdAt: {
+      //       type: DataTypes.DATE,
+      //       allowNull: false
+      //     },
+      //     updatedAt: {
+      //       type: DataTypes.DATE,
+      //       allowNull: false
+      //     }
+      //   }, {timestamps: true});
+      //
+      //   user2.sync().then(() => {
+      //     user2.create({username: 'john doe'}).then((johnDoe) => {
+      //       expect(johnDoe.createdAt).to.be.an.instanceof(Date);
+      //       expect(!isNaN(johnDoe.createdAt.valueOf())).to.be.ok;
+      //       expect(johnDoe.createdAt).to.equalTime(johnDoe.updatedAt);
+      //     });
+      //   });
+      // });
+    });
 //
 //   it('should fail a validation upon creating', () => {
 //     User.create({aNumber: 0, validateTest: 'hello'}).catch((err) => {
@@ -1590,7 +1617,7 @@ describe('instance', () => {
 //       });
 //     });
 //   });
-// });
+  });
 //
 // describe('many to many relations', () => {
 //   var udo;
@@ -2203,5 +2230,4 @@ describe('instance', () => {
 //   });
 // });
 
-})
-;
+});

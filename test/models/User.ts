@@ -29,8 +29,12 @@ export class User extends Model<User> {
   @Column
   bNumber: number;
 
+  @Column
+  isAdmin: boolean;
+
   @Column({
-    type: DataType.BOOLEAN
+    type: DataType.BOOLEAN,
+    defaultValue: false
   })
   isSuperUser: boolean|number;
 
@@ -50,12 +54,14 @@ export class User extends Model<User> {
   @Column
   name: string;
 
-  @Column({
-    type: DataType.TEXT
-  })
+  @Column(DataType.TEXT)
   bio: string;
 
   @Column
   email: string;
+
+  extraField: string;
+  extraField2: boolean;
+  extraField3: number;
 
 }

@@ -11,7 +11,12 @@ export {HasOne} from "./lib/annotations/association/HasOne";
 export {PrimaryKey} from "./lib/annotations/PrimaryKey";
 export {Scopes} from "./lib/annotations/Scopes";
 export {Table} from "./lib/annotations/Table";
-export {Type} from "./lib/annotations/Type";
+
+export {Length} from "./lib/annotations/validation/Length";
+export {Contains} from "./lib/annotations/validation/Contains";
+export {Equals} from "./lib/annotations/validation/Equals";
+export {IsAlpha} from "./lib/annotations/validation/IsAlpha";
+export {IsAlphanumeric} from "./lib/annotations/validation/IsAlphanumeric";
 
 // interfaces
 export {ISequelizeAssociation} from "./lib/interfaces/ISequelizeAssociation";

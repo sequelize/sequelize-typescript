@@ -208,10 +208,8 @@ export declare class Model<T> extends Hooks<T> {
    *
    * @see    {Sequelize#query}
    */
-  static findAll(options?: FindOptions): Promise<any[]>;
   static findAll<T>(options?: FindOptions): Promise<T[]>;
 
-  static all(optionz?: FindOptions): Promise<any[]>;
   static all<T>(optionz?: FindOptions): Promise<T[]>;
 
   /**
@@ -226,10 +224,8 @@ export declare class Model<T> extends Hooks<T> {
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne(options?: FindOptions): Promise<any | null>;
   static findOne<T>(options?: FindOptions): Promise<T | null>;
 
-  static find(options?: FindOptions): Promise<any | null>;
   static find<T>(options?: FindOptions): Promise<T | null>;
 
   /**
@@ -307,21 +303,19 @@ export declare class Model<T> extends Hooks<T> {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build(record?: any, options?: BuildOptions): any;
   static build<T>(record?: any, options?: BuildOptions): T;
   static build<T, A>(record?: A, options?: BuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild(records: any[], options?: BuildOptions): any[];
   static bulkBuild<T>(records: any[], options?: BuildOptions): T[];
   static bulkBuild<T, A>(records: A[], options?: BuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create(values?: any, options?: CreateOptions): Promise<any>;
+  // static create(values?: any, options?: CreateOptions): Promise<any>;
   static create<T>(values?: any, options?: CreateOptions): Promise<T>;
   static create<T, A>(values?: A, options?: CreateOptions): Promise<T>;
 
@@ -371,10 +365,8 @@ export declare class Model<T> extends Hooks<T> {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert(values: any, options?: UpsertOptions): Promise<boolean>;
   static upsert<A>(values: A, options?: UpsertOptions): Promise<boolean>;
 
-  static insertOrUpdate(values: any, options?: UpsertOptions): Promise<boolean>;
   static insertOrUpdate<A>(values: A, options?: UpsertOptions): Promise<boolean>;
 
   /**
@@ -388,7 +380,8 @@ export declare class Model<T> extends Hooks<T> {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate<T>(records: T[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T>(records: any[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T, A>(records: A[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).

@@ -15,6 +15,16 @@ const sequelize = new Sequelize({
   ]
 });
 
+const comment = new Comment({text: '123'});
+
+comment
+  .validate()
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err => console.error(err))
+;
+return;
 sequelize
   .sync({force: true})
   .then(() => Promise.all([
@@ -47,32 +57,32 @@ sequelize
         attributes: ['id', 'text'],
         include: [
           Comment
-        //   {
-        //   model: Comment,
-        //   as: 'comments',
-        //   attributes: ['id', 'text'],
-        //   include: [{
-        //     model: User,
-        //     as: 'user',
-        //     include: [{
-        //       model: User,
-        //       as: 'friends',
-        //       through: {
-        //         attributes: []
-        //       }
-        //     }]
-        //   }]
-        // }, {
-        //   model: User,
-        //   as: 'user',
-        //   include: [{
-        //     model: User,
-        //     as: 'friends',
-        //     through: {
-        //       attributes: []
-        //     }
-        //   }]
-        // }
+          //   {
+          //   model: Comment,
+          //   as: 'comments',
+          //   attributes: ['id', 'text'],
+          //   include: [{
+          //     model: User,
+          //     as: 'user',
+          //     include: [{
+          //       model: User,
+          //       as: 'friends',
+          //       through: {
+          //         attributes: []
+          //       }
+          //     }]
+          //   }]
+          // }, {
+          //   model: User,
+          //   as: 'user',
+          //   include: [{
+          //     model: User,
+          //     as: 'friends',
+          //     through: {
+          //       attributes: []
+          //     }
+          //   }]
+          // }
         ]
       })
       .then(posts => {
