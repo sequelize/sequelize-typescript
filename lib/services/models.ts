@@ -169,7 +169,12 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
           const modelName = path.basename(file, '.js');
 
           // use require main to require from root
-          return require.main.require(fullPath)[modelName];
+          const module = require.main.require(fullPath);
+
+          if (!module[modelName] && !module.default) {
+            throw new Error(`No default export defined for file "${file}" or export does not satisfy filename.`);
+          }
+          return module[modelName];
         });
 
       models.push(..._models);
