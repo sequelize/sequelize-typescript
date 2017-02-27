@@ -2,13 +2,13 @@ import 'reflect-metadata';
 import {addAttributeOptions} from "../../services/models";
 
 /**
- * Will only allow letters
+ * Will only allow arrays
  */
-export function IsAlpha(target: any, propertyName: string): void {
+export function IsArray(target: any, propertyName: string): void {
 
   addAttributeOptions(target, propertyName, {
     validate: {
-      isAlpha: true
+      isArray: true
     }
   });
 }

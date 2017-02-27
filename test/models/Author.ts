@@ -23,3 +23,6 @@ export class Author extends Model<Author> {
   friends: Author[];
 
 }
+
+export default class heyHo {}
+

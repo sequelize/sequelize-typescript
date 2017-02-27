@@ -1,5 +1,9 @@
 import {getAssociationsByRelation} from "./association";
 import * as Promise from "bluebird";
+import {FindOptions, Model, Instance} from "sequelize";
+import {majorVersion} from "../utils/versioning";
+
+const parentPrototype = majorVersion === 3 ? (Instance as any).prototype : (Model as any).prototype;
 
 export const PROPERTY_LINK_TO_ORIG = '__origClass';
 
@@ -17,6 +21,11 @@ export function prepare(model: any): any {
   model.prototype.add = function(relatedKey: string, value: any): Promise<any> {
 
     return this['add' + relatedKey.charAt(0).toUpperCase() + relatedKey.substr(1, relatedKey.length)](value);
+  };
+
+  model.prototype.reload = function(options?: FindOptions): Promise<any> {
+
+    return parentPrototype.reload.call(this, preConformIncludes(options, this));
   };
 
   // STATIC functions
@@ -107,7 +116,7 @@ function preConformInclude(include: any, source: any): any {
       include = {model: include};
     }
 
-    const associations = getAssociationsByRelation((source[PROPERTY_LINK_TO_ORIG] || source).prototype, include.model);
+    const associations = getAssociationsByRelation((source[PROPERTY_LINK_TO_ORIG] || source).prototype || source, include.model);
 
     if (associations.length > 0) {
 

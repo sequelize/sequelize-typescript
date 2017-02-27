@@ -32,7 +32,6 @@ describe('utils', () => {
         expect(isDataType(function(): void {})).to.be.false;
         expect(isDataType(() => null)).to.be.false;
         expect(isDataType({})).to.be.false;
-        expect(isDataType(class hey {})).to.be.false;
       });
     });
 

@@ -11,6 +11,9 @@ node_modules
 # testing
 coverage
 
+#logs
+npm-debug.log
+
 **/*.js
 **/*.js.map
 **/*.d.ts

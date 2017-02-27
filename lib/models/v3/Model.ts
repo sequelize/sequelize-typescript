@@ -4,6 +4,12 @@ import {Instance, Model as SeqModel} from 'sequelize';
 const SeqInstance: IDummyConstructor = (Instance as any);
 const SeqModelProto = (SeqModel as any).prototype;
 
+// work around for fixing issue while model definition;
+// 'length' get called on instances dataValues (which
+// is undefined during this process) by lodash, which
+// results in weird behaviour
+SeqInstance.prototype.dataValues = {};
+
 /**
  * Sequelize model for sequelize versions less than v4
  */

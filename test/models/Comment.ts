@@ -11,7 +11,7 @@ export class Comment extends Model<Comment> {
   @Column
   id: number;
 
-  @Length({min: 1, max: 2, msg: 'wrong length'})
+  @Length({min: 1, max: 100, msg: 'wrong length'})
   @Column(DataType.TEXT)
   text: string;
 
