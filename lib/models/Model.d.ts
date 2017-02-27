@@ -26,7 +26,7 @@ type _Partial<T> = {
 /**
  * Creates override for sequelize model to make the food
  */
-export declare class Model<T> extends Hooks<T> {
+export declare class Model<T> extends Hooks {
 
   constructor(values?: _Partial<T>, options?: BuildOptions);
 
@@ -639,15 +639,15 @@ declare class Hooks {
    *
    * @alias hook
    */
-  static addHook(hookType: string, name: string, fn: Function): Hooks<any>;
-  static addHook<T>(hookType: string, name: string, fn: Function): Hooks<T>;
-  static addHook(hookType: string, fn: Function): Hooks<any>;
-  static addHook<T>(hookType: string, fn: Function): Hooks<T>;
+  static addHook(hookType: string, name: string, fn: Function): Hooks;
+  static addHook<T>(hookType: string, name: string, fn: Function): Hooks;
+  static addHook(hookType: string, fn: Function): Hooks;
+  static addHook<T>(hookType: string, fn: Function): Hooks;
 
-  static hook(hookType: string, name: string, fn: Function): Hooks<any>;
-  static hook<T>(hookType: string, name: string, fn: Function): Hooks<T>;
-  static hook(hookType: string, fn: Function): Hooks<any>;
-  static hook<T>(hookType: string, fn: Function): Hooks<T>;
+  static hook(hookType: string, name: string, fn: Function): Hooks;
+  static hook<T>(hookType: string, name: string, fn: Function): Hooks;
+  static hook(hookType: string, fn: Function): Hooks;
+  static hook<T>(hookType: string, fn: Function): Hooks;
 
   /**
    * Remove hook from the model
@@ -655,7 +655,7 @@ declare class Hooks {
    * @param hookType
    * @param name
    */
-  static removeHook<T>(hookType: string, name: string): Hooks<T>;
+  static removeHook<T>(hookType: string, name: string): Hooks;
 
   /**
    * Check whether the mode has any hooks of this type
@@ -719,7 +719,7 @@ declare class Hooks {
                           fn: (instance: T, options: Object, fn?: Function) => void): void;
   static beforeDestroy<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
-  static beforeDelete(name: string,
+  static beforeDelete<T>(name: string,
                       fn: (instance: T, options: Object, fn?: Function) => void): void;
   static beforeDelete<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
@@ -881,8 +881,8 @@ declare class Hooks {
    * @param name
    * @param fn   A callback function that is called with factory
    */
-  static afterDefine<T>(name: string, fn: (model: Model<T, any>) => void): void;
-  static afterDefine<T>(fn: (model: Model<T, any>) => void): void;
+  static afterDefine<T>(name: string, fn: (model: Model<T>) => void): void;
+  static afterDefine<T>(fn: (model: Model<T>) => void): void;
 
   /**
    * A hook that is run before Sequelize() call

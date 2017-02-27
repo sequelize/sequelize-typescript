@@ -15,16 +15,6 @@ const sequelize = new Sequelize({
   ]
 });
 
-const comment = new Comment({text: '123'});
-
-comment
-  .validate()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(err => console.error(err))
-;
-return;
 sequelize
   .sync({force: true})
   .then(() => Promise.all([
