@@ -1,5 +1,6 @@
 // annotations
 export {AutoIncrement} from "./lib/annotations/AutoIncrement";
+export {AllowNull} from "./lib/annotations/AllowNull";
 export {BelongsTo} from "./lib/annotations/association/BelongsTo";
 export {BelongsToMany} from "./lib/annotations/association/BelongsToMany";
 export {Column} from "./lib/annotations/Column";

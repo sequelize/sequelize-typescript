@@ -429,6 +429,16 @@ export declare class Model<T> extends Hooks {
   id?: number|any;
 
   /**
+   * createdAt timestampe automatically created by sequelize if timestamps = true
+   */
+  createdAt?: Date|any;
+
+  /**
+   * updatedAt timestampe automatically created by sequelize if timestamps = true
+   */
+  updatedAt?: Date|any;
+
+  /**
    * Returns true if this instance has not yet been persisted to the database
    */
   isNewRecord: boolean;
@@ -720,7 +730,7 @@ declare class Hooks {
   static beforeDestroy<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   static beforeDelete<T>(name: string,
-                      fn: (instance: T, options: Object, fn?: Function) => void): void;
+                         fn: (instance: T, options: Object, fn?: Function) => void): void;
   static beforeDelete<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**

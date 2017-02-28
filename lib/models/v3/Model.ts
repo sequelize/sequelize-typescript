@@ -24,8 +24,8 @@ export const Model: any = (() => {
     }
   };
 
-  // Create proxies for static model, to forward to
-  // the functions of the "real" sequelize model,
+  // Create proxies for static model, to forward any
+  // static function calls to the "real" sequelize model,
   // which is referred in the property "Model";
   // e.g. "build" and "create"
   Object

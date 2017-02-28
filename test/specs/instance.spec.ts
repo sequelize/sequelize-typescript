@@ -5,7 +5,7 @@ import * as chaiAsPromised from 'chai-as-promised';
 import * as validateUUID from 'uuid-validate';
 import {createSequelize} from "../utils/sequelize";
 import {InstanceError} from 'sequelize';
-import {Sequelize} from "../../index";
+import {Sequelize, Model, Table, Column, AllowNull} from "../../index";
 import {User} from "../models/User";
 import {TimeStampsUser} from "../models/TimeStampsUser";
 import {Book} from "../models/Book";
@@ -1364,48 +1364,68 @@ describe('instance', () => {
             .create<UserWithCreatedAtButWithoutUpdatedAt>({username: 'john doe'}))
           .then((johnDoe) => {
             expect(johnDoe).not.to.have.property('updatedAt');
-            expect(now).to.be.beforeTime(johnDoe['createdAt']); // TODO@robin createdAt type safe (interface??)
+            expect(now).to.be.beforeTime(johnDoe.createdAt);
           })
         ;
       });
 
-      // it('updates the updatedAt column if createdAt is disabled', () => {
-      //   var now = new Date();
-      //   this.clock.tick(1000);
-      //
-      //   var User2 = this.sequelize.define('User2', {
-      //     username: DataTypes.STRING
-      //   }, {createdAt: false});
-      //
-      //   user2.sync().then(() => {
-      //     user2.create({username: 'john doe'}).then((johnDoe) => {
-      //       expect(johnDoe.createdAt).to.be.undefined;
-      //       expect(now).to.be.beforeTime(johnDoe.updatedAt);
-      //     });
-      //   });
-      // });
-      //
-      // it('works with `allowNull: false` on createdAt and updatedAt columns', () => {
-      //   var User2 = this.sequelize.define('User2', {
-      //     username: DataTypes.STRING,
-      //     createdAt: {
-      //       type: DataTypes.DATE,
-      //       allowNull: false
-      //     },
-      //     updatedAt: {
-      //       type: DataTypes.DATE,
-      //       allowNull: false
-      //     }
-      //   }, {timestamps: true});
-      //
-      //   user2.sync().then(() => {
-      //     user2.create({username: 'john doe'}).then((johnDoe) => {
-      //       expect(johnDoe.createdAt).to.be.an.instanceof(Date);
-      //       expect(!isNaN(johnDoe.createdAt.valueOf())).to.be.ok;
-      //       expect(johnDoe.createdAt).to.equalTime(johnDoe.updatedAt);
-      //     });
-      //   });
-      // });
+      it('updates the updatedAt column if createdAt is disabled', () => {
+        const clock = useFakeTimers();
+        const now = new Date();
+        clock.tick(1000);
+
+        @Table({
+          timestamps: true,
+          createdAt: false
+        })
+        class User2 extends Model<User2> {
+
+          @Column
+          username: string;
+        }
+
+        sequelize.addModels([User2]);
+
+        return User2.sync()
+          .then(() => User2.create<User2>({username: 'john doe'}))
+          .then((johnDoe) => {
+
+            expect(johnDoe.createdAt).to.be.undefined;
+            expect(now).to.be.beforeTime(johnDoe.updatedAt);
+          });
+
+      });
+
+      it('works with `allowNull: false` on createdAt and updatedAt columns', () => {
+
+        @Table({
+          timestamps: true
+        })
+        class User3 extends Model<User3> {
+
+          @Column
+          username: string;
+
+          @AllowNull(false)
+          @Column
+          createdAt: Date;
+
+          @AllowNull(false)
+          @Column
+          updatedAt: Date;
+        }
+
+        sequelize.addModels([User3]);
+
+        return User3
+          .sync()
+          .then(() => User3.create<User3>({username: 'john doe'}))
+          .then((johnDoe) => {
+            expect(johnDoe.createdAt).to.be.an.instanceof(Date);
+            expect(!isNaN(johnDoe.createdAt.valueOf())).to.be.ok;
+            expect(johnDoe.createdAt).to.equalTime(johnDoe.updatedAt);
+          });
+      });
     });
 //
 //   it('should fail a validation upon creating', () => {

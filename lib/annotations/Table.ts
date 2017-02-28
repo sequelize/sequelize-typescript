@@ -7,23 +7,21 @@ export function Table(target: any): void;
 export function Table(arg: any): void|Function {
 
   if (typeof arg === 'function') {
+
     const target = arg;
-
-    setModelName(target.prototype, target.name);
-    addOptions(target.prototype, {
-      tableName: target.name
-    });
-
+    annotate(target);
   } else {
 
-    const options: DefineOptions<any> = arg;
+    const options: DefineOptions<any> = Object.assign({}, arg);
 
-    return (target: any) => {
-
-      if (!options.tableName) options.tableName = target.name;
-
-      setModelName(target.prototype, target.name);
-      addOptions(target.prototype, options);
-    };
+    return (target: any) => annotate(target, options);
   }
+}
+
+function annotate(target: any, options: DefineOptions<any> = {}): void {
+
+  if (!options.tableName) options.tableName = target.name;
+
+  setModelName(target.prototype, target.name);
+  addOptions(target.prototype, options);
 }

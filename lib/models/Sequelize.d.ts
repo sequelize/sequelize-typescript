@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
 import { Model } from "./Model";
 import { ISequelizeConfig } from "../interfaces/ISequelizeConfig";
+import {BaseSequelize} from "./BaseSequelize";
 
 export declare class Sequelize extends SequelizeOrigin {
 

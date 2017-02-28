@@ -71,7 +71,7 @@ export function addAttribute(target: any,
 }
 
 /**
- *
+ * Adds attribute options for specific attribute
  */
 export function addAttributeOptions(target: any,
                                     propertyName: string,
@@ -96,11 +96,17 @@ export function getOptions(target: any): DefineOptions<any>|undefined {
   return Reflect.getMetadata(OPTIONS_KEY, target);
 }
 
+/**
+ * Sets seuqlize define options to class prototype
+ */
 export function setOptions(target: any, options: DefineOptions<any>): void {
 
   Reflect.defineMetadata(OPTIONS_KEY, Object.assign({}, DEFAULT_OPTIONS, options), target);
 }
 
+/**
+ * Adds options be assigning new options to old one
+ */
 export function addOptions(target: any, options: DefineOptions<any>): void {
 
   let _options = getOptions(target);

@@ -3,14 +3,16 @@ import * as SequelizeOrigin from 'sequelize';
 import {Model} from "../Model";
 import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
-import {associateModels} from "../../services/association";
-import {PROPERTY_LINK_TO_ORIG} from "../../services/base-model";
-import {getModels} from "../../services/models";
+import {PROPERTY_LINK_TO_ORIG} from "../BaseModel";
+import {BaseSequelize} from "../BaseSequelize";
 
-export class Sequelize extends SequelizeOrigin {
+export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
   // to fix "$1" called with something that's not an instance of Sequelize.Model
   Model: any = Function;
+
+  init: (config: ISequelizeConfig) => void;
+  addModels: (models: Array<typeof Model>|string[]) => void;
 
   constructor(config: ISequelizeConfig) {
     super(config.name,
@@ -18,24 +20,14 @@ export class Sequelize extends SequelizeOrigin {
       config.password,
       config);
 
-    if (config.modelPaths) this.addModels(config.modelPaths);
-  }
-
-  addModels(models: Array<typeof Model>): void;
-  addModels(modelPaths: string[]): void;
-  addModels(arg: Array<typeof Model|string>): void {
-
-    const classes = getModels(arg);
-
-    this.defineModels(classes);
-    associateModels(classes);
+    this.init(config);
   }
 
   /**
    * Creates sequelize models and registers these models
    * in the registry
    */
-  private defineModels(classes: Array<typeof Model>): void {
+  defineModels(classes: Array<typeof Model>): void {
 
     classes.forEach(_class => {
 

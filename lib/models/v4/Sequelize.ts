@@ -3,10 +3,12 @@ import * as OriginSequelize from 'sequelize';
 import {Model} from "../Model";
 import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
-import {associateModels} from "../../services/association";
-import {getModels} from "../../services/models";
+import {BaseSequelize} from "../BaseSequelize";
 
-export class Sequelize extends OriginSequelize {
+export class Sequelize extends OriginSequelize implements BaseSequelize {
+
+  init: (config: ISequelizeConfig) => void;
+  addModels: (models: Array<typeof Model>|string[]) => void;
 
   constructor(config: ISequelizeConfig) {
     super(config.name,
@@ -14,24 +16,14 @@ export class Sequelize extends OriginSequelize {
       config.password,
       config);
 
-    if (config.modelPaths) this.addModels(config.modelPaths);
-  }
-
-  addModels(models: Array<typeof Model>): void;
-  addModels(modelPaths: string[]): void;
-  addModels(arg: Array<typeof Model|string>): void {
-
-    const classes = getModels(arg);
-
-    this.defineModels(classes);
-    associateModels(classes);
+    this.init(config);
   }
 
   /**
    * Creates sequelize models and registers these models
    * in the registry
    */
-  private defineModels(models: Array<typeof Model>): void {
+  defineModels(models: Array<typeof Model>): void {
 
     models.forEach(model => {
 
