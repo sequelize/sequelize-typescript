@@ -3,6 +3,7 @@ import {Author} from './models/Author';
 import {Post} from './models/Post';
 import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
+import * as prettyjson from 'prettyjson';
 
 const sequelize = new Sequelize({
   name: 'blog',
@@ -43,43 +44,34 @@ sequelize
   )
   .then(() =>
     Post
-      .findAll({
+      .findAll<Post>({
         attributes: ['id', 'text'],
-        include: [
-          Comment
-          //   {
-          //   model: Comment,
-          //   as: 'comments',
-          //   attributes: ['id', 'text'],
-          //   include: [{
-          //     model: User,
-          //     as: 'user',
-          //     include: [{
-          //       model: User,
-          //       as: 'friends',
-          //       through: {
-          //         attributes: []
-          //       }
-          //     }]
-          //   }]
-          // }, {
-          //   model: User,
-          //   as: 'user',
-          //   include: [{
-          //     model: User,
-          //     as: 'friends',
-          //     through: {
-          //       attributes: []
-          //     }
-          //   }]
-          // }
+        include: [{
+            model: Comment,
+            attributes: ['id', 'text'],
+            include: [{
+              model: Author,
+              include: [{
+                model: Author,
+                through: {
+                  attributes: []
+                }
+              }]
+            }]
+          }, {
+            model: Author,
+            include: [{
+              model: Author,
+              through: {
+                attributes: []
+              }
+            }]
+          }
         ]
       })
       .then(posts => {
 
-        // prettyjson.render(posts);
-
-        console.log(JSON.stringify(posts));
+        console.log(prettyjson.renderString(JSON.stringify(posts)));
 
         posts.forEach(post => {
 

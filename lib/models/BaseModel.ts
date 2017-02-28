@@ -119,13 +119,11 @@ export abstract class BaseModel {
         }
 
         include.as = associations[0].as;
-      } else {
-
-        return include;
       }
+    }
 
-    } else if (include.include) {
-      this.preConformIncludes(include.include, include.model);
+    if (!isConstructorFn && include.include) {
+      this.preConformIncludes(include, include.model);
     }
 
     return include;

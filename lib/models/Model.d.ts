@@ -1,10 +1,11 @@
 import 'reflect-metadata';
 import {Sequelize} from './Sequelize';
+import {IFindOptions} from '../interfaces/IFindOptions';
 import * as Promise from 'bluebird';
 import {
-  BuildOptions, SyncOptions, FindOptions, UpsertOptions,
+  BuildOptions, SyncOptions, FindCreateFindOptions, UpsertOptions,
   BulkCreateOptions, UpdateOptions, RestoreOptions, DestroyOptions,
-  TruncateOptions, FindCreateFindOptions, FindOrInitializeOptions,
+  TruncateOptions, FindOrInitializeOptions,
   CreateOptions, InstanceSaveOptions, InstanceSetOptions, AggregateOptions,
   InstanceIncrementDecrementOptions, DropOptions, InstanceUpdateOptions,
   InstanceDestroyOptions, InstanceRestoreOptions,
@@ -83,7 +84,7 @@ export declare class Model<T> extends Hooks {
    * @param {Object}          [options]
    * @param {Boolean}         [options.override=false]
    */
-  static addScope(name: string, scope: FindOptions | Function, options?: AddScopeOptions): void;
+  static addScope(name: string, scope: IFindOptions | Function, options?: AddScopeOptions): void;
 
   /**
    * Add a new scope to the model. This is especially useful for adding scopes with includes, when the model you want to include is not available at the time this model is defined.
@@ -95,7 +96,7 @@ export declare class Model<T> extends Hooks {
    * @param {Object}          [options]
    * @param {Boolean}         [options.override=false]
    */
-  static addScope(name: string, scope: FindOptions | Function, options?: AddScopeOptions): void;
+  static addScope(name: string, scope: IFindOptions | Function, options?: AddScopeOptions): void;
 
   /**
    * Apply a scope created in `define` to the model. First let's look at how to create scopes:
@@ -208,25 +209,25 @@ export declare class Model<T> extends Hooks {
    *
    * @see    {Sequelize#query}
    */
-  static findAll<T>(options?: FindOptions): Promise<T[]>;
+  static findAll<T>(options?: IFindOptions): Promise<T[]>;
 
-  static all<T>(optionz?: FindOptions): Promise<T[]>;
+  static all<T>(optionz?: IFindOptions): Promise<T[]>;
 
   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById<T>(identifier?: number | string, options?: FindOptions): Promise<T | null>;
+  static findById<T>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
 
-  static findByPrimary<T>(identifier?: number | string, options?: FindOptions): Promise<T | null>;
+  static findByPrimary<T>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne<T>(options?: FindOptions): Promise<T | null>;
+  static findOne<T>(options?: IFindOptions): Promise<T | null>;
 
-  static find<T>(options?: FindOptions): Promise<T | null>;
+  static find<T>(options?: IFindOptions): Promise<T | null>;
 
   /**
    * Run an aggregation method on the specified field
@@ -281,9 +282,9 @@ export declare class Model<T> extends Hooks {
    * without
    * profiles will be counted
    */
-  static findAndCount<T>(options?: FindOptions): Promise<{rows: T[], count: number}>;
+  static findAndCount<T>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
 
-  static findAndCountAll<T>(options?: FindOptions): Promise<{rows: T[], count: number}>;
+  static findAndCountAll<T>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
 
   /**
    * Find the maximum value of field
@@ -542,7 +543,7 @@ export declare class Model<T> extends Hooks {
    * return a new instance. With this method, all references to the Instance are updated with the new data
    * and no new objects are created.
    */
-  reload(options?: FindOptions): Promise<this>;
+  reload(options?: IFindOptions): Promise<this>;
 
   /**
    * Validate the attribute of this instance according to validation rules set in the model definition.

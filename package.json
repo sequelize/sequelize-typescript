@@ -11,7 +11,7 @@
     "test-v3": "npm run prepare-test-v3 && npm run exec-tests",
     "test-v4": "npm run prepare-test-v4 && npm run exec-tests",
     "exec-tests": "SEQ_SILENT=true mocha 'test/specs/**/*.js'",
-    "test": "npm run test-v3 && npm run test-v4"
+    "test": "npm run test-v4 && npm run test-v3"
   },
   "main": "index.js",
   "types": "index.d.ts",
