@@ -26,9 +26,9 @@ export class Post extends Model<Post> {
 
   @ForeignKey(() => Author)
   @Column
-  userId: number;
+  authorId: number;
 
   @BelongsTo(() => Author)
-  user: Author;
+  author: Author;
 
 }

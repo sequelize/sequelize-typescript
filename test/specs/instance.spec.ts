@@ -4,7 +4,6 @@ import chaiDatetime = require('chai-datetime');
 import * as chaiAsPromised from 'chai-as-promised';
 import * as validateUUID from 'uuid-validate';
 import {createSequelize} from "../utils/sequelize";
-import {InstanceError} from 'sequelize';
 import {Sequelize, Model, Table, Column, AllowNull} from "../../index";
 import {User} from "../models/User";
 import {TimeStampsUser} from "../models/TimeStampsUser";
@@ -21,10 +20,7 @@ import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
 import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
 // import {UserWithSwag} from "../models/UserWithSwag";
 
-declare module 'sequelize' {
-  class InstanceError {
-  }
-}
+const {InstanceError} = require('sequelize');
 
 use(chaiAsPromised);
 use(chaiDatetime);

@@ -26,22 +26,34 @@ sequelize
   )
   .then(([robin, nelly, elisa]) =>
     Post
-      .create<Post>({text: 'hey', userId: nelly.id})
+      .create<Post>({text: 'hey', authorId: nelly.id})
       .then(post => Comment.create<Comment>({
         postId: post.id,
         text: 'my comment',
-        userId: robin.id
+        authorId: robin.id
       }))
       .then(() => {
 
         robin.name = 'robin';
 
         return Promise.all([
+          robin.save(),
           robin.add('Friend', nelly),
           robin.add('Friend', elisa)
         ]);
       })
   )
+  .then(() => {
+    const post = new Post({
+      text: 'hey2',
+      author: {
+        name: 'jörn'
+      }
+    }, {include: [Author]});
+
+    return post.save();
+  })
+  .then(() => Post.build<Post>({text: 'hey3'}).save())
   .then(() =>
     Post
       .findAll<Post>({
@@ -79,13 +91,5 @@ sequelize
         });
       })
   )
-  .then(() => {
-    const post = new Post({text: 'hey2'});
-
-    return post.save();
-  })
-  .then(() => {
-    Post.build({text: 'hey3'});
-  })
 ;
 

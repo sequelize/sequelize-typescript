@@ -7,7 +7,7 @@ export class AuthorFriend extends Model<AuthorFriend> {
   @ForeignKey(() => Author)
   @PrimaryKey
   @Column
-  userId: number;
+  authorId: number;
 
   @ForeignKey(() => Author)
   @PrimaryKey

@@ -40,7 +40,7 @@
     "sinon": "1.17.7",
     "sqlite3": "3.1.8",
     "tslint": "4.3.1",
-    "typescript": "2.1.6",
+    "typescript": "2.2.1",
     "uuid-validate": "0.0.2"
   },
   "engines": {

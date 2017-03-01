@@ -1,5 +1,5 @@
 import * as Promise from "bluebird";
-import {FindOptions, Model, Instance} from "sequelize";
+import {FindOptions, Model, Instance, BuildOptions} from "sequelize";
 import {getAssociationsByRelation} from "../services/association";
 import {majorVersion} from "../utils/versioning";
 
@@ -67,6 +67,35 @@ export abstract class BaseModel {
           return superFn.call(this, ...args);
         };
       });
+  }
+
+  static prepareInstantiationOptions(options: BuildOptions, source: any): BuildOptions {
+
+    options = this.preConformIncludes(options, source);
+
+    if (!('isNewRecord' in options)) options.isNewRecord = true;
+
+    // TODO@robin has to be validated: necessary?
+    // options = _.extend({
+    //   isNewRecord: true,
+    //   $schema: this.$schema,
+    //   $schemaDelimiter: this.$schemaDelimiter
+    // }, options || {});
+
+    const staticMethodPrefix = majorVersion === 3 ? '$' : '_';
+
+    // preventing TypeError: Cannot read property 'indexOf' of undefined(=includeNames)
+    if (!options['includeNames']) options['includeNames'] = [];
+
+    if (!options['includeValidated']) {
+      Model[staticMethodPrefix + 'conformOptions'](options, source);
+      if (options.include) {
+        Model[staticMethodPrefix + 'expandIncludeAll'].call(source, options);
+        Model[staticMethodPrefix + 'validateIncludedElements'].call(source, options);
+      }
+    }
+
+    return options;
   }
 
   /**

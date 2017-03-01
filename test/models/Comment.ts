@@ -24,9 +24,9 @@ export class Comment extends Model<Comment> {
 
   @ForeignKey(() => Author)
   @Column
-  userId: number;
+  authorId: number;
 
   @BelongsTo(() => Author)
-  user;
+  author;
 
 }

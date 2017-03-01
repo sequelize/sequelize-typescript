@@ -29,7 +29,7 @@ type _Partial<T> = {
  */
 export declare class Model<T> extends Hooks {
 
-  constructor(values?: _Partial<T>, options?: BuildOptions);
+  constructor(values?: any, options?: BuildOptions);
 
   /**
    * Remove attribute from model definition
@@ -324,9 +324,11 @@ export declare class Model<T> extends Hooks {
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize<T>(options: FindOrInitializeOptions<_Partial<T>>): Promise<[T, boolean]>;
+  static findOrInitialize<T>(options: FindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrInitialize<T, A>(options: FindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
-  static findOrBuild<T>(options: FindOrInitializeOptions<_Partial<T>>): Promise<[T, boolean]>;
+  static findOrBuild<T>(options: FindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrBuild<T, A>(options: FindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -406,7 +408,8 @@ export declare class Model<T> extends Hooks {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update<T>(values: _Partial<T>, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T>(values: any, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T, A>(values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and

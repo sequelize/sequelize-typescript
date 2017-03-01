@@ -1,4 +1,5 @@
 import {IDummyConstructor} from "../../interfaces/IDummyConstructor";
+import {BaseModel} from "../BaseModel";
 import {Instance, Model as SeqModel} from 'sequelize';
 
 const SeqInstance: IDummyConstructor = (Instance as any);
@@ -19,8 +20,7 @@ export const Model: any = (() => {
 
     constructor(values: any,
                 options?: any) {
-      super(values, options ||
-        {isNewRecord: true}); // when called with "new"
+      super(values, BaseModel.prepareInstantiationOptions(options, new.target));
     }
   };
 

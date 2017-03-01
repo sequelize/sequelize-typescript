@@ -13,16 +13,7 @@ export class Author extends Model<Author> {
   @Column
   name: string;
 
-  @Column
-  aNumber: number;
-
-  @Column
-  bNumber: number;
-
-  @BelongsToMany(() => Author, () => AuthorFriend, 'userId', 'friendId')
+  @BelongsToMany(() => Author, () => AuthorFriend, 'authorId', 'friendId')
   friends: Author[];
 
 }
-
-export default class heyHo {}
-
