@@ -3,7 +3,7 @@ import {Sequelize} from "../../lib/models/Sequelize";
 export function createSequelize(): Sequelize {
 
   return new Sequelize({
-    name: 'blog',
+    name: '__',
     dialect: 'sqlite',
     username: 'root',
     password: '',

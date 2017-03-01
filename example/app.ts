@@ -5,6 +5,8 @@ import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
 import * as prettyjson from 'prettyjson';
 
+/* tslint:disable:no-console */
+
 const sequelize = new Sequelize({
   name: 'blog',
   dialect: 'mysql',
@@ -24,8 +26,7 @@ sequelize
       Author.create<Author>({name: 'elisa'})
     ])
   )
-  .then(([robin, nelly, elisa]) =>
-    Post
+  .then(([robin, nelly, elisa]) => Post
       .create<Post>({text: 'hey', authorId: nelly.id})
       .then(post => Comment.create<Comment>({
         postId: post.id,
