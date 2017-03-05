@@ -37,10 +37,6 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
       if (!options) throw new Error(`@Table annotation is missing on class "${_class['name']}"`);
 
-      options.instanceMethods = _class.prototype;
-      options.classMethods = _class;
-
-      // this.defineOverride(this.sequelize, model, modelName, attributes, options);
       const model = this.define(modelName, attributes, options);
 
       // replace Instance model with the original model

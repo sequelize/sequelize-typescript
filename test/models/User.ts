@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType} from "../../index";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull} from "../../index";
 
 @Table
 export class User extends Model<User> {
@@ -32,10 +32,9 @@ export class User extends Model<User> {
   @Column
   isAdmin: boolean;
 
-  @Column({
-    type: DataType.BOOLEAN,
-    defaultValue: false
-  })
+  @Default(false)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
   isSuperUser: boolean|number;
 
   @Column({

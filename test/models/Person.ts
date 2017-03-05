@@ -1,12 +1,10 @@
-import {Table, Model, Column, DataType} from "../../index";
+import {Table, Model, Column, PrimaryKey, DataType, Default} from "../../index";
 
 @Table
 export class Person extends Model<Person> {
 
-  @Column({
-    primaryKey: true,
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV1
-  })
+  @PrimaryKey
+  @Default(DataType.UUIDV1)
+  @Column(DataType.UUID)
   id: string;
 }

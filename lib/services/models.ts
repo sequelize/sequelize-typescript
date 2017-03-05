@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import * as deepAssign from 'deep-assign';
 import * as fs from 'fs';
 import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
@@ -7,6 +6,7 @@ import {Model} from "../models/Model";
 import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {inferDataType} from "../utils/data-type";
+import {deepAssign} from "../utils/object";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
@@ -40,7 +40,11 @@ export function getModelName(target: any): string {
  */
 export function getAttributes(target: any): any|undefined {
 
-  return Reflect.getMetadata(ATTRIBUTES_KEY, target);
+  const attributes = Reflect.getMetadata(ATTRIBUTES_KEY, target);
+
+  if (attributes) {
+    return deepAssign({}, attributes);
+  }
 }
 
 /**
@@ -48,7 +52,7 @@ export function getAttributes(target: any): any|undefined {
  */
 export function setAttributes(target: any, attributes: any): void {
 
-  Reflect.defineMetadata(ATTRIBUTES_KEY, attributes, target);
+  Reflect.defineMetadata(ATTRIBUTES_KEY, Object.assign({}, attributes), target);
 }
 
 /**
@@ -64,10 +68,10 @@ export function addAttribute(target: any,
 
   if (!attributes) {
     attributes = {};
-    setAttributes(target, attributes);
   }
-
   attributes[name] = Object.assign({}, options);
+
+  setAttributes(target, attributes);
 }
 
 /**
@@ -85,6 +89,8 @@ export function addAttributeOptions(target: any,
   }
 
   attributes[propertyName] = deepAssign(attributes[propertyName], options);
+
+  setAttributes(target, attributes);
 }
 
 /**
@@ -93,7 +99,11 @@ export function addAttributeOptions(target: any,
  */
 export function getOptions(target: any): DefineOptions<any>|undefined {
 
-  return Reflect.getMetadata(OPTIONS_KEY, target);
+  const options = Reflect.getMetadata(OPTIONS_KEY, target);
+
+  if (options) {
+    return Object.assign({}, options);
+  }
 }
 
 /**

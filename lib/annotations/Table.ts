@@ -22,6 +22,9 @@ function annotate(target: any, options: DefineOptions<any> = {}): void {
 
   if (!options.tableName) options.tableName = target.name;
 
+  options.instanceMethods = target.prototype;
+  options.classMethods = target;
+
   setModelName(target.prototype, target.name);
   addOptions(target.prototype, options);
 }

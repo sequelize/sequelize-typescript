@@ -4,9 +4,7 @@ import {Book} from "./Book";
 @Table
 export class Page extends Model<Page> {
 
-  @Column({
-    type: DataType.TEXT
-  })
+  @Column(DataType.TEXT)
   content: string;
 
   @ForeignKey(() => Book)

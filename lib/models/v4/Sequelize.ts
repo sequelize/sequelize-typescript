@@ -33,9 +33,6 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
 
       if (!options) throw new Error(`@Table annotation is missing on class "${model['name']}"`);
 
-      options.instanceMethods = model.prototype;
-      options.classMethods = model;
-
       options['modelName'] = modelName;
       options['sequelize'] = this;
 
