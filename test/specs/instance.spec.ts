@@ -1,10 +1,13 @@
 import {expect, use} from 'chai';
 import {useFakeTimers} from 'sinon';
-import chaiDatetime = require('chai-datetime');
 import * as chaiAsPromised from 'chai-as-promised';
 import * as validateUUID from 'uuid-validate';
 import {createSequelize} from "../utils/sequelize";
-import {Sequelize, Model, Table, Column, AllowNull} from "../../index";
+import {DefineOptions} from "sequelize";
+import {
+  Sequelize, Model, Table, Column, AllowNull, PrimaryKey,
+  ForeignKey, HasMany, BelongsTo, HasOne, DataType
+} from "../../index";
 import {User} from "../models/User";
 import {TimeStampsUser} from "../models/TimeStampsUser";
 import {Book} from "../models/Book";
@@ -18,7 +21,10 @@ import {UserWithValidation} from "../models/UserWithValidation";
 import {UserWithNoAutoIncrementation} from "../models/UserWithNoAutoIncrementation";
 import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
 import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
+import chaiDatetime = require('chai-datetime');
 // import {UserWithSwag} from "../models/UserWithSwag";
+
+// TODO@robin create belongs to many with through options "add" test
 
 const {InstanceError} = require('sequelize');
 
@@ -635,7 +641,7 @@ describe('instance', () => {
             .create<Page>({content: 'om nom nom'})
             .then((page) =>
               book
-                ['setPages']([page]) // todo
+                .$set('pages', [page])
                 .then(() => Book.findOne({where: {id: book.id}, include: [Page]}))
                 .then((leBook: Book) =>
                   page
@@ -1423,792 +1429,909 @@ describe('instance', () => {
           });
       });
     });
-//
-//   it('should fail a validation upon creating', () => {
-//     User.create({aNumber: 0, validateTest: 'hello'}).catch((err) => {
-//       expect(err).to.exist;
-//       expect(err).to.be.instanceof(Object);
-//       expect(err.get('validateTest')).to.be.instanceof(Array);
-//       expect(err.get('validateTest')[0]).to.exist;
-//       expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
-//     });
-//   });
-//
-//   it('should fail a validation upon creating with hooks false', () => {
-//     User.create({aNumber: 0, validateTest: 'hello'}, {hooks: false}).catch((err) => {
-//       expect(err).to.exist;
-//       expect(err).to.be.instanceof(Object);
-//       expect(err.get('validateTest')).to.be.instanceof(Array);
-//       expect(err.get('validateTest')[0]).to.exist;
-//       expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
-//     });
-//   });
-//
-//   it('should fail a validation upon building', () => {
-//     User.build({aNumber: 0, validateCustom: 'aaaaaaaaaaaaaaaaaaaaaaaaaa'}).save()
-//       .catch((err) => {
-//         expect(err).to.exist;
-//         expect(err).to.be.instanceof(Object);
-//         expect(err.get('validateCustom')).to.exist;
-//         expect(err.get('validateCustom')).to.be.instanceof(Array);
-//         expect(err.get('validateCustom')[0]).to.exist;
-//         expect(err.get('validateCustom')[0].message).to.equal('Length failed.');
-//       });
-//   });
-//
-//   it('should fail a validation when updating', () => {
-//     User.create({aNumber: 0}).then((user) => {
-//       return user.updateAttributes({validateTest: 'hello'}).catch((err) => {
-//         expect(err).to.exist;
-//         expect(err).to.be.instanceof(Object);
-//         expect(err.get('validateTest')).to.exist;
-//         expect(err.get('validateTest')).to.be.instanceof(Array);
-//         expect(err.get('validateTest')[0]).to.exist;
-//         expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
-//       });
-//     });
-//   });
-//
-//   it('takes zero into account', () => {
-//     User.build({aNumber: 0}).save({
-//       fields: ['aNumber']
-//     }).then((user) => {
-//       expect(user.aNumber).to.equal(0);
-//     });
-//   });
-//
-//   it('saves a record with no primary key', () => {
-//     var HistoryLog = this.sequelize.define('HistoryLog', {
-//       someText: {type: DataTypes.STRING},
-//       aNumber: {type: DataTypes.INTEGER},
-//       aRandomId: {type: DataTypes.INTEGER}
-//     });
-//     return HistoryLog.sync().then(() => {
-//       return HistoryLog.create({someText: 'Some random text', aNumber: 3, aRandomId: 5}).then((log) => {
-//         return log.updateAttributes({aNumber: 5}).then((newLog) => {
-//           expect(newLog.aNumber).to.equal(5);
-//         });
-//       });
-//     });
-//   });
-//
-//   describe('eagerly loaded objects', () => {
-//     beforeEach(() => {
-//
-//       this.UserEager = this.sequelize.define('UserEagerLoadingSaves', {
-//         username: DataTypes.STRING,
-//         age: DataTypes.INTEGER
-//       }, {timestamps: false});
-//
-//       this.ProjectEager = this.sequelize.define('ProjectEagerLoadingSaves', {
-//         title: DataTypes.STRING,
-//         overdue_days: DataTypes.INTEGER
-//       }, {timestamps: false});
-//
-//       this.UserEager.hasMany(this.ProjectEager, {as: 'Projects', foreignKey: 'PoobahId'});
-//       this.ProjectEager.belongsTo(this.UserEager, {as: 'Poobah', foreignKey: 'PoobahId'});
-//
-//       UserEager.sync({force: true}).then(() => {
-//         ProjectEager.sync({force: true});
-//       });
-//     });
-//
-//     it('saves one object that has a collection of eagerly loaded objects', () => {
-//
-//       UserEager.create({username: 'joe', age: 1}).then((user) => {
-//         ProjectEager.create({title: 'project-joe1', overdue_days: 0}).then((project1) => {
-//           ProjectEager.create({title: 'project-joe2', overdue_days: 0}).then((project2) => {
-//             return user.setProjects([project1, project2]).then(() => {
-//               UserEager.findOne({
-//                 where: {age: 1},
-//                 include: [{model: self.ProjectEager, as: 'Projects'}]
-//               }).then((user) => {
-//                 expect(user.username).to.equal('joe');
-//                 expect(user.age).to.equal(1);
-//                 expect(user.Projects).to.exist;
-//                 expect(user.Projects.length).to.equal(2);
-//
-//                 user.age = user.age + 1; // happy birthday joe
-//                 return user.save().then((user) => {
-//                   expect(user.username).to.equal('joe');
-//                   expect(user.age).to.equal(2);
-//                   expect(user.Projects).to.exist;
-//                   expect(user.Projects.length).to.equal(2);
-//                 });
-//               });
-//             });
-//           });
-//         });
-//       });
-//     });
-//
-//     it('saves many objects that each a have collection of eagerly loaded objects', () => {
-//
-//       UserEager.create({username: 'bart', age: 20}).then((bart) => {
-//         UserEager.create({username: 'lisa', age: 20}).then((lisa) => {
-//           ProjectEager.create({title: 'detention1', overdue_days: 0}).then((detention1) => {
-//             ProjectEager.create({title: 'detention2', overdue_days: 0}).then((detention2) => {
-//               ProjectEager.create({title: 'exam1', overdue_days: 0}).then((exam1) => {
-//                 ProjectEager.create({title: 'exam2', overdue_days: 0}).then((exam2) => {
-//                   return bart.setProjects([detention1, detention2]).then(() => {
-//                     return lisa.setProjects([exam1, exam2]).then(() => {
-//                       UserEager.findAll({
-//                         where: {age: 20},
-//                         order: [['username', 'ASC']],
-//                         include: [{model: self.ProjectEager, as: 'Projects'}]
-//                       }).then((simpsons) => {
-//                         var _bart, _lisa;
-//
-//                         expect(simpsons.length).to.equal(2);
-//
-//                         _bart = simpsons[0];
-//                         _lisa = simpsons[1];
-//
-//                         expect(_bart.Projects).to.exist;
-//                         expect(_lisa.Projects).to.exist;
-//                         expect(_bart.Projects.length).to.equal(2);
-//                         expect(_lisa.Projects.length).to.equal(2);
-//
-//                         _bart.age = _bart.age + 1; // happy birthday bart - off to Moe's
-//
-//                         return _bart.save().then((savedbart) => {
-//                           expect(savedbart.username).to.equal('bart');
-//                           expect(savedbart.age).to.equal(21);
-//
-//                           _lisa.username = 'lsimpson';
-//
-//                           return _lisa.save().then((savedlisa) => {
-//                             expect(savedlisa.username).to.equal('lsimpson');
-//                             expect(savedlisa.age).to.equal(20);
-//                           });
-//                         });
-//                       });
-//                     });
-//                   });
-//                 });
-//               });
-//             });
-//           });
-//         });
-//       });
-//     });
-//
-//     it('saves many objects that each has one eagerly loaded object (to which they belong)', () => {
-//
-//       UserEager.create({username: 'poobah', age: 18}).then((user) => {
-//         ProjectEager.create({title: 'homework', overdue_days: 10}).then((homework) => {
-//           ProjectEager.create({title: 'party', overdue_days: 2}).then((party) => {
-//             return user.setProjects([homework, party]).then(() => {
-//               ProjectEager.findAll({
-//                 include: [{
-//                   model: self.UserEager,
-//                   as: 'Poobah'
-//                 }]
-//               }).then((projects) => {
-//                 expect(projects.length).to.equal(2);
-//                 expect(projects[0].Poobah).to.exist;
-//                 expect(projects[1].Poobah).to.exist;
-//                 expect(projects[0].Poobah.username).to.equal('poobah');
-//                 expect(projects[1].Poobah.username).to.equal('poobah');
-//
-//                 projects[0].title = 'partymore';
-//                 projects[1].title = 'partymore';
-//                 projects[0].overdue_days = 0;
-//                 projects[1].overdue_days = 0;
-//
-//                 return projects[0].save().then(() => {
-//                   return projects[1].save().then(() => {
-//                     ProjectEager.findAll({
-//                       where: {title: 'partymore', overdue_days: 0},
-//                       include: [{model: self.UserEager, as: 'Poobah'}]
-//                     }).then((savedprojects) => {
-//                       expect(savedprojects.length).to.equal(2);
-//                       expect(savedprojects[0].Poobah).to.exist;
-//                       expect(savedprojects[1].Poobah).to.exist;
-//                       expect(savedprojects[0].Poobah.username).to.equal('poobah');
-//                       expect(savedprojects[1].Poobah.username).to.equal('poobah');
-//                     });
-//                   });
-//                 });
-//               });
-//             });
-//           });
-//         });
-//       });
-//     });
-//   });
+
+    it('should fail a validation upon creating', () =>
+      User
+        .create({aNumber: 0, validateTest: 'hello'})
+        .catch((err) => {
+          expect(err).to.exist;
+          expect(err).to.be.instanceof(Object);
+          expect(err.get('validateTest')).to.be.instanceof(Array);
+          expect(err.get('validateTest')[0]).to.exist;
+          expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
+        })
+    );
+
+    it('should fail a validation upon creating with hooks false', () =>
+      User
+        .create({aNumber: 0, validateTest: 'hello'}, {hooks: false} as any)
+        .catch((err) => {
+          expect(err).to.exist;
+          expect(err).to.be.instanceof(Object);
+          expect(err.get('validateTest')).to.be.instanceof(Array);
+          expect(err.get('validateTest')[0]).to.exist;
+          expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
+        })
+    );
+
+    it('should fail a validation upon building', () =>
+      User
+        .build<User>({aNumber: 0, validateCustom: 'aaaaaaaaaaaaaaaaaaaaaaaaaa'})
+        .save()
+        .catch((err) => {
+          expect(err).to.exist;
+          expect(err).to.be.instanceof(Object);
+          expect(err.get('validateCustom')).to.exist;
+          expect(err.get('validateCustom')).to.be.instanceof(Array);
+          expect(err.get('validateCustom')[0]).to.exist;
+          expect(err.get('validateCustom')[0].message).to.equal('Length failed.');
+        })
+    );
+
+    it('should fail a validation when updating', () =>
+      User
+        .create<User>({aNumber: 0})
+        .then((user) => user.updateAttributes({validateTest: 'hello'}))
+        .catch((err) => {
+          expect(err).to.exist;
+          expect(err).to.be.instanceof(Object);
+          expect(err.get('validateTest')).to.exist;
+          expect(err.get('validateTest')).to.be.instanceof(Array);
+          expect(err.get('validateTest')[0]).to.exist;
+          expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
+        })
+    );
+
+    it('takes zero into account', () =>
+      User
+        .build<User>({aNumber: 0})
+        .save({fields: ['aNumber']})
+        .then((user) => {
+          expect(user.aNumber).to.equal(0);
+        })
+    );
+
+    it('saves a record with no primary key', () => {
+      @Table
+      class HistoryLog extends Model<HistoryLog> {
+
+        @Column
+        someText: string;
+
+        @Column
+        aNumber: number;
+
+        @Column
+        aRandomId: number;
+      }
+
+      sequelize.addModels([HistoryLog]);
+
+      return HistoryLog
+        .sync()
+        .then(() => HistoryLog.create<HistoryLog>({someText: 'Some random text', aNumber: 3, aRandomId: 5}))
+        .then((log) => log.updateAttributes({aNumber: 5}))
+        .then((newLog) => {
+          expect(newLog.aNumber).to.equal(5);
+        });
+    });
+
+    describe('eagerly loaded objects', () => {
+
+      @Table
+      class UserEager extends Model<UserEager> {
+
+        @Column
+        username: string;
+
+        @Column
+        age: number;
+
+        @HasMany(() => ProjectEager)
+        projects: ProjectEager[];
+      }
+
+      @Table
+      class ProjectEager extends Model<ProjectEager> {
+
+        @Column
+        title: string;
+
+        @Column
+        overdueDays: number;
+
+        @ForeignKey(() => UserEager)
+        @Column
+        poobahId: number;
+
+        @BelongsTo(() => UserEager)
+        poobah: UserEager;
+      }
+
+      sequelize.addModels([UserEager, ProjectEager]);
+
+      beforeEach(() => UserEager.sync({force: true}).then(() => ProjectEager.sync({force: true})));
+
+      it('saves one object that has a collection of eagerly loaded objects', () =>
+        UserEager
+          .create<UserEager>({username: 'joe', age: 1})
+          .then((user) => ProjectEager.create<ProjectEager>({title: 'project-joe1', overdueDays: 0})
+            .then((project1) => ProjectEager.create<ProjectEager>({title: 'project-joe2', overdueDays: 0})
+              .then((project2) => user.$set('projects', [project1, project2]))
+              .then(() => UserEager.findOne<UserEager>({where: {age: 1}, include: [ProjectEager]}))
+              .then((_user) => {
+                expect(_user.username).to.equal('joe');
+                expect(_user.age).to.equal(1);
+                expect(_user.projects).to.exist;
+                expect(_user.projects.length).to.equal(2);
+
+                _user.age = _user.age + 1; // happy birthday joe
+                return _user.save();
+              })
+              .then((_user) => {
+                expect(_user.username).to.equal('joe');
+                expect(_user.age).to.equal(2);
+                expect(_user.projects).to.exist;
+                expect(_user.projects.length).to.equal(2);
+              })
+            )
+          )
+      );
+
+      it('saves many objects that each a have collection of eagerly loaded objects', () =>
+
+        Promise
+          .all([
+            UserEager.create({username: 'bart', age: 20}),
+            UserEager.create({username: 'lisa', age: 20}),
+            ProjectEager.create({title: 'detention1', overdueDays: 0}),
+            ProjectEager.create({title: 'detention2', overdueDays: 0}),
+            ProjectEager.create({title: 'exam1', overdueDays: 0}),
+            ProjectEager.create({title: 'exam2', overdueDays: 0})
+          ])
+          .then(([bart, lisa, detention1, detention2, exam1, exam2]) =>
+            Promise
+              .all([
+                bart.$set('projects', [detention1, detention2]),
+                lisa.$set('projects', [exam1, exam2])
+              ])
+              .then(() => UserEager.findAll<UserEager>({
+                where: {age: 20},
+                order: [['username', 'ASC']],
+                include: [ProjectEager]
+              }))
+              .then((simpsons) => {
+                let _bart;
+                let _lisa;
+
+                expect(simpsons.length).to.equal(2);
+
+                _bart = simpsons[0];
+                _lisa = simpsons[1];
+
+                expect(_bart.projects).to.exist;
+                expect(_lisa.projects).to.exist;
+                expect(_bart.projects.length).to.equal(2);
+                expect(_lisa.projects.length).to.equal(2);
+
+                _bart.age = _bart.age + 1; // happy birthday bart - off to Moe's
+                _lisa.username = 'lsimpson';
+
+                return Promise.all([
+                  _bart.save(),
+                  _lisa.save()
+                ]);
+              })
+              .then(([savedBart, savedLisa]) => {
+
+                expect(savedBart.username).to.equal('bart');
+                expect(savedBart.age).to.equal(21);
+
+                expect(savedLisa.username).to.equal('lsimpson');
+                expect(savedLisa.age).to.equal(20);
+              })
+          )
+      );
+
+      it('saves many objects that each has one eagerly loaded object (to which they belong)', () =>
+
+        Promise
+          .all([
+            UserEager.create({username: 'poobah', age: 18}),
+            ProjectEager.create({title: 'homework', overdueDays: 10}),
+            ProjectEager.create({title: 'party', overdueDays: 2})
+          ])
+          .then(([user, homework, party]) => user.$set('projects', [homework, party]))
+          .then(() => ProjectEager.findAll<ProjectEager>({
+            include: [{
+              model: UserEager,
+              as: 'poobah'
+            }]
+          }))
+          .then((projects) => {
+            expect(projects.length).to.equal(2);
+            expect(projects[0].poobah).to.exist;
+            expect(projects[1].poobah).to.exist;
+            expect(projects[0].poobah).to.have.property('username', 'poobah');
+            expect(projects[1].poobah).to.have.property('username', 'poobah');
+
+            projects[0].title = 'partymore';
+            projects[1].title = 'partymore';
+            projects[0].overdueDays = 0;
+            projects[1].overdueDays = 0;
+
+            return Promise.all([
+              projects[0].save(),
+              projects[1].save()
+            ]);
+          })
+          .then(() => ProjectEager.findAll<ProjectEager>({
+            where: {title: 'partymore', overdueDays: 0},
+            include: [UserEager]
+          }))
+          .then((savedprojects) => {
+
+            expect(savedprojects.length).to.equal(2);
+            expect(savedprojects[0].poobah).to.exist;
+            expect(savedprojects[1].poobah).to.exist;
+            expect(savedprojects[0].poobah).to.have.property('username', 'poobah');
+            expect(savedprojects[1].poobah).to.have.property('username', 'poobah');
+          })
+      );
+    });
   });
-//
-// describe('many to many relations', () => {
-//   var udo;
-//   beforeEach(() => {
-//
-//     this.User = this.sequelize.define('UserWithUsernameAndAgeAndIsAdmin', {
-//       username: DataTypes.STRING,
-//       age: DataTypes.INTEGER,
-//       isAdmin: DataTypes.BOOLEAN
-//     }, {timestamps: false});
-//
-//     this.Project = this.sequelize.define('NiceProject',
-//       {title: DataTypes.STRING}, {timestamps: false});
-//
-//     this.Project.hasMany(this.User);
-//     this.User.hasMany(this.Project);
-//
-//     User.sync({force: true}).then(() => {
-//       Project.sync({force: true}).then(() => {
-//         User.create({username: 'fnord', age: 1, isAdmin: true})
-//           .then((user) => {
-//             udo = user;
-//           });
-//       });
-//     });
-//   });
-//
-//   it.skip('Should assign a property to the instance', () => {
-//     // @thanpolas rethink this test, it doesn't make sense, a relation has
-//     // to be created first in the beforeEach().
-//     User.findOne({id: udo.id})
-//       .then((user) => {
-//         user.NiceProjectId = 1;
-//         expect(user.NiceProjectId).to.equal(1);
-//       });
-//   });
-// });
-//
-// describe('toJSON', () => {
-//   beforeEach(() => {
-//
-//     this.User = this.sequelize.define('UserWithUsernameAndAgeAndIsAdmin', {
-//       username: DataTypes.STRING,
-//       age: DataTypes.INTEGER,
-//       isAdmin: DataTypes.BOOLEAN
-//     }, {timestamps: false});
-//
-//     this.Project = this.sequelize.define('NiceProject', {title: DataTypes.STRING}, {timestamps: false});
-//
-//     this.User.hasMany(this.Project, {as: 'Projects', foreignKey: 'lovelyUserId'});
-//     this.Project.belongsTo(this.User, {as: 'LovelyUser', foreignKey: 'lovelyUserId'});
-//
-//     User.sync({force: true}).then(() => {
-//       Project.sync({force: true});
-//     });
-//   });
-//
-//   it("dont return instance that isn't defined", () => {
-//
-//     Project.create({lovelyUserId: null})
-//       .then((project) => {
-//         Project.findOne({
-//           where: {
-//             id: project.id
-//           },
-//           include: [
-//             {model: self.User, as: 'LovelyUser'}
-//           ]
-//         });
-//       })
-//       .then((project) => {
-//         var json = project.toJSON();
-//         expect(json.LovelyUser).to.be.equal(null);
-//       });
-//   });
-//
-//   it("dont return instances that aren't defined", () => {
-//
-//     User.create({username: 'cuss'})
-//       .then((user) => {
-//         User.findOne({
-//           where: {
-//             id: user.id
-//           },
-//           include: [
-//             {model: self.Project, as: 'Projects'}
-//           ]
-//         });
-//       })
-//       .then((user) => {
-//         expect(user.Projects).to.be.instanceof(Array);
-//         expect(user.Projects).to.be.length(0);
-//       });
-//   });
-//
-//   it('returns an object containing all values', () => {
-//     var user = this.User.build({username: 'test.user', age: 99, isAdmin: true});
-//     expect(user.toJSON()).to.deep.equal({username: 'test.user', age: 99, isAdmin: true, id: null});
-//   });
-//
-//   it('returns a response that can be stringified', () => {
-//     var user = this.User.build({username: 'test.user', age: 99, isAdmin: true});
-//     expect(JSON.stringify(user)).to.deep.equal('{"id":null,"username":"test.user","age":99,"isAdmin":true}');
-//   });
-//
-//   it('returns a response that can be stringified and then parsed', () => {
-//     var user = this.User.build({username: 'test.user', age: 99, isAdmin: true});
-//     expect(JSON.parse(JSON.stringify(user))).to.deep.equal({
-//       username: 'test.user',
-//       age: 99,
-//       isAdmin: true,
-//       id: null
-//     });
-//   });
-//
-//   it('includes the eagerly loaded associations', () => {
-//
-//     User.create({username: 'fnord', age: 1, isAdmin: true}).then((user) => {
-//       Project.create({title: 'fnord'}).then((project) => {
-//         return user.setProjects([project]).then(() => {
-//           User.findAll({include: [{model: self.Project, as: 'Projects'}]}).then((users) => {
-//             var _user = users[0];
-//
-//             expect(_user.Projects).to.exist;
-//             expect(JSON.parse(JSON.stringify(_user)).Projects).to.exist;
-//
-//             Project.findAll({include: [{model: self.User, as: 'LovelyUser'}]}).then((projects) => {
-//               var _project = projects[0];
-//
-//               expect(_project.LovelyUser).to.exist;
-//               expect(JSON.parse(JSON.stringify(_project)).LovelyUser).to.exist;
-//             });
-//           });
-//         });
-//       });
-//     });
-//   });
-// });
-//
-// describe('findAll', () => {
-//   beforeEach(() => {
-//     this.ParanoidUser = this.sequelize.define('ParanoidUser', {
-//       username: {type: DataTypes.STRING}
-//     }, {paranoid: true});
-//
-//     this.ParanoidUser.hasOne(this.ParanoidUser);
-//     ParanoidUser.sync({force: true});
-//   });
-//
-//   it('sql should have paranoid condition', () => {
-//
-//     ParanoidUser.create({username: 'cuss'})
-//       .then(() => {
-//         ParanoidUser.findAll();
-//       })
-//       .then((users) => {
-//         expect(users).to.have.length(1);
-//         return users[0].destroy();
-//       })
-//       .then(() => {
-//         ParanoidUser.findAll();
-//       })
-//       .then((users) => {
-//         expect(users).to.have.length(0);
-//       });
-//   });
-//
-//   it('sequelize.and as where should include paranoid condition', () => {
-//
-//     ParanoidUser.create({username: 'cuss'})
-//       .then(() => {
-//         ParanoidUser.findAll({
-//           where: self.sequelize.and({
-//             username: 'cuss'
-//           })
-//         });
-//       })
-//       .then((users) => {
-//         expect(users).to.have.length(1);
-//         return users[0].destroy();
-//       })
-//       .then(() => {
-//         ParanoidUser.findAll({
-//           where: self.sequelize.and({
-//             username: 'cuss'
-//           })
-//         });
-//       })
-//       .then((users) => {
-//         expect(users).to.have.length(0);
-//       });
-//   });
-//
-//   it('sequelize.or as where should include paranoid condition', () => {
-//
-//     ParanoidUser.create({username: 'cuss'})
-//       .then(() => {
-//         ParanoidUser.findAll({
-//           where: self.sequelize.or({
-//             username: 'cuss'
-//           })
-//         });
-//       })
-//       .then((users) => {
-//         expect(users).to.have.length(1);
-//         return users[0].destroy();
-//       })
-//       .then(() => {
-//         ParanoidUser.findAll({
-//           where: self.sequelize.or({
-//             username: 'cuss'
-//           })
-//         });
-//       })
-//       .then((users) => {
-//         expect(users).to.have.length(0);
-//       });
-//   });
-//
-//   it('escapes a single single quotes properly in where clauses', () => {
-//
-//     User
-//       .create({username: "user'name"})
-//       .then(() => {
-//         User.findAll({
-//           where: {username: "user'name"}
-//         }).then((users) => {
-//           expect(users.length).to.equal(1);
-//           expect(users[0].username).to.equal("user'name");
-//         });
-//       });
-//   });
-//
-//   it('escapes two single quotes properly in where clauses', () => {
-//
-//     User
-//       .create({username: "user''name"})
-//       .then(() => {
-//         User.findAll({
-//           where: {username: "user''name"}
-//         }).then((users) => {
-//           expect(users.length).to.equal(1);
-//           expect(users[0].username).to.equal("user''name");
-//         });
-//       });
-//   });
-//
-//   it('returns the timestamps if no attributes have been specified', () => {
-//
-//     User.create({username: 'fnord'}).then(() => {
-//       User.findAll().then((users) => {
-//         expect(users[0].createdAt).to.exist;
-//       });
-//     });
-//   });
-//
-//   it('does not return the timestamps if the username attribute has been specified', () => {
-//
-//     User.create({username: 'fnord'}).then(() => {
-//       User.findAll({attributes: ['username']}).then((users) => {
-//         expect(users[0].createdAt).not.to.exist;
-//         expect(users[0].username).to.exist;
-//       });
-//     });
-//   });
-//
-//   it('creates the deletedAt property, when defining paranoid as true', () => {
-//
-//     ParanoidUser.create({username: 'fnord'}).then(() => {
-//       ParanoidUser.findAll().then((users) => {
-//         expect(users[0].deletedAt).to.be.null;
-//       });
-//     });
-//   });
-//
-//   it('destroys a record with a primary key of something other than id', () => {
-//     var UserDestroy = this.sequelize.define('UserDestroy', {
-//       newId: {
-//         type: DataTypes.STRING,
-//         primaryKey: true
-//       },
-//       email: DataTypes.STRING
-//     });
-//
-//     return UserDestroy.sync().then(() => {
-//       return UserDestroy.create({newId: '123ABC', email: 'hello'}).then(() => {
-//         return UserDestroy.findOne({where: {email: 'hello'}}).then((user) => {
-//           return user.destroy();
-//         });
-//       });
-//     });
-//   });
-//
-//   it('sets deletedAt property to a specific date when deleting an instance', () => {
-//
-//     ParanoidUser.create({username: 'fnord'}).then(() => {
-//       ParanoidUser.findAll().then((users) => {
-//         return users[0].destroy().then(() => {
-//           expect(users[0].deletedAt.getMonth).to.exist;
-//
-//           return users[0].reload({paranoid: false}).then((user) => {
-//             expect(user.deletedAt.getMonth).to.exist;
-//           });
-//         });
-//       });
-//     });
-//   });
-//
-//   it('keeps the deletedAt-attribute with value null, when running updateAttributes', () => {
-//
-//     ParanoidUser.create({username: 'fnord'}).then(() => {
-//       ParanoidUser.findAll().then((users) => {
-//         return users[0].updateAttributes({username: 'newFnord'}).then((user) => {
-//           expect(user.deletedAt).not.to.exist;
-//         });
-//       });
-//     });
-//   });
-//
-//   it('keeps the deletedAt-attribute with value null, when updating associations', () => {
-//
-//     ParanoidUser.create({username: 'fnord'}).then(() => {
-//       ParanoidUser.findAll().then((users) => {
-//         ParanoidUser.create({username: 'linkedFnord'}).then((linkedUser) => {
-//           return users[0].setParanoidUser(linkedUser).then((user) => {
-//             expect(user.deletedAt).not.to.exist;
-//           });
-//         });
-//       });
-//     });
-//   });
-//
-//   it('can reuse query option objects', () => {
-//
-//     User.create({username: 'fnord'}).then(() => {
-//       var query = {where: {username: 'fnord'}};
-//       User.findAll(query).then((users) => {
-//         expect(users[0].username).to.equal('fnord');
-//         User.findAll(query).then((users) => {
-//           expect(users[0].username).to.equal('fnord');
-//         });
-//       });
-//     });
-//   });
-// });
-//
-// describe('find', () => {
-//   it('can reuse query option objects', () => {
-//
-//     User.create({username: 'fnord'}).then(() => {
-//       var query = {where: {username: 'fnord'}};
-//       User.findOne(query).then((user) => {
-//         expect(user.username).to.equal('fnord');
-//         User.findOne(query).then((user) => {
-//           expect(user.username).to.equal('fnord');
-//         });
-//       });
-//     });
-//   });
-//   it('returns null for null, undefined, and unset boolean values', () => {
-//     var Setting = this.sequelize.define('SettingHelper', {
-//       setting_key: DataTypes.STRING,
-//       bool_value: {type: DataTypes.BOOLEAN, allowNull: true},
-//       bool_value2: {type: DataTypes.BOOLEAN, allowNull: true},
-//       bool_value3: {type: DataTypes.BOOLEAN, allowNull: true}
-//     }, {timestamps: false, logging: false});
-//
-//     return Setting.sync({force: true}).then(() => {
-//       return Setting.create({setting_key: 'test', bool_value: null, bool_value2: undefined}).then(() => {
-//         return Setting.findOne({where: {setting_key: 'test'}}).then((setting) => {
-//           expect(setting.bool_value).to.equal(null);
-//           expect(setting.bool_value2).to.equal(null);
-//           expect(setting.bool_value3).to.equal(null);
-//         });
-//       });
-//     });
-//   });
-// });
-//
-// describe('equals', () => {
-//   it('can compare records with Date field', () => {
-//
-//     User.create({username: 'fnord'}).then((user1) => {
-//       User.findOne({where: {username: 'fnord'}}).then((user2) => {
-//         expect(user1.equals(user2)).to.be.true;
-//       });
-//     });
-//   });
-//
-//   it('does not compare the existence of associations', function() {
-//
-//
-//     this.UserAssociationEqual = this.sequelize.define('UserAssociationEquals', {
-//       username: DataTypes.STRING,
-//       age: DataTypes.INTEGER
-//     }, {timestamps: false});
-//
-//     this.ProjectAssociationEqual = this.sequelize.define('ProjectAssocationEquals', {
-//       title: DataTypes.STRING,
-//       overdue_days: DataTypes.INTEGER
-//     }, {timestamps: false});
-//
-//     this.UserAssociationEqual.hasMany(this.ProjectAssociationEqual, {as: 'Projects', foreignKey: 'userId'});
-//     this.ProjectAssociationEqual.belongsTo(this.UserAssociationEqual, {as: 'Users', foreignKey: 'userId'});
-//
-//     UserAssociationEqual.sync({force: true}).then(() => {
-//       ProjectAssociationEqual.sync({force: true}).then(function() {
-//         UserAssociationEqual.create({username: 'jimhalpert'}).then(function(user1) {
-//           ProjectAssociationEqual.create({title: 'A Cool Project'}).then(function(project1) {
-//             user1.setProjects([project1]).then(function() {
-//               UserAssociationEqual.findOne({
-//                 where: {username: 'jimhalpert'},
-//                 include: [{model: self.ProjectAssociationEqual, as: 'Projects'}]
-//               }).then(function(user2) {
-//                 UserAssociationEqual.create({username: 'pambeesly'}).then(function(user3) {
-//                   expect(user1.get('Projects')).to.not.exist;
-//                   expect(user2.get('Projects')).to.exist;
-//                   expect(user1.equals(user2)).to.be.true;
-//                   expect(user2.equals(user1)).to.be.true;
-//                   expect(user1.equals(user3)).to.not.be.true;
-//                   expect(user3.equals(user1)).to.not.be.true;
-//                 });
-//               });
-//             });
-//           });
-//         });
-//       });
-//     });
-//   });
-// });
-//
-// describe('values', () => {
-//   it('returns all values', () => {
-//     var User = this.sequelize.define('UserHelper', {
-//       username: DataTypes.STRING
-//     }, {timestamps: false, logging: false});
-//
-//     return User.sync().then(() => {
-//       var user = User.build({username: 'foo'});
-//       expect(user.get({plain: true})).to.deep.equal({username: 'foo', id: null});
-//     });
-//   });
-// });
-//
-// describe('destroy', () => {
-//   if (current.dialect.supports.transactions) {
-//     it('supports transactions', () => {
-//       return Support.prepareTransactionTest(this.sequelize).bind({}).then((sequelize) => {
-//         var User = sequelize.define('User', {username: Support.Sequelize.STRING});
-//
-//         return User.sync({force: true}).then(() => {
-//           return User.create({username: 'foo'}).then((user) => {
-//             return sequelize.transaction().then((t) => {
-//               return user.destroy({transaction: t}).then(() => {
-//                 return User.count().then((count1) => {
-//                   return User.count({transaction: t}).then((count2) => {
-//                     expect(count1).to.equal(1);
-//                     expect(count2).to.equal(0);
-//                     return t.rollback();
-//                   });
-//                 });
-//               });
-//             });
-//           });
-//         });
-//       });
-//     });
-//   }
-//
-//   it('does not set the deletedAt date in subsequent destroys if dao is paranoid', () => {
-//     var UserDestroy = this.sequelize.define('UserDestroy', {
-//       name: Support.Sequelize.STRING,
-//       bio: Support.Sequelize.TEXT
-//     }, {paranoid: true});
-//
-//     return UserDestroy.sync({force: true}).then(() => {
-//       return UserDestroy.create({name: 'hallo', bio: 'welt'}).then((user) => {
-//         return user.destroy().then(() => {
-//           return user.reload({paranoid: false}).then(() => {
-//             var deletedAt = user.deletedAt;
-//
-//             return user.destroy().then(() => {
-//               return user.reload({paranoid: false}).then(() => {
-//                 expect(user.deletedAt).to.eql(deletedAt);
-//               });
-//             });
-//           });
-//         });
-//       });
-//     });
-//   });
-//
-//   it('deletes a record from the database if dao is not paranoid', () => {
-//     var UserDestroy = this.sequelize.define('UserDestroy', {
-//       name: Support.Sequelize.STRING,
-//       bio: Support.Sequelize.TEXT
-//     });
-//
-//     return UserDestroy.sync({force: true}).then(() => {
-//       return UserDestroy.create({name: 'hallo', bio: 'welt'}).then((u) => {
-//         return UserDestroy.findAll().then((users) => {
-//           expect(users.length).to.equal(1);
-//           return u.destroy().then(() => {
-//             return UserDestroy.findAll().then((users) => {
-//               expect(users.length).to.equal(0);
-//             });
-//           });
-//         });
-//       });
-//     });
-//   });
-//
-//   it('allows sql logging of delete statements', () => {
-//     var UserDelete = this.sequelize.define('UserDelete', {
-//       name: Support.Sequelize.STRING,
-//       bio: Support.Sequelize.TEXT
-//     });
-//
-//     return UserDelete.sync({force: true}).then(() => {
-//       return UserDelete.create({name: 'hallo', bio: 'welt'}).then((u) => {
-//         return UserDelete.findAll().then((users) => {
-//           expect(users.length).to.equal(1);
-//           return u.destroy({
-//             logging: function(sql) {
-//               expect(sql).to.exist;
-//               expect(sql.toUpperCase().indexOf('DELETE')).to.be.above(-1);
-//             }
-//           });
-//         });
-//       });
-//     });
-//   });
-//
-//   it('delete a record of multiple primary keys table', () => {
-//     var MultiPrimary = this.sequelize.define('MultiPrimary', {
-//       bilibili: {
-//         type: Support.Sequelize.CHAR(2),
-//         primaryKey: true
-//       },
-//
-//       guruguru: {
-//         type: Support.Sequelize.CHAR(2),
-//         primaryKey: true
-//       }
-//     });
-//
-//     return MultiPrimary.sync({force: true}).then(() => {
-//       return MultiPrimary.create({bilibili: 'bl', guruguru: 'gu'}).then(() => {
-//         return MultiPrimary.create({bilibili: 'bl', guruguru: 'ru'}).then((m2) => {
-//           return MultiPrimary.findAll().then((ms) => {
-//             expect(ms.length).to.equal(2);
-//             return m2.destroy({
-//               logging: (sql) => {
-//                 expect(sql).to.exist;
-//                 expect(sql.toUpperCase().indexOf('DELETE')).to.be.above(-1);
-//                 expect(sql.indexOf('ru')).to.be.above(-1);
-//                 expect(sql.indexOf('bl')).to.be.above(-1);
-//               }
-//             }).then(() => {
-//               return MultiPrimary.findAll().then((ms) => {
-//                 expect(ms.length).to.equal(1);
-//                 expect(ms[0].bilibili).to.equal('bl');
-//                 expect(ms[0].guruguru).to.equal('gu');
-//               });
-//             });
-//           });
-//         });
-//       });
-//     });
-//   });
-// });
+
+  describe('toJSON', () => {
+
+    @Table
+    class NiceUser extends Model<NiceUser> {
+
+      @Column
+      username: string;
+
+      @Column
+      age: number;
+
+      @Column
+      isAdmin: boolean;
+
+      @HasMany(() => NiceProject)
+      projects: NiceProject[];
+    }
+
+    @Table
+    class NiceProject extends Model<NiceProject> {
+
+      @Column
+      title: string;
+
+      @ForeignKey(() => NiceUser)
+      @Column
+      userId: number;
+
+      @BelongsTo(() => NiceUser)
+      user: NiceUser;
+    }
+
+    sequelize.addModels([NiceUser, NiceProject]);
+
+    beforeEach(() => NiceUser.sync({force: true}).then(() => NiceProject.sync({force: true})));
+
+    it("dont return instance that isn't defined", () =>
+
+      NiceProject
+        .create<NiceProject>({user: null})
+        .then((project) =>
+          NiceProject.findOne({
+            where: {
+              id: project.id
+            },
+            include: [
+              {model: NiceUser, as: 'user'}
+            ]
+          })
+        )
+        .then((project) => {
+          const json = project.toJSON();
+          expect(json.user).to.be.equal(null);
+        })
+    );
+
+    it("dont return instances that aren't defined", () =>
+
+      NiceUser
+        .create({username: 'cuss'})
+        .then((user) =>
+          NiceUser.findOne<NiceUser>({
+            where: {
+              id: user.id
+            },
+            include: [NiceProject]
+          })
+        )
+        .then((user) => {
+          expect(user.projects).to.be.instanceof(Array);
+          expect(user.projects).to.be.length(0);
+        })
+    );
+
+    it('returns an object containing all values', () => {
+      const user = NiceUser.build({username: 'test.user', age: 99, isAdmin: true});
+      expect(user.toJSON()).to.deep.equal({username: 'test.user', age: 99, isAdmin: true, id: null});
+    });
+
+    it('returns an object containing all values (created with new)', () => {
+      const user = new NiceUser({username: 'test.user', age: 99, isAdmin: true});
+      expect(user.toJSON()).to.deep.equal({username: 'test.user', age: 99, isAdmin: true, id: null});
+    });
+
+    it('returns a response that can be stringified', () => {
+      const user = NiceUser.build({username: 'test.user', age: 99, isAdmin: true});
+      expect(JSON.stringify(user)).to.deep.equal('{"id":null,"username":"test.user","age":99,"isAdmin":true}');
+    });
+
+    it('returns a response that can be stringified (created with new)', () => {
+      const user = new NiceUser({username: 'test.user', age: 99, isAdmin: true});
+      expect(JSON.stringify(user)).to.deep.equal('{"id":null,"username":"test.user","age":99,"isAdmin":true}');
+    });
+
+    it('returns a response that can be stringified and then parsed', () => {
+      const user = NiceUser.build({username: 'test.user', age: 99, isAdmin: true});
+      expect(JSON.parse(JSON.stringify(user))).to.deep.equal({
+        username: 'test.user',
+        age: 99,
+        isAdmin: true,
+        id: null
+      });
+    });
+
+    it('returns a response that can be stringified and then parsed (created with new)', () => {
+      const user = new NiceUser({username: 'test.user', age: 99, isAdmin: true});
+      expect(JSON.parse(JSON.stringify(user))).to.deep.equal({
+        username: 'test.user',
+        age: 99,
+        isAdmin: true,
+        id: null
+      });
+    });
+
+    it('includes the eagerly loaded associations', () =>
+
+      Promise
+        .all([
+          NiceUser.create<NiceUser>({username: 'fnord', age: 1, isAdmin: true}),
+          NiceProject.create({title: 'fnord'})
+        ])
+        .then(([user, project]) => user.$set('projects', [project]))
+        .then(() =>
+          Promise.all([
+            NiceUser.findAll<NiceUser>({include: [NiceProject]}),
+            NiceProject.findAll<NiceProject>({include: [NiceUser]})
+          ])
+        )
+        .then(([users, projects]) => {
+          const user = users[0];
+          const project = projects[0];
+
+          expect(user.projects).to.exist;
+          expect(JSON.parse(JSON.stringify(user)).projects).to.exist;
+
+          expect(project.user).to.exist;
+          expect(JSON.parse(JSON.stringify(project)).user).to.exist;
+        })
+    );
+  });
+
+  describe('findAll', () => {
+
+    @Table({timestamps: true, paranoid: true})
+    class ParanoidUser extends Model<ParanoidUser> {
+
+      @Column
+      username: string;
+
+      @ForeignKey(() => ParanoidUser)
+      @Column
+      paranoidUserId: number;
+
+      @HasOne(() => ParanoidUser)
+      paranoidUser: ParanoidUser;
+    }
+
+    sequelize.addModels([ParanoidUser]);
+
+    beforeEach(() => ParanoidUser.sync({force: true}));
+
+    it('sql should have paranoid condition', () =>
+
+      ParanoidUser.create({username: 'cuss'})
+        .then(() => ParanoidUser.findAll())
+        .then((users) => {
+          expect(users).to.have.length(1);
+          return users[0].destroy();
+        })
+        .then(() => ParanoidUser.findAll())
+        .then((users) => {
+          expect(users).to.have.length(0);
+        })
+    );
+
+    it('sequelize.and as where should include paranoid condition', () =>
+
+      ParanoidUser.create({username: 'cuss'})
+        .then(() =>
+          ParanoidUser.findAll<ParanoidUser>({
+            where: sequelize.and({
+              username: 'cuss'
+            })
+          })
+        )
+        .then((users) => {
+          expect(users).to.have.length(1);
+          return users[0].destroy();
+        })
+        .then(() =>
+          ParanoidUser.findAll({
+            where: sequelize.and({
+              username: 'cuss'
+            })
+          })
+        )
+        .then((users) => {
+          expect(users).to.have.length(0);
+        })
+    );
+
+    it('sequelize.or as where should include paranoid condition', () =>
+
+      ParanoidUser.create({username: 'cuss'})
+        .then(() =>
+          ParanoidUser.findAll({
+            where: sequelize.or({
+              username: 'cuss'
+            })
+          })
+        )
+        .then((users) => {
+          expect(users).to.have.length(1);
+          return users[0].destroy();
+        })
+        .then(() =>
+          ParanoidUser.findAll({
+            where: sequelize.or({
+              username: 'cuss'
+            })
+          })
+        )
+        .then((users) => {
+          expect(users).to.have.length(0);
+        })
+    );
+
+    it('escapes a single single quotes properly in where clauses', () =>
+
+      User
+        .create({username: "user'name"})
+        .then(() => User.findAll<User>({where: {username: "user'name"}}))
+        .then((users) => {
+          expect(users.length).to.equal(1);
+          expect(users[0].username).to.equal("user'name");
+        })
+    );
+
+    it('escapes two single quotes properly in where clauses', () =>
+
+      User
+        .create({username: "user''name"})
+        .then(() => User.findAll<User>({where: {username: "user''name"}}))
+        .then((users) => {
+          expect(users.length).to.equal(1);
+          expect(users[0].username).to.equal("user''name");
+        })
+    );
+
+    it('returns the timestamps if no attributes have been specified', () =>
+
+      TimeStampsUser.create({username: 'fnord'})
+        .then(() => TimeStampsUser.findAll())
+        .then((users) => {
+          expect(users[0].createdAt).to.exist;
+        })
+    );
+
+    it('does not return the timestamps if the username attribute has been specified', () =>
+
+      User.create({username: 'fnord'})
+        .then(() => User.findAll<User>({attributes: ['username']}))
+        .then((users) => {
+          expect(users[0].createdAt).not.to.exist;
+          expect(users[0].username).to.exist;
+        })
+    );
+
+    it('creates the deletedAt property, when defining paranoid as true', () =>
+
+      ParanoidUser.create({username: 'fnord'})
+        .then(() => ParanoidUser.findAll())
+        .then((users) => {
+          expect(users[0].deletedAt).to.be.null;
+        })
+    );
+
+    it('destroys a record with a primary key of something other than id', () => {
+
+      @Table
+      class UserDestroy extends Model<UserDestroy> {
+
+        @PrimaryKey
+        @Column
+        newId: string;
+
+        @Column
+        email: string;
+      }
+
+      sequelize.addModels([UserDestroy]);
+
+      return UserDestroy.sync().then(() => {
+        return UserDestroy.create({newId: '123ABC', email: 'hello'}).then(() => {
+          return UserDestroy.findOne({where: {email: 'hello'}}).then((user) => {
+            return user.destroy();
+          });
+        });
+      });
+    });
+
+    it('sets deletedAt property to a specific date when deleting an instance', () =>
+
+      ParanoidUser.create({username: 'fnord'}).then(() => {
+        return ParanoidUser.findAll().then((users) => {
+          return users[0].destroy().then(() => {
+            expect(users[0].deletedAt.getMonth).to.exist;
+
+            return users[0].reload({paranoid: false}).then((user) => {
+              expect(user.deletedAt.getMonth).to.exist;
+            });
+          });
+        });
+      })
+    );
+
+    it('keeps the deletedAt-attribute with value null, when running updateAttributes', () =>
+
+      ParanoidUser.create({username: 'fnord'}).then(() => {
+        return ParanoidUser.findAll().then((users) => {
+          return users[0].updateAttributes({username: 'newFnord'}).then((user) => {
+            expect(user.deletedAt).not.to.exist;
+          });
+        });
+      })
+    );
+
+    it('keeps the deletedAt-attribute with value null, when updating associations', () =>
+
+      ParanoidUser.create({username: 'fnord'}).then(() => {
+        return ParanoidUser.findAll().then((users) => {
+          return ParanoidUser.create({username: 'linkedFnord'}).then((linkedUser) => {
+            return users[0].$set('paranoidUser', linkedUser).then((user) => {
+              expect(user.deletedAt).not.to.exist;
+            });
+          });
+        });
+      })
+    );
+
+    it('can reuse query option objects', () =>
+
+      User.create({username: 'fnord'}).then(() => {
+        const query = {where: {username: 'fnord'}};
+        return User.findAll<User>(query).then((users) => {
+          expect(users[0].username).to.equal('fnord');
+          return User.findAll<User>(query).then((_users) => {
+            expect(_users[0].username).to.equal('fnord');
+          });
+        });
+      })
+    );
+  });
+
+  describe('find', () => {
+
+    it('can reuse query option objects', () =>
+
+      User.create({username: 'fnord'}).then(() => {
+        const query = {where: {username: 'fnord'}};
+        return User.findOne<User>(query).then((user) => {
+          expect(user.username).to.equal('fnord');
+          return User.findOne<User>(query).then((_user) => {
+            expect(_user.username).to.equal('fnord');
+          });
+        });
+      })
+    );
+
+    it('returns null for null, undefined, and unset boolean values', () => {
+
+      @Table({logging: true} as DefineOptions<any>)
+      class Setting extends Model<Setting> {
+
+        @Column
+        settingKey: string;
+
+        @AllowNull
+        @Column
+        boolValue: boolean;
+
+        @AllowNull
+        @Column
+        boolValue2: boolean;
+
+        @AllowNull
+        @Column
+        boolValue3: boolean;
+      }
+
+      sequelize.addModels([Setting]);
+
+      return Setting.sync({force: true}).then(() => {
+        return Setting.create({settingKey: 'test', boolValue: null, boolValue2: undefined}).then(() => {
+          return Setting.findOne<Setting>({where: {settingKey: 'test'}}).then((setting) => {
+            expect(setting.boolValue).to.equal(null);
+            expect(setting.boolValue2).to.equal(null);
+            expect(setting.boolValue3).to.equal(null);
+          });
+        });
+      });
+    });
+  });
+
+  describe('equals', () => {
+
+    it('can compare records with Date field', () =>
+
+      User.create({username: 'fnord'}).then((user1) =>
+        User.findOne({where: {username: 'fnord'}}).then((user2) => {
+          expect(user1.equals(user2)).to.be.true;
+        })
+      )
+    );
+
+    it('does not compare the existence of associations', () => {
+
+      @Table
+      class UserAssociationEqual extends Model<UserAssociationEqual> {
+
+        @Column
+        username: string;
+
+        @HasMany(() => ProjectAssociationEqual)
+        projects: ProjectAssociationEqual[];
+
+      }
+
+      @Table
+      class ProjectAssociationEqual extends Model<ProjectAssociationEqual> {
+
+        @Column
+        title: string;
+
+        @Column
+        overdueDays: number;
+
+        @ForeignKey(() => UserAssociationEqual)
+        @Column
+        userId: number;
+
+        @BelongsTo(() => UserAssociationEqual)
+        user: UserAssociationEqual;
+      }
+
+      sequelize.addModels([UserAssociationEqual, ProjectAssociationEqual]);
+
+      return UserAssociationEqual.sync({force: true})
+        .then(() => ProjectAssociationEqual.sync({force: true}))
+        .then(() => Promise.all([
+          UserAssociationEqual.create({username: 'jimhalpert'}),
+          ProjectAssociationEqual.create({title: 'A Cool Project'})
+        ]))
+        .then(([user1, project1]) => user1.$set('projects', [project1])
+          .then(() =>
+            Promise.all([
+              UserAssociationEqual.findOne<UserAssociationEqual>({
+                where: {username: 'jimhalpert'},
+                include: [ProjectAssociationEqual]
+              }),
+              UserAssociationEqual.create<UserAssociationEqual>({username: 'pambeesly'})
+            ])
+          )
+          .then(([user2, user3]) => {
+
+            expect(user1.get('projects')).to.exist;
+            expect(user2.get('projects')).to.exist;
+            expect(user1.equals(user2)).to.be.true;
+            expect(user2.equals(user1)).to.be.true;
+            expect(user1.equals(user3)).to.not.be.true;
+            expect(user3.equals(user1)).to.not.be.true;
+          })
+        );
+    });
+  });
+
+  describe('values', () => {
+
+    it('returns all values', () => {
+
+      @Table({logging: false} as DefineOptions<any>)
+      class UserHelper extends Model<UserHelper> {
+
+        @Column
+        username: string;
+
+        @Column
+        email: string;
+      }
+
+      sequelize.addModels([UserHelper]);
+
+      return UserHelper.sync().then(() => {
+        const user = UserHelper.build({username: 'foo'});
+        expect(user.get({plain: true})).to.deep.equal({username: 'foo', id: null});
+      });
+    });
+  });
+
+  describe('destroy', () => {
+    // TODO@robin sqlite3 transaction issue??
+    // if (current.dialect.supports.transactions) {
+    //   it('supports transactions', () => {
+    //     return Support.prepareTransactionTest(this.sequelize).bind({}).then((sequelize) => {
+    //       var User = sequelize.define('User', {username: Support.Sequelize.STRING});
+    //
+    //       return User.sync({force: true}).then(() => {
+    //         return User.create({username: 'foo'}).then((user) => {
+    //           return sequelize.transaction().then((t) => {
+    //             return user.destroy({transaction: t}).then(() => {
+    //               return User.count().then((count1) => {
+    //                 return User.count({transaction: t}).then((count2) => {
+    //                   expect(count1).to.equal(1);
+    //                   expect(count2).to.equal(0);
+    //                   return t.rollback();
+    //                 });
+    //               });
+    //             });
+    //           });
+    //         });
+    //       });
+    //     });
+    //   });
+    // }
+
+    it('does not set the deletedAt date in subsequent destroys if dao is paranoid', () => {
+
+      @Table({timestamps: true, paranoid: true})
+      class UserDestroy extends Model<UserDestroy> {
+
+        @Column
+        name: string;
+
+        @Column(DataType.TEXT)
+        bio: string;
+      }
+
+      sequelize.addModels([UserDestroy]);
+
+      return UserDestroy.sync({force: true}).then(() => {
+        return UserDestroy.create({name: 'hallo', bio: 'welt'}).then((user) => {
+          return user.destroy().then(() => {
+            return user.reload({paranoid: false}).then(() => {
+              const deletedAt = user.deletedAt;
+
+              return user.destroy().then(() => {
+                return user.reload({paranoid: false}).then(() => {
+                  expect(user.deletedAt).to.eql(deletedAt);
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it('deletes a record from the database if dao is not paranoid', () => {
+      @Table
+      class UserDestroy extends Model<UserDestroy> {
+
+        @Column
+        name: string;
+
+        @Column(DataType.TEXT)
+        bio: string;
+      }
+
+      sequelize.addModels([UserDestroy]);
+
+      return UserDestroy.sync({force: true}).then(() => {
+        return UserDestroy.create({name: 'hallo', bio: 'welt'}).then((u) => {
+          return UserDestroy.findAll().then((users) => {
+            expect(users.length).to.equal(1);
+            return u.destroy().then(() => {
+              return UserDestroy.findAll().then((_users) => {
+                expect(_users.length).to.equal(0);
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it('allows sql logging of delete statements', () => {
+      @Table({paranoid: true})
+      class UserDelete extends Model<UserDelete> {
+
+        @Column
+        name: string;
+
+        @Column(DataType.TEXT)
+        bio: string;
+      }
+
+      sequelize.addModels([UserDelete]);
+
+      return UserDelete.sync({force: true}).then(() => {
+        return UserDelete.create({name: 'hallo', bio: 'welt'}).then((u) => {
+          return UserDelete.findAll().then((users) => {
+            expect(users.length).to.equal(1);
+            return u.destroy({
+              logging(sql: string): void {
+                expect(sql).to.exist;
+                expect(sql.toUpperCase().indexOf('DELETE')).to.be.above(-1);
+              }
+            });
+          });
+        });
+      });
+    });
+
+    it('delete a record of multiple primary keys table', () => {
+      @Table
+      class MultiPrimary extends Model<MultiPrimary> {
+
+        @PrimaryKey
+        @Column(DataType.CHAR(2))
+        bilibili: string;
+
+        @PrimaryKey
+        @Column(DataType.CHAR(2))
+        guruguru: string;
+      }
+
+      sequelize.addModels([MultiPrimary]);
+
+      return MultiPrimary.sync({force: true}).then(() => {
+        return MultiPrimary.create({bilibili: 'bl', guruguru: 'gu'}).then(() => {
+          return MultiPrimary.create({bilibili: 'bl', guruguru: 'ru'}).then((m2) => {
+            return MultiPrimary.findAll().then((ms) => {
+              expect(ms.length).to.equal(2);
+              return m2.destroy({
+                logging: (sql) => {
+                  expect(sql).to.exist;
+                  expect(sql.toUpperCase().indexOf('DELETE')).to.be.above(-1);
+                  expect(sql.indexOf('ru')).to.be.above(-1);
+                  expect(sql.indexOf('bl')).to.be.above(-1);
+                }
+              }).then(() => {
+                return MultiPrimary.findAll<MultiPrimary>().then((ms3) => {
+                  expect(ms3.length).to.equal(1);
+                  expect(ms3[0].bilibili).to.equal('bl');
+                  expect(ms3[0].guruguru).to.equal('gu');
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  });
 //
 // describe('restore', () => {
 //   it('returns an error if the model is not paranoid', () => {
@@ -2250,4 +2373,5 @@ describe('instance', () => {
 //   });
 // });
 
-});
+})
+;

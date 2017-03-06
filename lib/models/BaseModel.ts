@@ -2,6 +2,8 @@ import * as Promise from "bluebird";
 import {FindOptions, Model, Instance, BuildOptions} from "sequelize";
 import {getAssociationsByRelation} from "../services/association";
 import {majorVersion} from "../utils/versioning";
+import {capitalize} from "../utils/string";
+import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
 
 const parentPrototype = majorVersion === 3 ? (Instance as any).prototype : (Model as any).prototype;
 
@@ -158,11 +160,43 @@ export abstract class BaseModel {
     return include;
   }
 
-  add(relatedKey: string, value: any): Promise<this> {
+  /**
+   * SEE DETAILS FOR ACTUAL FUNCTIONALITY ON DECLARATION FILE
+   */
+  $add(propertyKey: string, value: any, options?: IAssociationActionOptions): Promise<this> {
 
-    return this['add' + relatedKey.charAt(0).toUpperCase() + relatedKey.substr(1, relatedKey.length)](value);
+    const dataValues = this['dataValues'];
+
+    if (!dataValues[propertyKey]) dataValues[propertyKey] = [];
+
+    dataValues[propertyKey].push(value);
+
+    return this['add' + capitalize(propertyKey)](value, options);
   };
 
+  /**
+   * Sets relation between value of related model and model instance
+   */
+  $set(propertyKey: string, ...args: any[]): Promise<this> {
+
+    this['dataValues'][propertyKey] = args[0];
+
+    return this['set' + capitalize(propertyKey)](...args);
+  };
+
+  /**
+   * Gets related value of model related model, which matches property key
+   */
+  $get(propertyKey: string, ...args: any[]): Promise<this> {
+
+    return this['get' + capitalize(propertyKey)](...args);
+  };
+
+  /**
+   * Pre conforms includes
+   *
+   * SEE DETAILS FOR ACTUAL FUNCTIONALITY ON DECLARATION FILE
+   */
   reload(options?: FindOptions): Promise<this> {
 
     return parentPrototype.reload.call(this, BaseModel.preConformIncludes(options, this));

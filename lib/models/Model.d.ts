@@ -12,6 +12,7 @@ import {
   SchemaOptions, GetTableNameOptions, AddScopeOptions, ScopeOptions,
   WhereOptions, CountOptions, ValidationError, DefineAttributes
 } from 'sequelize';
+import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
@@ -60,7 +61,7 @@ export declare class Model<T> extends Hooks {
    * @param schema The name of the schema
    * @param options
    */
-  static schema<T>(schema: string, options?: SchemaOptions): Model<T>;
+  static schema<T extends Model<T>>(schema: string, options?: SchemaOptions): Model<T>;
 
   /**
    * Get the tablename of the model, taking schema into account. The method will return The name as a string
@@ -209,25 +210,25 @@ export declare class Model<T> extends Hooks {
    *
    * @see    {Sequelize#query}
    */
-  static findAll<T>(options?: IFindOptions): Promise<T[]>;
+  static findAll<T extends Model<T>>(options?: IFindOptions): Promise<T[]>;
 
-  static all<T>(optionz?: IFindOptions): Promise<T[]>;
+  static all<T extends Model<T>>(optionz?: IFindOptions): Promise<T[]>;
 
   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById<T>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
+  static findById<T extends Model<T>>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
 
-  static findByPrimary<T>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
+  static findByPrimary<T extends Model<T>>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne<T>(options?: IFindOptions): Promise<T | null>;
+  static findOne<T extends Model<T>>(options?: IFindOptions): Promise<T | null>;
 
-  static find<T>(options?: IFindOptions): Promise<T | null>;
+  static find<T extends Model<T>>(options?: IFindOptions): Promise<T | null>;
 
   /**
    * Run an aggregation method on the specified field
@@ -282,9 +283,9 @@ export declare class Model<T> extends Hooks {
    * without
    * profiles will be counted
    */
-  static findAndCount<T>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
+  static findAndCount<T extends Model<T>>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
 
-  static findAndCountAll<T>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
+  static findAndCountAll<T extends Model<T>>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
 
   /**
    * Find the maximum value of field
@@ -304,31 +305,31 @@ export declare class Model<T> extends Hooks {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<T>(record?: any, options?: BuildOptions): T;
-  static build<T, A>(record?: A, options?: BuildOptions): T;
+  static build<T extends Model<T>>(record?: any, options?: BuildOptions): T;
+  static build<T extends Model<T>, A>(record?: A, options?: BuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild<T>(records: any[], options?: BuildOptions): T[];
-  static bulkBuild<T, A>(records: A[], options?: BuildOptions): T[];
+  static bulkBuild<T extends Model<T>>(records: any[], options?: BuildOptions): T[];
+  static bulkBuild<T extends Model<T>, A>(records: A[], options?: BuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
   // static create(values?: any, options?: CreateOptions): Promise<any>;
-  static create<T>(values?: any, options?: CreateOptions): Promise<T>;
-  static create<T, A>(values?: A, options?: CreateOptions): Promise<T>;
+  static create<T extends Model<T>>(values?: any, options?: CreateOptions): Promise<T>;
+  static create<T extends Model<T>, A>(values?: A, options?: CreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize<T>(options: FindOrInitializeOptions<any>): Promise<[T, boolean]>;
-  static findOrInitialize<T, A>(options: FindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrInitialize<T extends Model<T>>(options: FindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrInitialize<T extends Model<T>, A>(options: FindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
-  static findOrBuild<T>(options: FindOrInitializeOptions<any>): Promise<[T, boolean]>;
-  static findOrBuild<T, A>(options: FindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrBuild<T extends Model<T>>(options: FindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrBuild<T extends Model<T>, A>(options: FindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -341,13 +342,13 @@ export declare class Model<T> extends Hooks {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate<T>(options: FindOrInitializeOptions<T>): Promise<[T, boolean]>;
+  static findOrCreate<T extends Model<T>>(options: FindOrInitializeOptions<T>): Promise<[T, boolean]>;
 
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
-  static findCreateFind<T>(options: FindCreateFindOptions<T>): Promise<T>;
+  static findCreateFind<T extends Model<T>>(options: FindCreateFindOptions<T>): Promise<T>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -383,8 +384,8 @@ export declare class Model<T> extends Hooks {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate<T>(records: any[], options?: BulkCreateOptions): Promise<T[]>;
-  static bulkCreate<T, A>(records: A[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T extends Model<T>>(records: any[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T extends Model<T>, A>(records: A[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
@@ -408,8 +409,8 @@ export declare class Model<T> extends Hooks {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update<T>(values: any, options: UpdateOptions): Promise<[number, Array<T>]>;
-  static update<T, A>(values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T extends Model<T>>(values: any, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T extends Model<T>, A>(values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
@@ -423,9 +424,19 @@ export declare class Model<T> extends Hooks {
   static unscoped(): any;
 
   /**
-   * Creates relation between value and model instance
+   * Adds new relation between value of related model and model instance
    */
-  add<R>(relatedKey: string, value: R): Promise<this>;
+  $add<R extends Model<R>>(propertyKey: string, value: R|R[], options?: IAssociationActionOptions): Promise<this>;
+
+  /**
+   * Sets relation between value of related model and model instance
+   */
+  $set<R extends Model<R>>(propertyKey: string, value: R|R[], options?: IAssociationActionOptions): Promise<this>;
+
+  /**
+   * Gets related value of model related model, which matches property key
+   */
+  $get(propertyKey: string, options?: any): Promise<this>; // TODO@robin options interface
 
   /**
    * Default id automatically created by sequelize
@@ -433,14 +444,19 @@ export declare class Model<T> extends Hooks {
   id?: number|any;
 
   /**
-   * createdAt timestampe automatically created by sequelize if timestamps = true
+   * createdAt timestamps automatically created by sequelize if timestamps is true
    */
   createdAt?: Date|any;
 
   /**
-   * updatedAt timestampe automatically created by sequelize if timestamps = true
+   * updatedAt timestamps automatically created by sequelize if timestamps is true
    */
   updatedAt?: Date|any;
+
+  /**
+   * deletedAt timestamps automatically created by sequelize if paranoid is true
+   */
+  deletedAt?: Date|any;
 
   /**
    * Returns true if this instance has not yet been persisted to the database
@@ -484,6 +500,7 @@ export declare class Model<T> extends Hooks {
    */
   get(key: string, options?: {plain?: boolean, clone?: boolean}): any;
   get(options?: {plain?: boolean, clone?: boolean}): any;
+
 
   /**
    * Set is used to update values on the instance (the sequelize representation of the instance that is,
@@ -654,14 +671,14 @@ declare class Hooks {
    * @alias hook
    */
   static addHook(hookType: string, name: string, fn: Function): Hooks;
-  static addHook<T>(hookType: string, name: string, fn: Function): Hooks;
+  static addHook<T extends Model<T>>(hookType: string, name: string, fn: Function): Hooks;
   static addHook(hookType: string, fn: Function): Hooks;
-  static addHook<T>(hookType: string, fn: Function): Hooks;
+  static addHook<T extends Model<T>>(hookType: string, fn: Function): Hooks;
 
   static hook(hookType: string, name: string, fn: Function): Hooks;
-  static hook<T>(hookType: string, name: string, fn: Function): Hooks;
+  static hook<T extends Model<T>>(hookType: string, name: string, fn: Function): Hooks;
   static hook(hookType: string, fn: Function): Hooks;
-  static hook<T>(hookType: string, fn: Function): Hooks;
+  static hook<T extends Model<T>>(hookType: string, fn: Function): Hooks;
 
   /**
    * Remove hook from the model
@@ -669,7 +686,7 @@ declare class Hooks {
    * @param hookType
    * @param name
    */
-  static removeHook<T>(hookType: string, name: string): Hooks;
+  static removeHook<T extends Model<T>>(hookType: string, name: string): Hooks;
 
   /**
    * Check whether the mode has any hooks of this type
@@ -688,9 +705,9 @@ declare class Hooks {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static beforeValidate<T>(name: string,
-                           fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static beforeValidate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeValidate<T extends Model<T>>(name: string,
+                                            fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeValidate<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run after validation
@@ -698,9 +715,9 @@ declare class Hooks {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static afterValidate<T>(name: string,
-                          fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static afterValidate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterValidate<T extends Model<T>>(name: string,
+                                           fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterValidate<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run before creating a single instance
@@ -708,9 +725,9 @@ declare class Hooks {
    * @param name
    * @param fn A callback function that is called with attributes, options
    */
-  static beforeCreate<T>(name: string,
-                         fn: (attributes: T, options: Object, fn?: Function) => void): void;
-  static beforeCreate<T>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
+  static beforeCreate<T extends Model<T>>(name: string,
+                                          fn: (attributes: T, options: Object, fn?: Function) => void): void;
+  static beforeCreate<T extends Model<T>>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run after creating a single instance
@@ -718,9 +735,9 @@ declare class Hooks {
    * @param name
    * @param fn A callback function that is called with attributes, options
    */
-  static afterCreate<T>(name: string,
-                        fn: (attributes: T, options: Object, fn?: Function) => void): void;
-  static afterCreate<T>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
+  static afterCreate<T extends Model<T>>(name: string,
+                                         fn: (attributes: T, options: Object, fn?: Function) => void): void;
+  static afterCreate<T extends Model<T>>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run before destroying a single instance
@@ -729,13 +746,13 @@ declare class Hooks {
    * @param fn A callback function that is called with instance, options
    * @alias beforeDelete
    */
-  static beforeDestroy<T>(name: string,
-                          fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static beforeDestroy<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeDestroy<T extends Model<T>>(name: string,
+                                           fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeDestroy<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
-  static beforeDelete<T>(name: string,
-                         fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static beforeDelete<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeDelete<T extends Model<T>>(name: string,
+                                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeDelete<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run after destroying a single instance
@@ -744,12 +761,12 @@ declare class Hooks {
    * @param fn A callback function that is called with instance, options
    * @alias afterDelete
    */
-  static afterDestroy<T>(name: string,
-                         fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static afterDestroy<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterDestroy<T extends Model<T>>(name: string,
+                                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterDestroy<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
-  static afterDelete<T>(name: string, fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static afterDelete<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterDelete<T extends Model<T>>(name: string, fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterDelete<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run before updating a single instance
@@ -760,9 +777,9 @@ declare class Hooks {
   static beforeUpdate(name: string,
                       fn: (instance: any, options: Object, fn?: Function) => void): void;
   static beforeUpdate(fn: (instance: any, options: Object, fn?: Function) => void): void;
-  static beforeUpdate<T>(name: string,
-                         fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static beforeUpdate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeUpdate<T extends Model<T>>(name: string,
+                                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static beforeUpdate<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run after updating a single instance
@@ -770,8 +787,8 @@ declare class Hooks {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static afterUpdate<T>(name: string, fn: (instance: T, options: Object, fn?: Function) => void): void;
-  static afterUpdate<T>(fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterUpdate<T extends Model<T>>(name: string, fn: (instance: T, options: Object, fn?: Function) => void): void;
+  static afterUpdate<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run before creating instances in bulk
@@ -779,9 +796,9 @@ declare class Hooks {
    * @param name
    * @param fn A callback function that is called with instances, options
    */
-  static beforeBulkCreate<T>(name: string,
-                             fn: (instances: T[], options: Object, fn?: Function) => void): void;
-  static beforeBulkCreate<T>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
+  static beforeBulkCreate<T extends Model<T>>(name: string,
+                                              fn: (instances: T[], options: Object, fn?: Function) => void): void;
+  static beforeBulkCreate<T extends Model<T>>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run after creating instances in bulk
@@ -790,9 +807,9 @@ declare class Hooks {
    * @param fn A callback function that is called with instances, options
    * @name afterBulkCreate
    */
-  static afterBulkCreate<T>(name: string,
-                            fn: (instances: T[], options: Object, fn?: Function) => void): void;
-  static afterBulkCreate<T>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
+  static afterBulkCreate<T extends Model<T>>(name: string,
+                                             fn: (instances: T[], options: Object, fn?: Function) => void): void;
+  static afterBulkCreate<T extends Model<T>>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
 
   /**
    * A hook that is run before destroying instances in bulk
@@ -874,11 +891,11 @@ declare class Hooks {
    * @param name
    * @param fn   A callback function that is called with instance(s), options
    */
-  static afterFind<T>(name: string,
-                      fn: (instancesOrInstance: T[] | T, options: Object,
-                           fn?: Function) => void): void;
-  static afterFind<T>(fn: (instancesOrInstance: T[] | T, options: Object,
-                           fn?: Function) => void): void;
+  static afterFind<T extends Model<T>>(name: string,
+                                       fn: (instancesOrInstance: T[] | T, options: Object,
+                                            fn?: Function) => void): void;
+  static afterFind<T extends Model<T>>(fn: (instancesOrInstance: T[] | T, options: Object,
+                                            fn?: Function) => void): void;
 
   /**
    * A hook that is run before a define call
@@ -895,8 +912,8 @@ declare class Hooks {
    * @param name
    * @param fn   A callback function that is called with factory
    */
-  static afterDefine<T>(name: string, fn: (model: Model<T>) => void): void;
-  static afterDefine<T>(fn: (model: Model<T>) => void): void;
+  static afterDefine<T extends Model<T>>(name: string, fn: (model: Model<T>) => void): void;
+  static afterDefine<T extends Model<T>>(fn: (model: Model<T>) => void): void;
 
   /**
    * A hook that is run before Sequelize() call
