@@ -286,10 +286,7 @@ Validators, that cannot simply translated from sequelize validator to an annotat
 Validator                        | Annotation
 ---------------------------------|--------------------------------------------------------
  `validate.len=[number, number]` | `@Length({max?: number, min?: number})`
- `validate[customName: string]`  | For custom validators also use the `@Is(...)` annotation:
-                                 | (which is already in use for `validate.is=string[]|RegExp`)
-                                 | Either `@Is('custom', (value) => { /* ... */})` or with
-                                 | named function `@Is(function custom(value) { /* ... */})`
+ `validate[customName: string]`  | For custom validators also use the `@Is(...)` annotation: (which is already in use for `validate.is=string[]|RegExp`) Either `@Is('custom', (value) => { /* ... */})` or with named function `@Is(function custom(value) { /* ... */})`
                                  
 ### Example
 ```typescript
