@@ -55,7 +55,7 @@ import {DataType} from 'sequelize-typescript';
   @Column(DataType.TEXT)
   name: string;
 ```
-For a more detailed column description, use an options object 
+Or for a more detailed column description, use an options object 
 (all [attribute options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) 
 from sequelize 
 are valid):
@@ -72,6 +72,7 @@ import {DataType} from 'sequelize-typescript';
 #### *Shortcuts*
 If you're in love with decorators: *sequelize-typescript* provides some more of them, which can be used together with 
 the @Column annotation, to make some attribute options easier available:
+
 Decorator                             | Description
 --------------------------------------|---------------------
  `@AllowNull(allowNull?: boolean)`    | sets `attribute.allowNull` (default is `true`)
