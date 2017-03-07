@@ -1,7 +1,15 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement} from "../../index";
-import {BelongsToMany} from "../../lib/annotations/association/BelongsToMany";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany,
+DefaultScope, Scopes} from "../../index";
 import {AuthorFriend} from "./AuthorFriend";
 
+@DefaultScope({
+  attributes: ['id', 'name']
+})
+@Scopes({
+  full: {
+    include: [() => Author]
+  }
+})
 @Table
 export class Author extends Model<Author> {
 
@@ -12,6 +20,9 @@ export class Author extends Model<Author> {
 
   @Column
   name: string;
+
+  @Column
+  secret: string;
 
   @BelongsToMany(() => Author, () => AuthorFriend, 'authorId', 'friendId')
   friends: Author[];

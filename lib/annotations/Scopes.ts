@@ -1,14 +1,14 @@
 import 'reflect-metadata';
-import {DefineScopeOptions} from "sequelize";
-import {addOptions} from "../services/models";
+import {addScopeOptions} from "../services/models";
+import {IDefineScopeOptions} from "../interfaces/IDefineScopeOptions";
 
 /**
  * Sets scopes for annotated class
  */
-export function Scopes(scopes: DefineScopeOptions): Function {
+export function Scopes(scopes: IDefineScopeOptions): Function {
 
   return (target: any) => {
 
-    addOptions(target.prototype, {scopes});
+    addScopeOptions(target.prototype, scopes);
   };
 }

@@ -21,7 +21,7 @@ const sequelize = new Sequelize({
 sequelize
   .sync({force: true})
   .then(() => Promise.all([
-      Author.create<Author>({name: 'elisa'}),
+      Author.create<Author>({name: 'elisa', secret: '3k435kj43'}),
       Author.create<Author>({name: 'nelly'}),
       Author.create<Author>({name: 'elisa'})
     ])
@@ -39,8 +39,8 @@ sequelize
 
         return Promise.all([
           robin.save(),
-          robin.add('Friend', nelly),
-          robin.add('Friend', elisa)
+          robin.$add('friend', nelly),
+          robin.$add('friend', elisa)
         ]);
       })
   )
@@ -90,6 +90,26 @@ sequelize
 
           console.log(post instanceof Post);
         });
+      })
+      .then(() => Author.findAll())
+      .then(authors => {
+        console.log('--------------- AUTHOR DEFAULT SCOPE ----------------');
+        console.log(prettyjson.renderString(JSON.stringify(authors)));
+      })
+      .then(() => Author.scope('full').findAll())
+      .then(authors => {
+        console.log('--------------- AUTHOR FULL SCOPE -------------------');
+        console.log(prettyjson.renderString(JSON.stringify(authors)));
+      })
+      .then(() => Author.unscoped().findAll())
+      .then(authors => {
+        console.log('--------------- AUTHOR UN-SCOPE ---------------------');
+        console.log(prettyjson.renderString(JSON.stringify(authors)));
+      })
+      .then(() => Post.scope('full').findAll())
+      .then(posts => {
+        console.log('--------------- POST FULL SCOPE ---------------------');
+        console.log(prettyjson.renderString(JSON.stringify(posts)));
       })
   )
 ;

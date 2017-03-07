@@ -1,12 +1,25 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany} from "../../index";
-import {HasMany} from "../../lib/annotations/association/HasMany";
+import {
+  Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany,
+  ForeignKey, BelongsTo, HasMany, Scopes
+} from "../../index";
 import {Comment} from "./Comment";
 import {PostTopic} from "./PostTopic";
 import {Topic} from "./Topic";
-import {ForeignKey} from "../../lib/annotations/ForeignKey";
 import {Author} from "./Author";
-import {BelongsTo} from "../../lib/annotations/association/BelongsTo";
 
+@Scopes({
+  full: {
+    include: [
+      {
+        model: () => Comment,
+        include: [() => Author]
+      },
+      {
+        model: () => Author
+      }
+    ]
+  }
+})
 @Table
 export class Post extends Model<Post> {
 
@@ -29,6 +42,6 @@ export class Post extends Model<Post> {
   authorId: number;
 
   @BelongsTo(() => Author)
-  author: Author;
+  author?: Author;
 
 }

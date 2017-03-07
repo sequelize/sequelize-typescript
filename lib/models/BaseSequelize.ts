@@ -2,6 +2,7 @@ import {Model} from "./Model";
 import {getModels} from "../services/models";
 import {associateModels} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
+import {resolveScopes} from "../services/models";
 
 export abstract class BaseSequelize {
 
@@ -30,10 +31,11 @@ export abstract class BaseSequelize {
   addModels(modelPaths: string[]): void;
   addModels(arg: Array<typeof Model|string>): void {
 
-    const classes = getModels(arg);
+    const models = getModels(arg);
 
-    this.defineModels(classes);
-    associateModels(classes);
+    this.defineModels(models);
+    associateModels(models);
+    resolveScopes(models);
   }
 
   init(config: ISequelizeConfig): void {

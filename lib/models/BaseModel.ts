@@ -1,13 +1,11 @@
 import * as Promise from "bluebird";
 import {FindOptions, Model, Instance, BuildOptions} from "sequelize";
-import {getAssociationsByRelation} from "../services/association";
 import {majorVersion} from "../utils/versioning";
 import {capitalize} from "../utils/string";
 import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
+import {preConformIncludes} from "../services/models";
 
 const parentPrototype = majorVersion === 3 ? (Instance as any).prototype : (Model as any).prototype;
-
-export const PROPERTY_LINK_TO_ORIG = '__origClass';
 
 export abstract class BaseModel {
 
@@ -63,7 +61,7 @@ export abstract class BaseModel {
 
           if (options) {
 
-            args[BaseModel.toPreConformIncludeMap[key]] = BaseModel.preConformIncludes(options, this);
+            args[BaseModel.toPreConformIncludeMap[key]] = preConformIncludes(options, this);
           }
 
           return superFn.call(this, ...args);
@@ -73,7 +71,7 @@ export abstract class BaseModel {
 
   static prepareInstantiationOptions(options: BuildOptions, source: any): BuildOptions {
 
-    options = this.preConformIncludes(options, source);
+    options = preConformIncludes(options, source);
 
     if (!('isNewRecord' in options)) options.isNewRecord = true;
 
@@ -98,66 +96,6 @@ export abstract class BaseModel {
     }
 
     return options;
-  }
-
-  /**
-   * Pre conform includes, so that "as" value can be inferred from source
-   */
-  private static preConformIncludes(options: any, source: any): any {
-
-    options = Object.assign({}, options);
-
-    if (!options.include) {
-      return options;
-    }
-    // if include is not an array, wrap in an array
-    if (!Array.isArray(options.include)) {
-      options.include = [options.include];
-    } else if (!options.include.length) {
-      delete options.include;
-      return;
-    }
-
-    // convert all included elements to { model: Model } form
-    options.include = options.include.map((include) => {
-      include = this.preConformInclude(include, source);
-
-      return include;
-    });
-
-    return options;
-  }
-
-  /**
-   * Pre conform include, so that alias ("as") value can be inferred from source class
-   */
-  private static preConformInclude(include: any, source: any): any {
-
-    const isConstructorFn = include instanceof Function;
-
-    if (isConstructorFn || (include.model && !include.as)) {
-
-      if (isConstructorFn) {
-        include = {model: include};
-      }
-
-      const associations = getAssociationsByRelation((source[PROPERTY_LINK_TO_ORIG] || source).prototype || source, include.model);
-
-      if (associations.length > 0) {
-
-        if (associations.length > 1) {
-          throw new Error(`Alias cannot be inferred: "${source.name}" has multiple relations with "${include.model.name}"`);
-        }
-
-        include.as = associations[0].as;
-      }
-    }
-
-    if (!isConstructorFn && include.include) {
-      this.preConformIncludes(include, include.model);
-    }
-
-    return include;
   }
 
   /**
@@ -201,7 +139,7 @@ export abstract class BaseModel {
    */
   reload(options?: FindOptions): Promise<this> {
 
-    return parentPrototype.reload.call(this, BaseModel.preConformIncludes(options, this));
+    return parentPrototype.reload.call(this, preConformIncludes(options, this));
   };
 
 }

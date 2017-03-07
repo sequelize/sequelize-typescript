@@ -7,14 +7,19 @@ import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConf
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {inferDataType} from "../utils/data-type";
 import {deepAssign} from "../utils/object";
+import {IScopeOptions} from "../interfaces/IScopeOptions";
+import {IFindOptions} from "../interfaces/IFindOptions";
+import {getAssociationsByRelation} from "./association";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
+const SCOPES_KEY = 'sequelize:scopes';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
 const OPTIONS_KEY = 'sequelize:options';
 const FOREIGN_KEYS_KEY = 'sequelize:foreignKey';
 const DEFAULT_OPTIONS: DefineOptions<any> = {
   timestamps: false
 };
+export const PROPERTY_LINK_TO_ORIG = '__origClass';
 
 /**
  * Sets model name from class by storing this
@@ -202,6 +207,149 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
 
   return arg as Array<typeof Model>;
 }
+
+/**
+ * Resolves scopes and adds them to the specified models
+ */
+export function resolveScopes(models: Array<typeof Model>): void {
+
+  models.forEach(model => {
+
+    const options = getScopeOptions(model.prototype);
+
+    if (options) {
+
+      Object
+        .keys(options)
+        .forEach(key => {
+
+          let scopeFindOptions = options[key];
+
+          resolveModelGetter(scopeFindOptions);
+          scopeFindOptions = preConformIncludes(scopeFindOptions, model);
+
+          model.addScope(key, scopeFindOptions as IFindOptions, {override: true});
+        });
+    }
+  });
+}
+
+/**
+ * Resolves all model getters of specified options object
+ * recursively.
+ * So that {model: () => Person} will be converted to
+ * {model: Person}
+ */
+export function resolveModelGetter(options: any): void {
+
+  Object
+    .keys(options)
+    .forEach(key => {
+      const value = options[key];
+
+      if (typeof value === 'function' && value.length === 0) {
+        const maybeModel = value();
+
+        if (maybeModel && maybeModel.prototype && maybeModel.prototype instanceof Model) {
+          options[key] = maybeModel;
+        }
+      } else if (value && typeof value === 'object') {
+        resolveModelGetter(value);
+      }
+    });
+}
+
+/**
+ * Adds scope option meta data for specified prototype
+ */
+export function addScopeOptions(target: any, options: IScopeOptions): void {
+
+  const _options = getScopeOptions(target) || {};
+
+  setScopeOptions(target, deepAssign({}, _options, options));
+}
+
+/**
+ * Returns scope option meta data from specified target
+ */
+export function getScopeOptions(target: any): IScopeOptions|undefined {
+
+  const options = Reflect.getMetadata(SCOPES_KEY, target);
+
+  if (options) {
+
+    return deepAssign({}, options);
+  }
+}
+
+/**
+ * Pre conform includes, so that "as" value can be inferred from source
+ */
+export function preConformIncludes(options: any, source: any): any {
+
+  options = Object.assign({}, options);
+
+  if (!options.include) {
+    return options;
+  }
+  // if include is not an array, wrap in an array
+  if (!Array.isArray(options.include)) {
+    options.include = [options.include];
+  } else if (!options.include.length) {
+    delete options.include;
+    return;
+  }
+
+  // convert all included elements to { model: Model } form
+  options.include = options.include.map((include) => {
+    include = preConformInclude(include, source);
+
+    return include;
+  });
+
+  return options;
+}
+
+/**
+ * Pre conform include, so that alias ("as") value can be inferred from source class
+ */
+function preConformInclude(include: any, source: any): any {
+
+  const isConstructorFn = include instanceof Function;
+
+  if (isConstructorFn || (include.model && !include.as)) {
+
+    if (isConstructorFn) {
+      include = {model: include};
+    }
+
+    const associations = getAssociationsByRelation((source[PROPERTY_LINK_TO_ORIG] || source).prototype || source, include.model);
+
+    if (associations.length > 0) {
+
+      if (associations.length > 1) {
+        throw new Error(`Alias cannot be inferred: "${source.name}" has multiple relations with "${include.model.name}"`);
+      }
+
+      include.as = associations[0].as;
+    }
+  }
+
+  if (!isConstructorFn && include.include) {
+    include = preConformIncludes(include, include.model);
+  }
+
+  return include;
+}
+
+/**
+ * Set scope option meta data for specified prototype
+ */
+function setScopeOptions(target: any, options: IScopeOptions): void {
+
+  Reflect.defineMetadata(SCOPES_KEY, options, target);
+}
+
 
 /**
  * Returns foreign key meta data from specified class

@@ -1,15 +1,15 @@
 import 'reflect-metadata';
-import {FindOptions} from "sequelize";
-import {addOptions} from "../services/models";
+import {addScopeOptions} from "../services/models";
+import {IScopeFindOptions} from "../interfaces/IScopeFindOptions";
 
 /**
  * Sets default scope for annotated class
  */
-export function DefaultScope(scope: FindOptions | Function): Function {
+export function DefaultScope(scope: IScopeFindOptions | Function): Function {
 
   return (target: any) => {
 
-    addOptions(target.prototype, {
+    addScopeOptions(target.prototype, {
       defaultScope: scope
     });
   };

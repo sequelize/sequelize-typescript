@@ -88,18 +88,6 @@ export declare class Model<T> extends Hooks {
   static addScope(name: string, scope: IFindOptions | Function, options?: AddScopeOptions): void;
 
   /**
-   * Add a new scope to the model. This is especially useful for adding scopes with includes, when the model you want to include is not available at the time this model is defined.
-   *
-   * By default this will throw an error if a scope with that name already exists. Pass `override: true` in the options object to silence this error.
-   *
-   * @param {String}          name The name of the scope. Use `defaultScope` to override the default scope
-   * @param {Object|Function} scope
-   * @param {Object}          [options]
-   * @param {Boolean}         [options.override=false]
-   */
-  static addScope(name: string, scope: IFindOptions | Function, options?: AddScopeOptions): void;
-
-  /**
    * Apply a scope created in `define` to the model. First let's look at how to create scopes:
    * ```js
    * var Model = sequelize.define('model', attributes, {
@@ -146,7 +134,7 @@ export declare class Model<T> extends Hooks {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope(options?: string | string[] | ScopeOptions | WhereOptions): any;
+  static scope(options?: string | string[] | ScopeOptions | WhereOptions): typeof Model;
 
   /**
    * Search for multiple instances.
@@ -421,7 +409,7 @@ export declare class Model<T> extends Hooks {
   /**
    * Unscope the model
    */
-  static unscoped(): any;
+  static unscoped(): typeof Model;
 
   /**
    * Adds new relation between value of related model and model instance

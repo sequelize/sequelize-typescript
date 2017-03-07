@@ -3,7 +3,7 @@ import * as SequelizeOrigin from 'sequelize';
 import {Model} from "../Model";
 import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
-import {PROPERTY_LINK_TO_ORIG} from "../BaseModel";
+import {PROPERTY_LINK_TO_ORIG} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 
 export class Sequelize extends SequelizeOrigin implements BaseSequelize {

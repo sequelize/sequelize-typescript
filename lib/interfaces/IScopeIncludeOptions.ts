@@ -1,16 +1,16 @@
 import {WhereOptions, IncludeThroughOptions} from 'sequelize';
 import {Model} from "../models/Model";
-import {IIncludeAssociation} from "./IIncludeAssociation";
+import {IScopeIncludeAssociation} from "./IScopeIncludeAssociation";
 
 /**
  * Complex include options
  */
-export interface IIncludeOptions {
+export interface IScopeIncludeOptions {
 
   /**
    * The model you want to eagerly load
    */
-  model?: typeof Model;
+  model?: (() => typeof Model);
 
   /**
    * The alias of the relation, in case the model you want to eagerly load is aliassed. For `hasOne` /
@@ -21,7 +21,7 @@ export interface IIncludeOptions {
   /**
    * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
    */
-  association?: IIncludeAssociation;
+  association?: IScopeIncludeAssociation;
 
   /**
    * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
@@ -48,6 +48,6 @@ export interface IIncludeOptions {
   /**
    * Load further nested related models
    */
-  include?: Array<typeof Model | IIncludeOptions>;
+  include?: Array<(() => typeof Model) | IScopeIncludeOptions>;
 
 }
