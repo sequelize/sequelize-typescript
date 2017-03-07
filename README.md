@@ -5,11 +5,12 @@ Decorators and some other extras for sequelize (v3 + v4).
  - [Usage](#usage)
  - [Model association](#model-association)
    - [One-to-many](#one-to-many)
-   - [Generated getter and setter](#type-safe-usage-of-generated-getter-and-setter)
    - [Many-to-many](#many-to-many)
    - [One-to-one](#one-to-one)
+   - [Generated getter and setter](#type-safe-usage-of-generated-getter-and-setter)
  - [Model valiation](#model-validation)
  - [Scopes](#scopes)
+ - [Why `() => Model`?](#why-)
 
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize):
@@ -45,7 +46,7 @@ should appear as a column in the database, require the `@Column` annotation.
  
 ### `@Table`
 The `@Table` annotation can be used without passing any parameters. To specify some more define options, use
-an options object (all [define options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) 
+an object literal (all [define options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) 
 from sequelize are valid):
 ```typescript
 @Table({
@@ -72,12 +73,10 @@ import {DataType} from 'sequelize-typescript';
   @Column(DataType.TEXT)
   name: string;
 ```
-Or for a more detailed column description, use an options object 
+Or for a more detailed column description, use an object literal 
 (all [attribute options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) 
 from sequelize are valid):
 ```typescript
-import {DataType} from 'sequelize-typescript';
-
   @Column({
     type: DataType.FLOAT,
     comment: 'Some value',
@@ -146,7 +145,7 @@ person.save();
 ```
 
 ### Find and update
-See [here](http://docs.sequelizejs.com/en/v3/docs/models-usage/) for more details.
+See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/models-usage/) for more details.
 ```typescript
 Person
  .findOne<Person>()
@@ -163,8 +162,6 @@ and `@ForeignKey` annotations.
 
 ### One-to-many
 ```typescript
-import {Table, Column, Model, ForeignKey, HasMany, BelongsTo} from 'sequelize-typescript';
-
 @Table
 class Player extends Model<Player> {
 
@@ -204,37 +201,6 @@ Team
 ```
 the players will also be resolved (when passing `include: Player` as the find options)
 
-### Type safe usage of generated getter and setter
-With the creation of a relation, sequelize generates getter and setter functions on the corresponding
-models. So when you create a 1:n relation between `ModelA` and `ModelB`, an instance of `ModelA` will
-have the functions `getModelB`, `setModelB`, `addModelB`. 
-```typescript
-@Table
-class ModelA extends Model<ModelA> {
-
-  @HasMany(() => ModelB)
-  models: ModelB[];
-}
-@Table
-class ModelB extends Model<ModelB> {
-
-  @BelongsTo(() => ModelA)
-  modelA: ModelA;
-}
-```
-These functions will still exist with *sequelize-typescript*. But TypeScript will not know of them and 
-in turn will complain, when you try to access `getModelB`, `setModelB` or `addModelB`. To make TypeScript
-happy, the `Model.prototype` of *sequelize-typescript* has `$set`, `$get`, `$add` functions. To use them
-pass the property key of the respective relation as the first parameter - see:
-```typescript
-const modelA = new ModelA();
-
-modelA.$set('models', [ /* models */]).then( /* ... */);
-modelA.$add('models', /* model */).then( /* ... */);
-modelA.$get('models').then( /* ... */);
-```
-
-
 ### Many-to-many
 ```typescript
 @Table
@@ -264,20 +230,97 @@ class BookAuthor extends Model<BookAuthor> {
 ```
 
 ### One-to-one
-For one-to-one use `@HasOne(...)`
+For one-to-one use `@HasOne(...)`(foreign key for the relation exists on the other model) and 
+`@BelongsTo(...)` (foreign key for the relation exists on this model)
 
-### Why `() => Model`?
-`@ForeignKey(Model)` is much easier to read, so why is `@ForeignKey(() => Model)` so important? When it
-comes to circular-dependencies (which is in general solved by node for you) `Model` can be `undefined`
-when it get passed to @ForeignKey. When using a function, which returns the actual model, we prevent
-this issue.
+### Multiple relations of same models
+*sequelize-typescript* resolves the foreign keys by identifying the corresponding class references.
+So if you define a model with multiple relations like
+```typescript
+@Table
+class Book extends Model<Book> { 
+
+  @ForeignKey(() => Person)
+  @Column
+  authorId: number;
+  
+  @BelongsTo(() => Person)
+  author: Person; 
+  
+  @ForeignKey(() => Person)
+  @Column
+  proofreaderId: number;
+  
+  @BelongsTo(() => Person)
+  proofreader: Person;
+}
+
+@Table
+class Person extends Model<Person> {
+
+  @HasMany(() => Book)
+  writtenBooks: Book[];
+
+  @HasMany(() => Book)
+  proofedBooks: Book[];
+}
+```
+*sequelize-typescript* cannot know which foreign key to use for which relation. So you have to add the foreign keys
+explicitly:
+```typescript
+
+  @BelongsTo(() => Person, 'authorId')
+  author: Person; 
+
+  @HasMany(() => Book, 'authorId')
+  writtenBooks: Book[];
+  
+  @BelongsTo(() => Person, 'proofreaderId')
+  proofreader: Person; 
+
+  @HasMany(() => Book, 'proofreaderId')
+  proofedBooks: Book[];
+}
+```
+
+### Type safe usage of generated getter and setter
+With the creation of a relation, sequelize generates getter and setter functions on the corresponding
+models. So when you create a 1:n relation between `ModelA` and `ModelB`, an instance of `ModelA` will
+have the functions `getModelBs`, `setModelBs`, `addModelB`. These functions will still exist with *sequelize-typescript*. 
+But TypeScript will not know of them and in turn will complain, when you try to access `getModelB`, `setModelB` or 
+`addModelB`. To make TypeScript happy, the `Model.prototype` of *sequelize-typescript* has `$set`, `$get`, `$add` 
+functions. 
+```typescript
+@Table
+class ModelA extends Model<ModelA> {
+
+  @HasMany(() => ModelB)
+  bs: ModelB[];
+}
+@Table
+class ModelB extends Model<ModelB> {
+
+  @BelongsTo(() => ModelA)
+  a: ModelA;
+}
+```
+To use them pass the property key of the respective relation as the first parameter - see:
+```typescript
+const modelA = new ModelA();
+
+modelA.$set('bs', [ /* models */]).then( /* ... */);
+modelA.$add('b', /* model */).then( /* ... */);
+modelA.$get('bs').then( /* ... */);
+```
 
 ## Model validation
 Validation options can be set through the `@Column` annotation, but if you prefer different
 decorators for validation instead, you can do so by simply using the validate options *as* decorators:
 So that `validate.isEmail=true` becomes `@IsEmail`, `validate.equals='value'` becomes `@Equals('value')` 
 and so on. Please notice, that a validator, that expect booleans, becomes a annotation, which does not
-need a parameter. See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/models-definition/#validations) 
+need a parameter. 
+
+See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/models-definition/#validations) 
 for all validators.
 
 ### Exceptions
@@ -286,11 +329,10 @@ Validators, that cannot simply translated from sequelize validator to an annotat
 Validator                        | Annotation
 ---------------------------------|--------------------------------------------------------
  `validate.len=[number, number]` | `@Length({max?: number, min?: number})`
- `validate[customName: string]`  | For custom validators also use the `@Is(...)` annotation: (which is already in use for `validate.is=string[]|RegExp`) Either `@Is('custom', (value) => { /* ... */})` or with named function `@Is(function custom(value) { /* ... */})`
+ `validate[customName: string]`  | For custom validators also use the `@Is(...)` annotation: Either `@Is('custom', (value) => { /* ... */})` or with named function `@Is(function custom(value) { /* ... */})`
                                  
 ### Example
 ```typescript
-
 const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
 @Table
@@ -341,9 +383,53 @@ export class Shoe extends Model<Shoe> {
   @IsBefore('2017-02-27')
   @Column
   producedAt: Date;
-
+}
 ```
 
 ## Scopes
-Scopes can be defined like ...
-TODO
+Scopes can be defined with annotations as well. The scope options are mostly the same like in native
+sequelize except of the way how model classes are referenced. So instead of referencing them directly a getter
+function `() => Model` is used instead. 
+(See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/scopes/) for more details)
+
+### `@DefaultScope` and `@Scopes`
+@DefaultScope({
+  attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt']
+})
+@Scopes({
+  full: {
+    include: [() => Manufacturer]
+  },
+  yellow: {
+    where: {primaryColor: 'yellow'}
+  }
+})
+@Table
+export class ShoeWithScopes extends Model<ShoeWithScopes> {
+
+  @Column
+  readonly secretKey: string;
+
+  @Column
+  primaryColor: string;
+
+  @Column
+  secondaryColor: string;
+
+  @Column
+  producedAt: Date;
+
+  @ForeignKey(() => Manufacturer)
+  @Column
+  manufacturerId: number;
+
+  @BelongsTo(() => Manufacturer)
+  manufacturer: Manufacturer;
+
+}
+
+## Why `() => Model`?
+`@ForeignKey(Model)` is much easier to read, so why is `@ForeignKey(() => Model)` so important? When it
+comes to circular-dependencies (which is in general solved by node for you) `Model` can be `undefined`
+when it get passed to @ForeignKey. When using a function, which returns the actual model, we prevent
+this issue.
