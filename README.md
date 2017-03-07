@@ -4,10 +4,13 @@ Decorators and some other extras for sequelize (v3 + v4).
  - [Model Definition](#model-definition)
  - [Usage](#usage)
  - [Model association](#model-association)
+   - [One-to-many](#one-to-many)
+   - [Many-to-many](#many-to-many)
+   - [One-to-one](#one-to-one)
  - [Model valiation](#model-validation)
 
 ### Installation
-`sequelize-typescript` requires [sequelize](https://github.com/sequelize/sequelize):
+*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize):
 ```
 npm install sequelize --save // v3
 npm install sequelize@4.0.0-1 --save // or v4
@@ -123,7 +126,7 @@ person.save();
 
 Person.create<Person>({name: 'bob', age: 99});
 ```
-but `sequelize-typescript` also provides creation of instances with `new`:
+but *sequelize-typescript* also provides creation of instances with `new`:
 ```js
 const person = new Person({name: 'bob', age: 99});
 person.save();
@@ -187,6 +190,9 @@ Team
  })
 ```
 the players will also be resolved (when passing `include: Player` as the find options)
+
+#### Generated getter and setter
+TODO type safe approach: `$set`, `$get`, `$add`
 
 ### Many-to-many
 ```typescript
