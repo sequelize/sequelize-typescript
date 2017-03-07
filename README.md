@@ -276,7 +276,6 @@ class Person extends Model<Person> {
 *sequelize-typescript* cannot know which foreign key to use for which relation. So you have to add the foreign keys
 explicitly:
 ```typescript
-
   @BelongsTo(() => Person, 'authorId')
   author: Person; 
 
@@ -288,7 +287,6 @@ explicitly:
 
   @HasMany(() => Book, 'proofreaderId')
   proofedBooks: Book[];
-}
 ```
 
 ### Type safe usage of generated getter and setter
