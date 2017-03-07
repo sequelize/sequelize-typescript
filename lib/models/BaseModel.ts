@@ -165,11 +165,12 @@ export abstract class BaseModel {
    */
   $add(propertyKey: string, value: any, options?: IAssociationActionOptions): Promise<this> {
 
-    const dataValues = this['dataValues'];
-
-    if (!dataValues[propertyKey]) dataValues[propertyKey] = [];
-
-    dataValues[propertyKey].push(value);
+    // TODO@robin find a way to add values to the target(this) datavalues
+    // const dataValues = this['dataValues']; // this will not work correctly
+    //
+    // if (!dataValues[propertyKey]) dataValues[propertyKey] = [];
+    //
+    // dataValues[propertyKey].push(value);
 
     return this['add' + capitalize(propertyKey)](value, options);
   };
@@ -179,7 +180,8 @@ export abstract class BaseModel {
    */
   $set(propertyKey: string, ...args: any[]): Promise<this> {
 
-    this['dataValues'][propertyKey] = args[0];
+    // TODO@robin find a way to add values to the target(this) datavalues
+    // this['dataValues'][propertyKey] = args[0]; // this will not work correctly
 
     return this['set' + capitalize(propertyKey)](...args);
   };
