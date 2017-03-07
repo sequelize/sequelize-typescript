@@ -27,6 +27,8 @@ export function inferDataType(designType: any): DataTypeAbstract|undefined {
       return DataType.BOOLEAN;
     case Date:
       return DataType.DATE;
+    case Buffer:
+      return DataType.BLOB;
     default:
       return void 0;
   }
