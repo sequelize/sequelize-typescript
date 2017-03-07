@@ -154,6 +154,14 @@ Person
      person.age = 100;
      return person.save();
  });
+
+Person
+ .update<Person>({
+   name: 'bobby'
+ }, {where: {id: 1}})
+ .then(() => {
+     
+ });
 ```
 
 ## Model association
