@@ -39,6 +39,57 @@ describe('instance', () => {
 
   beforeEach(() => sequelize.sync({force: true}));
 
+  describe('instanceof', () => {
+
+    beforeEach(() =>
+      Promise.all([
+        Book.create<Book>({
+          title: 'Crime and Punishment',
+          pages: [{content: 'A'}]
+        }, {include: [Page]}),
+        Book.create<Book>({
+          title: 'The Brothers Karamazov',
+          pages: [{content: 'B'}, {content: 'C'}]
+        }, {include: [Page]})
+      ])
+    );
+
+    it('should return true for found instance (findOne)', () =>
+      Book
+        .findOne()
+        .then(book => {
+          expect(book).to.be.an.instanceof(Book);
+          expect(book).to.be.an.instanceof(Model);
+        })
+    );
+
+    it('should return true for found instances (findAll)', () =>
+      Book
+        .findAll()
+        .then(books => {
+
+          books.forEach(book => {
+
+            expect(book).to.be.an.instanceof(Book);
+            expect(book).to.be.an.instanceof(Model);
+          });
+        })
+    );
+
+    it('should return true for include values of found instance', () =>
+      Book
+        .findOne<Book>({include: [Page]})
+        .then(book => {
+
+          book.pages.forEach(page => {
+
+            expect(page).to.be.an.instanceof(Page);
+            expect(page).to.be.an.instanceof(Model);
+          });
+        })
+    );
+  });
+
   describe('isNewRecord', () => {
 
     it('returns true for non-saved objects', () => {
