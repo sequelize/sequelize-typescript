@@ -10,7 +10,7 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [Generated getter and setter](#type-safe-usage-of-generated-getter-and-setter)
  - [Model valiation](#model-validation)
  - [Scopes](#scopes)
- - [Why `() => Model`?](#why-)
+ - [Why `() => Model`?](#user-content-why---model)
 
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize):
@@ -332,7 +332,6 @@ Validator                        | Annotation
  `validate[customName: string]`  | For custom validators also use the `@Is(...)` annotation: Either `@Is('custom', (value) => { /* ... */})` or with named function `@Is(function custom(value) { /* ... */})`
                                  
 ### Example
-
 ```typescript
 const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
@@ -394,6 +393,7 @@ function `() => Model` is used instead.
 (See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/scopes/) for more details)
 
 ### `@DefaultScope` and `@Scopes`
+```typescript
 @DefaultScope({
   attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt']
 })
@@ -428,6 +428,7 @@ export class ShoeWithScopes extends Model<ShoeWithScopes> {
   manufacturer: Manufacturer;
 
 }
+```
 
 ## Why `() => Model`?
 `@ForeignKey(Model)` is much easier to read, so why is `@ForeignKey(() => Model)` so important? When it
