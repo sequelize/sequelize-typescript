@@ -1,66 +1,185 @@
 # sequelize-typescript
+Decorators and some other extras for sequelize (v3 + v4).
 
-For simplicity and to prevent an interface chaos for the interaction of _TypeScript_ and _Sequelize_, a wrapper on top 
-of both is implemented. The implementation is currently found in `orm/`.
+ - [Model Definition](#model-definition)
+ - [Usage](#usage)
+ - [Model association](#model-association)
+ - [Model valiation](#model-validation)
 
-## Definition of database models
-To define a database model you have to annotate the class(which represents you specific entity) with the `Table` and
-`Column` annotations. `Table` for defining the entity and `Column` for defining the column/property of the entity.
- For example:
+### Installation
+`sequelize-typescript` requires [sequelize](https://github.com/sequelize/sequelize):
+```
+npm install sequelize --save // v3
+npm install sequelize@4.0.0-1 --save // or v4
+```
+```
+npm install sequelize-typescript --save 
+```
+Your `tsconfig.json` needs the following flags:
+```json
+"experimentalDecorators": true,
+"emitDecoratorMetadata": true
+```
 
-````
+## Model definition
+```js
+import {Table, Column, Model} from 'sequelize-typescript';
 
 @Table
-class Person {
-
-  @Column
-  @PrimaryKey
-  id: number;
+class Person extends Model<Person> {
 
   @Column
   name: string;
 
+  @Column
+  age: number;
 }
+```
+The model need to extend the Model class and has to be annotated with `@Table` decorator. All properties, that
+should appear as a column in the database, require a the `@Column` annotation.
 
+### Type inference
+The following types can be automatically inferred from design-type others have to be defined explicitly.
 
-````
-#### Associations
-For Relations between entities there are some annotations like `BelongsTo`, `HasOne` or `BelongsToMany` that can be used. To define
-foreign keys, use the `ForeignKey` annotation. 
+Design type      | Sequelize data type
+-----------------|---------------------
+ `string`        | `STRING`
+ `number`        | `INTEGER`
+ `Date`          | `DATE`
+ `Buffer`        | `BLOB`
+ 
+## Usage
+Except for minor variations *sequelize-typescript* will work like pure sequelize. 
+(See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/models-usage/))
+### Configuration
+To make the defined models available, you have to configure a `Sequelize` instance from `sequelize-typescript`(!). 
+```js
+import {Sequelize} from 'sequelize-typescript';
 
-##### Many-To-Many
-````
+const sequelize =  new Sequelize({
+        name: 'some_db',
+        dialect: 'sqlite',
+        username: 'root',
+        password: '',
+        storage: ':memory:',
+        modelPaths: [__dirname + '/models'] // here
+});
+
+sequelize.addModels([Person]); // and/or here
+```
+Before you can use your models, you have to tell sequelize, where they can be found. So either `modelPath` can be set
+in the sequlize config or the required models can be added later on by calling
+`sequelize.addModels([Person])` or `sequelize.addModels([__dirname + '/models'])`
+
+### Build and create
+Instantiation and inserts can be achieved in the good old sequelize way
+```js
+const person = Person.build<Person>({name: 'bob', age: 99});
+person.save();
+
+Person.create<Person>({name: 'bob', age: 99});
+```
+but `sequelize-typescript` also provides a creation of an instance with `new:
+```js
+const person = new Person({name: 'bob', age: 99});
+person.save();
+```
+
+### Find and update
+See [here](http://docs.sequelizejs.com/en/v3/docs/models-usage/) for more details.
+```typescript
+Person
+ .findOne<Person>()
+ .then(person => {
+     
+     person.age = 100;
+     return person.save();
+ });
+```
+
+## Model association
+Relations can be described directly in the model by the `@HasMany`, `@HasOne`, `@BelongsTo`, `@BelongsToMany`
+and `@ForeignKey` annotations.
+
+### One-to-many
+```typescript
+import {Table, Column, Model, ForeignKey, HasMany, BelongsTo} from 'sequelize-typescript';
 
 @Table
-class Person {
+class Player extends Model<Player> {
 
-  ... 
+  @Column
+  name: string;
+
+  @Column
+  num: number;
   
-  @BelongsToMany(() => Group, () => PersonGroup)
-  groups: Group[];
+  @ForeignKey(() => Team)
+  @Column
+  teamId: number;
   
+  @BelongsTo(() => Team)
+  team: Team;
 }
 
 @Table
-class Group {
+class Team extends Model<Team> {
 
-  ...
+  @Column
+  name: string;
 
-  @BelongsToMany(() => Person, () => PersonGroup)
-  persons: Person[];
-  
+  @HasMany(() => Player)
+  players: Player[];
+}
+```
+That's all, `sequlize-typescript` does the rest for you. So when retrieving data by `find`
+```typescript
+
+Team
+ .findOne<Team>({include: [Player]})
+ .then(team => {
+     
+     team.players.forEach(player => console.log(`Player ${player.name}`));
+ })
+```
+
+### Many-to-many
+```typescript
+@Table
+class Book extends Model<Book> { 
+  @BelongsToMany(() => Author, () => BookAuthor)
+  authors: Author[];
 }
 
 @Table
-class PersonGroup {
+class Author extends Model<Author> {
 
-  @ForeignKey(() => Person)
-  personId: number;
-  
-  @ForeignKey(() => Group)
-  groupId: number;
-
+  @BelongsToMany(() => Book, () => BookAuthor)
+  books: Book[];
 }
 
+@Table
+class BookAuthor extends Model<BookAuthor> {
 
-````
+  @ForeignKey(() => Book)
+  @Column
+  bookId: number;
+
+  @ForeignKey(() => Author)
+  @Column
+  authorId: number;
+}
+```
+
+### One-to-one
+For one-to-one use `@HasOne(...)`
+
+### Why `() => Model`?
+`@ForeignKey(Model)` is much easier to read, so why is `@ForeignKey(() => Model)` so important? When it
+comes to circular-dependencies (which is in general solved by node for you) `Model` can be `undefined`
+when it get passed to @ForeignKey. When using a function, which returns the actual model, we prevent
+this issue.
+
+## Model validation
+
+TODO
