@@ -1,10 +1,10 @@
 import {expect} from 'chai';
 import {DefineAttributes} from 'sequelize';
-import {DataType} from "../../../index";
-import {createSequelize} from "../../utils/sequelize";
-import {User} from "../../models/User";
-import {getOptions, getAttributes} from "../../../lib/services/models";
-import {Shoe, SHOE_TABLE_NAME} from "../../models/Shoe";
+import {DataType} from "../../index";
+import {createSequelize} from "../utils/sequelize";
+import {User} from "../models/User";
+import {getOptions, getAttributes} from "../../lib/services/models";
+import {Shoe, SHOE_TABLE_NAME} from "../models/Shoe";
 
 describe('table_column', () => {
 
