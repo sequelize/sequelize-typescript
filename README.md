@@ -55,6 +55,13 @@ from sequelize are valid):
 })
 class Person extends Model<Person> {}
 ```
+#### API
+
+Decorator                             | Description
+--------------------------------------|---------------------
+ `@Table`                             | Class name is table and model name by default
+ `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) 
+
 #### `timestamps=false`
 Please notice, that the `timestamps` option is `false` by default. So when setting `paranoid: true`,
 remember to also reactivate the timestamps.
@@ -84,6 +91,14 @@ from sequelize are valid):
   })
   value: number;
 ```
+#### API
+
+Decorator                             | Description
+--------------------------------------|---------------------
+ `@Column`                            | tries to infer type
+ `@Column(dataType: DateType)`        | sets [dataType](http://docs.sequelizejs.com/en/v3/docs/models-definition/#data-types) explicitly
+ `@Column(options: AttributeOptions)` | sets [attribute options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model)
+
 #### *Shortcuts*
 If you're in love with decorators: *sequelize-typescript* provides some more of them, which can be used together with 
 the @Column annotation, to make some attribute options easier available:
@@ -323,7 +338,7 @@ modelA.$get('bs').then( /* ... */);
 Validation options can be set through the `@Column` annotation, but if you prefer different
 decorators for validation instead, you can do so by simply using the validate options *as* decorators:
 So that `validate.isEmail=true` becomes `@IsEmail`, `validate.equals='value'` becomes `@Equals('value')` 
-and so on. Please notice, that a validator, that expect booleans, becomes a annotation, which does not
+and so on. Please notice, that a validator, that expect booleans, becomes an annotation, which does not
 need a parameter. 
 
 See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/models-definition/#validations) 
