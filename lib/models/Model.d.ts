@@ -3,7 +3,7 @@ import {Sequelize} from './Sequelize';
 import {IFindOptions} from '../interfaces/IFindOptions';
 import * as Promise from 'bluebird';
 import {
-  BuildOptions, SyncOptions, FindCreateFindOptions, UpsertOptions,
+  SyncOptions, FindCreateFindOptions, UpsertOptions,
   BulkCreateOptions, UpdateOptions, RestoreOptions, DestroyOptions,
   TruncateOptions, FindOrInitializeOptions,
   CreateOptions, InstanceSaveOptions, InstanceSetOptions, AggregateOptions,
@@ -13,6 +13,7 @@ import {
   WhereOptions, CountOptions, ValidationError, DefineAttributes
 } from 'sequelize';
 import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
+import {IBuildOptions} from "../interfaces/IBuildOptions";
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
@@ -30,7 +31,7 @@ type _Partial<T> = {
  */
 export declare class Model<T> extends Hooks {
 
-  constructor(values?: any, options?: BuildOptions);
+  constructor(values?: any, options?: IBuildOptions);
 
   /**
    * Remove attribute from model definition
@@ -293,19 +294,18 @@ export declare class Model<T> extends Hooks {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<T extends Model<T>>(record?: any, options?: BuildOptions): T;
-  static build<T extends Model<T>, A>(record?: A, options?: BuildOptions): T;
+  static build<T extends Model<T>>(record?: any, options?: IBuildOptions): T;
+  static build<T extends Model<T>, A>(record?: A, options?: IBuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild<T extends Model<T>>(records: any[], options?: BuildOptions): T[];
-  static bulkBuild<T extends Model<T>, A>(records: A[], options?: BuildOptions): T[];
+  static bulkBuild<T extends Model<T>>(records: any[], options?: IBuildOptions): T[];
+  static bulkBuild<T extends Model<T>, A>(records: A[], options?: IBuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  // static create(values?: any, options?: CreateOptions): Promise<any>;
   static create<T extends Model<T>>(values?: any, options?: CreateOptions): Promise<T>;
   static create<T extends Model<T>, A>(values?: A, options?: CreateOptions): Promise<T>;
 

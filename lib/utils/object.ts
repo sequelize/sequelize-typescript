@@ -43,6 +43,9 @@ export function deepAssign(target: any, ...sources: any[]): any {
         if (sourceValue instanceof RegExp) {
 
           targetValue = cloneRegExp(sourceValue);
+        } else if (sourceValue instanceof Date) {
+
+          targetValue = new Date(sourceValue);
         } else {
 
           deepAssign(targetValue, sourceValue);

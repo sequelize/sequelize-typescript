@@ -67,6 +67,22 @@ Decorator                             | Description
 Please notice, that the `timestamps` option is `false` by default. So when setting `paranoid: true`,
 remember to also reactivate the timestamps.
 
+#### `@CreatedAt`, `@UpdatedAt`, `@DeletedAt`
+Annotations to define custom and type safe `createdAt`, `updatedAt` and `deletedAt` attributes:
+```typescript
+  @CreatedAt
+  creationDate: Date;
+
+  @UpdatedAt
+  updatedOn: Date;
+  
+  @DeletedAt
+  deletionDate: Date;
+```
+`@CreatedAt` sets `timestamps=true` and `createdAt='creationDate'`, 
+`@UpdatedAt` sets `timestamps=true` and `updatedAt='updatedOn'`, 
+`@DeletedAt` sets `timestamps=true`, `paranoid=true` and `deletedAt='deletionDate'`
+
 ### `@Column`
 The `@Column` annotation can be used without passing any parameters. But therefor it is necessary, that
 the design-type can be inferred automatically (see [Type inference](#type-inference) for details).

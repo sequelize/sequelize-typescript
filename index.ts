@@ -12,6 +12,9 @@ export {HasOne} from "./lib/annotations/association/HasOne";
 export {PrimaryKey} from "./lib/annotations/PrimaryKey";
 export {Scopes} from "./lib/annotations/Scopes";
 export {Table} from "./lib/annotations/Table";
+export {CreatedAt} from "./lib/annotations/CreatedAt";
+export {DeletedAt} from "./lib/annotations/DeletedAt";
+export {UpdatedAt} from "./lib/annotations/UpdatedAt";
 
 export {Contains} from "./lib/annotations/validation/Contains";
 export {Equals} from "./lib/annotations/validation/Equals";
@@ -48,6 +51,7 @@ export {Validate} from "./lib/annotations/validation/Validate";
 
 // interfaces
 export {IAssociationActionOptions} from "./lib/interfaces/IAssociationActionOptions";
+export {IBuildOptions} from "./lib/interfaces/IBuildOptions";
 export {IDefineScopeOptions} from "./lib/interfaces/IDefineScopeOptions";
 export {IFindOptions} from "./lib/interfaces/IFindOptions";
 export {IIncludeAssociation} from "./lib/interfaces/IIncludeAssociation";
