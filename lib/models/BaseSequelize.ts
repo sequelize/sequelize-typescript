@@ -3,7 +3,15 @@ import {getModels} from "../services/models";
 import {associateModels} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {resolveScopes} from "../services/models";
+import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
 
+/**
+ * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
+ * the transpile target, which is for v3/Sequelize and BaseSequelize ES5
+ * and for v4/Sequelize ES6. This is needed for extending the original
+ * Sequelize (version 4), which is an ES6 class: ES5 constructor-pattern
+ * "classes" cannot extend ES6 classes
+ */
 export abstract class BaseSequelize {
 
   static extend(target: any): void {
@@ -25,6 +33,25 @@ export abstract class BaseSequelize {
       .keys(this)
       .forEach(name => target[name] = this[name])
     ;
+  }
+
+  /**
+   * Prepares sequelize config passed to original sequelize constructor
+   */
+  static prepareConfig(config: ISequelizeConfig|ISequelizeValidationOnlyConfig): ISequelizeConfig {
+
+    if (config.validateOnly) {
+
+      return Object.assign({}, config, {
+        name: '_name_',
+        username: '_username_',
+        password: '_password_',
+        dialect: 'sqlite',
+        dialectModulePath: __dirname + '/../utils/db-dialect-dummy'
+      } as ISequelizeConfig);
+    }
+
+    return config as ISequelizeConfig;
   }
 
   addModels(models: Array<typeof Model>): void;

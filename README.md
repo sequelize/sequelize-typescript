@@ -11,6 +11,7 @@ Decorators and some other extras for sequelize (v3 + v4).
  - [Model valiation](#model-validation)
  - [Scopes](#scopes)
  - [Why `() => Model`?](#user-content-why---model)
+ - [Limitations](#limitations)
 
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize):
@@ -456,3 +457,7 @@ export class ShoeWithScopes extends Model<ShoeWithScopes> {
 comes to circular-dependencies (which is in general solved by node for you) `Model` can be `undefined`
 when it get passed to @ForeignKey. When using a function, which returns the actual model, we prevent
 this issue.
+
+## Limitations
+**One connection per model**. You cannot add one and the same model to multiple Sequelize instances with
+differently configured connections. So that one model will only work for one connection.

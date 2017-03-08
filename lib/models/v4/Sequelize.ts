@@ -5,16 +5,25 @@ import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 
+let preparedConfig;
+
 export class Sequelize extends OriginSequelize implements BaseSequelize {
 
   init: (config: ISequelizeConfig) => void;
   addModels: (models: Array<typeof Model>|string[]) => void;
 
   constructor(config: ISequelizeConfig) {
-    super(config.name,
-      config.username,
-      config.password,
-      config);
+    // a spread operator would be the more reasonable approach here,
+    // but this is currently not possible due to a bug by ts
+    // https://github.com/Microsoft/TypeScript/issues/4130
+    // TODO@robin probably make the constructor private and
+    // TODO       use a static factory function instead
+    super(
+      (preparedConfig = BaseSequelize.prepareConfig(config), preparedConfig.name),
+      preparedConfig.username,
+      preparedConfig.password,
+      preparedConfig
+    );
 
     this.init(config);
   }

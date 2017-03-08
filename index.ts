@@ -47,10 +47,20 @@ export {NotNull} from "./lib/annotations/validation/NotNull";
 export {Validate} from "./lib/annotations/validation/Validate";
 
 // interfaces
+export {IAssociationActionOptions} from "./lib/interfaces/IAssociationActionOptions";
+export {IDefineScopeOptions} from "./lib/interfaces/IDefineScopeOptions";
+export {IFindOptions} from "./lib/interfaces/IFindOptions";
+export {IIncludeAssociation} from "./lib/interfaces/IIncludeAssociation";
+export {IIncludeOptions} from "./lib/interfaces/IIncludeOptions";
+export {IPartialDefineAttributeColumnOptions} from "./lib/interfaces/IPartialDefineAttributeColumnOptions";
+export {IScopeFindOptions} from "./lib/interfaces/IScopeFindOptions";
+export {IScopeIncludeAssociation} from "./lib/interfaces/IScopeIncludeAssociation";
+export {IScopeIncludeOptions} from "./lib/interfaces/IScopeIncludeOptions";
+export {IScopeOptions} from "./lib/interfaces/IScopeOptions";
 export {ISequelizeAssociation} from "./lib/interfaces/ISequelizeAssociation";
 export {ISequelizeConfig} from "./lib/interfaces/ISequelizeConfig";
 export {ISequelizeForeignKeyConfig} from "./lib/interfaces/ISequelizeForeignKeyConfig";
-export {IPartialDefineAttributeColumnOptions} from "./lib/interfaces/IPartialDefineAttributeColumnOptions";
+export {ISequelizeValidationOnlyConfig} from "./lib/interfaces/ISequelizeValidationOnlyConfig";
 
 // enums
 export {DataType} from "./lib/enums/DataType";

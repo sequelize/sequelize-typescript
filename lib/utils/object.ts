@@ -1,3 +1,8 @@
+/**
+ * Deep copies properties of all sources into target object.
+ * The last source overrides all properties of the previous
+ * ones, if they have the same names
+ */
 export function deepAssign<T, S1, S2, S3>(target: T, source1: S1, source2: S2, source3: S3): T&S1&S2&S3;
 export function deepAssign<T, S1, S2>(target: T, source1: S1, source2: S2): T&S1&S2;
 export function deepAssign<T, S>(target: T, source: S): T&S;
@@ -23,10 +28,8 @@ export function deepAssign(target: any, ...sources: any[]): any {
 
       if (Array.isArray(sourceValue)) {
 
-        targetValue = targetValue || [];
-
         if (!Array.isArray(targetValue)) {
-          throw new Error(`Source property "${key}" is an array, but target property "${key}" is not.`);
+          targetValue = [];
         }
 
         const length = targetValue.length;

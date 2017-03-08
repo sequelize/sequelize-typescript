@@ -3,11 +3,11 @@ import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
 import { Model } from "./Model";
 import { ISequelizeConfig } from "../interfaces/ISequelizeConfig";
-import {BaseSequelize} from "./BaseSequelize";
+import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
 
 export declare class Sequelize extends SequelizeOrigin {
 
-    constructor(config: ISequelizeConfig);
+    constructor(config: ISequelizeConfig|ISequelizeValidationOnlyConfig);
 
     addModels(models: Array<typeof Model>): void;
     addModels(modelPaths: string[]): void;

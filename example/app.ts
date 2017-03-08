@@ -4,8 +4,31 @@ import {Post} from './models/Post';
 import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
 import * as prettyjson from 'prettyjson';
+import {Person} from "./models/validation-only/Person";
 
 /* tslint:disable:no-console */
+/* tslint:disable:no-unused-new */
+
+new Sequelize({
+  validateOnly: true,
+  modelPaths: [__dirname + '/models/validation-only']
+});
+
+const person = new Person({
+  name: 'dsfsdfdsfsdfdsff'
+});
+
+person
+  .validate()
+  .then(err => {
+
+    console.error(err);
+  })
+  .catch(err => {
+    console.error(err);
+  })
+;
+
 
 const sequelize = new Sequelize({
   name: 'blog',
