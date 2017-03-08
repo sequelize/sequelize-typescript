@@ -197,7 +197,7 @@ class Team extends Model<Team> {
   players: Player[];
 }
 ```
-That's all, `sequlize-typescript` does the rest for you. So when retrieving a team by `find`
+That's all, *sequelize-typescript* does the rest for you. So when retrieving a team by `find`
 ```typescript
 
 Team
