@@ -3,11 +3,15 @@ Decorators and some other extras for sequelize (v3 + v4).
 
  - [Model Definition](#model-definition)
  - [Usage](#usage)
+   - [`@Table` API](#table-api)
+   - [`@Column` API](#column-api)
  - [Model association](#model-association)
    - [One-to-many](#one-to-many)
    - [Many-to-many](#many-to-many)
    - [One-to-one](#one-to-one)
+   - [API](#association-api)
    - [Generated getter and setter](#type-safe-usage-of-generated-getter-and-setter)
+   - [Multiple relations of same models](#multiple-relations-of-same-models)
  - [Model valiation](#model-validation)
  - [Scopes](#scopes)
  - [Why `() => Model`?](#user-content-why---model)
@@ -42,7 +46,7 @@ class Person extends Model<Person> {
   age: number;
 }
 ```
-The model need to extend the `Model` class and has to be annotated with the `@Table` decorator. All properties, that
+The model needs to extend the `Model` class and has to be annotated with the `@Table` decorator. All properties, that
 should appear as a column in the database, require the `@Column` annotation.
  
 ### `@Table`
@@ -56,15 +60,20 @@ from sequelize are valid):
 })
 class Person extends Model<Person> {}
 ```
-#### API
+#### Table API
 
 Decorator                             | Description
 --------------------------------------|---------------------
- `@Table`                             | Class name is table and model name by default
+ `@Table`                             | sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>`
  `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) 
 
+#### Primary key
+A primary key (`id`) will be inherited from base class `Model`. This primary key is by default an `INTEGER` and has 
+`autoIncrement=true` (This behaviour is a native sequelize thing). The id can easily be overridden by marking another 
+attribute as primary key. So either set `@Column({primaryKey: true})` or use `@PrimaryKey` together with `@Column`.
+
 #### `timestamps=false`
-Please notice, that the `timestamps` option is `false` by default. So when setting `paranoid: true`,
+Please notice that the `timestamps` option is `false` by default. When setting `paranoid: true`,
 remember to also reactivate the timestamps.
 
 #### `@CreatedAt`, `@UpdatedAt`, `@DeletedAt`
@@ -79,18 +88,21 @@ Annotations to define custom and type safe `createdAt`, `updatedAt` and `deleted
   @DeletedAt
   deletionDate: Date;
 ```
-`@CreatedAt` sets `timestamps=true` and `createdAt='creationDate'`, 
-`@UpdatedAt` sets `timestamps=true` and `updatedAt='updatedOn'`, 
-`@DeletedAt` sets `timestamps=true`, `paranoid=true` and `deletedAt='deletionDate'`
+
+Decorator          | Description
+-------------------|---------------------
+ `@CreatedAt`      | sets `timestamps=true` and `createdAt='creationDate'`
+ `@UpdatedAt`      | sets `timestamps=true` and `updatedAt='updatedOn'`
+ `@DeletedAt`      | sets `timestamps=true`, `paranoid=true` and `deletedAt='deletionDate'`
 
 ### `@Column`
-The `@Column` annotation can be used without passing any parameters. But therefor it is necessary, that
-the design-type can be inferred automatically (see [Type inference](#type-inference) for details).
+The `@Column` annotation can be used without passing any parameters. But therefore it is necessary, that
+the js type can be inferred automatically (see [Type inference](#type-inference) for details).
 ```typescript
   @Column
   name: string;
 ```
-If the type cannot be or should not be inferred, use:
+If the type cannot or should not be inferred, use:
 ```typescript
 import {DataType} from 'sequelize-typescript';
 
@@ -108,28 +120,28 @@ from sequelize are valid):
   })
   value: number;
 ```
-#### API
+#### Column API
 
 Decorator                             | Description
 --------------------------------------|---------------------
- `@Column`                            | tries to infer type
+ `@Column`                            | tries to infer [dataType](http://docs.sequelizejs.com/en/v3/docs/models-definition/#data-types) from js type
  `@Column(dataType: DateType)`        | sets [dataType](http://docs.sequelizejs.com/en/v3/docs/models-definition/#data-types) explicitly
  `@Column(options: AttributeOptions)` | sets [attribute options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model)
 
 #### *Shortcuts*
-If you're in love with decorators: *sequelize-typescript* provides some more of them, which can be used together with 
-the @Column annotation, to make some attribute options easier available:
+If you're in love with decorators: *sequelize-typescript* provides some more of them. The following decorators can be 
+used together with the @Column annotation to make some attribute options easier available:
 
 Decorator                             | Description
 --------------------------------------|---------------------
  `@AllowNull(allowNull?: boolean)`    | sets `attribute.allowNull` (default is `true`)
- `@AutoIncrement`                     | `attribute.autoIncrement=true`
+ `@AutoIncrement`                     | sets `attribute.autoIncrement=true`
  `@Default(value: any)`               | sets `attribute.defaultValue` to specified value
- `@PrimaryKey`                        | `attribute.primaryKey=true`
+ `@PrimaryKey`                        | sets `attribute.primaryKey=true`
  Validate annotations                 | see [Model valiation](#model-validation)
 
 ### Type inference
-The following types can be automatically inferred from design-type others have to be defined explicitly.
+The following types can be automatically inferred from javascript type. Others have to be defined explicitly.
 
 Design type      | Sequelize data type
 -----------------|---------------------
@@ -158,26 +170,27 @@ const sequelize =  new Sequelize({
 
 sequelize.addModels([Person]); // and/or here
 ```
-Before you can use your models, you have to tell sequelize, where they can be found. So either `modelPath` can be set
-in the sequlize config or the required models can be added later on by calling
-`sequelize.addModels([Person])` or `sequelize.addModels([__dirname + '/models'])`
+Before you can use your models, you have to tell sequelize where they can be found. So either set `modelPaths` in the 
+sequlize config or add the required models later on by calling `sequelize.addModels([Person])` or 
+`sequelize.addModels([__dirname + '/models'])`.
 
 ### Build and create
 Instantiation and inserts can be achieved in the good old sequelize way
-```js
+```typescript
 const person = Person.build<Person>({name: 'bob', age: 99});
 person.save();
 
 Person.create<Person>({name: 'bob', age: 99});
 ```
-but *sequelize-typescript* also provides creation of instances with `new`:
+but *sequelize-typescript* also makes it possible to create instances with `new`:
 ```typescript
 const person = new Person({name: 'bob', age: 99});
 person.save();
 ```
 
 ### Find and update
-See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/models-usage/) for more details.
+Finding and updating entries do also work like using native sequelize. So see sequelize 
+[docs](http://docs.sequelizejs.com/en/v3/docs/models-usage/) for more details.
 ```typescript
 Person
  .findOne<Person>()
@@ -229,7 +242,7 @@ class Team extends Model<Team> {
   players: Player[];
 }
 ```
-That's all, *sequelize-typescript* does the rest for you. So when retrieving a team by `find`
+That's all, *sequelize-typescript* does everything else for you. So when retrieving a team by `find`
 ```typescript
 
 Team
@@ -239,7 +252,7 @@ Team
      team.players.forEach(player => console.log(`Player ${player.name}`));
  })
 ```
-the players will also be resolved (when passing `include: Player` as the find options)
+the players will also be resolved (when passing `include: Player` to the find options)
 
 ### Many-to-many
 ```typescript
@@ -273,6 +286,22 @@ class BookAuthor extends Model<BookAuthor> {
 For one-to-one use `@HasOne(...)`(foreign key for the relation exists on the other model) and 
 `@BelongsTo(...)` (foreign key for the relation exists on this model)
 
+### `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API
+
+Decorator                                 | Description
+------------------------------------------|---------------------
+ `@ForeignKey(relatedModelGetter: () => typeof Model)` | marks property as `foreignKey` for related class 
+ `@BelongsTo(relatedModelGetter: () => typeof Model)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is resolved from source class 
+ `@BelongsTo(relatedModelGetter: () => typeof Model, foreignKey: string)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is explicitly specified value 
+ `@HasMany(relatedModelGetter: () => typeof Model)` | sets `SourceModel.hasMany(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is resolved from target related class
+ `@HasMany(relatedModelGetter: () => typeof Model, foreignKey: string)` | sets `SourceModel.hasMany(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is explicitly specified value
+ `@HasOne(relatedModelGetter: () => typeof Model)` | sets `SourceModel.hasOne(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is resolved from target related class
+ `@HasOne(relatedModelGetter: () => typeof Model, foreignKey: string)` | sets `SourceModel.hasOne(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is explicitly specified value
+ `@BelongsToMany(relatedModelGetter: () => typeof Model, through: (() => typeof Model))` | sets `SourceModel.belongsToMany(RelatedModel, {through: ThroughModel, ...})` while `as` is key of annotated property and `foreignKey`/`otherKey` is resolved from through class
+ `@BelongsToMany(relatedModelGetter: () => typeof Model, through: (() => typeof Model), foreignKey: string)`| sets `SourceModel.belongsToMany(RelatedModel, {through: ThroughModel, ...})` while `as` is key of annotated property, `foreignKey` is explicitly specified value and `otherKey` is resolved from through class
+ `@BelongsToMany(relatedModelGetter: () => typeof Model, through: (() => typeof Model), foreignKey: string, otherKey: string)`| sets `SourceModel.belongsToMany(RelatedModel, {through: ThroughModel, ...})` while `as` is key of annotated property and `foreignKey`/`otherKey` are explicitly specified values
+ `@BelongsToMany(relatedModelGetter: () => typeof Model, through: string, foreignKey: string, otherKey: string)` | sets `SourceModel.belongsToMany(RelatedModel, {through: throughString, ...})` while `as` is key of annotated property and `foreignKey`/`otherKey` are explicitly specified values
+ 
 ### Multiple relations of same models
 *sequelize-typescript* resolves the foreign keys by identifying the corresponding class references.
 So if you define a model with multiple relations like
@@ -308,14 +337,17 @@ class Person extends Model<Person> {
 *sequelize-typescript* cannot know which foreign key to use for which relation. So you have to add the foreign keys
 explicitly:
 ```typescript
+
+  // in class "Books":
   @BelongsTo(() => Person, 'authorId')
   author: Person; 
 
-  @HasMany(() => Book, 'authorId')
-  writtenBooks: Book[];
-  
   @BelongsTo(() => Person, 'proofreaderId')
   proofreader: Person; 
+  
+  // in class "Person":
+  @HasMany(() => Book, 'authorId')
+  writtenBooks: Book[];
 
   @HasMany(() => Book, 'proofreaderId')
   proofedBooks: Book[];
@@ -324,7 +356,7 @@ explicitly:
 ### Type safe usage of generated getter and setter
 With the creation of a relation, sequelize generates getter and setter functions on the corresponding
 models. So when you create a 1:n relation between `ModelA` and `ModelB`, an instance of `ModelA` will
-have the functions `getModelBs`, `setModelBs`, `addModelB`. These functions will still exist with *sequelize-typescript*. 
+have the functions `getModelBs`, `setModelBs`, `addModelB`. These functions still exist with *sequelize-typescript*. 
 But TypeScript will not know of them and in turn will complain, when you try to access `getModelB`, `setModelB` or 
 `addModelB`. To make TypeScript happy, the `Model.prototype` of *sequelize-typescript* has `$set`, `$get`, `$add` 
 functions. 
@@ -335,6 +367,7 @@ class ModelA extends Model<ModelA> {
   @HasMany(() => ModelB)
   bs: ModelB[];
 }
+
 @Table
 class ModelB extends Model<ModelB> {
 
@@ -342,7 +375,7 @@ class ModelB extends Model<ModelB> {
   a: ModelA;
 }
 ```
-To use them pass the property key of the respective relation as the first parameter - see:
+To use them pass the property key of the respective relation as the first parameter:
 ```typescript
 const modelA = new ModelA();
 
@@ -352,17 +385,16 @@ modelA.$get('bs').then( /* ... */);
 ```
 
 ## Model validation
-Validation options can be set through the `@Column` annotation, but if you prefer different
-decorators for validation instead, you can do so by simply using the validate options *as* decorators:
+Validation options can be set through the `@Column` annotation, but if you prefer to use separate decorators for 
+validation instead, you can do so by simply adding the validate options *as* decorators:
 So that `validate.isEmail=true` becomes `@IsEmail`, `validate.equals='value'` becomes `@Equals('value')` 
-and so on. Please notice, that a validator, that expect booleans, becomes an annotation, which does not
-need a parameter. 
+and so on. Please notice, that a validator, that expects a boolean, is translated to an annotation without a parameter. 
 
 See sequelize [docs](http://docs.sequelizejs.com/en/v3/docs/models-definition/#validations) 
 for all validators.
 
 ### Exceptions
-Validators, that cannot simply translated from sequelize validator to an annotation:
+The following validators cannot simply be translated from sequelize validator to an annotation:
 
 Validator                        | Annotation
 ---------------------------------|--------------------------------------------------------
@@ -464,14 +496,13 @@ export class ShoeWithScopes extends Model<ShoeWithScopes> {
 
   @BelongsTo(() => Manufacturer)
   manufacturer: Manufacturer;
-
 }
 ```
 
 ## Why `() => Model`?
 `@ForeignKey(Model)` is much easier to read, so why is `@ForeignKey(() => Model)` so important? When it
-comes to circular-dependencies (which is in general solved by node for you) `Model` can be `undefined`
-when it get passed to @ForeignKey. When using a function, which returns the actual model, we prevent
+comes to circular-dependencies (which are in general solved by node for you) `Model` can be `undefined`
+when it gets passed to @ForeignKey. With the usage of a function, which returns the actual model, we prevent
 this issue.
 
 ## Limitations
