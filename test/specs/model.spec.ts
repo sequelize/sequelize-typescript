@@ -25,7 +25,7 @@ let clock;
 
 describe('model', () => {
 
-  const sequelize = createSequelize();
+  let sequelize;
 
   @Table
   class MainUser extends Model<MainUser> {
@@ -49,9 +49,9 @@ describe('model', () => {
     aBool: boolean;
   }
 
-  sequelize.addModels([MainUser]);
-
   before(() => {
+
+
     clock = useFakeTimers();
   });
 
@@ -60,7 +60,8 @@ describe('model', () => {
   });
 
   beforeEach(() => {
-
+    sequelize = createSequelize();
+    sequelize.addModels([MainUser]);
     return MainUser.sync({force: true});
   });
 
@@ -712,7 +713,12 @@ describe('model', () => {
           userId: number;
 
           @BelongsTo(() => User)
-          user: any;
+          user: any; // why any? with User reference it throws,
+                     // because of order of classes: User reference
+                     // does not exist here, when transpiled to es6
+                     // see transpiled js file for details
+                     // NOTICE: this wouldn't be a problem if each
+                     // class is defined in its own file
         }
         @Table
         class Tag extends Model<Tag> {
@@ -1017,34 +1023,34 @@ describe('model', () => {
     //     });
     //   });
     // }
-    //
-    // it('updates the attributes that we select only without updating createdAt', () => {
-    //   @Table({timestamps: true, paranoid: true})
-    //   class User extends Model<User> {
-    //
-    //     @Column
-    //     username: string;
-    //
-    //     @Column
-    //     secretValue: string;
-    //   }
-    //   sequelize.addModels([User]);
-    //
-    //   let test = false;
-    //   return User.sync({force: true}).then(() => {
-    //     return User.create({username: 'Peter', secretValue: '42'}).then((user) => {
-    //       return user.updateAttributes({secretValue: '43'}, {
-    //         fields: ['secretValue'], logging: (sql) => {
-    //           test = true;
-    //           // tslint:disable:max-line-length
-    //           expect(sql).to.match(/UPDATE\s+[`"]+User1s[`"]+\s+SET\s+[`"]+secretValue[`"]='43',[`"]+updatedAt[`"]+='[^`",]+'\s+WHERE [`"]+id[`"]+\s=\s1/);
-    //         }
-    //       });
-    //     });
-    //   }).then(() => {
-    //     expect(test).to.be.true;
-    //   });
-    // });
+
+    it('updates the attributes that we select only without updating createdAt', () => {
+      @Table({timestamps: true, paranoid: true})
+      class User extends Model<User> {
+
+        @Column
+        username: string;
+
+        @Column
+        secretValue: string;
+      }
+      sequelize.addModels([User]);
+
+      let test = false;
+      return User.sync({force: true}).then(() => {
+        return User.create({username: 'Peter', secretValue: '42'}).then((user) => {
+          return user.updateAttributes({secretValue: '43'}, {
+            fields: ['secretValue'], logging: (sql) => {
+              test = true;
+              // tslint:disable:max-line-length
+              expect(sql).to.match(/UPDATE\s+[`"]+User[`"]+\s+SET\s+[`"]+secretValue[`"]='43',[`"]+updatedAt[`"]+='[^`",]+'\s+WHERE [`"]+id[`"]+\s=\s1/);
+            }
+          });
+        });
+      }).then(() => {
+        expect(test).to.be.true;
+      });
+    });
     //
     // it('allows sql logging of updated statements', () => {
     //   const User = this.sequelize.define('User', {

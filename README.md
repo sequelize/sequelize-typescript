@@ -9,7 +9,7 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [One-to-many](#one-to-many)
    - [Many-to-many](#many-to-many)
    - [One-to-one](#one-to-one)
-   - [API](#association-api)
+   - [`@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API](#foreignkey-belongsto-hasmany-hasone-belongstomany-api)
    - [Generated getter and setter](#type-safe-usage-of-generated-getter-and-setter)
    - [Multiple relations of same models](#multiple-relations-of-same-models)
  - [Model valiation](#model-validation)
@@ -286,7 +286,7 @@ class BookAuthor extends Model<BookAuthor> {
 For one-to-one use `@HasOne(...)`(foreign key for the relation exists on the other model) and 
 `@BelongsTo(...)` (foreign key for the relation exists on this model)
 
-### `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API
+### `@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API
 
 Decorator                                 | Description
 ------------------------------------------|---------------------
