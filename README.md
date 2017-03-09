@@ -15,7 +15,7 @@ Decorators and some other extras for sequelize (v3 + v4).
  - [Model valiation](#model-validation)
  - [Scopes](#scopes)
  - [Why `() => Model`?](#user-content-why---model)
- - [Limitations](#limitations)
+ - [Limitations and recommendations](#limitations-and-recommendations)
 
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize):
