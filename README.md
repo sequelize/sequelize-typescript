@@ -64,8 +64,8 @@ class Person extends Model<Person> {}
 
 Decorator                             | Description
 --------------------------------------|---------------------
- `@Table`                             | sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>`
- `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) 
+ `@Table`                             | sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` automatically
+ `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/en/v3/api/sequelize/#definemodelname-attributes-options-model) (also sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` if not already defined by define options) 
 
 #### Primary key
 A primary key (`id`) will be inherited from base class `Model`. This primary key is by default an `INTEGER` and has 
