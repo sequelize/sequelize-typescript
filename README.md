@@ -506,9 +506,11 @@ when it gets passed to @ForeignKey. With the usage of a function, which returns 
 this issue.
 
 ## Limitations and recommendations
-**One connection per model**. You cannot add one and the same model to multiple Sequelize instances with
+### One connection per model 
+You cannot add one and the same model to multiple Sequelize instances with
 differently configured connections. So that one model will only work for one connection.
-**One model class per file**. This is not only good practice regarding design, but also matters for the order
+### One model class per file
+This is not only good practice regarding design, but also matters for the order
 of execution. Since typescript creates a `__metadata("design:type", SomeModel)` call due to `emitDecoratorMetadata` 
 compile option, in some cases `SomeModel` is probably not defined(not undefined!) and would throw a `ReferenceError`.
 When putting `SomeModel` in a separate file, it would look like `__metadata("design:type", SomeModel_1.SomeModel)`,
