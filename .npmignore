@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+.travis.yml
+.gitignore
+tsconfig.json
+test
+.DS_Store
+.idea
