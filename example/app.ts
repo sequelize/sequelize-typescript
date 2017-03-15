@@ -5,6 +5,7 @@ import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
 import * as prettyjson from 'prettyjson';
 import {Person} from "./models/validation-only/Person";
+import {Book} from "./models/Book";
 
 /* tslint:disable:no-console */
 /* tslint:disable:no-unused-new */
@@ -50,22 +51,22 @@ sequelize
     ])
   )
   .then(([robin, nelly, elisa]) => Post
-      .create<Post>({text: 'hey', authorId: nelly.id})
-      .then(post => Comment.create<Comment>({
-        postId: post.id,
-        text: 'my comment',
-        authorId: robin.id
-      }))
-      .then(() => {
+    .create<Post>({text: 'hey', authorId: nelly.id})
+    .then(post => Comment.create<Comment>({
+      postId: post.id,
+      text: 'my comment',
+      authorId: robin.id
+    }))
+    .then(() => {
 
-        robin.name = 'robin';
+      robin.name = 'robin';
 
-        return Promise.all([
-          robin.save(),
-          robin.$add('friend', nelly),
-          robin.$add('friend', elisa)
-        ]);
-      })
+      return Promise.all([
+        robin.save(),
+        robin.$add('friend', nelly),
+        robin.$add('friend', elisa)
+      ]);
+    })
   )
   .then(() => {
     const post = new Post({
@@ -78,61 +79,80 @@ sequelize
     return post.save();
   })
   .then(() => Post.build<Post>({text: 'hey3'}).save())
-  .then(() =>
-    Post
-      .findAll<Post>({
+  .then(() => Post
+    .findAll<Post>({
+      attributes: ['id', 'text'],
+      include: [{
+        model: Comment,
         attributes: ['id', 'text'],
         include: [{
-            model: Comment,
-            attributes: ['id', 'text'],
-            include: [{
-              model: Author,
-              include: [{
-                model: Author,
-                through: {
-                  attributes: []
-                }
-              }]
-            }]
-          }, {
+          model: Author,
+          include: [{
             model: Author,
-            include: [{
-              model: Author,
-              through: {
-                attributes: []
-              }
-            }]
+            through: {
+              attributes: []
+            }
+          }]
+        }]
+      }, {
+        model: Author,
+        include: [{
+          model: Author,
+          through: {
+            attributes: []
           }
-        ]
-      })
-      .then(posts => {
+        }]
+      }
+      ]
+    })
+    .then(posts => {
 
-        console.log(prettyjson.renderString(JSON.stringify(posts)));
+      console.log(prettyjson.renderString(JSON.stringify(posts)));
 
-        posts.forEach(post => {
+      posts.forEach(post => {
 
-          console.log(post instanceof Post);
-        });
+        console.log(post instanceof Post);
+      });
+    })
+    .then(() => Author.findAll())
+    .then(authors => {
+      console.log('--------------- AUTHOR DEFAULT SCOPE ----------------');
+      console.log(prettyjson.renderString(JSON.stringify(authors)));
+    })
+    .then(() => Author.scope('full').findAll())
+    .then(authors => {
+      console.log('--------------- AUTHOR FULL SCOPE -------------------');
+      console.log(prettyjson.renderString(JSON.stringify(authors)));
+    })
+    .then(() => Author.unscoped().findAll())
+    .then(authors => {
+      console.log('--------------- AUTHOR UN-SCOPE ---------------------');
+      console.log(prettyjson.renderString(JSON.stringify(authors)));
+    })
+    .then(() => Post.scope('full').findAll())
+    .then(posts => {
+      console.log('--------------- POST FULL SCOPE ---------------------');
+      console.log(prettyjson.renderString(JSON.stringify(posts)));
+    })
+  )
+  .then(() => Promise.all([
+    Book.create<Book>({title: 'Sherlock Holmes'}),
+    Author.create<Author>({name: 'Sir Arthur Conan Doyle'}),
+    Author.create<Author>({name: 'No-Ghost'}),
+  ]))
+  .then(([book, ...authors]) =>
+    book
+      .$set('authors', authors)
+      .then(() => Book.scope('withAuthors').findById<Book>(book.id))
+      .then(_book => {
+        console.log('--------------- BOOOOOOOOOOOOOOOOOK ---------------------');
+        console.log(prettyjson.renderString(JSON.stringify(_book)));
       })
-      .then(() => Author.findAll())
-      .then(authors => {
-        console.log('--------------- AUTHOR DEFAULT SCOPE ----------------');
-        console.log(prettyjson.renderString(JSON.stringify(authors)));
-      })
-      .then(() => Author.scope('full').findAll())
-      .then(authors => {
-        console.log('--------------- AUTHOR FULL SCOPE -------------------');
-        console.log(prettyjson.renderString(JSON.stringify(authors)));
-      })
-      .then(() => Author.unscoped().findAll())
-      .then(authors => {
-        console.log('--------------- AUTHOR UN-SCOPE ---------------------');
-        console.log(prettyjson.renderString(JSON.stringify(authors)));
-      })
-      .then(() => Post.scope('full').findAll())
-      .then(posts => {
-        console.log('--------------- POST FULL SCOPE ---------------------');
-        console.log(prettyjson.renderString(JSON.stringify(posts)));
+      .then(() => Book.findById<Book>(book.id))
+      .then(_book => _book.$get('authors'))
+      .then(_authors => {
+        console.log('--------------- BOOOKS AUTHOOOOOOOR ---------------------');
+        console.log(prettyjson.renderString(JSON.stringify(_authors)));
       })
   )
 ;

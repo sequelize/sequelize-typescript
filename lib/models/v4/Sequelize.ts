@@ -1,16 +1,20 @@
 import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
+import {DefineOptions} from 'sequelize';
 import {Model} from "../Model";
 import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
+import {Table} from "../../annotations/Table";
 
 let preparedConfig;
 
 export class Sequelize extends OriginSequelize implements BaseSequelize {
 
+  thoughMap: {[through: string]: any} = {};
   init: (config: ISequelizeConfig) => void;
   addModels: (models: Array<typeof Model>|string[]) => void;
+  associateModels: (models: Array<typeof Model>) => void;
 
   constructor(config: ISequelizeConfig) {
     // a spread operator would be the more reasonable approach here,
@@ -27,6 +31,18 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
 
     this.init(config);
   }
+
+  getThroughModel(through: string): typeof Model {
+
+    // tslint:disable:max-classes-per-file
+    @Table({tableName: through, modelName: through} as DefineOptions<any>)
+    class Through extends Model<Through> {
+    }
+
+    return Through;
+  }
+
+  adjustAssociation(model: any, association: any): void {}
 
   /**
    * Creates sequelize models and registers these models

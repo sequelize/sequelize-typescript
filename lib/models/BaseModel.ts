@@ -99,9 +99,9 @@ export abstract class BaseModel {
   }
 
   /**
-   * SEE DETAILS FOR ACTUAL FUNCTIONALITY ON DECLARATION FILE
+   * Adds relation between specified instances and source instance
    */
-  $add(propertyKey: string, value: any, options?: IAssociationActionOptions): Promise<this> {
+  $add(propertyKey: string, instances: any, options?: IAssociationActionOptions): Promise<this> {
 
     // TODO@robin find a way to add values to the target(this) datavalues
     // const dataValues = this['dataValues']; // this will not work correctly
@@ -110,26 +110,59 @@ export abstract class BaseModel {
     //
     // dataValues[propertyKey].push(value);
 
-    return this['add' + capitalize(propertyKey)](value, options);
+    return this['add' + capitalize(propertyKey)](instances, options);
   };
 
   /**
-   * Sets relation between value of related model and model instance
+   * Sets relation between specified instances and source instance
+   * (replaces old relations)
    */
-  $set(propertyKey: string, ...args: any[]): Promise<this> {
+  $set(propertyKey: string, instances: any, options: any): Promise<this> {
 
     // TODO@robin find a way to add values to the target(this) datavalues
     // this['dataValues'][propertyKey] = args[0]; // this will not work correctly
 
-    return this['set' + capitalize(propertyKey)](...args);
+    return this['set' + capitalize(propertyKey)](instances, options);
   };
 
   /**
-   * Gets related value of model related model, which matches property key
+   * Returns related instance (specified by propertyKey) of source instance
    */
-  $get(propertyKey: string, ...args: any[]): Promise<this> {
+  $get(propertyKey: string, options: any): Promise<this> {
 
-    return this['get' + capitalize(propertyKey)](...args);
+    return this['get' + capitalize(propertyKey)](options);
+  };
+
+  /**
+   * Counts related instances (specified by propertyKey) of source instance
+   */
+  $count(propertyKey: string, options: any): Promise<this> {
+
+    return this['count' + capitalize(propertyKey)](options);
+  };
+
+  /**
+   * Creates instances and relate them to source instance
+   */
+  $create(propertyKey: string, values: any, options: any): Promise<this> {
+
+    return this['create' + capitalize(propertyKey)](values, options);
+  };
+
+  /**
+   * Checks if specified instances is related to source instance
+   */
+  $has(propertyKey: string, instances: any, options: any): Promise<this> {
+
+    return this['has' + capitalize(propertyKey)](instances, options);
+  };
+
+  /**
+   * Removes specified instances from source instance
+   */
+  $remove(propertyKey: string, instances: any, options: any): Promise<this> {
+
+    return this['remove' + capitalize(propertyKey)](instances, options);
   };
 
   /**

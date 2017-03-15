@@ -412,19 +412,40 @@ export declare class Model<T> extends Hooks {
   static unscoped(): typeof Model;
 
   /**
-   * Adds new relation between value of related model and model instance
+   * Adds relation between specified instances and source instance
    */
-  $add<R extends Model<R>>(propertyKey: string, value: R|R[], options?: IAssociationActionOptions): Promise<this>;
+  $add<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: IAssociationActionOptions): Promise<this>;
 
   /**
-   * Sets relation between value of related model and model instance
+   * Sets relation between specified instances and source instance
+   * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: string, value: R|R[], options?: IAssociationActionOptions): Promise<this>;
+  $set<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: IAssociationActionOptions): Promise<this>;
 
   /**
-   * Gets related value of model related model, which matches property key
+   * Returns related instance (specified by propertyKey) of source instance
    */
-  $get(propertyKey: string, options?: any): Promise<this>; // TODO@robin options interface
+  $get<R extends Model<R>>(propertyKey: string, options?: any): Promise<R|R[]>; // TODO@robin options interface
+
+  /**
+   * Counts related instances (specified by propertyKey) of source instance
+   */
+  $count(propertyKey: string, options?: any): Promise<this>;
+
+  /**
+   * Creates instances and relate them to source instance
+   */
+  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R|this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
+
+  /**
+   * Checks if specified instances is related to source instance
+   */
+  $has<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: any): Promise<this>;
+
+  /**
+   * Removes specified instances from source instance
+   */
+  $remove<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: any): Promise<this>;
 
   /**
    * Default id automatically created by sequelize

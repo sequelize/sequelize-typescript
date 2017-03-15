@@ -18,9 +18,9 @@ export function addAssociation(target: any,
                                relation: string,
                                relatedClassGetter: () => typeof Model,
                                as: string,
-                               through?: (() => typeof Model)|string,
                                foreignKey?: string,
-                               otherKey?: string): void {
+                               otherKey?: string,
+                               through?: (() => typeof Model)|string): void {
 
   let associations = getAssociations(target);
 
@@ -135,58 +135,6 @@ export function addForeignKey(target: any,
   foreignKeys.push({
     relatedClassGetter,
     foreignKey: attrName
-  });
-}
-
-/**
- * Processes model associations
- */
-export function associateModels(models: Array<typeof Model>): void {
-
-  models.forEach(model => {
-
-    const associations = getAssociations(model.prototype);
-
-    if (!associations) return;
-
-    associations.forEach(association => {
-
-      const foreignKey = association.foreignKey || getForeignKey(model, association);
-      const relatedClass = association.relatedClassGetter();
-      let through;
-      let otherKey;
-
-      if (association.relation === BELONGS_TO_MANY) {
-
-        if (association.otherKey) {
-
-          otherKey = association.otherKey;
-        } else {
-          if (!association.relatedClassGetter) {
-            throw new Error(`RelatedClassGetter missing on "${model['name']}"`);
-          }
-          otherKey = getForeignKey(association.relatedClassGetter(), association);
-        }
-
-        if (association.through) {
-
-          through = association.through;
-        } else {
-          if (!association.throughClassGetter) {
-            throw new Error(`ThroughClassGetter missing on "${model['name']}"`);
-          }
-          through = association.throughClassGetter();
-        }
-      }
-
-      model[association.relation](relatedClass, {
-        as: association.as,
-        through,
-        foreignKey,
-        otherKey
-      });
-
-    });
   });
 }
 

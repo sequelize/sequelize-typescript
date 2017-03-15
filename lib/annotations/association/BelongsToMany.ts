@@ -13,9 +13,9 @@ export function BelongsToMany(relatedClassGetter: () => typeof Model,
       BELONGS_TO_MANY,
       relatedClassGetter,
       propertyName,
-      through,
       foreignKey,
-      otherKey
+      otherKey,
+      through
     );
   };
 }

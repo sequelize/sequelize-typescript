@@ -1,9 +1,10 @@
 import {Model} from "./Model";
 import {getModels} from "../services/models";
-import {associateModels} from "../services/association";
+import {getAssociations, BELONGS_TO_MANY} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {resolveScopes} from "../services/models";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
+import {getForeignKey} from "../services/association";
 
 /**
  * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
@@ -13,6 +14,8 @@ import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidation
  * "classes" cannot extend ES6 classes
  */
 export abstract class BaseSequelize {
+
+  thoughMap: {[through: string]: any} = {};
 
   static extend(target: any): void {
 
@@ -61,7 +64,7 @@ export abstract class BaseSequelize {
     const models = getModels(arg);
 
     this.defineModels(models);
-    associateModels(models);
+    this.associateModels(models);
     resolveScopes(models);
   }
 
@@ -69,6 +72,92 @@ export abstract class BaseSequelize {
 
     if (config.modelPaths) this.addModels(config.modelPaths);
   }
+
+  /**
+   * Processes model associations
+   */
+  associateModels(models: Array<typeof Model>): void {
+
+    models.forEach(model => {
+
+      const associations = getAssociations(model.prototype);
+
+      if (!associations) return;
+
+      associations.forEach(association => {
+
+        const foreignKey = association.foreignKey || getForeignKey(model, association);
+        const relatedClass = association.relatedClassGetter();
+        let through;
+        let otherKey;
+
+        if (association.relation === BELONGS_TO_MANY) {
+
+          if (association.otherKey) {
+
+            otherKey = association.otherKey;
+          } else {
+            if (!association.relatedClassGetter) {
+              throw new Error(`RelatedClassGetter missing on "${model['name']}"`);
+            }
+            otherKey = getForeignKey(association.relatedClassGetter(), association);
+          }
+
+          if (association.through) {
+
+            if (!this.thoughMap[association.through]) {
+              const throughModel = this.getThroughModel(association.through);
+
+              this.addModels([throughModel]);
+
+              this.thoughMap[association.through] = throughModel;
+            }
+
+            through = this.thoughMap[association.through];
+
+          } else {
+            if (!association.throughClassGetter) {
+              throw new Error(`ThroughClassGetter missing on "${model['name']}"`);
+            }
+            through = association.throughClassGetter();
+          }
+        }
+
+        model[association.relation](relatedClass, {
+          as: association.as,
+          through,
+          foreignKey,
+          otherKey
+        });
+
+        // The associations has to be adjusted
+        const _association = model['associations'][association.as];
+
+        // String based through's need adjustment
+        if (association.through) {
+
+          // as and associationAccessor values referring to string "Through"
+          _association.oneFromSource.as = association.through;
+          _association.oneFromSource.options.as = association.through;
+          _association.oneFromSource.associationAccessor = association.through;
+          _association.oneFromTarget.as = association.through;
+          _association.oneFromTarget.options.as = association.through;
+          _association.oneFromTarget.associationAccessor = association.through;
+        }
+
+        this.adjustAssociation(model, _association);
+      });
+    });
+  }
+
+  /**
+   * Since es6 classes cannot be extended by es5 constructor-functions the
+   * "through" model needs to be created by the appropriate sequelize version
+   * (sequelize v3 and v4 are transpiled with different targets (es5/es6))
+   */
+  abstract getThroughModel(through: string): typeof Model;
+
+  abstract adjustAssociation(model: any, association: any): void;
 
   abstract defineModels(models: Array<typeof Model>): void;
 }

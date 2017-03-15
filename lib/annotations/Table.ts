@@ -25,6 +25,6 @@ function annotate(target: any, options: DefineOptions<any> = {}): void {
   options.instanceMethods = target.prototype;
   options.classMethods = target;
 
-  setModelName(target.prototype, target.name);
+  setModelName(target.prototype, options['modelName'] || target.name);
   addOptions(target.prototype, options);
 }

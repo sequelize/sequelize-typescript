@@ -1,10 +1,12 @@
 import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
+import {DefineOptions} from 'sequelize';
 import {Model} from "../Model";
 import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {PROPERTY_LINK_TO_ORIG} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
+import {Table} from "../../annotations/Table";
 
 let preparedConfig;
 
@@ -13,8 +15,10 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   // to fix "$1" called with something that's not an instance of Sequelize.Model
   Model: any = Function;
 
+  thoughMap: {[through: string]: any} = {};
   init: (config: ISequelizeConfig) => void;
   addModels: (models: Array<typeof Model>|string[]) => void;
+  associateModels: (models: Array<typeof Model>) => void;
 
   constructor(config: ISequelizeConfig) {
     // a spread operator would be the more reasonable approach here,
@@ -30,6 +34,34 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
     );
 
     this.init(config);
+  }
+
+  getThroughModel(through: string): typeof Model {
+
+    // tslint:disable:max-classes-per-file
+    @Table({tableName: through, modelName: through} as DefineOptions<any>)
+    class Through extends Model<Through> {
+    }
+
+    return Through;
+  }
+
+  /**
+   * The association needs to be adjusted. So that throughModel properties
+   * referencing a original sequelize Model instance
+   */
+  adjustAssociation(model: any, association: any): void {
+
+    if (association.throughModel && association.throughModel.Model) {
+      const seqThroughModel = association.throughModel.Model;
+      const throughModel = association.throughModel;
+
+      Object.keys(seqThroughModel).forEach(key => {
+        if (key !== 'name') throughModel[key] = seqThroughModel[key];
+      });
+
+      association.throughModel = association.through.model = association.throughModel.Model;
+    }
   }
 
   /**

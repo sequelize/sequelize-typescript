@@ -1,13 +1,17 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany,
 DefaultScope, Scopes} from "../../index";
 import {AuthorFriend} from "./AuthorFriend";
+import {Book} from "./Book";
 
 @DefaultScope({
   attributes: ['id', 'name']
 })
 @Scopes({
   full: {
-    include: [() => Author]
+    include: [
+      () => Author,
+      () => Book
+    ]
   }
 })
 @Table
@@ -26,5 +30,8 @@ export class Author extends Model<Author> {
 
   @BelongsToMany(() => Author, () => AuthorFriend, 'authorId', 'friendId')
   friends: Author[];
+
+  @BelongsToMany(() => Book, 'AuthorBook', 'authorId', 'bookId')
+  books: Book[];
 
 }

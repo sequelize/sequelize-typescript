@@ -2,7 +2,7 @@ import {Sequelize} from "../../lib/models/Sequelize";
 import * as OriginSequelize from "sequelize";
 import {Sequelize as SequelizeType} from "sequelize";
 
-export function createSequelize(): Sequelize {
+export function createSequelize(useModelsInPath: boolean = true): Sequelize {
 
   return new Sequelize({
     name: '__',
@@ -11,7 +11,7 @@ export function createSequelize(): Sequelize {
     password: '',
     storage: ':memory:',
     logging: !('SEQ_SILENT' in process.env),
-    modelPaths: [__dirname + '/../models']
+    modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
   });
 }
 

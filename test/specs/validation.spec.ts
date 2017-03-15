@@ -73,11 +73,11 @@ describe('validation', () => {
       }
     };
 
-    Object
-      .keys(shoeAttributes)
-      .forEach(key => {
+    it(`should have properties with defined validations`, () => {
+      Object
+        .keys(shoeAttributes)
+        .forEach(key => {
 
-        it(`should have property "${key}" with defined validations`, () => {
 
           expect(rawAttributes[key]).to.have.property('validate');
           const validations = shoeAttributes[key];
@@ -91,7 +91,7 @@ describe('validation', () => {
             });
 
         });
-      });
+    });
 
   });
 
@@ -141,6 +141,9 @@ describe('validation', () => {
       }
     };
 
+    const validPromises = [];
+    const invalidPromises = [];
+
     Object
       .keys(data)
       .forEach(key => {
@@ -148,37 +151,36 @@ describe('validation', () => {
         const valid = data[key].valid;
         const invalid = data[key].invalid;
 
-        it(`should not throw due to correct values of "${key}"`, () =>
-          Promise.all(valid.map(value => {
+        validPromises.push(Promise.all(valid.map(value => {
 
-            const shoe = new ShoeWithValidation({[key]: value});
+          const shoe = new ShoeWithValidation({[key]: value});
 
-            if (majorVersion === 3) {
+          if (majorVersion === 3) {
 
-              return shoe.validate().then(err => expect(err).to.be.null);
-            } else if (majorVersion === 4) {
+            return shoe.validate().then(err => expect(err).to.be.null);
+          } else if (majorVersion === 4) {
 
-              return expect(shoe.validate()).to.be.fulfilled;
-            }
-          }))
-        );
+            return expect(shoe.validate()).to.be.fulfilled;
+          }
+        })));
 
-        it(`should throw due to incorrect values of "${key}"`, () =>
-          Promise.all(invalid.map(value => {
+        invalidPromises.push(Promise.all(invalid.map(value => {
 
-            const shoe = new ShoeWithValidation({[key]: value});
+          const shoe = new ShoeWithValidation({[key]: value});
 
-            if (majorVersion === 3) {
+          if (majorVersion === 3) {
 
-              return shoe.validate().then(err => expect(err).to.be.an('object'));
-            } else if (majorVersion === 4) {
+            return shoe.validate().then(err => expect(err).to.be.an('object'));
+          } else if (majorVersion === 4) {
 
-              return expect(shoe.validate()).to.be.rejected;
-            }
-          }))
-        );
+            return expect(shoe.validate()).to.be.rejected;
+          }
+        })));
 
       });
+
+    it(`should not throw due to valid values`, () => Promise.all(validPromises));
+    it(`should throw due to invalid values`, () => Promise.all(invalidPromises));
 
   });
 
