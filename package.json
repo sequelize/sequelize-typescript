@@ -1,6 +1,6 @@
 {
   "name": "sequelize-typescript",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Decorators and some other extras for sequelize (v3 + v4)",
   "scripts": {
     "build": "tsc && tsc --project lib/models/v4",
@@ -13,6 +13,16 @@
     "exec-tests": "SEQ_SILENT=true mocha 'test/specs/**/*.js'",
     "test": "npm run test-v4 && npm run test-v3"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobinBuschmann/sequelize-typescript.git"
+  },
+  "author": "Robin Buschmann",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RobinBuschmann/sequelize-typescript/issues"
+  },
+  "homepage": "https://github.com/RobinBuschmann/sequelize-typescript#readme",
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
