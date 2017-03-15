@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/RobinBuschmann/sequelize-typescript.png?branch=master)](https://travis-ci.org/RobinBuschmann/sequelize-typescript)
+
 # sequelize-typescript
 Decorators and some other extras for sequelize (v3 + v4).
 
