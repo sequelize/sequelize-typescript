@@ -20,10 +20,14 @@ Decorators and some other extras for sequelize (v3 + v4).
  - [Limitations and recommendations](#limitations-and-recommendations)
 
 ### Installation
-*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize):
+*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
 ```
 npm install sequelize --save // v3
 npm install sequelize@4.0.0-1 --save // or v4
+```
+and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+```
+npm install reflect-metadata
 ```
 ```
 npm install sequelize-typescript --save 
