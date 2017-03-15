@@ -2,7 +2,9 @@ import {Table, Model, PrimaryKey, AutoIncrement, Column, BelongsToMany} from "..
 import {Post} from "./Post";
 import {PostTopic} from "./PostTopic";
 
-@Table
+@Table({
+  tableName: 'Thing'
+})
 export class Topic extends Model<Topic> {
 
   @PrimaryKey
@@ -13,7 +15,9 @@ export class Topic extends Model<Topic> {
   @Column
   name: string;
 
-  @Column
+  @Column({
+    field: 'comment'
+  })
   description: string;
 
   @BelongsToMany(() => Post, () => PostTopic)

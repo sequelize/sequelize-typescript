@@ -25,7 +25,9 @@ export class Author extends Model<Author> {
   @Column
   name: string;
 
-  @Column
+  @Column({
+    field: 'secretKey'
+  })
   secret: string;
 
   @BelongsToMany(() => Author, () => AuthorFriend, 'authorId', 'friendId')
