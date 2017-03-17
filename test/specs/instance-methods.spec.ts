@@ -1,69 +1,101 @@
 import {expect} from 'chai';
+import * as Promise from 'bluebird';
+import {Model, Table, Column} from "../../index";
 import {createSequelize} from "../utils/sequelize";
-import {getScopeOptions} from "../../lib/services/models";
-import {ShoeWithScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithScopes";
-import {Manufacturer} from "../models/Manufacturer";
 
-describe('scopes', () => {
+describe('instance-methods', () => {
 
   const sequelize = createSequelize();
 
+  @Table
+  class User extends Model<User> {
+
+    @Column
+    firstName: string;
+
+    @Column
+    lastName: string;
+
+    getFullName(): string {
+
+      return this.firstName + ' ' + this.lastName;
+    }
+
+    setFullName(name: string): void {
+
+      const split = name.split(' ');
+
+      this.lastName = split.pop();
+      this.firstName = split.join(' ');
+    }
+  }
+
+  sequelize.addModels([User]);
+
   beforeEach(() => sequelize.sync({force: true}));
 
-  describe('options', () => {
+  const suites: Array<[string, () => Promise<User>]> = [
+    ['build', () => Promise.resolve<User>(User.build<User>({firstName: 'Peter', lastName: 'Parker'}))],
+    ['new', () => Promise.resolve<User>(new User({firstName: 'Peter', lastName: 'Parker'}))],
+    ['create', () => (User.create<User>({firstName: 'Peter', lastName: 'Parker'}))],
+  ];
 
-    it('should be retrievable from class prototype', () => {
-      const showScopeOptions = getScopeOptions(ShoeWithScopes.prototype);
-      expect(showScopeOptions).not.to.be.undefined;
+  suites.forEach(([name, create]) => {
+
+    describe(name, () => {
+
+      let user;
+
+      beforeEach(() => create().then(_user => user = _user));
+
+      it('should have access to functions of prototype', () => {
+
+        Object
+          .keys(User.prototype)
+          .forEach(key => {
+
+            expect(user).to.have.property(key, User.prototype[key]);
+          });
+      });
+
+      describe('"get" function', () => {
+
+        it('should return appropriate value', () => {
+
+          expect(user.getFullName()).to.equal(user.firstName + ' ' + user.lastName);
+        });
+      });
+
+      describe('"set" function', () => {
+
+        const firstName = 'Tony';
+        const lastName = 'Stark';
+        const fullName = firstName + ' ' + lastName;
+
+        it('should set specified value to instance', () => {
+
+          user.setFullName(fullName);
+
+          expect(user.firstName).to.equal(firstName);
+          expect(user.lastName).to.equal(lastName);
+        });
+
+        it('should store set value', () => {
+
+          user.setFullName(fullName);
+
+          return user
+            .save()
+            .then(() => User.findById<User>(user.id))
+            .then(_user => {
+
+              expect(_user.firstName).to.equal(firstName);
+              expect(_user.lastName).to.equal(lastName);
+            })
+            ;
+        });
+      });
     });
-
-    it('should contain default and other scopes', () => {
-      const showScopeOptions = getScopeOptions(ShoeWithScopes.prototype);
-
-      expect(showScopeOptions).to.have.property('defaultScope').that.eqls(SHOE_DEFAULT_SCOPE);
-      expect(showScopeOptions).to.have.property('full').that.eqls(SHOE_SCOPES.full);
-    });
-  });
-
-  describe('find', () => {
-
-    const BRAND = 'adiwas';
-
-    beforeEach(() => ShoeWithScopes
-      .create<ShoeWithScopes>({
-        secretKey: 'j435njk3',
-        primaryColor: 'red',
-        secondaryColor: 'blue',
-        producedAt: new Date(),
-        manufacturer: {
-          brand: BRAND
-        }
-      }, {include: [Manufacturer]}));
-
-    it('should consider default scope', () =>
-
-      ShoeWithScopes.findOne()
-        .then(shoe => {
-
-          expect(Object.keys(shoe['dataValues'])).to.eql(SHOE_DEFAULT_SCOPE.attributes);
-        })
-    );
-
-    it('should consider other scopes', () =>
-
-      ShoeWithScopes.scope('full').findOne()
-        .then(shoe => {
-
-          expect(shoe).to.have.property('manufacturer').which.is.not.null;
-          expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
-        })
-        .then(() => ShoeWithScopes.scope('yellow').findAll())
-        .then(yellowShoes => {
-
-          expect(yellowShoes).to.be.empty;
-        })
-    );
-
   });
 
 });
