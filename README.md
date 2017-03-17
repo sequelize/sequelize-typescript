@@ -4,9 +4,9 @@
 Decorators and some other extras for sequelize (v3 + v4).
 
  - [Model Definition](#model-definition)
- - [Usage](#usage)
    - [`@Table` API](#table-api)
    - [`@Column` API](#column-api)
+ - [Usage](#usage)
  - [Model association](#model-association)
    - [One-to-many](#one-to-many)
    - [Many-to-many](#many-to-many)
@@ -27,7 +27,7 @@ npm install sequelize@4.0.0-1 --save // or v4
 ```
 and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
-npm install reflect-metadata
+npm install reflect-metadata --save
 ```
 ```
 npm install sequelize-typescript --save 
