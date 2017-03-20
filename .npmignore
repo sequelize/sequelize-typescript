@@ -4,5 +4,6 @@ npm-debug.log
 .gitignore
 tsconfig.json
 test
+example
 .DS_Store
 .idea
