@@ -6,7 +6,7 @@ import {isDataType} from "../utils/data-type";
 
 export function Column(dataType: DataTypeAbstract): Function;
 export function Column(options: IPartialDefineAttributeColumnOptions): Function;
-export function Column(target: any, propertyName: string): void;
+export function Column(target: any, propertyName: string, propertyDescriptor?: PropertyDescriptor): void;
 export function Column(...args: any[]): Function|void {
 
   // In case of no specified options, we infer the
@@ -15,18 +15,20 @@ export function Column(...args: any[]): Function|void {
 
     const target = args[0];
     const propertyName = args[1];
+    const propertyDescriptor = args[2];
 
-    annotate(target, propertyName);
+    annotate(target, propertyName, propertyDescriptor);
     return;
   }
 
-  return (target: any, propertyName: string) => {
-    annotate(target, propertyName, args[0]);
+  return (target: any, propertyName: string, propertyDescriptor?: PropertyDescriptor) => {
+    annotate(target, propertyName, propertyDescriptor, args[0]);
   };
 }
 
 function annotate(target: any,
                   propertyName: string,
+                  propertyDescriptor?: PropertyDescriptor,
                   optionsOrDataType: IPartialDefineAttributeColumnOptions|DataTypeAbstract = {}): void {
 
   let options: IPartialDefineAttributeColumnOptions;
@@ -42,6 +44,15 @@ function annotate(target: any,
 
     if (!options.type) {
       options.type = getSequelizeTypeByDesignType(target, propertyName);
+    }
+  }
+
+  if (propertyDescriptor) {
+    if (propertyDescriptor.get) {
+      options.get = propertyDescriptor.get;
+    }
+    if (propertyDescriptor.set) {
+      options.set = propertyDescriptor.set;
     }
   }
 

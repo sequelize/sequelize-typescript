@@ -136,7 +136,7 @@ sequelize
     })
   )
   .then(() => Promise.all([
-    Book.create<Book>({title: 'Sherlock Holmes'}),
+    Book.create<Book>({title: 'Sherlock Holmes', year: 1891}),
     Author.create<Author>({name: 'Sir Arthur Conan Doyle'}),
     Author.create<Author>({name: 'No-Ghost'}),
   ]))
@@ -153,6 +153,16 @@ sequelize
       .then(_authors => {
         console.log('--------------- BOOOKS AUTHOOOOOOOR ---------------------');
         console.log(prettyjson.renderString(JSON.stringify(_authors)));
+      })
+      .then(() => {
+        book.year = 2000;
+
+        return book.save();
+      })
+      .then(() => Book.findById<Book>(book.id))
+      .then(_book => {
+        console.log('--------------- YEAR CHANGED ---------------------');
+        console.log(prettyjson.renderString(JSON.stringify(_book)));
       })
   )
 ;

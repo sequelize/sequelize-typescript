@@ -1,8 +1,11 @@
-import {Model, Table, Column, BelongsToMany, Scopes} from '../../index';
+import {Model, Table, Column, BelongsToMany, Scopes, DataType} from '../../index';
 import {Author} from "./Author";
 
 @Scopes({
-  withAuthors: {include: [() => Author]}
+  withAuthors: {include: [{
+    model: () => Author,
+    through: {attributes: []}
+  }]}
 })
 @Table
 export class Book extends Model<Book> {
@@ -12,4 +15,14 @@ export class Book extends Model<Book> {
 
   @BelongsToMany(() => Author, 'AuthorBook', 'bookId', 'authorId')
   authors: Author[];
+
+  @Column(DataType.INTEGER)
+  get year(): number|string {
+
+    return 'Published in ' + this.getDataValue('year');
+  };
+  set year(year: number|string) {
+
+    this.setDataValue('year', year);
+  };
 }

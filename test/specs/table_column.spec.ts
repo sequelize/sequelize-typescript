@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {DefineAttributes} from 'sequelize';
-import {DataType} from "../../index";
+import {Model, Table, Column, DataType} from "../../index";
 import {createSequelize} from "../utils/sequelize";
 import {User} from "../models/User";
 import {getOptions, getAttributes} from "../../lib/services/models";
@@ -192,6 +192,52 @@ describe('table_column', () => {
       expect(uidv4SeqRawAttrOptions).to.have.property('defaultValue');
       expect(uidv4SeqRawAttrOptions.defaultValue).to.be.an.instanceof(DataType.UUIDV4);
     });
+
+  });
+
+  describe('implicit get', () => {
+
+    @Table
+    class User extends Model<User> {
+
+      @Column
+      get name(): string {
+        return 'My name is ' + this.getDataValue('name');
+      }
+
+      set name(value: string) {
+        this.setDataValue('name', value);
+      }
+    }
+
+    sequelize.addModels([User]);
+
+    it('should consider getter', () => {
+
+      const user = new User({});
+      user.name = 'Peter';
+
+      expect(user.name).to.equal('My name is Peter');
+    });
+
+    it('shouldn\'t store value from getter', () => {
+
+      const user = new User({});
+
+      user.name = 'elli';
+
+      return user
+        .save()
+        .then(() => User.findById(user.id))
+        .then(_user => {
+
+          expect(_user.getDataValue('name')).to.equal('elli');
+        });
+    });
+
+  });
+
+  describe('implicit set', () => {
 
   });
 

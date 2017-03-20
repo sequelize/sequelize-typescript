@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/RobinBuschmann/sequelize-typescript.png?branch=master)](https://travis-ci.org/RobinBuschmann/sequelize-typescript)
+[![NPM](https://img.shields.io/npm/v/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
+[![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
 Decorators and some other extras for sequelize (v3 + v4).
