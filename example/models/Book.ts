@@ -5,7 +5,7 @@ import {Author} from "./Author";
   withAuthors: {include: [() => Author]}
 })
 @Table
-export class Book extends Model<Book> {
+export default class Book extends Model<Book> {
 
   @Column
   title: string;
