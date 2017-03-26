@@ -4,6 +4,8 @@ npm-debug.log
 .gitignore
 tsconfig.json
 test
+coverage
+.nyc_output
 example
 .DS_Store
 .idea
