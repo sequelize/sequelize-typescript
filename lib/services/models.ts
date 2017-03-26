@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
-import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {inferDataType} from "../utils/data-type";
 import {deepAssign} from "../utils/object";
@@ -15,7 +14,6 @@ const MODEL_NAME_KEY = 'sequelize:modelName';
 const SCOPES_KEY = 'sequelize:scopes';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
 const OPTIONS_KEY = 'sequelize:options';
-const FOREIGN_KEYS_KEY = 'sequelize:foreignKey';
 const DEFAULT_OPTIONS: DefineOptions<any> = {
   timestamps: false
 };
@@ -151,26 +149,6 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
   throw new Error(`Specified type of property '${propertyName}' 
             cannot be automatically resolved to a sequelize data type. Please
             define the data type manually`);
-}
-
-/**
- * Adds foreign key meta data for specified class
- */
-export function addForeignKey(target: any,
-                              relatedClassGetter: () => typeof Model,
-                              propertyName: string): void {
-
-  let foreignKeys = getForeignKeys(target);
-
-  if (!foreignKeys) {
-    foreignKeys = [];
-    setForeignKeys(target, foreignKeys);
-  }
-
-  foreignKeys.push({
-    relatedClassGetter,
-    foreignKey: propertyName
-  });
 }
 
 /**
@@ -348,21 +326,4 @@ function preConformInclude(include: any, source: any): any {
 function setScopeOptions(target: any, options: IScopeOptions): void {
 
   Reflect.defineMetadata(SCOPES_KEY, options, target);
-}
-
-
-/**
- * Returns foreign key meta data from specified class
- */
-function getForeignKeys(target: any): ISequelizeForeignKeyConfig[]|undefined {
-
-  return Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
-}
-
-/**
- * Set foreign key meta data for specified prototype
- */
-function setForeignKeys(target: any, foreignKeys: ISequelizeForeignKeyConfig[]): void {
-
-  Reflect.defineMetadata(FOREIGN_KEYS_KEY, foreignKeys, target);
 }

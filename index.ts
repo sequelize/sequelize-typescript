@@ -32,6 +32,7 @@ export {IsIn} from "./lib/annotations/validation/IsIn";
 export {IsInt} from "./lib/annotations/validation/IsInt";
 export {IsIP} from "./lib/annotations/validation/IsIP";
 export {IsIPv4} from "./lib/annotations/validation/IsIPv4";
+export {IsArray} from "./lib/annotations/validation/IsArray";
 export {IsIPv6} from "./lib/annotations/validation/IsIPv6";
 export {IsLowercase} from "./lib/annotations/validation/IsLowercase";
 export {IsNull} from "./lib/annotations/validation/IsNull";

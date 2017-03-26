@@ -6,7 +6,10 @@ node_js:
 install:
   - npm install
 
-before_script:
-
 script:
-  - npm test
+  - npm run lint
+  - npm run build
+  - npm run cover
+
+after_success:
+ - 'nyc report --reporter=lcov > coverage.lcov && codecov'

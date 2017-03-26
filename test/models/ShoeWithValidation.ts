@@ -3,7 +3,8 @@ import {
   Equals, Contains, Is, IsDate, Length, IsUrl, IsAfter, IsBefore,
   IsUUID, IsAlpha, IsAlphanumeric, IsEmail, IsInt, IsDecimal, IsFloat,
   IsIn, IsIP, IsIPv4, IsIPv6, IsLowercase, IsUppercase, Max, Min,
-  Not, NotContains, NotIn, NotNull, Validate
+  Not, NotContains, NotIn, NotNull, Validate, NotEmpty, IsNumeric,
+  IsNull, IsArray
 } from "../../index";
 import {IsCreditCard} from "../../lib/annotations/validation/IsCreditCard";
 
@@ -80,6 +81,10 @@ export class ShoeWithValidation extends Model<ShoeWithValidation> {
   @IsLowercase
   @IsUppercase
   @NotNull
+  @NotEmpty
+  @IsArray
+  @IsNull
+  @IsNumeric
   @Max(MAX)
   @Min(MIN)
   @Not(NOT)

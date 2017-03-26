@@ -1,7 +1,7 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {DefineValidateOptions} from "sequelize";
-import {createSequelize} from "../utils/sequelize";
+import {createSequelize, createSequelizeValidationOnly} from "../utils/sequelize";
 import {
   ShoeWithValidation, KEY_VALUE, PARTIAL_SPECIAL_VALUE, BRAND_LENGTH,
   hexColor, HEX_REGEX, PRODUCED_AT_IS_AFTER, PRODUCED_AT_IS_BEFORE, UUID_VERSION, MAX, MIN, NOT, IS_IN, NOT_CONTAINS
@@ -181,6 +181,15 @@ describe('validation', () => {
 
     it(`should not throw due to valid values`, () => Promise.all(validPromises));
     it(`should throw due to invalid values`, () => Promise.all(invalidPromises));
+
+  });
+
+  describe('only', () => {
+
+    it('should not throw', () => {
+
+      expect(() => createSequelizeValidationOnly()).not.to.throw();
+    });
 
   });
 

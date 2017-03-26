@@ -12,8 +12,8 @@ describe('utils', () => {
       const childSourceF = {};
       const childSourceA = {f: childSourceF};
       const childSourceB = {};
-      const source1 = {a: childSourceA, b: childSourceB, c: 1, d: 'd'};
-      const source2 = {e: 'für elisa', g: () => null, arr: [{h: 1}, {}, 'e']};
+      const source1 = {a: childSourceA, b: childSourceB, c: 1, d: 'd', over: 'ride', regex: /reg/gim};
+      const source2 = {e: 'für elisa', g: () => null, arr: [{h: 1}, {}, 'e'], over: 'ridden'};
       const sourceKeys = [].concat(Object.keys(source1), Object.keys(source2));
 
       it('should not be undefined', () => {
@@ -32,6 +32,13 @@ describe('utils', () => {
         ;
       });
 
+      it('should override previous properties', () => {
+
+        const copy = deepAssign({}, source1, source2);
+
+        expect(copy).to.have.property('over', 'ridden');
+      });
+
       it('should have all primitive & function values of sources', () => {
 
         const copy = deepAssign({}, source1, source2);
@@ -41,7 +48,7 @@ describe('utils', () => {
 
             if (typeof copy[key] !== 'object') {
 
-              expect(copy[key]).to.equal(source1[key] || source2[key]);
+              expect(copy[key]).to.equal(source2[key] || source1[key]);
             }
           })
         ;

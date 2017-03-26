@@ -10,6 +10,7 @@ node_modules
 
 # testing
 coverage
+.nyc_output
 
 #logs
 npm-debug.log

@@ -29,6 +29,9 @@ export class ShoeWithScopes extends Model<ShoeWithScopes> {
   secondaryColor: string;
 
   @Column
+  img: Buffer;
+
+  @Column
   producedAt: Date;
 
   @ForeignKey(() => Manufacturer)

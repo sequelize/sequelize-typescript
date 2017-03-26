@@ -6,6 +6,8 @@ import {User} from "../models/User";
 import {getOptions, getAttributes} from "../../lib/services/models";
 import {Shoe, SHOE_TABLE_NAME} from "../models/Shoe";
 
+/* tslint:disable:max-classes-per-file */
+
 describe('table_column', () => {
 
   const sequelize = createSequelize();
@@ -195,49 +197,94 @@ describe('table_column', () => {
 
   });
 
-  describe('implicit get', () => {
+  describe('accessors', () => {
 
-    @Table
-    class User extends Model<User> {
+    describe('get', () => {
 
-      @Column
-      get name(): string {
-        return 'My name is ' + this.getDataValue('name');
+      @Table
+      class User extends Model<User> {
+
+        @Column
+        get name(): string {
+          return 'My name is ' + this.getDataValue('name');
+        }
+
+        set name(value: string) {
+          this.setDataValue('name', value);
+        }
       }
 
-      set name(value: string) {
-        this.setDataValue('name', value);
+      sequelize.addModels([User]);
+
+      it('should consider getter', () => {
+
+        const user = new User({});
+        user.name = 'Peter';
+
+        expect(user.name).to.equal('My name is Peter');
+      });
+
+      it('shouldn\'t store value from getter into db', () => {
+
+        const user = new User({});
+
+        user.name = 'elli';
+
+        return user
+          .save()
+          .then(() => User.findById(user.id))
+          .then(_user => {
+
+            expect(_user.getDataValue('name')).to.equal('elli');
+          });
+      });
+
+    });
+
+    describe('set', () => {
+
+      @Table
+      class User extends Model<User> {
+
+        @Column
+        get name(): string {
+          return this.getDataValue('name');
+        }
+
+        set name(value: string) {
+          this.setDataValue('name', value.toUpperCase());
+        }
       }
-    }
 
-    sequelize.addModels([User]);
+      sequelize.addModels([User]);
 
-    it('should consider getter', () => {
+      it('should consider setter', () => {
 
-      const user = new User({});
-      user.name = 'Peter';
+        const name = 'Peter';
 
-      expect(user.name).to.equal('My name is Peter');
+        const user = new User({});
+        user.name = name;
+
+        expect(user.name).to.equal(name.toUpperCase());
+      });
+
+      it('should store value from setter into db', () => {
+
+        const name = 'elli';
+        const user = new User({});
+
+        user.name = name;
+
+        return user
+          .save()
+          .then(() => User.findById(user.id))
+          .then(_user => {
+
+            expect(_user.getDataValue('name')).to.equal(name.toUpperCase());
+          });
+      });
+
     });
-
-    it('shouldn\'t store value from getter', () => {
-
-      const user = new User({});
-
-      user.name = 'elli';
-
-      return user
-        .save()
-        .then(() => User.findById(user.id))
-        .then(_user => {
-
-          expect(_user.getDataValue('name')).to.equal('elli');
-        });
-    });
-
-  });
-
-  describe('implicit set', () => {
 
   });
 

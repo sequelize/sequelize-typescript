@@ -15,6 +15,15 @@ export function createSequelize(useModelsInPath: boolean = true): Sequelize {
   });
 }
 
+export function createSequelizeValidationOnly(useModelsInPath: boolean = true): Sequelize {
+
+  return new Sequelize({
+    validateOnly: true,
+    logging: !('SEQ_SILENT' in process.env),
+    modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
+  });
+}
+
 export function createOriginSequelize(): SequelizeType {
 
   return new OriginSequelize('___', 'root', '', {

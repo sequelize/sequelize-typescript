@@ -44,7 +44,7 @@ Your `tsconfig.json` needs the following flags:
 
 ## Model definition
 ```typescript
-import {Table, Column, Model} from 'sequelize-typescript';
+import {Table, Column, Model, HasMany} from 'sequelize-typescript';
 
 @Table
 class Person extends Model<Person> {
@@ -53,7 +53,10 @@ class Person extends Model<Person> {
   name: string;
 
   @Column
-  age: number;
+  birthday: Date;
+
+  @HasMany(() => Hobby)
+  hobbies: Hobby[];
 }
 ```
 The model needs to extend the `Model` class and has to be annotated with the `@Table` decorator. All properties, that
@@ -160,6 +163,23 @@ Design type      | Sequelize data type
  `number`        | `INTEGER`
  `Date`          | `DATE`
  `Buffer`        | `BLOB`
+ 
+### Accessors
+Get/set accessors do work as well
+```typescript
+@Table
+class Person extends Model<Person> {
+
+  @Column
+  get name(): string {
+    return 'My name is ' + this.getDataValue('name');
+  }
+  
+  set name(value: string) {
+    this.setDataValue('name', value);
+  }
+}
+```
  
 ## Usage
 Except for minor variations *sequelize-typescript* will work like pure sequelize. 
