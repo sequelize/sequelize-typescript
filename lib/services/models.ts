@@ -195,7 +195,7 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
           if (!module[modelName] && !module.default) {
             throw new Error(`No default export defined for file "${file}" or export does not satisfy filename.`);
           }
-          return module[modelName];
+          return module[modelName] || module.default;
         });
 
       models.push(..._models);

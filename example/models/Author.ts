@@ -1,7 +1,7 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany,
 DefaultScope, Scopes} from "../../index";
 import {AuthorFriend} from "./AuthorFriend";
-import {Book} from "./Book";
+import Book from "./Book";
 
 @DefaultScope({
   attributes: ['id', 'name']

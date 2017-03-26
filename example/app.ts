@@ -5,7 +5,7 @@ import {Comment} from './models/Comment';
 import {Sequelize} from "../index";
 import * as prettyjson from 'prettyjson';
 import {Person} from "./models/validation-only/Person";
-import {Book} from "./models/Book";
+import Book from "./models/Book";
 
 /* tslint:disable:no-console */
 /* tslint:disable:no-unused-new */

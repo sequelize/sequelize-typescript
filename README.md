@@ -9,6 +9,8 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [`@Table` API](#table-api)
    - [`@Column` API](#column-api)
  - [Usage](#usage)
+   - [Configuration](#Ccnfiguration)
+   - [Model-path resolving](#model-path-resolving)
  - [Model association](#model-association)
    - [One-to-many](#one-to-many)
    - [Many-to-many](#many-to-many)
@@ -173,15 +175,26 @@ const sequelize =  new Sequelize({
         username: 'root',
         password: '',
         storage: ':memory:',
-        modelPaths: [__dirname + '/models'] // here
+        modelPaths: [__dirname + '/models']
 });
-
-sequelize.addModels([Person]); // and/or here
 ```
 Before you can use your models, you have to tell sequelize where they can be found. So either set `modelPaths` in the 
 sequlize config or add the required models later on by calling `sequelize.addModels([Person])` or 
-`sequelize.addModels([__dirname + '/models'])`.
+`sequelize.addModels([__dirname + '/models'])`:
 
+```typescript
+sequelize.addModels([Person]);
+sequelize.addModels(['path/to/models']);
+```
+#### Model-path resolving
+When using a path to resolve the required models, either the class has to be exported as default or if not exported
+as default, the file should have the same name as the corresponding class:
+```typescript
+export default class User extends Model<User> {}
+
+// User.ts
+export class User extends Model<User> {}
+```
 ### Build and create
 Instantiation and inserts can be achieved in the good old sequelize way
 ```typescript
@@ -361,10 +374,10 @@ explicitly:
   proofedBooks: Book[];
 ```
 
-### Type safe usage of generated getter and setter
-With the creation of a relation, sequelize generates getter and setter functions on the corresponding
+### Type safe usage of auto generated functions
+With the creation of a relation, sequelize generates some method on the corresponding
 models. So when you create a 1:n relation between `ModelA` and `ModelB`, an instance of `ModelA` will
-have the functions `getModelBs`, `setModelBs`, `addModelB`. These functions still exist with *sequelize-typescript*. 
+have the functions `getModelBs`, `setModelBs`, `addModelB`, `removeModelB`, `hasModelB`. These functions still exist with *sequelize-typescript*. 
 But TypeScript will not know of them and in turn will complain, when you try to access `getModelB`, `setModelB` or 
 `addModelB`. To make TypeScript happy, the `Model.prototype` of *sequelize-typescript* has `$set`, `$get`, `$add` 
 functions. 
@@ -387,9 +400,13 @@ To use them pass the property key of the respective relation as the first parame
 ```typescript
 const modelA = new ModelA();
 
-modelA.$set('bs', [ /* models */]).then( /* ... */);
-modelA.$add('b', /* model */).then( /* ... */);
+modelA.$set('bs', [ /* instance */]).then( /* ... */);
+modelA.$add('b', /* instance */).then( /* ... */);
 modelA.$get('bs').then( /* ... */);
+modelA.$count('bs').then( /* ... */);
+modelA.$has('bs').then( /* ... */);
+modelA.$remove('bs', /* instance */ ).then( /* ... */);
+modelA.$create('bs', /* value */ ).then( /* ... */);
 ```
 
 ## Model validation
