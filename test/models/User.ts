@@ -23,6 +23,9 @@ export class User extends Model<User> {
   @Column
   username: string;
 
+  @Column(DataType.STRING(5))
+  username2: string;
+
   @Column
   aNumber: number;
 

@@ -1,10 +1,14 @@
-import {expect} from 'chai';
+import {expect, use} from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
 import {DefineAttributes} from 'sequelize';
 import {Model, Table, Column, DataType} from "../../index";
 import {createSequelize} from "../utils/sequelize";
 import {User} from "../models/User";
 import {getOptions, getAttributes} from "../../lib/services/models";
 import {Shoe, SHOE_TABLE_NAME} from "../models/Shoe";
+import * as _ from 'lodash';
+
+use(chaiAsPromised);
 
 /* tslint:disable:max-classes-per-file */
 
@@ -28,6 +32,9 @@ describe('table_column', () => {
     },
     username: {
       type: DataType.STRING
+    },
+    username2: {
+      type: DataType.STRING(5)
     },
     aNumber: {
       type: DataType.INTEGER
@@ -147,7 +154,7 @@ describe('table_column', () => {
 
               try {
 
-                expect(attributes[key]).to.have.property(attrOptionKey, expectedUserAttributes[key][attrOptionKey]);
+                expect(attributes[key]).to.have.property(attrOptionKey).that.eql(expectedUserAttributes[key][attrOptionKey]);
               } catch (e) {
 
                 e.message += ` for property "${key}"`;
@@ -193,6 +200,38 @@ describe('table_column', () => {
       expect(uidv4SeqRawAttrOptions.type).to.be.an.instanceOf(DataType.UUID);
       expect(uidv4SeqRawAttrOptions).to.have.property('defaultValue');
       expect(uidv4SeqRawAttrOptions.defaultValue).to.be.an.instanceof(DataType.UUIDV4);
+    });
+
+  });
+
+  describe('column', () => {
+
+    it('should create appropriate sql query', () => {
+
+      const seq = createSequelize(false);
+
+      @Table
+      class Bottle extends Model<Bottle> {
+
+        @Column(DataType.STRING(5))
+        brand: string;
+
+        @Column(DataType.CHAR(2))
+        key: string;
+
+        @Column(DataType.INTEGER(100))
+        num: number;
+      }
+
+      seq.addModels([Bottle]);
+
+      return Bottle.sync({
+        force: true, logging: _.after(2, _.once((sql) => {
+
+          // tslint:disable:max-line-length
+          expect(sql).to.match(/CREATE TABLE IF NOT EXISTS `Bottle` \(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `brand` VARCHAR\(5\), `key` CHAR\(2\), `num` INTEGER\(100\)\)/);
+        }))
+      });
     });
 
   });

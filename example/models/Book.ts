@@ -10,7 +10,9 @@ import {Author} from "./Author";
 @Table
 export default class Book extends Model<Book> {
 
-  @Column
+  @Column({
+    type: DataType.STRING(50)
+  })
   title: string;
 
   @BelongsToMany(() => Author, 'AuthorBook', 'bookId', 'authorId')
