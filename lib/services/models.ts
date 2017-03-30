@@ -46,7 +46,13 @@ export function getAttributes(target: any): any|undefined {
   const attributes = Reflect.getMetadata(ATTRIBUTES_KEY, target);
 
   if (attributes) {
-    return deepAssign({}, attributes);
+
+    return Object.keys(attributes).reduce((copy, key) => {
+
+      copy[key] = Object.assign({}, attributes[key]);
+
+      return copy;
+    }, {});
   }
 }
 
