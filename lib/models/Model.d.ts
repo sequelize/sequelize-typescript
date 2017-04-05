@@ -14,17 +14,12 @@ import {
 } from 'sequelize';
 import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
 import {IBuildOptions} from "../interfaces/IBuildOptions";
+import {ICreateOptions} from "../interfaces/ICreateOptions";
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
 /* tslint:disable:max-classes-per-file */
-
-// Webstorm cannot resolve "Partial" type automatically,
-// so we write our own one
-type _Partial<T> = {
-  [P in keyof T]?: T[P];
-  };
 
 /**
  * Creates override for sequelize model to make the food
@@ -306,8 +301,8 @@ export declare class Model<T> extends Hooks {
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create<T extends Model<T>>(values?: any, options?: CreateOptions): Promise<T>;
-  static create<T extends Model<T>, A>(values?: A, options?: CreateOptions): Promise<T>;
+  static create<T extends Model<T>>(values?: any, options?: ICreateOptions): Promise<T>;
+  static create<T extends Model<T>, A>(values?: A, options?: ICreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
