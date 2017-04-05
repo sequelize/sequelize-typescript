@@ -36,3 +36,19 @@ export function assertInstance(instance: any|any[], expectedValues: any|any[]): 
 
     });
 }
+
+/**
+ * Checks if specified value contains es6 syntax or not;
+ * @returns true if it contains es6 syntax
+ */
+export function containsEs6Syntax(value: string): boolean {
+
+  // tslint:disable:max-line-length
+  const ES6_SYNTAX_REGEX = /(^class | class )|(^const | const )|(^let | let )|(^async | async )|(^await | await )|(^yield | yield )|(=>)|function\*|\`/gm;
+
+  return ES6_SYNTAX_REGEX.test(
+    value
+      .replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '') // remove /** */ and /* */ // comments
+      .replace(/(["'])(?:(?=(\\?))\2.)*?\1/gm, '') // remove all quotes
+  );
+}
