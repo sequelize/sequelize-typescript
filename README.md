@@ -10,7 +10,7 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [`@Table` API](#table-api)
    - [`@Column` API](#column-api)
  - [Usage](#usage)
-   - [Configuration](#Ccnfiguration)
+   - [Configuration](#configuration)
    - [Model-path resolving](#model-path-resolving)
  - [Model association](#model-association)
    - [One-to-many](#one-to-many)
