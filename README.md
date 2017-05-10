@@ -22,7 +22,7 @@ Decorators and some other extras for sequelize (v3 + v4).
  - [Model valiation](#model-validation)
  - [Scopes](#scopes)
  - [Why `() => Model`?](#user-content-why---model)
- - [Limitations and recommendations](#limitations-and-recommendations)
+ - [Recommendations and limitations](#recommendations-and-limitations)
 
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
@@ -552,8 +552,8 @@ comes to circular-dependencies (which are in general solved by node for you) `Mo
 when it gets passed to @ForeignKey. With the usage of a function, which returns the actual model, we prevent
 this issue.
 
-## Limitations and recommendations
-### One connection per model 
+## Recommendations and limitations 
+### One Sequelize instance per model 
 You cannot add one and the same model to multiple Sequelize instances with
 differently configured connections. So that one model will only work for one connection.
 ### One model class per file
@@ -562,3 +562,9 @@ of execution. Since typescript creates a `__metadata("design:type", SomeModel)` 
 compile option, in some cases `SomeModel` is probably not defined(not undefined!) and would throw a `ReferenceError`.
 When putting `SomeModel` in a separate file, it would look like `__metadata("design:type", SomeModel_1.SomeModel)`,
 which does not throw an error.
+### Minification
+If you need to minify your code, you need to set `tableName` and `modelName` 
+in the `DefineOptions` for `@Table` annotation. sequelize-typescript
+uses the class name as default name for `tableName` and `modelName`. 
+When the code is minified the class name will no longer be the originally
+defined one (So that `class User` will become `class b` for example).

@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as Promise from 'bluebird';
-import {UniqueConstraintError, DefineOptions} from 'sequelize';
+import {UniqueConstraintError} from 'sequelize';
 import * as chaiAsPromised from 'chai-as-promised';
 import {createSequelize} from "../utils/sequelize";
 import {
@@ -16,6 +16,7 @@ import {
   BelongsToMany
 } from "../../index";
 import chaiDatetime = require('chai-datetime');
+import {IDefineOptions} from "../../lib/interfaces/IDefineOptions";
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -494,7 +495,7 @@ describe('model', () => {
           fields: ['fieldD']
         }],
         engine: 'MyISAM'
-      } as DefineOptions<any>)
+      } as IDefineOptions)
       class ModelA extends Model<ModelA> {
         @Column
         fieldA: string;

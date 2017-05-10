@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import {setModelName, addOptions} from "../services/models";
-import {DefineOptions} from "sequelize";
+import {IDefineOptions} from "../interfaces/IDefineOptions";
 
-export function Table(options: DefineOptions<any>): Function;
+export function Table(options: IDefineOptions): Function;
 export function Table(target: any): void;
 export function Table(arg: any): void|Function {
 
@@ -12,19 +12,19 @@ export function Table(arg: any): void|Function {
     annotate(target);
   } else {
 
-    const options: DefineOptions<any> = Object.assign({}, arg);
+    const options: IDefineOptions = Object.assign({}, arg);
 
     return (target: any) => annotate(target, options);
   }
 }
 
-function annotate(target: any, options: DefineOptions<any> = {}): void {
+function annotate(target: any, options: IDefineOptions = {}): void {
 
   if (!options.tableName) options.tableName = target.name;
 
   options.instanceMethods = target.prototype;
   options.classMethods = target;
 
-  setModelName(target.prototype, options['modelName'] || target.name);
+  setModelName(target.prototype, options.modelName || target.name);
   addOptions(target.prototype, options);
 }

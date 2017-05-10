@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
-import {DefineOptions} from 'sequelize';
 import {Model} from "../Model";
 import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
@@ -35,7 +34,7 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
   getThroughModel(through: string): typeof Model {
 
     // tslint:disable:max-classes-per-file
-    @Table({tableName: through, modelName: through} as DefineOptions<any>)
+    @Table({tableName: through, modelName: through})
     class Through extends Model<Through> {
     }
 

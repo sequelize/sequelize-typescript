@@ -3,7 +3,6 @@ import {useFakeTimers} from 'sinon';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as validateUUID from 'uuid-validate';
 import {createSequelize} from "../utils/sequelize";
-import {DefineOptions} from "sequelize";
 import {
   Sequelize, Model, Table, Column, AllowNull, PrimaryKey,
   ForeignKey, HasMany, BelongsTo, HasOne, DataType, Default
@@ -22,6 +21,7 @@ import {UserWithNoAutoIncrementation} from "../models/UserWithNoAutoIncrementati
 import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
 import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
 import chaiDatetime = require('chai-datetime');
+import {IDefineOptions} from "../../lib/interfaces/IDefineOptions";
 // import {UserWithSwag} from "../models/UserWithSwag";
 
 // TODO@robin create belongs to many with through options "add" test
@@ -2103,7 +2103,7 @@ describe('instance', () => {
 
     it('returns null for null, undefined, and unset boolean values', () => {
 
-      @Table({logging: true} as DefineOptions<any>)
+      @Table({logging: true} as IDefineOptions)
       class Setting extends Model<Setting> {
 
         @Column
@@ -2212,7 +2212,7 @@ describe('instance', () => {
 
     it('returns all values', () => {
 
-      @Table({logging: false} as DefineOptions<any>)
+      @Table({logging: false} as IDefineOptions)
       class UserHelper extends Model<UserHelper> {
 
         @Column
