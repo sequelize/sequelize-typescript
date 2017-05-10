@@ -150,6 +150,7 @@ Decorator                             | Description
 --------------------------------------|---------------------
  `@AllowNull(allowNull?: boolean)`    | sets `attribute.allowNull` (default is `true`)
  `@AutoIncrement`                     | sets `attribute.autoIncrement=true`
+ `@Unique`                            | sets `attribute.unique=true`
  `@Default(value: any)`               | sets `attribute.defaultValue` to specified value
  `@PrimaryKey`                        | sets `attribute.primaryKey=true`
  Validate annotations                 | see [Model valiation](#model-validation)

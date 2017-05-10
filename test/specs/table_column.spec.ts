@@ -28,6 +28,7 @@ describe('table_column', () => {
     },
     uuidv4: {
       type: DataType.UUID,
+      unique: true,
       defaultValue: DataType.UUIDV4
     },
     username: {

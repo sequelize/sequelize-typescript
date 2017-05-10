@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull} from "../../index";
+import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull, Unique} from "../../index";
 
 @Table
 export class User extends Model<User> {
@@ -14,10 +14,9 @@ export class User extends Model<User> {
   })
   uuidv1: string;
 
-  @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4
-  })
+  @Unique
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
   uuidv4: string;
 
   @Column
@@ -38,7 +37,7 @@ export class User extends Model<User> {
   @Default(false)
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
-  isSuperUser: boolean|number;
+  isSuperUser: boolean | number;
 
   @Column({
     defaultValue: DataType.NOW
