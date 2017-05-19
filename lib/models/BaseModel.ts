@@ -34,7 +34,7 @@ export abstract class BaseModel {
 
     // copies all prototype members of this to target.prototype
     Object
-      .getOwnPropertyNames(this.prototype)
+      .keys(this.prototype)
       .forEach(name => target.prototype[name] = this.prototype[name])
     ;
 
