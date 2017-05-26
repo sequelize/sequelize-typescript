@@ -70,13 +70,17 @@ sequelize
   )
   .then(() => {
     const post = new Post({
-      text: 'hey2',
+      text: 'hey',
       author: {
         name: 'jörn'
       }
     }, {include: [Author]});
 
-    return post.save();
+    return post
+      .save({validate: true})
+      .catch(err => {
+        'stop';
+      });
   })
   .then(() => Post.build<Post>({text: 'hey3'}).save())
   .then(() => Post

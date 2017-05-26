@@ -3,9 +3,9 @@
  * The last source overrides all properties of the previous
  * ones, if they have the same names
  */
-export function deepAssign<T, S1, S2, S3>(target: T, source1: S1, source2: S2, source3: S3): T&S1&S2&S3;
-export function deepAssign<T, S1, S2>(target: T, source1: S1, source2: S2): T&S1&S2;
-export function deepAssign<T, S>(target: T, source: S): T&S;
+export function deepAssign<T, S1, S2, S3>(target: T, source1: S1, source2: S2, source3: S3): T & S1 & S2 & S3;
+export function deepAssign<T, S1, S2>(target: T, source1: S1, source2: S2): T & S1 & S2;
+export function deepAssign<T, S>(target: T, source: S): T & S;
 export function deepAssign<S>(target: {}, source: S): S;
 export function deepAssign(target: any, ...sources: any[]): any {
 
@@ -19,7 +19,7 @@ export function deepAssign(target: any, ...sources: any[]): any {
 
   return target;
 
-  function assign(key: string|number, _target: any, _source: any): void {
+  function assign(key: string | number, _target: any, _source: any): void {
 
     const sourceValue = _source[key];
     if (sourceValue !== void 0) {
@@ -91,3 +91,21 @@ export function cloneRegExp(input: RegExp, injectFlags?: string): RegExp {
   return ( new RegExp(pattern, flags) );
 }
 
+export function getAllPropertyNames(obj: any): string[] {
+  const names: string[] = [];
+  do {
+    names.push.apply(names, Object.getOwnPropertyNames(obj));
+    obj = Object.getPrototypeOf(obj);
+  } while (obj !== Object.prototype);
+
+  const exists: {[name: string]: boolean|undefined} = {};
+
+  return names.filter(name => {
+
+    const isValid = !exists[name] && name !== 'constructor';
+
+    exists[name] = true;
+
+    return isValid;
+  });
+}

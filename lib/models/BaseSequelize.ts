@@ -64,6 +64,7 @@ export abstract class BaseSequelize {
     const models = getModels(arg);
 
     this.defineModels(models);
+    models.forEach(model => model.isInitialized = true);
     this.associateModels(models);
     resolveScopes(models);
   }
