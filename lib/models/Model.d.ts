@@ -28,6 +28,8 @@ export declare class Model<T> extends Hooks {
 
   constructor(values?: any, options?: IBuildOptions);
 
+  static isInitialized: boolean;
+
   /**
    * Remove attribute from model definition
    *

@@ -4,10 +4,13 @@ import {majorVersion} from "../utils/versioning";
 import {capitalize} from "../utils/string";
 import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
 import {preConformIncludes} from "../services/models";
+import {getAllPropertyNames} from "../utils/object";
 
 const parentPrototype = majorVersion === 3 ? (Instance as any).prototype : (Model as any).prototype;
 
 export abstract class BaseModel {
+
+  static isInitialized: boolean = false;
 
   /**
    * Indicates which static methods of Model has to be proxied,
@@ -47,26 +50,50 @@ export abstract class BaseModel {
       .forEach(name => target[name] = this[name])
     ;
 
-
-    // Creates proxies for pre conforming include options; see "preConformIncludes"
-    Object
-      .keys(this.toPreConformIncludeMap)
+    // Creates proxies for all static methods but forbidden ones
+    getAllPropertyNames(target)
+      .filter(key => !isForbiddenKey(key))
       .forEach(key => {
+
+        if (typeof target[key] !== 'function') return;
 
         const superFn = target[key];
 
         target[key] = function(...args: any[]): any {
 
-          const options = args[BaseModel.toPreConformIncludeMap[key]];
+          if (!this.isInitialized) {
+            throw new Error(`Model not initialized: "${this.name}" needs to be added to a Sequelize instance ` +
+              `before "${key}" can be called.`);
+          }
 
-          if (options) {
+          const optionIndex = BaseModel.toPreConformIncludeMap[key];
 
-            args[BaseModel.toPreConformIncludeMap[key]] = preConformIncludes(options, this);
+          if (optionIndex !== void 0) {
+
+            const options = args[optionIndex];
+
+            if (options) {
+
+              args[optionIndex] = preConformIncludes(options, this);
+            }
           }
 
           return superFn.call(this, ...args);
         };
       });
+
+    function isForbiddenKey(key: string): boolean {
+
+      // is private member?
+      if (key.charAt(0) === '_') {
+        return true;
+      }
+
+      const forbiddenKeys = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
+        'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes'];
+
+      return forbiddenKeys.indexOf(key) !== -1;
+    }
   }
 
   static prepareInstantiationOptions(options: BuildOptions, source: any): BuildOptions {

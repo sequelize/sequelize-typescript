@@ -6,6 +6,7 @@ import {Comment} from "./Comment";
 import {PostTopic} from "./PostTopic";
 import {Topic} from "./Topic";
 import {Author} from "./Author";
+import {Length} from "../../lib/annotations/validation/Length";
 
 @Scopes({
   full: {
@@ -28,7 +29,9 @@ export class Post extends Model<Post> {
   @Column
   id: number;
 
-  @Column
+  @Column({
+    field: '_text_'
+  })
   text: string;
 
   @HasMany(() => Comment)
@@ -45,3 +48,5 @@ export class Post extends Model<Post> {
   author?: Author;
 
 }
+
+Post.beforeCreate(post => {});

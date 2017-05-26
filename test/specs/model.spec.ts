@@ -66,6 +66,17 @@ describe('model', () => {
     return MainUser.sync({force: true});
   });
 
+  describe('static functions when not initialized', () => {
+
+    it('should throw an error', () => {
+      @Table
+      class Test extends Model<Test> {}
+
+      expect(() => Test.beforeCreate(test => test)).to.throw(/^Model not initialized/);
+    });
+
+  });
+
   describe('constructor', () => {
     it('uses the passed dao name as tablename if freezeTableName', () => {
 
