@@ -16,6 +16,7 @@ import {getForeignKey} from "../services/association";
 export abstract class BaseSequelize {
 
   thoughMap: {[through: string]: any} = {};
+  _: {[modelName: string]: (typeof Model)} = {};
 
   static extend(target: any): void {
 
@@ -67,6 +68,7 @@ export abstract class BaseSequelize {
     models.forEach(model => model.isInitialized = true);
     this.associateModels(models);
     resolveScopes(models);
+    models.forEach(model => this._[model.name] = model);
   }
 
   init(config: ISequelizeConfig): void {

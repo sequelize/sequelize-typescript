@@ -7,6 +7,7 @@ import {
   hexColor, HEX_REGEX, PRODUCED_AT_IS_AFTER, PRODUCED_AT_IS_BEFORE, UUID_VERSION, MAX, MIN, NOT, IS_IN, NOT_CONTAINS
 } from "../models/ShoeWithValidation";
 import {majorVersion} from "../../lib/utils/versioning";
+import {Is} from "../../lib/annotations/validation/Is";
 
 use(chaiAsPromised);
 
@@ -181,6 +182,20 @@ describe('validation', () => {
 
     it(`should not throw due to valid values`, () => Promise.all(validPromises));
     it(`should throw due to invalid values`, () => Promise.all(invalidPromises));
+
+  });
+
+  describe('decorators', () => {
+
+    describe('Is', () => {
+
+      it('Should throw due to missing name of function', () => {
+
+        expect(() => Is(() => null)).to.throw(/Passed validator function must have a name/);
+
+      });
+
+    });
 
   });
 

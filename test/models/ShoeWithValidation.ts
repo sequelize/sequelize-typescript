@@ -51,6 +51,7 @@ export class ShoeWithValidation extends Model<ShoeWithValidation> {
   brandUrl: string;
 
   @Is('HexColor', hexColor)
+  @Length({min: 4, msg: 'too short'})
   @Column
   primaryColor: string;
 

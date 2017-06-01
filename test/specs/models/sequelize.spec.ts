@@ -60,4 +60,15 @@ describe('sequelize', () => {
 
   });
 
+  describe('model', () => {
+
+    it('should make class references of loaded models available', () => {
+
+      sequelize.addModels([__dirname + '/../../models/exports/']);
+
+      expect(sequelize._).to.have.property('Game', Game);
+      expect(sequelize._).to.have.property('Gamer', Gamer);
+    });
+
+  });
 });
