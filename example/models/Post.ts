@@ -6,6 +6,7 @@ import {Comment} from "./Comment";
 import {PostTopic} from "./PostTopic";
 import {Topic} from "./Topic";
 import {Author} from "./Author";
+import {Length} from "../../lib/annotations/validation/Length";
 
 @Scopes({
   full: {
@@ -47,3 +48,5 @@ export class Post extends Model<Post> {
   author?: Author;
 
 }
+
+Post.beforeCreate(post => {});
