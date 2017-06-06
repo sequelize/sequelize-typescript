@@ -32,8 +32,9 @@
   "dependencies": {
     "@types/node": "6.0.41",
     "@types/reflect-metadata": "0.0.4",
-    "@types/sequelize": "4.0.58",
-    "es6-shim": "0.35.3"
+    "@types/sequelize": "4.0.59",
+    "es6-shim": "0.35.3",
+    "sequelize": "4.0.0-1"
   },
   "devDependencies": {
     "@types/chai": "3.4.35",
