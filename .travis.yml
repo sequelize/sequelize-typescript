@@ -9,6 +9,7 @@ install:
 script:
   - npm run lint
   - npm run build
+  - export SEQ_SILENT=true
   - npm run cover
 
 after_success:
