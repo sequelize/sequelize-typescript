@@ -9,6 +9,7 @@ import {deepAssign} from "../utils/object";
 import {IScopeOptions} from "../interfaces/IScopeOptions";
 import {IFindOptions} from "../interfaces/IFindOptions";
 import {getAssociationsByRelation} from "./association";
+import {uniqueFilter} from "../utils/array";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const SCOPES_KEY = 'sequelize:scopes';
@@ -168,18 +169,20 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
 
       const _models = fs
         .readdirSync(dir as string)
-        .filter(file => ((file.indexOf('.') !== 0) && (file.slice(-3) === '.js')))
-        .map(file => {
-          const fullPath = path.join(dir, file);
-          const modelName = path.basename(file, '.js');
+        .filter(file => {
+          const extension = file.slice(-3);
+          return extension === '.js' || extension === '.ts';
+        })
+        .map(file => path.parse(file).name)
+        .filter(uniqueFilter)
+        .map(fileName => {
+          const fullPath = path.join(dir, fileName);
+          const module = require(fullPath);
 
-          // use require main to require from root
-          const module = require.main.require(fullPath);
-
-          if (!module[modelName] && !module.default) {
-            throw new Error(`No default export defined for file "${file}" or export does not satisfy filename.`);
+          if (!module[fileName] && !module.default) {
+            throw new Error(`No default export defined for file "${fileName}" or export does not satisfy filename.`);
           }
-          return module[modelName] || module.default;
+          return module[fileName] || module.default;
         });
 
       models.push(..._models);
