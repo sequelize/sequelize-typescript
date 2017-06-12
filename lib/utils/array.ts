@@ -1,4 +1,12 @@
-export function capitalize(value: string): string {
+/**
+ * Removes duplicates from specified array
+ */
+export function unique<T>(arr: T[]): T[] {
 
-  return value.charAt(0).toUpperCase() + value.substr(1, value.length);
+  return arr.filter(uniqueFilter);
 }
+
+/**
+ * Returns true for items, that only exists once on an array
+ */
+export const uniqueFilter = (item, index, arr) => arr.indexOf(item) === index;
