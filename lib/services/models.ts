@@ -170,8 +170,9 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
       const _models = fs
         .readdirSync(dir as string)
         .filter(file => {
+          // TODO extension is not necessarily only the lasst three characters
           const extension = file.slice(-3);
-          return extension === '.js' || (extension === '.ts' && file.slice(-4) !== '.d.ts');
+          return extension === '.js' || (extension === '.ts' && file.slice(-5) !== '.d.ts');
         })
         .map(file => path.parse(file).name)
         .filter(uniqueFilter)
