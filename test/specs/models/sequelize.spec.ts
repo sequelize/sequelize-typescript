@@ -58,6 +58,16 @@ describe('sequelize', () => {
 
     });
 
+    describe('definition files', () => {
+      it('should not load in definition files', () => {
+        sequelize.addModels([__dirname + '/../../models/exports/']);
+
+        expect(() => Game.build({})).not.to.throw;
+
+        expect(Object.keys(sequelize.models).length).to.equal(2);
+      });
+    });
+
   });
 
   describe('model', () => {

@@ -153,7 +153,7 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
     return dataType;
   }
 
-  throw new Error(`Specified type of property '${propertyName}' 
+  throw new Error(`Specified type of property '${propertyName}'
             cannot be automatically resolved to a sequelize data type. Please
             define the data type manually`);
 }
@@ -171,7 +171,7 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
         .readdirSync(dir as string)
         .filter(file => {
           const extension = file.slice(-3);
-          return extension === '.js' || extension === '.ts';
+          return extension === '.js' || (extension === '.ts' && file.slice(-4) !== '.d.ts');
         })
         .map(file => path.parse(file).name)
         .filter(uniqueFilter)
