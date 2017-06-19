@@ -19,7 +19,7 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [`@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API](#foreignkey-belongsto-hasmany-hasone-belongstomany-api)
    - [Generated getter and setter](#type-safe-usage-of-generated-getter-and-setter)
    - [Multiple relations of same models](#multiple-relations-of-same-models)
- - [Model valiation](#model-validation)
+ - [Model validation](#model-validation)
  - [Scopes](#scopes)
  - [Why `() => Model`?](#user-content-why---model)
  - [Recommendations and limitations](#recommendations-and-limitations)
@@ -153,7 +153,7 @@ Decorator                             | Description
  `@Unique`                            | sets `attribute.unique=true`
  `@Default(value: any)`               | sets `attribute.defaultValue` to specified value
  `@PrimaryKey`                        | sets `attribute.primaryKey=true`
- Validate annotations                 | see [Model valiation](#model-validation)
+ Validate annotations                 | see [Model validation](#model-validation)
 
 ### Type inference
 The following types can be automatically inferred from javascript type. Others have to be defined explicitly.
