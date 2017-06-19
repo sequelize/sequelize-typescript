@@ -27,8 +27,8 @@ Decorators and some other extras for sequelize (v3 + v4).
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
 ```
-npm install sequelize --save // v3
-npm install sequelize@4.0.0-1 --save // or v4
+npm install sequelize --save // v4
+npm install sequelize@3.30.4 --save // or v3
 ```
 and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
