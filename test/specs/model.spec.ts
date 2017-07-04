@@ -1007,7 +1007,7 @@ describe('model', () => {
         throw new Error('Update should throw an error if no where clause is given.');
       }, (err) => {
         expect(err).to.be.an.instanceof(Error);
-        expect(err.message).to.equal('Missing where attribute in the options parameter passed to update.');
+        expect(err.message).to.match(/^Missing where attribute in the options parameter/);
       });
     });
 
