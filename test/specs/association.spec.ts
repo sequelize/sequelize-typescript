@@ -594,6 +594,141 @@ describe('association', () => {
 
       oneToManyTestSuites(Book2, Page2);
     });
+
+    function oneToManyWithOptionsTestSuites(Book: typeof Model, Page: typeof Model, alternateName: boolean = false): void {
+      const foreignKey = alternateName ? 'book_id' : 'bookId';
+
+      beforeEach(() => {
+        sequelize.addModels([Page, Book]);
+
+        return sequelize.sync({force: true});
+      });
+
+      it('should create models with specified relations', () => {
+        expect(Book)
+          .to.have.property('associations')
+          .that.has.property('pages')
+          .that.is.an.instanceOf(Association['HasMany'])
+          .which.includes({foreignKey})
+          .and.has.property('foreignKeyAttribute')
+          .which.includes({allowNull: false, name: foreignKey})
+        ;
+
+        expect(Book)
+          .to.have.property('associations')
+          .that.has.property('pages')
+          .that.has.property('options')
+          .with.property('onDelete', 'CASCADE')
+        ;
+
+        expect(Page)
+          .to.have.property('associations')
+          .that.has.property('book')
+          .that.is.an.instanceOf(Association['BelongsTo'])
+          .which.includes({foreignKey})
+          .and.has.property('foreignKeyAttribute')
+          .which.includes({allowNull: false, name: foreignKey})
+        ;
+
+        expect(Page)
+          .to.have.property('associations')
+          .that.has.property('book')
+          .that.has.property('options')
+          .with.property('onDelete', 'CASCADE')
+        ;
+      });
+
+      describe('create()', () => {
+        it('should fail creating instances that require a primary key', () => {
+          const page = {
+            content: 'written by Oscar Wilde',
+            book: {
+              title: 'The Picture of Dorian Gray'
+            }
+          };
+
+          return Page.create(page, {include: [Book]})
+            .catch(err => expect(err.message).to.eq(`notNull Violation: ${foreignKey} cannot be null`));
+        });
+
+        it('should create instances that require a parent primary key', () => {
+          const book = {
+            title: 'Sherlock Holmes',
+            pages: [
+              {content: 'Watson'},
+              {content: 'Moriaty'},
+            ]
+          };
+
+          return Book.create(book, {include: [Page]})
+            .then((actual: any) => {
+              expect(actual.id).to.be.gt(0);
+              expect(actual.title).to.eq(book.title);
+              expect(actual.pages).to.have.lengthOf(2);
+              expect(actual.pages[0].id).to.be.gt(0);
+              expect(actual.pages[0].content).to.eq(book.pages[0].content);
+              expect(actual.pages[1].id).to.be.gt(0);
+              expect(actual.pages[1].content).to.eq(book.pages[1].content);
+            });
+        });
+      });
+    }
+
+    describe('resolve foreign keys automatically with association options', () => {
+
+      @Table
+      class Book3 extends Model<Book3> {
+
+        @Column
+        title: string;
+
+        @HasMany(() => Page3, { foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+        pages: Page3[];
+      }
+
+      @Table
+      class Page3 extends Model<Page3> {
+
+        @Column(DataType.TEXT)
+        content: string;
+
+        @ForeignKey(() => Book3)
+        bookId: number;
+
+        @BelongsTo(() => Book3, { foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+        book: Book3;
+      }
+
+      oneToManyWithOptionsTestSuites(Book3, Page3);
+    });
+
+    describe('set foreign keys explicitly with association options', () => {
+
+      @Table
+      class Book4 extends Model<Book4> {
+
+        @Column
+        title: string;
+
+        @HasMany(() => Page4, { foreignKey: {allowNull: false, name: 'book_id'}, onDelete: 'CASCADE'})
+        pages: Page4[];
+      }
+
+      @Table
+      class Page4 extends Model<Page4> {
+
+        @Column(DataType.TEXT)
+        content: string;
+
+        @ForeignKey(() => Book4)
+        bookId: number;
+
+        @BelongsTo(() => Book4, { foreignKey: {allowNull: false, name: 'book_id'}, onDelete: 'CASCADE'})
+        book: Book4;
+      }
+
+      oneToManyWithOptionsTestSuites(Book4, Page4, true);
+    });
   });
 
   describe('Many-to-many', () => {
@@ -1455,6 +1590,138 @@ describe('association', () => {
       }
 
       oneToOneTestSuites(User2, Address2);
+    });
+
+    function oneToOneWithOptionsTestSuites(User: typeof Model, Address: typeof Model, alternateName: boolean = false): void {
+      const foreignKey = alternateName ? 'user_id' : 'userId';
+      beforeEach(() => {
+        sequelize.addModels([User, Address]);
+
+        return sequelize.sync({force: true});
+      });
+
+      it('should create models with specified relations', () => {
+        expect(User)
+          .to.have.property('associations')
+          .that.has.property('address')
+          .that.is.an.instanceOf(Association['HasOne'])
+          .which.includes({foreignKey})
+          .and.has.property('foreignKeyAttribute')
+          .which.includes({allowNull: false, name: foreignKey})
+        ;
+
+        expect(User)
+          .to.have.property('associations')
+          .that.has.property('address')
+          .that.has.property('options')
+          .with.property('onDelete', 'CASCADE')
+        ;
+
+        expect(Address)
+          .to.have.property('associations')
+          .that.has.property('user')
+          .that.is.an.instanceOf(Association['BelongsTo'])
+          .which.includes({foreignKey})
+          .and.has.property('foreignKeyAttribute')
+          .which.includes({allowNull: false, name: foreignKey})
+        ;
+
+        expect(Address)
+          .to.have.property('associations')
+          .that.has.property('user')
+          .that.has.property('options')
+          .with.property('onDelete', 'CASCADE')
+        ;
+      });
+
+      describe('create()', () => {
+        it('should fail creating instances that require a primary key', () => {
+
+          return Address.create(petersAddress, {include: [User]})
+            .catch(err => expect(err.message).to.eq(`notNull Violation: ${foreignKey} cannot be null`));
+        });
+
+        it('should create instances that require a parent primary key', () => {
+          return User.create(userWithAddress, {include: [Address]})
+            .then((actual: any) => {
+              assertInstance(actual, userWithAddress);
+            });
+        });
+      });
+    }
+
+    describe('resolve foreign keys automatically with association options', () => {
+
+      @Table
+      class User3 extends Model<User3> {
+
+        @Column
+        name: string;
+
+        @HasOne(() => Address3, { foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+        address: any;
+      }
+
+      @Table
+      class Address3 extends Model<Address3> {
+
+        @Column
+        street: string;
+
+        @Column
+        zipCode: string;
+
+        @Column
+        city: string;
+
+        @Column
+        country: string;
+
+        @ForeignKey(() => User3, {allowNull: false})
+        userId: number;
+
+        @BelongsTo(() => User3, { foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+        user: User3;
+      }
+
+      oneToOneWithOptionsTestSuites(User3, Address3);
+    });
+
+    describe('set foreign keys explicitly with association options', () => {
+
+      @Table
+      class User4 extends Model<User4> {
+
+        @Column
+        name: string;
+
+        @HasOne(() => Address4, { foreignKey: {allowNull: false, name: 'user_id'}, onDelete: 'CASCADE'})
+        address: any;
+      }
+
+      @Table
+      class Address4 extends Model<Address4> {
+
+        @Column
+        street: string;
+
+        @Column
+        zipCode: string;
+
+        @Column
+        city: string;
+
+        @Column
+        country: string;
+
+        @ForeignKey(() => User4, {allowNull: false, name: 'user_id'})
+        userId: number;
+
+        @BelongsTo(() => User4, { foreignKey: {allowNull: false, name: 'user_id'}, onDelete: 'CASCADE'})
+        user: User4;
+      }
+
+      oneToOneWithOptionsTestSuites(User4, Address4, true);
     });
   });
 
