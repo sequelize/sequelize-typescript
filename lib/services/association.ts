@@ -1,4 +1,6 @@
 import 'reflect-metadata';
+import {AssociationOptions, AssociationForeignKeyOptions, AssociationOptionsBelongsTo, AssociationOptionsBelongsToMany,
+   AssociationOptionsHasMany, AssociationOptionsHasOne, AssociationOptionsManyToMany} from 'sequelize';
 import {Model} from "../models/Model";
 import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
 import {ISequelizeAssociation} from "../interfaces/ISequelizeAssociation";
@@ -18,7 +20,9 @@ export function addAssociation(target: any,
                                relation: string,
                                relatedClassGetter: () => typeof Model,
                                as: string,
-                               foreignKey?: string,
+                               options?: AssociationOptionsBelongsTo |
+                                 AssociationOptionsBelongsToMany | AssociationOptionsHasMany |
+                                 AssociationOptionsHasOne | AssociationOptionsManyToMany,
                                otherKey?: string,
                                through?: (() => typeof Model)|string): void {
 
@@ -42,7 +46,7 @@ export function addAssociation(target: any,
     throughClassGetter,
     through: through as string,
     as,
-    foreignKey,
+    options,
     otherKey
   });
 }
@@ -52,11 +56,19 @@ export function addAssociation(target: any,
  */
 export function getForeignKey(_class: typeof Model,
                               association: ISequelizeAssociation): string {
+  const options = association.options as AssociationOptions;
 
-  // if foreign key is defined return this one
-  if (association.foreignKey) {
+  if (options && options.foreignKey) {
+    const foreignKey = options.foreignKey;
+    // if options is an object and has a string foreignKey property, use that as the name
+    if (typeof foreignKey === 'string') {
+      return foreignKey;
+    }
 
-    return association.foreignKey;
+    // if options is an object with foreignKey.name, use that as the name
+    if (foreignKey.name) {
+      return foreignKey.name;
+    }
   }
 
   // otherwise calculate the foreign key by related or through class
@@ -90,8 +102,10 @@ export function getForeignKey(_class: typeof Model,
   for (const foreignKey of foreignKeys) {
 
     if (foreignKey.relatedClassGetter() === relatedClass) {
-
-      return foreignKey.foreignKey;
+      if (typeof foreignKey.options === 'string') {
+        return foreignKey.options;
+      }
+      return (foreignKey.options as any).name;
     }
   }
 
@@ -123,7 +137,7 @@ export function getAssociationsByRelation(target: any, relatedClass: any): ISequ
  */
 export function addForeignKey(target: any,
                               relatedClassGetter: () => typeof Model,
-                              attrName: string): void {
+                              options: string | AssociationForeignKeyOptions): void {
 
   let foreignKeys = getForeignKeys(target);
 
@@ -134,7 +148,7 @@ export function addForeignKey(target: any,
 
   foreignKeys.push({
     relatedClassGetter,
-    foreignKey: attrName
+    options
   });
 }
 

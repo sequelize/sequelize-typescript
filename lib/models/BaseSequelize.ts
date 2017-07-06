@@ -1,3 +1,4 @@
+import {merge} from 'lodash';
 import {Model} from "./Model";
 import {getModels} from "../services/models";
 import {getAssociations, BELONGS_TO_MANY} from "../services/association";
@@ -89,7 +90,6 @@ export abstract class BaseSequelize {
 
       associations.forEach(association => {
 
-        const foreignKey = association.foreignKey || getForeignKey(model, association);
         const relatedClass = association.relatedClassGetter();
         let through;
         let otherKey;
@@ -126,12 +126,17 @@ export abstract class BaseSequelize {
           }
         }
 
-        model[association.relation](relatedClass, {
+        // ensure association options by default have most explicit foreignKey options
+        // so it merges properly with different foreignKey option permutations, or is overrwritten
+        // completely by options.foreignKey
+        const foreignKey = getForeignKey(model, association);
+        const options =  merge({foreignKey: {name: foreignKey}}, association.options,
+        {
           as: association.as,
           through,
-          foreignKey,
           otherKey
         });
+        model[association.relation](relatedClass, options);
 
         // The associations has to be adjusted
         const _association = model['associations'][association.as];
