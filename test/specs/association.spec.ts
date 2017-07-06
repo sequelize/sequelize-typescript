@@ -729,6 +729,31 @@ describe('association', () => {
 
       oneToManyWithOptionsTestSuites(Book4, Page4, true);
     });
+
+    describe('set foreign keys explicitly via options', () => {
+
+      @Table
+      class Book5 extends Model<Book5> {
+
+        @Column
+        title: string;
+
+        @HasMany(() => Page5, {foreignKey: 'bookId'})
+        pages: Page5[];
+      }
+
+      @Table
+      class Page5 extends Model<Page5> {
+
+        @Column(DataType.TEXT)
+        content: string;
+
+        @BelongsTo(() => Book5, {foreignKey: 'bookId'})
+        book: Book5;
+      }
+
+      oneToManyTestSuites(Book5, Page5);
+    });
   });
 
   describe('Many-to-many', () => {
@@ -1722,6 +1747,40 @@ describe('association', () => {
       }
 
       oneToOneWithOptionsTestSuites(User4, Address4, true);
+    });
+
+    describe('set foreign keys explicitly via options', () => {
+
+      @Table
+      class User5 extends Model<User5> {
+
+        @Column
+        name: string;
+
+        @HasOne(() => Address5, {foreignKey: 'userId'})
+        address: any;
+      }
+
+      @Table
+      class Address5 extends Model<Address5> {
+
+        @Column
+        street: string;
+
+        @Column
+        zipCode: string;
+
+        @Column
+        city: string;
+
+        @Column
+        country: string;
+
+        @BelongsTo(() => User5, {foreignKey: 'userId'})
+        user: User5;
+      }
+
+      oneToOneTestSuites(User5, Address5);
     });
   });
 
