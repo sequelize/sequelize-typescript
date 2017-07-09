@@ -1,6 +1,6 @@
 import {WhereOptions, IncludeThroughOptions} from 'sequelize';
-import {Model} from "../models/Model";
 import {IScopeIncludeAssociation} from "./IScopeIncludeAssociation";
+import {ModelClassGetter} from "../types/ModelClassGetter";
 
 /**
  * Complex include options
@@ -10,7 +10,7 @@ export interface IScopeIncludeOptions {
   /**
    * The model you want to eagerly load
    */
-  model?: (() => typeof Model);
+  model?: ModelClassGetter;
 
   /**
    * The alias of the relation, in case the model you want to eagerly load is aliassed. For `hasOne` /
@@ -48,6 +48,6 @@ export interface IScopeIncludeOptions {
   /**
    * Load further nested related models
    */
-  include?: Array<(() => typeof Model) | IScopeIncludeOptions>;
+  include?: Array<ModelClassGetter | IScopeIncludeOptions>;
 
 }

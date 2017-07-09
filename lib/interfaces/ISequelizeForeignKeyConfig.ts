@@ -1,8 +1,7 @@
-import {AssociationForeignKeyOptions} from 'sequelize';
-import {Model} from "../models/Model";
+import {ModelClassGetter} from "../types/ModelClassGetter";
 
 export interface ISequelizeForeignKeyConfig {
 
-  relatedClassGetter: () => typeof Model;
-  options: string | AssociationForeignKeyOptions;
+  relatedClassGetter: ModelClassGetter;
+  foreignKey: string;
 }

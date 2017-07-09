@@ -1,10 +1,9 @@
-import {Model} from "../models/Model";
-
+import {ModelClassGetter} from "../types/ModelClassGetter";
 /**
  * Association Object for Include Options
  */
 export interface IScopeIncludeAssociation {
-  source: (() => typeof Model);
-  target: (() => typeof Model);
+  source: ModelClassGetter;
+  target: ModelClassGetter;
   identifier: string;
 }

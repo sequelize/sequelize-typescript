@@ -10,6 +10,7 @@ import {IScopeOptions} from "../interfaces/IScopeOptions";
 import {IFindOptions} from "../interfaces/IFindOptions";
 import {getAssociationsByRelation} from "./association";
 import {uniqueFilter} from "../utils/array";
+import {IScopeFindOptions} from "../interfaces/IScopeFindOptions";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const SCOPES_KEY = 'sequelize:scopes';
@@ -21,11 +22,28 @@ const DEFAULT_OPTIONS: DefineOptions<any> = {
 export const PROPERTY_LINK_TO_ORIG = '__origClass';
 
 /**
+ * Indicates which static methods of Model has to be proxied,
+ * to prepare include option to automatically resolve alias;
+ * The index represents the index of the options of the
+ * corresponding method parameter
+ */
+export const INFER_ALIAS_MAP = {
+  bulkBuild: 1,
+  build: 1,
+  create: 1,
+  aggregate: 2,
+  findAll: 0,
+  findById: 1,
+  findOne: 0,
+  reload: 0,
+  find: 0,
+};
+
+/**
  * Sets model name from class by storing this
  * information through reflect metadata
  */
 export function setModelName(target: any, modelName: string): void {
-
   Reflect.defineMetadata(MODEL_NAME_KEY, modelName, target);
 }
 
@@ -34,7 +52,6 @@ export function setModelName(target: any, modelName: string): void {
  * information from reflect metadata
  */
 export function getModelName(target: any): string {
-
   return Reflect.getMetadata(MODEL_NAME_KEY, target);
 }
 
@@ -42,18 +59,18 @@ export function getModelName(target: any): string {
  * Returns model attributes from class by restoring this
  * information from reflect metadata
  */
-export function getAttributes(target: any): any|undefined {
-
+export function getAttributes(target: any): any | undefined {
   const attributes = Reflect.getMetadata(ATTRIBUTES_KEY, target);
 
   if (attributes) {
 
-    return Object.keys(attributes).reduce((copy, key) => {
+    return Object
+      .keys(attributes)
+      .reduce((copy, key) => {
+        copy[key] = {...attributes[key]};
 
-      copy[key] = Object.assign({}, attributes[key]);
-
-      return copy;
-    }, {});
+        return copy;
+      }, {});
   }
 }
 
@@ -61,8 +78,7 @@ export function getAttributes(target: any): any|undefined {
  * Sets attributes
  */
 export function setAttributes(target: any, attributes: any): void {
-
-  Reflect.defineMetadata(ATTRIBUTES_KEY, Object.assign({}, attributes), target);
+  Reflect.defineMetadata(ATTRIBUTES_KEY, {...attributes}, target);
 }
 
 /**
@@ -73,13 +89,12 @@ export function setAttributes(target: any, attributes: any): void {
 export function addAttribute(target: any,
                              name: string,
                              options: any): void {
-
   let attributes = getAttributes(target);
 
   if (!attributes) {
     attributes = {};
   }
-  attributes[name] = Object.assign({}, options);
+  attributes[name] = {...options};
 
   setAttributes(target, attributes);
 }
@@ -90,7 +105,6 @@ export function addAttribute(target: any,
 export function addAttributeOptions(target: any,
                                     propertyName: string,
                                     options: IPartialDefineAttributeColumnOptions): void {
-
   const attributes = getAttributes(target);
 
   if (!attributes || !attributes[propertyName]) {
@@ -107,12 +121,11 @@ export function addAttributeOptions(target: any,
  * Returns sequelize define options from class prototype
  * by restoring this information from reflect metadata
  */
-export function getOptions(target: any): DefineOptions<any>|undefined {
-
+export function getOptions(target: any): DefineOptions<any> | undefined {
   const options = Reflect.getMetadata(OPTIONS_KEY, target);
 
   if (options) {
-    return Object.assign({}, options);
+    return {...options};
   }
 }
 
@@ -120,22 +133,20 @@ export function getOptions(target: any): DefineOptions<any>|undefined {
  * Sets seuqlize define options to class prototype
  */
 export function setOptions(target: any, options: DefineOptions<any>): void {
-
-  Reflect.defineMetadata(OPTIONS_KEY, Object.assign({}, DEFAULT_OPTIONS, options), target);
+  Reflect.defineMetadata(OPTIONS_KEY, {...DEFAULT_OPTIONS, ...options}, target);
 }
 
 /**
  * Adds options be assigning new options to old one
  */
 export function addOptions(target: any, options: DefineOptions<any>): void {
-
   let _options = getOptions(target);
 
   if (!_options) {
     _options = {};
   }
 
-  setOptions(target, Object.assign(_options, options));
+  setOptions(target, {..._options, ...options});
 }
 
 /**
@@ -144,12 +155,10 @@ export function addOptions(target: any, options: DefineOptions<any>): void {
  * a sequelize data type
  */
 export function getSequelizeTypeByDesignType(target: any, propertyName: string): DataTypeAbstract {
-
   const type = Reflect.getMetadata('design:type', target, propertyName);
   const dataType = inferDataType(type);
 
   if (dataType) {
-
     return dataType;
   }
 
@@ -161,7 +170,7 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
 /**
  * Determines models from value
  */
-export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> {
+export function getModels(arg: Array<typeof Model | string>): Array<typeof Model> {
 
   if (arg && typeof arg[0] === 'string') {
 
@@ -169,19 +178,16 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
 
       const _models = fs
         .readdirSync(dir as string)
-        .filter(file => {
-          // TODO extension is not necessarily only the lasst three characters
-          const extension = file.slice(-3);
-          return extension === '.js' || (extension === '.ts' && file.slice(-5) !== '.d.ts');
-        })
-        .map(file => path.parse(file).name)
+        .filter(isImportable)
+        .map(getFilenameWithoutExtension)
         .filter(uniqueFilter)
         .map(fileName => {
           const fullPath = path.join(dir, fileName);
           const module = require(fullPath);
 
           if (!module[fileName] && !module.default) {
-            throw new Error(`No default export defined for file "${fileName}" or export does not satisfy filename.`);
+            throw new Error(`No default export defined for file "${fileName}" or ` +
+              `export does not satisfy filename.`);
           }
           return module[fileName] || module.default;
         });
@@ -200,24 +206,13 @@ export function getModels(arg: Array<typeof Model|string>): Array<typeof Model> 
  * Resolves scopes and adds them to the specified models
  */
 export function resolveScopes(models: Array<typeof Model>): void {
-
   models.forEach(model => {
-
     const options = getScopeOptions(model.prototype);
 
     if (options) {
-
       Object
         .keys(options)
-        .forEach(key => {
-
-          let scopeFindOptions = options[key];
-
-          resolveModelGetter(scopeFindOptions);
-          scopeFindOptions = preConformIncludes(scopeFindOptions, model);
-
-          model.addScope(key, scopeFindOptions as IFindOptions, {override: true});
-        });
+        .forEach(key => resolveScope(key, model, options[key]));
     }
   });
 }
@@ -229,19 +224,22 @@ export function resolveScopes(models: Array<typeof Model>): void {
  * {model: Person}
  */
 export function resolveModelGetter(options: any): void {
+  const maybeModelGetter = value => typeof value === 'function' && value.length === 0;
+  const isModel = value => value && value.prototype && value.prototype instanceof Model;
+  const isOptionObject = value => value && typeof value === 'object';
 
   Object
     .keys(options)
     .forEach(key => {
       const value = options[key];
 
-      if (typeof value === 'function' && value.length === 0) {
+      if (maybeModelGetter(value)) {
         const maybeModel = value();
 
-        if (maybeModel && maybeModel.prototype && maybeModel.prototype instanceof Model) {
+        if (isModel(maybeModel)) {
           options[key] = maybeModel;
         }
-      } else if (value && typeof value === 'object') {
+      } else if (isOptionObject(value)) {
         resolveModelGetter(value);
       }
     });
@@ -251,7 +249,6 @@ export function resolveModelGetter(options: any): void {
  * Adds scope option meta data for specified prototype
  */
 export function addScopeOptions(target: any, options: IScopeOptions): void {
-
   const _options = getScopeOptions(target) || {};
 
   setScopeOptions(target, deepAssign({}, _options, options));
@@ -260,12 +257,10 @@ export function addScopeOptions(target: any, options: IScopeOptions): void {
 /**
  * Returns scope option meta data from specified target
  */
-export function getScopeOptions(target: any): IScopeOptions|undefined {
-
+export function getScopeOptions(target: any): IScopeOptions | undefined {
   const options = Reflect.getMetadata(SCOPES_KEY, target);
 
   if (options) {
-
     return deepAssign({}, options);
   }
 }
@@ -273,9 +268,9 @@ export function getScopeOptions(target: any): IScopeOptions|undefined {
 /**
  * Pre conform includes, so that "as" value can be inferred from source
  */
-export function preConformIncludes(options: any, source: any): any {
+export function inferAlias(options: any, source: any): any {
 
-  options = Object.assign({}, options);
+  options = {...options};
 
   if (!options.include) {
     return options;
@@ -290,7 +285,7 @@ export function preConformIncludes(options: any, source: any): any {
 
   // convert all included elements to { model: Model } form
   options.include = options.include.map((include) => {
-    include = preConformInclude(include, source);
+    include = inferAliasForInclude(include, source);
 
     return include;
   });
@@ -299,32 +294,43 @@ export function preConformIncludes(options: any, source: any): any {
 }
 
 /**
+ * Resolves scope
+ */
+function resolveScope(scopeName: string, model: typeof Model, options: IScopeFindOptions | undefined): void {
+  resolveModelGetter(options);
+  options = inferAlias(options, model);
+  model.addScope(scopeName, options as IFindOptions, {override: true});
+}
+
+/**
  * Pre conform include, so that alias ("as") value can be inferred from source class
  */
-function preConformInclude(include: any, source: any): any {
-
+function inferAliasForInclude(include: any, source: any): any {
+  const hasModelOptionWithoutAsOption = !!(include.model && !include.as);
+  const hasIncludeOptions = !!include.include;
   const isConstructorFn = include instanceof Function;
 
-  if (isConstructorFn || (include.model && !include.as)) {
+  if (isConstructorFn || hasModelOptionWithoutAsOption) {
 
     if (isConstructorFn) {
       include = {model: include};
     }
 
-    const associations = getAssociationsByRelation((source[PROPERTY_LINK_TO_ORIG] || source).prototype || source, include.model);
+    const targetPrototype = (source[PROPERTY_LINK_TO_ORIG] || source).prototype || source;
+    const relatedClass = include.model;
+    const associations = getAssociationsByRelation(targetPrototype, relatedClass);
 
     if (associations.length > 0) {
-
       if (associations.length > 1) {
-        throw new Error(`Alias cannot be inferred: "${source.name}" has multiple relations with "${include.model.name}"`);
+        throw new Error(`Alias cannot be inferred: "${source.name}" has multiple ` +
+          `relations with "${include.model.name}"`);
       }
-
       include.as = associations[0].as;
     }
   }
 
-  if (!isConstructorFn && include.include) {
-    include = preConformIncludes(include, include.model);
+  if (!isConstructorFn && hasIncludeOptions) {
+    include = inferAlias(include, include.model);
   }
 
   return include;
@@ -336,4 +342,20 @@ function preConformInclude(include: any, source: any): any {
 function setScopeOptions(target: any, options: IScopeOptions): void {
 
   Reflect.defineMetadata(SCOPES_KEY, options, target);
+}
+
+/**
+ * Checks if specified filename is importable or not;
+ * Which means that, it needs to have a specific file extension
+ */
+function isImportable(file: string): boolean {
+  const filePart = file.slice(-3);
+  return filePart === '.js' || (filePart === '.ts' && file.slice(-5) !== '.d.ts');
+}
+
+/**
+ * Removes extension of specified filename and returns this value
+ */
+function getFilenameWithoutExtension(file: string): string {
+  return path.parse(file).name;
 }

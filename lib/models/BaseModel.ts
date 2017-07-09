@@ -1,10 +1,11 @@
 import * as Promise from "bluebird";
-import {FindOptions, Model, Instance, BuildOptions} from "sequelize";
+import {Model, Instance, BuildOptions} from "sequelize";
 import {majorVersion} from "../utils/versioning";
 import {capitalize} from "../utils/string";
 import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
-import {preConformIncludes} from "../services/models";
-import {getAllPropertyNames} from "../utils/object";
+import {INFER_ALIAS_MAP, inferAlias} from "../services/models";
+import {extend, getAllPropertyNames} from "../utils/object";
+import {IFindOptions} from "../interfaces/IFindOptions";
 
 const parentPrototype = majorVersion === 3 ? (Instance as any).prototype : (Model as any).prototype;
 
@@ -12,102 +13,95 @@ export abstract class BaseModel {
 
   static isInitialized: boolean = false;
 
-  /**
-   * Indicates which static methods of Model has to be proxied,
-   * to prepare include option to automatically resolve alias;
-   * The index represents the index of the options of the
-   * corresponding method parameter
-   */
-  private static toPreConformIncludeMap = {
-    bulkBuild: 1,
-    build: 1,
-    create: 1,
-    aggregate: 2,
-    findAll: 0,
-    findById: 1,
-    findOne: 0,
-    reload: 0,
-    find: 0,
-  };
-
   static extend(target: any): void {
 
-    // PROTOTYPE MEMBERS
-    // --------------------------
+    extend(target, this);
+    overrideStaticFunctions(target);
 
-    // copies all prototype members of this to target.prototype
-    Object
-      .keys(this.prototype)
-      .forEach(name => target.prototype[name] = this.prototype[name])
-    ;
+    /**
+     * Overrides all static functions with a function, that
+     * checks if corresponding model is initialized and
+     * prepares given options if necessary
+     */
+    function overrideStaticFunctions(_target: Function): void {
+      const isFunctionMember = key => typeof _target[key] !== 'function';
 
-    // STATIC MEMBERS
-    // --------------------------
+      getAllPropertyNames(_target)
+        .filter(key => !canOverrideMember(key))
+        .forEach(key => {
 
-    // copies all static members of this to target
-    Object
-      .keys(this)
-      .forEach(name => target[name] = this[name])
-    ;
+          if (isFunctionMember(key)) return;
 
-    // Creates proxies for all static methods but forbidden ones
-    getAllPropertyNames(target)
-      .filter(key => !isForbiddenKey(key))
-      .forEach(key => {
+          const superFn = _target[key];
 
-        if (typeof target[key] !== 'function') return;
+          _target[key] = function(this: typeof BaseModel, ...args: any[]): any {
 
-        const superFn = target[key];
+            checkInitialization(this, key);
+            tryPrepareOptions(this, key, args);
 
-        target[key] = function(...args: any[]): any {
+            return superFn.call(this, ...args);
+          };
+        });
+    }
 
-          if (!this.isInitialized) {
-            throw new Error(`Model not initialized: "${this.name}" needs to be added to a Sequelize instance ` +
-              `before "${key}" can be called.`);
-          }
-
-          const optionIndex = BaseModel.toPreConformIncludeMap[key];
-
-          if (optionIndex !== void 0) {
-
-            const options = args[optionIndex];
-
-            if (options) {
-
-              args[optionIndex] = preConformIncludes(options, this);
-            }
-          }
-
-          return superFn.call(this, ...args);
-        };
-      });
-
-    function isForbiddenKey(key: string): boolean {
-
-      // is private member?
-      if (key.charAt(0) === '_') {
+    /**
+     * Checks if member - specified by propertyKey - can be overridden or not
+     */
+    function canOverrideMember(propertyKey: string): boolean {
+      if (isPrivateMember(propertyKey)) {
         return true;
       }
 
-      const forbiddenKeys = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
+      const FORBIDDEN_KEYS = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
         'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes'];
 
-      return forbiddenKeys.indexOf(key) !== -1;
+      return FORBIDDEN_KEYS.indexOf(propertyKey) !== -1;
+    }
+
+    /**
+     * Checks if member is private or not. Is identified by starting
+     * "_" in specified key
+     */
+    function isPrivateMember(propertyKey: string): boolean {
+      return (propertyKey.charAt(0) === '_');
+    }
+
+    /**
+     * Checks if model is initialized
+     * @throw if model is not initialized
+     */
+    function checkInitialization(model: typeof BaseModel, propertyKey: string): void {
+      if (!model.isInitialized) {
+        throw new Error(`Model not initialized: "${model.name}" needs to be added to a Sequelize instance ` +
+          `before "${propertyKey}" can be called.`);
+      }
+    }
+
+    /**
+     * Prepares options if necessary:
+     *  - infers alias of given options
+     */
+    function tryPrepareOptions(model: typeof BaseModel, propertyKey: string, args: any[]): void {
+      const optionIndex = INFER_ALIAS_MAP[propertyKey];
+      if (optionIndex !== undefined) {
+        const options = args[optionIndex];
+        if (options) {
+          args[optionIndex] = inferAlias(options, model);
+        }
+      }
     }
   }
 
+  /**
+   * Prepares build options for instantiation of a model
+   */
   static prepareInstantiationOptions(options: BuildOptions, source: any): BuildOptions {
 
-    options = preConformIncludes(options, source);
+    options = inferAlias(options, source);
 
     if (!('isNewRecord' in options)) options.isNewRecord = true;
-
-    // TODO@robin has to be validated: necessary?
-    // options = _.extend({
-    //   isNewRecord: true,
-    //   $schema: this.$schema,
-    //   $schemaDelimiter: this.$schemaDelimiter
-    // }, options || {});
+    if (!('$schema' in options) && this['$schema']) options['$schema'] = this['$schema'];
+    if (!('$schemaDelimiter' in options) && this['$schemaDelimiter']) options['$schemaDelimiter'] = this['$schemaDelimiter'];
 
     const staticMethodPrefix = majorVersion === 3 ? '$' : '_';
 
@@ -121,7 +115,6 @@ export abstract class BaseModel {
         Model[staticMethodPrefix + 'validateIncludedElements'].call(source, options);
       }
     }
-
     return options;
   }
 
@@ -129,13 +122,6 @@ export abstract class BaseModel {
    * Adds relation between specified instances and source instance
    */
   $add(propertyKey: string, instances: any, options?: IAssociationActionOptions): Promise<this> {
-
-    // TODO@robin find a way to add values to the target(this) datavalues
-    // const dataValues = this['dataValues']; // this will not work correctly
-    //
-    // if (!dataValues[propertyKey]) dataValues[propertyKey] = [];
-    //
-    // dataValues[propertyKey].push(value);
 
     return this['add' + capitalize(propertyKey)](instances, options);
   };
@@ -145,9 +131,6 @@ export abstract class BaseModel {
    * (replaces old relations)
    */
   $set(propertyKey: string, instances: any, options: any): Promise<this> {
-
-    // TODO@robin find a way to add values to the target(this) datavalues
-    // this['dataValues'][propertyKey] = args[0]; // this will not work correctly
 
     return this['set' + capitalize(propertyKey)](instances, options);
   };
@@ -193,13 +176,13 @@ export abstract class BaseModel {
   };
 
   /**
-   * Pre conforms includes
+   * Overridden due to infer alias from options is required
    *
    * SEE DETAILS FOR ACTUAL FUNCTIONALITY ON DECLARATION FILE
    */
-  reload(options?: FindOptions): Promise<this> {
+  reload(options?: IFindOptions): Promise<this> {
 
-    return parentPrototype.reload.call(this, preConformIncludes(options, this));
+    return parentPrototype.reload.call(this, inferAlias(options, this));
   };
 
 }

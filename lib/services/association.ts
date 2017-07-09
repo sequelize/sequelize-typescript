@@ -1,9 +1,15 @@
 import 'reflect-metadata';
-import {AssociationOptions, AssociationForeignKeyOptions, AssociationOptionsBelongsTo, AssociationOptionsBelongsToMany,
-   AssociationOptionsHasMany, AssociationOptionsHasOne, AssociationOptionsManyToMany} from 'sequelize';
+import {merge} from 'lodash';
+import {
+  AssociationOptions, AssociationOptionsBelongsTo, AssociationOptionsBelongsToMany,
+  AssociationOptionsHasMany, AssociationOptionsHasOne, AssociationOptionsManyToMany
+} from 'sequelize';
 import {Model} from "../models/Model";
 import {ISequelizeForeignKeyConfig} from "../interfaces/ISequelizeForeignKeyConfig";
 import {ISequelizeAssociation} from "../interfaces/ISequelizeAssociation";
+import {BaseSequelize} from "../models/BaseSequelize";
+import {ModelClassGetter} from "../types/ModelClassGetter";
+import {IAssociationOptionsBelongsToMany} from "../interfaces/IAssociationOptionsBelongsToMany";
 
 export const BELONGS_TO_MANY = 'belongsToMany';
 export const BELONGS_TO = 'belongsTo';
@@ -13,18 +19,20 @@ export const HAS_ONE = 'hasOne';
 const FOREIGN_KEYS_KEY = 'sequelize:foreignKeys';
 const ASSOCIATIONS_KEY = 'sequelize:associations';
 
+export type ConcatAssociationOptions = AssociationOptionsBelongsTo |
+  AssociationOptionsBelongsToMany | AssociationOptionsHasMany |
+  AssociationOptionsHasOne | AssociationOptionsManyToMany;
+
 /**
  * Stores association meta data for specified class
  */
 export function addAssociation(target: any,
                                relation: string,
-                               relatedClassGetter: () => typeof Model,
+                               relatedClassGetter: ModelClassGetter,
                                as: string,
-                               options?: AssociationOptionsBelongsTo |
-                                 AssociationOptionsBelongsToMany | AssociationOptionsHasMany |
-                                 AssociationOptionsHasOne | AssociationOptionsManyToMany,
-                               otherKey?: string,
-                               through?: (() => typeof Model)|string): void {
+                               optionsOrForeignKey?: string | ConcatAssociationOptions,
+                               through?: ModelClassGetter | string,
+                               otherKey?: string): void {
 
   let associations = getAssociations(target);
 
@@ -37,7 +45,18 @@ export function addAssociation(target: any,
 
   if (typeof through === 'function') {
     throughClassGetter = through;
-    through = void 0;
+    through = undefined;
+  }
+
+  let options: Partial<ConcatAssociationOptions> = {};
+
+  if (typeof optionsOrForeignKey === 'string') {
+    options.foreignKey = {name: optionsOrForeignKey};
+  } else {
+    options = {...optionsOrForeignKey};
+  }
+  if (otherKey) {
+    (options as IAssociationOptionsBelongsToMany).otherKey = {name: otherKey};
   }
 
   associations.push({
@@ -46,15 +65,14 @@ export function addAssociation(target: any,
     throughClassGetter,
     through: through as string,
     as,
-    options,
-    otherKey
+    options
   });
 }
 
 /**
  * Determines foreign key by specified association (relation)
  */
-export function getForeignKey(_class: typeof Model,
+export function getForeignKey(model: typeof Model,
                               association: ISequelizeAssociation): string {
   const options = association.options as AssociationOptions;
 
@@ -64,7 +82,6 @@ export function getForeignKey(_class: typeof Model,
     if (typeof foreignKey === 'string') {
       return foreignKey;
     }
-
     // if options is an object with foreignKey.name, use that as the name
     if (foreignKey.name) {
       return foreignKey.name;
@@ -80,18 +97,18 @@ export function getForeignKey(_class: typeof Model,
       if (association.throughClassGetter) {
 
         classWithForeignKey = association.throughClassGetter();
-        relatedClass = _class;
+        relatedClass = model;
       } else {
-        throw new Error(`ThroughClassGetter is missing on "${_class['name']}"`);
+        throw new Error(`ThroughClassGetter is missing on "${model['name']}"`);
       }
       break;
     case HAS_MANY:
     case HAS_ONE:
       classWithForeignKey = association.relatedClassGetter();
-      relatedClass = _class;
+      relatedClass = model;
       break;
     case BELONGS_TO:
-      classWithForeignKey = _class;
+      classWithForeignKey = model;
       relatedClass = association.relatedClassGetter();
       break;
     default:
@@ -102,20 +119,18 @@ export function getForeignKey(_class: typeof Model,
   for (const foreignKey of foreignKeys) {
 
     if (foreignKey.relatedClassGetter() === relatedClass) {
-      if (typeof foreignKey.options === 'string') {
-        return foreignKey.options;
-      }
-      return (foreignKey.options as any).name;
+      return foreignKey.foreignKey;
     }
   }
 
-  throw new Error(`Foreign key for "${(relatedClass as any).name}" is missing on "${(classWithForeignKey as any).name}".`);
+  throw new Error(`Foreign key for "${(relatedClass as any).name}" is missing ` +
+    `on "${(classWithForeignKey as any).name}".`);
 }
 
 /**
  * Returns association meta data from specified class
  */
-export function getAssociations(target: any): ISequelizeAssociation[]|undefined {
+export function getAssociations(target: any): ISequelizeAssociation[] | undefined {
 
   return Reflect.getMetadata(ASSOCIATIONS_KEY, target);
 }
@@ -136,8 +151,8 @@ export function getAssociationsByRelation(target: any, relatedClass: any): ISequ
  * Adds foreign key meta data for specified class
  */
 export function addForeignKey(target: any,
-                              relatedClassGetter: () => typeof Model,
-                              options: string | AssociationForeignKeyOptions): void {
+                              relatedClassGetter: ModelClassGetter,
+                              foreignKey: string): void {
 
   let foreignKeys = getForeignKeys(target);
 
@@ -148,14 +163,87 @@ export function addForeignKey(target: any,
 
   foreignKeys.push({
     relatedClassGetter,
-    options
+    foreignKey
   });
+}
+
+/**
+ * Returns "other" key determined by association object
+ */
+export function getOtherKey(association: ISequelizeAssociation): string {
+  const options = association.options as IAssociationOptionsBelongsToMany;
+
+  if (options && options.otherKey) {
+    const otherKey = options.otherKey;
+    // if options is an object and has a string otherKey property, use that as the name
+    if (typeof otherKey === 'string') {
+      return otherKey;
+    }
+    // if options is an object with otherKey.name, use that as the name
+    if (otherKey.name) {
+      return otherKey.name;
+    }
+  }
+  return getForeignKey(association.relatedClassGetter(), association);
+}
+
+/**
+ * Processes association for single model
+ */
+export function processAssociation(sequelize: BaseSequelize,
+                                   model: typeof Model,
+                                   association: ISequelizeAssociation): void {
+  const relatedClass = association.relatedClassGetter();
+  const foreignKey = getForeignKey(model, association);
+  let through;
+  let otherKey;
+
+  if (association.relation === BELONGS_TO_MANY) {
+
+    otherKey = getOtherKey(association);
+    through = getThroughClass(sequelize, association);
+  }
+
+  const foreignKeyOptions: Partial<AssociationOptionsBelongsToMany> = {foreignKey: {name: foreignKey}};
+
+  if (otherKey) {
+    foreignKeyOptions.otherKey = {name: otherKey};
+  }
+
+  const options = merge(
+    association.options,
+    foreignKeyOptions,
+    {
+      as: association.as,
+      through,
+    }
+  );
+  model[association.relation](relatedClass, options);
+
+  sequelize.adjustAssociation(model, association);
+}
+
+/**
+ * Returns "through" class determined by association object
+ */
+export function getThroughClass(sequelize: BaseSequelize,
+                                association: ISequelizeAssociation): any {
+  if (association.through) {
+
+    if (!sequelize.thoughMap[association.through]) {
+      const throughModel = sequelize.getThroughModel(association.through);
+      sequelize.addModels([throughModel]);
+      sequelize.thoughMap[association.through] = throughModel;
+    }
+    return sequelize.thoughMap[association.through];
+  }
+  return (association.throughClassGetter as () => typeof Model)();
 }
 
 /**
  * Returns foreign key meta data from specified class
  */
-function getForeignKeys(target: any): ISequelizeForeignKeyConfig[]|undefined {
+function getForeignKeys(target: any): ISequelizeForeignKeyConfig[] | undefined {
 
   return Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
 }

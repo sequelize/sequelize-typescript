@@ -1,26 +1,36 @@
-import {AssociationOptionsBelongsToMany} from 'sequelize';
-
-import {Model} from "../../models/Model";
 import {BELONGS_TO_MANY, addAssociation} from "../../services/association";
+import {ModelClassGetter} from "../../types/ModelClassGetter";
+import {IAssociationOptionsBelongsToMany} from "../../interfaces/IAssociationOptionsBelongsToMany";
 
-export function BelongsToMany(relatedClassGetter: () => typeof Model,
-                              through: (() => typeof Model)|string,
-                              options?: string | AssociationOptionsBelongsToMany,
+export function BelongsToMany(relatedClassGetter: ModelClassGetter,
+                              through: (ModelClassGetter) | string,
+                              foreignKey?: string,
+                              otherKey?: string): Function;
+export function BelongsToMany(relatedClassGetter: ModelClassGetter,
+                              options: IAssociationOptionsBelongsToMany): Function;
+export function BelongsToMany(relatedClassGetter: ModelClassGetter,
+                              throughOrOptions: (ModelClassGetter | string) | IAssociationOptionsBelongsToMany,
+                              foreignKey?: string,
                               otherKey?: string): Function {
+  const typeOfThroughOrOptions = typeof throughOrOptions;
+  let through;
+  let options: Partial<IAssociationOptionsBelongsToMany>;
 
+  if (typeOfThroughOrOptions === 'string' || typeOfThroughOrOptions === 'function') {
+    through = throughOrOptions;
+  } else {
+    through = (throughOrOptions as IAssociationOptionsBelongsToMany).through;
+    options = throughOrOptions;
+  }
   return (target: any, propertyName: string) => {
-    if (typeof options === 'string') {
-      // don't worry, through is mainly here to avoid TS error; actual through value is resolved later
-      options = {through: '', foreignKey: {name: options}};
-    }
     addAssociation(
       target,
       BELONGS_TO_MANY,
       relatedClassGetter,
       propertyName,
-      options,
+      options || foreignKey,
+      through,
       otherKey,
-      through
     );
   };
 }

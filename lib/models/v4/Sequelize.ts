@@ -5,6 +5,7 @@ import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 import {Table} from "../../annotations/Table";
+import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
 
 let preparedConfig;
 
@@ -42,7 +43,7 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
     return Through;
   }
 
-  adjustAssociation(model: any, association: any): void {}
+  adjustAssociation(model: any, association: ISequelizeAssociation): void {}
 
   /**
    * Creates sequelize models and registers these models
