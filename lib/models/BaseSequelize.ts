@@ -31,16 +31,21 @@ export abstract class BaseSequelize {
 
     if (config.validateOnly) {
 
-      return Object.assign({}, config, {
-        name: '_name_',
-        username: '_username_',
-        password: '_password_',
-        dialect: 'sqlite',
-        dialectModulePath: __dirname + '/../utils/db-dialect-dummy'
-      } as ISequelizeConfig);
+      return this.getValidationOnlyConfig(config);
     }
 
     return config as ISequelizeConfig;
+  }
+
+  static getValidationOnlyConfig(config: ISequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
+    return {
+      ...config,
+      name: '_name_',
+      username: '_username_',
+      password: '_password_',
+      dialect: 'sqlite',
+      dialectModulePath: __dirname + '/../utils/db-dialect-dummy'
+    } as ISequelizeConfig;
   }
 
   addModels(models: Array<typeof Model>): void;
