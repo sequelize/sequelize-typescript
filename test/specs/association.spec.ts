@@ -1242,6 +1242,45 @@ describe('association', () => {
       manyToManyTestSuites(Book, Author, AuthorBook);
     });
 
+    describe('set foreign keys automatically via options', () => {
+
+      @Table
+      class Book4 extends Model<Book4> {
+
+        @Column
+        title: string;
+
+        @BelongsToMany(() => Author4, {
+          through: () => AuthorBook4
+        })
+        authors: Author4[];
+      }
+
+      @Table
+      class AuthorBook4 extends Model<AuthorBook4> {
+
+        @ForeignKey(() => Book4)
+        bookId: number;
+
+        @ForeignKey(() => Author4)
+        authorId: number;
+      }
+
+      @Table
+      class Author4 extends Model<Author4> {
+
+        @Column
+        name: string;
+
+        @BelongsToMany(() => Book4, {
+          through: () => AuthorBook4,
+        })
+        books: Book4;
+      }
+
+      manyToManyTestSuites(Book4, Author4, AuthorBook4);
+    });
+
     describe('set foreign keys explicitly', () => {
 
       @Table
@@ -1267,38 +1306,38 @@ describe('association', () => {
       manyToManyTestSuites(Book2, Author2);
     });
 
-    // describe('set foreign keys explicitly through options', () => {
-    //
-    //   @Table
-    //   class Book2 extends Model<Book2> {
-    //
-    //     @Column
-    //     title: string;
-    //
-    //     @BelongsToMany(() => Author2, {
-    //       through: 'AuthorBook2',
-    //       foreignKey: 'bookId',
-    //       otherKey: 'authorId',
-    //     })
-    //     authors: Author2[];
-    //   }
-    //
-    //   @Table
-    //   class Author2 extends Model<Author2> {
-    //
-    //     @Column
-    //     name: string;
-    //
-    //     @BelongsToMany(() => Book2, {
-    //       through: 'AuthorBook2',
-    //       foreignKey: 'authorId',
-    //       otherKey: 'bookId',
-    //     })
-    //     books: Book2;
-    //   }
-    //
-    //   manyToManyTestSuites(Book2, Author2);
-    // });
+    describe('set foreign keys explicitly via options', () => {
+
+      @Table
+      class Book3 extends Model<Book3> {
+
+        @Column
+        title: string;
+
+        @BelongsToMany(() => Author3, {
+          through: 'AuthorBook3',
+          foreignKey: 'bookId',
+          otherKey: 'authorId',
+        })
+        authors: Author3[];
+      }
+
+      @Table
+      class Author3 extends Model<Author3> {
+
+        @Column
+        name: string;
+
+        @BelongsToMany(() => Book3, {
+          through: 'AuthorBook3',
+          foreignKey: 'authorId',
+          otherKey: 'bookId',
+        })
+        books: Book3;
+      }
+
+      manyToManyTestSuites(Book3, Author3);
+    });
   });
 
   describe('One-to-one', () => {
