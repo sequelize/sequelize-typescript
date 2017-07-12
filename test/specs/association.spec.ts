@@ -1690,7 +1690,10 @@ describe('association', () => {
       oneToOneTestSuites(User2, Address2);
     });
 
-    function oneToOneWithOptionsTestSuites(User: typeof Model, Address: typeof Model, alternateName: boolean = false): void {
+    function oneToOneWithOptionsTestSuites(User: typeof Model,
+                                           Address: typeof Model,
+                                           alternateName: boolean = false,
+                                           onDeleteAction: string = 'CASCADE'): void {
       const foreignKey = alternateName ? 'user_id' : 'userId';
       beforeEach(() => {
         sequelize.addModels([User, Address]);
@@ -1712,7 +1715,7 @@ describe('association', () => {
           .to.have.property('associations')
           .that.has.property('address')
           .that.has.property('options')
-          .with.property('onDelete', 'CASCADE')
+          .with.property('onDelete', onDeleteAction)
         ;
 
         expect(Address)
@@ -1728,7 +1731,7 @@ describe('association', () => {
           .to.have.property('associations')
           .that.has.property('user')
           .that.has.property('options')
-          .with.property('onDelete', 'CASCADE')
+          .with.property('onDelete', onDeleteAction)
         ;
       });
 
@@ -1750,13 +1753,15 @@ describe('association', () => {
 
     describe('resolve foreign keys automatically with association options', () => {
 
+      const ON_DELETE_ACTION = 'SET NULL';
+
       @Table
       class User3 extends Model<User3> {
 
         @Column
         name: string;
 
-        @HasOne(() => Address3, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+        @HasOne(() => Address3, {foreignKey: {allowNull: false}, onDelete: ON_DELETE_ACTION})
         address: any;
       }
 
@@ -1780,11 +1785,11 @@ describe('association', () => {
         @Column
         userId: number;
 
-        @BelongsTo(() => User3, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+        @BelongsTo(() => User3, {foreignKey: {allowNull: false}, onDelete: ON_DELETE_ACTION})
         user: User3;
       }
 
-      oneToOneWithOptionsTestSuites(User3, Address3);
+      oneToOneWithOptionsTestSuites(User3, Address3, false, ON_DELETE_ACTION);
     });
 
     describe('set foreign keys explicitly with association options', () => {
@@ -1813,10 +1818,6 @@ describe('association', () => {
 
         @Column
         country: string;
-
-        @ForeignKey(() => User4)
-        @Column({field: 'user_id'})
-        userId: number;
 
         @BelongsTo(() => User4, {
           foreignKey: {allowNull: false, name: 'user_id'},
@@ -1860,6 +1861,48 @@ describe('association', () => {
       }
 
       oneToOneTestSuites(User5, Address5);
+    });
+
+    describe('set foreign keys explicitly with association options (allowNull: false on foreignKey)', () => {
+
+      @Table
+      class User6 extends Model<User6> {
+
+        @Column
+        name: string;
+
+        @HasOne(() => Address6, {foreignKey: {allowNull: false}})
+        address: any;
+      }
+
+      @Table
+      class Address6 extends Model<Address6> {
+
+        @Column
+        street: string;
+
+        @Column
+        zipCode: string;
+
+        @Column
+        city: string;
+
+        @Column
+        country: string;
+
+        @ForeignKey(() => User6)
+        @AllowNull(false)
+        @Column({field: 'user_id'})
+        userId: number;
+
+        @BelongsTo(() => User6, {
+          onDelete: 'CASCADE',
+          foreignKey: {allowNull: false}
+        })
+        user: User6;
+      }
+
+      oneToOneWithOptionsTestSuites(User6, Address6, false);
     });
   });
 
