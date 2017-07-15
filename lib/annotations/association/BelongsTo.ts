@@ -1,23 +1,21 @@
 import {AssociationOptionsBelongsTo} from 'sequelize';
-
-import {Model} from "../../models/Model";
 import {BELONGS_TO, addAssociation} from "../../services/association";
+import {ModelClassGetter} from "../../types/ModelClassGetter";
 
-export function BelongsTo(relatedClassGetter: () => typeof Model,
-                          options?: string | AssociationOptionsBelongsTo): Function {
+export function BelongsTo(relatedClassGetter: ModelClassGetter,
+                          foreignKey?: string): Function;
+export function BelongsTo(relatedClassGetter: ModelClassGetter,
+                          options?: AssociationOptionsBelongsTo): Function;
+export function BelongsTo(relatedClassGetter: ModelClassGetter,
+                          optionsOrForeignKey?: string | AssociationOptionsBelongsTo): Function {
 
   return (target: any, propertyName: string) => {
-
-    if (typeof options === 'string') {
-      options = {foreignKey: {name: options}};
-    }
-
     addAssociation(
       target,
       BELONGS_TO,
       relatedClassGetter,
       propertyName,
-      options
+      optionsOrForeignKey
     );
   };
 }

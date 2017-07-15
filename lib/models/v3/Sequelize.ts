@@ -6,6 +6,7 @@ import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {PROPERTY_LINK_TO_ORIG} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 import {Table} from "../../annotations/Table";
+import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
 
 let preparedConfig;
 
@@ -14,10 +15,10 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   // to fix "$1" called with something that's not an instance of Sequelize.Model
   Model: any = Function;
 
-  thoughMap: {[through: string]: any} = {};
-  _: {[modelName: string]: typeof Model} = {};
+  thoughMap: { [through: string]: any } = {};
+  _: { [modelName: string]: typeof Model } = {};
   init: (config: ISequelizeConfig) => void;
-  addModels: (models: Array<typeof Model>|string[]) => void;
+  addModels: (models: Array<typeof Model> | string[]) => void;
   associateModels: (models: Array<typeof Model>) => void;
 
   constructor(config: ISequelizeConfig) {
@@ -50,17 +51,32 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
    * The association needs to be adjusted. So that throughModel properties
    * referencing a original sequelize Model instance
    */
-  adjustAssociation(model: any, association: any): void {
+  adjustAssociation(model: any, association: ISequelizeAssociation): void {
 
-    if (association.throughModel && association.throughModel.Model) {
-      const seqThroughModel = association.throughModel.Model;
-      const throughModel = association.throughModel;
+    // The associations has to be adjusted
+    const internalAssociation = model['associations'][association.as];
+
+    // String based through's need adjustment
+    if (internalAssociation.oneFromSource &&
+      internalAssociation.oneFromSource.as === 'Through') {
+      // as and associationAccessor values referring to string "Through"
+      internalAssociation.oneFromSource.as = association.through;
+      internalAssociation.oneFromSource.options.as = association.through;
+      internalAssociation.oneFromSource.associationAccessor = association.through;
+      internalAssociation.oneFromTarget.as = association.through;
+      internalAssociation.oneFromTarget.options.as = association.through;
+      internalAssociation.oneFromTarget.associationAccessor = association.through;
+    }
+
+    if (internalAssociation.throughModel && internalAssociation.throughModel.Model) {
+      const seqThroughModel = internalAssociation.throughModel.Model;
+      const throughModel = internalAssociation.throughModel;
 
       Object.keys(seqThroughModel).forEach(key => {
         if (key !== 'name') throughModel[key] = seqThroughModel[key];
       });
 
-      association.throughModel = association.through.model = association.throughModel.Model;
+      internalAssociation.throughModel = internalAssociation.through.model = internalAssociation.throughModel.Model;
     }
   }
 

@@ -1,15 +1,14 @@
 import {AssociationOptionsBelongsTo, AssociationOptionsBelongsToMany, AssociationOptionsHasMany,
   AssociationOptionsHasOne, AssociationOptionsManyToMany} from 'sequelize';
-import {Model} from "../models/Model";
+import {ModelClassGetter} from "../types/ModelClassGetter";
 
 export interface ISequelizeAssociation {
 
   relation: string;
-  relatedClassGetter: () => typeof Model;
+  relatedClassGetter: ModelClassGetter;
   through?: string;
-  throughClassGetter?: () => typeof Model;
+  throughClassGetter?: ModelClassGetter;
   options?: AssociationOptionsBelongsTo | AssociationOptionsBelongsToMany | AssociationOptionsHasMany |
     AssociationOptionsHasOne | AssociationOptionsManyToMany;
-  otherKey?: string;
   as: string;
 }

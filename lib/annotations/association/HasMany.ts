@@ -1,21 +1,20 @@
 import {AssociationOptionsHasMany} from 'sequelize';
-
-import {Model} from "../../models/Model";
 import {HAS_MANY, addAssociation} from "../../services/association";
+import {ModelClassGetter} from "../../types/ModelClassGetter";
 
-export function HasMany(relatedClassGetter: () => typeof Model,
-                        options?: string | AssociationOptionsHasMany): Function {
-
+export function HasMany(relatedClassGetter: ModelClassGetter,
+                        foreignKey?: string): Function;
+export function HasMany(relatedClassGetter: ModelClassGetter,
+                        options?: AssociationOptionsHasMany): Function;
+export function HasMany(relatedClassGetter: ModelClassGetter,
+                        optionsOrForeignKey?: string | AssociationOptionsHasMany): Function {
   return (target: any, propertyName: string) => {
-    if (typeof options === 'string') {
-      options = {foreignKey: {name: options}};
-    }
     addAssociation(
       target,
       HAS_MANY,
       relatedClassGetter,
       propertyName,
-      options
+      optionsOrForeignKey,
     );
   };
 }

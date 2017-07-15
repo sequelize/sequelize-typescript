@@ -1,17 +1,10 @@
-import {AssociationForeignKeyOptions} from 'sequelize';
-import {Model} from "../models/Model";
 import {addForeignKey} from "../services/association";
+import {ModelClassGetter} from "../types/ModelClassGetter";
 
-export function ForeignKey(relatedClassGetter: () => typeof Model, options?: AssociationForeignKeyOptions): Function {
+export function ForeignKey(relatedClassGetter: ModelClassGetter): Function {
 
   return (target: any, propertyName: string) => {
 
-    if (!options) {
-      options = {name: propertyName};
-    } else if (!options.name) {
-      options.name = propertyName;
-    }
-
-    addForeignKey(target, relatedClassGetter, options);
+    addForeignKey(target, relatedClassGetter, propertyName);
   };
 }

@@ -1,11 +1,11 @@
-import {merge} from 'lodash';
 import {Model} from "./Model";
 import {getModels} from "../services/models";
-import {getAssociations, BELONGS_TO_MANY} from "../services/association";
+import {getAssociations, processAssociation} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {resolveScopes} from "../services/models";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
-import {getForeignKey} from "../services/association";
+import {extend} from "../utils/object";
+import {ISequelizeAssociation} from "../interfaces/ISequelizeAssociation";
 
 /**
  * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
@@ -16,52 +16,41 @@ import {getForeignKey} from "../services/association";
  */
 export abstract class BaseSequelize {
 
-  thoughMap: {[through: string]: any} = {};
-  _: {[modelName: string]: (typeof Model)} = {};
+  thoughMap: { [through: string]: any } = {};
+  _: { [modelName: string]: (typeof Model) } = {};
 
   static extend(target: any): void {
 
-    // PROTOTYPE MEMBERS
-    // --------------------------
-
-    // copies all prototype members of this to target.prototype
-    Object
-      .keys(this.prototype)
-      .forEach(name => target.prototype[name] = this.prototype[name])
-    ;
-
-    // STATIC MEMBERS
-    // --------------------------
-
-    // copies all static members of this to target
-    Object
-      .keys(this)
-      .forEach(name => target[name] = this[name])
-    ;
+    extend(target, this);
   }
 
   /**
    * Prepares sequelize config passed to original sequelize constructor
    */
-  static prepareConfig(config: ISequelizeConfig|ISequelizeValidationOnlyConfig): ISequelizeConfig {
+  static prepareConfig(config: ISequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
 
     if (config.validateOnly) {
 
-      return Object.assign({}, config, {
-        name: '_name_',
-        username: '_username_',
-        password: '_password_',
-        dialect: 'sqlite',
-        dialectModulePath: __dirname + '/../utils/db-dialect-dummy'
-      } as ISequelizeConfig);
+      return this.getValidationOnlyConfig(config);
     }
 
     return config as ISequelizeConfig;
   }
 
+  static getValidationOnlyConfig(config: ISequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
+    return {
+      ...config,
+      name: '_name_',
+      username: '_username_',
+      password: '_password_',
+      dialect: 'sqlite',
+      dialectModulePath: __dirname + '/../utils/db-dialect-dummy'
+    } as ISequelizeConfig;
+  }
+
   addModels(models: Array<typeof Model>): void;
   addModels(modelPaths: string[]): void;
-  addModels(arg: Array<typeof Model|string>): void {
+  addModels(arg: Array<typeof Model | string>): void {
 
     const models = getModels(arg);
 
@@ -88,73 +77,7 @@ export abstract class BaseSequelize {
 
       if (!associations) return;
 
-      associations.forEach(association => {
-
-        const relatedClass = association.relatedClassGetter();
-        let through;
-        let otherKey;
-
-        if (association.relation === BELONGS_TO_MANY) {
-
-          if (association.otherKey) {
-
-            otherKey = association.otherKey;
-          } else {
-            if (!association.relatedClassGetter) {
-              throw new Error(`RelatedClassGetter missing on "${model['name']}"`);
-            }
-            otherKey = getForeignKey(association.relatedClassGetter(), association);
-          }
-
-          if (association.through) {
-
-            if (!this.thoughMap[association.through]) {
-              const throughModel = this.getThroughModel(association.through);
-
-              this.addModels([throughModel]);
-
-              this.thoughMap[association.through] = throughModel;
-            }
-
-            through = this.thoughMap[association.through];
-
-          } else {
-            if (!association.throughClassGetter) {
-              throw new Error(`ThroughClassGetter missing on "${model['name']}"`);
-            }
-            through = association.throughClassGetter();
-          }
-        }
-
-        // ensure association options by default have most explicit foreignKey options
-        // so it merges properly with different foreignKey option permutations, or is overrwritten
-        // completely by options.foreignKey
-        const foreignKey = getForeignKey(model, association);
-        const options =  merge({foreignKey: {name: foreignKey}}, association.options,
-        {
-          as: association.as,
-          through,
-          otherKey
-        });
-        model[association.relation](relatedClass, options);
-
-        // The associations has to be adjusted
-        const _association = model['associations'][association.as];
-
-        // String based through's need adjustment
-        if (association.through) {
-
-          // as and associationAccessor values referring to string "Through"
-          _association.oneFromSource.as = association.through;
-          _association.oneFromSource.options.as = association.through;
-          _association.oneFromSource.associationAccessor = association.through;
-          _association.oneFromTarget.as = association.through;
-          _association.oneFromTarget.options.as = association.through;
-          _association.oneFromTarget.associationAccessor = association.through;
-        }
-
-        this.adjustAssociation(model, _association);
-      });
+      associations.forEach(association => processAssociation(this, model, association));
     });
   }
 
@@ -165,7 +88,8 @@ export abstract class BaseSequelize {
    */
   abstract getThroughModel(through: string): typeof Model;
 
-  abstract adjustAssociation(model: any, association: any): void;
+  abstract adjustAssociation(model: any, association: ISequelizeAssociation): void;
 
   abstract defineModels(models: Array<typeof Model>): void;
+
 }
