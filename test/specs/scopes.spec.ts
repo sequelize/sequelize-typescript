@@ -1,8 +1,12 @@
-import {expect} from 'chai';
+import {expect, use} from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
 import {createSequelize} from "../utils/sequelize";
 import {getScopeOptions} from "../../lib/services/models";
 import {ShoeWithScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithScopes";
 import {Manufacturer} from "../models/Manufacturer";
+import {Person} from "../models/Person";
+
+use(chaiAsPromised);
 
 describe('scopes', () => {
 
@@ -28,6 +32,7 @@ describe('scopes', () => {
   describe('find', () => {
 
     const BRAND = 'adiwas';
+    const OWNER = 'bob';
 
     beforeEach(() => ShoeWithScopes
       .create<ShoeWithScopes>({
@@ -37,8 +42,11 @@ describe('scopes', () => {
         producedAt: new Date(),
         manufacturer: {
           brand: BRAND
+        },
+        owner: {
+          name: OWNER
         }
-      }, {include: [Manufacturer]}));
+      }, {include: [Manufacturer, Person]}));
 
     it('should consider default scope', () =>
 
@@ -63,6 +71,40 @@ describe('scopes', () => {
           expect(yellowShoes).to.be.empty;
         })
     );
+
+    describe('with include options', () => {
+
+      it('should consider scopes and additional included model (object)', () =>
+        expect(ShoeWithScopes
+          .scope('full')
+          .findOne<ShoeWithScopes>({
+            include: [{
+              model: Person,
+            }]
+          })
+          .then(shoe => {
+            expect(shoe).to.have.property('manufacturer').which.is.not.null;
+            expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
+            expect(shoe).to.have.property('owner').which.is.not.null;
+          })
+        ).not.to.be.rejected
+      );
+
+      it('should consider scopes and additional included model (model)', () =>
+        expect(ShoeWithScopes
+          .scope('full')
+          .findOne({
+            include: [Person]
+          })
+          .then(shoe => {
+            expect(shoe).to.have.property('manufacturer').which.is.not.null;
+            expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
+            expect(shoe).to.have.property('owner').which.is.not.null;
+          })
+        ).not.to.be.rejected
+      );
+
+    });
 
   });
 

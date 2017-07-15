@@ -1,6 +1,7 @@
 import {Table, Model, Column, ForeignKey, BelongsTo,
   DefaultScope, Scopes} from "../../index";
 import {Manufacturer} from "./Manufacturer";
+import {Person} from "./Person";
 
 export const SHOE_DEFAULT_SCOPE = {
   attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt']
@@ -40,5 +41,12 @@ export class ShoeWithScopes extends Model<ShoeWithScopes> {
 
   @BelongsTo(() => Manufacturer)
   manufacturer: Manufacturer;
+
+  @ForeignKey(() => Person)
+  @Column
+  ownerId: number;
+
+  @BelongsTo(() => Person)
+  owner: Person;
 
 }
