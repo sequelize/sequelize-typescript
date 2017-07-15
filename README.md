@@ -334,7 +334,6 @@ For one-to-one use `@HasOne(...)`(foreign key for the relation exists on the oth
 Decorator                                 | Description
 ------------------------------------------|---------------------
  `@ForeignKey(relatedModelGetter: () => typeof Model)` | marks property as `foreignKey` for related class 
- `@ForeignKey(relatedModelGetter: () => typeof Model, options: AssociationForeignKeyOptions)` | marks property as `foreignKey` for related class and specifies foreign key options
  `@BelongsTo(relatedModelGetter: () => typeof Model)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is resolved from source class 
  `@BelongsTo(relatedModelGetter: () => typeof Model, foreignKey: string)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is explicitly specified value 
  `@BelongsTo(relatedModelGetter: () => typeof Model, options: AssociationOptionsBelongsTo)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `options` are additional association options 
