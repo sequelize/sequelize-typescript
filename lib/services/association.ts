@@ -147,6 +147,7 @@ export function getAssociationsByRelation(target: any, relatedClass: any): ISequ
     const _relatedClass = association.relatedClassGetter();
     return (
       _relatedClass.prototype === relatedClass.prototype || // v3 + v4
+      /* istanbul ignore next */
       relatedClass.prototype instanceof _relatedClass // v4 (for child classes)
     );
   });
