@@ -32,11 +32,15 @@ export const INFER_ALIAS_MAP = {
   build: 1,
   create: 1,
   aggregate: 2,
+  all: 0,
   findAll: 0,
+  findAndCount: 0,
+  findAndCountAll: 0,
   findById: 1,
+  findByPrimary: 1,
+  find: 0,
   findOne: 0,
   reload: 0,
-  find: 0,
 };
 
 /**
