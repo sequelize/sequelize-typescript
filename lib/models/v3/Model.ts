@@ -34,10 +34,26 @@ export const Model: any = (() => {
       if (typeof SeqModelProto[key] === 'function') {
 
         _Model[key] = function(...args: any[]): any {
-          return SeqModelProto[key].call(this.Model || this, ...args);
+
+          let targetModel = this.Model;
+
+          if (this.scoped !== undefined) {
+            // Adds scope info to 'this' context
+            targetModel = Object.create(targetModel);
+            targetModel.$scope = this.$scope;
+            targetModel.scoped = this.scoped;
+          }
+
+          return SeqModelProto[key].call(targetModel, ...args);
         };
       }
     });
+
+  // 'scope' and 'unscoped' need to be called with 'this' context
+  // instead of 'this.Model' context
+  _Model['scope'] = _Model['unscoped'] = function(...args: any[]): any {
+    return SeqModelProto.scope.call(this, ...args);
+  };
 
   return _Model;
 })();

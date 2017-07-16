@@ -103,7 +103,7 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
       // this initializes some stuff for Instance
       model['refreshAttributes']();
 
-      // copy static fields to class
+      // copy own static fields to class
       Object.keys(model).forEach(key => key !== 'name' && (_class[key] = model[key]));
 
       // the class needs to know its sequelize model
