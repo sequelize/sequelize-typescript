@@ -72,6 +72,16 @@ describe('scopes', () => {
         })
     );
 
+    it('should not consider default scope due to unscoped call', () =>
+
+      ShoeWithScopes
+        .unscoped()
+        .findOne()
+        .then(shoe => {
+          expect(shoe).to.have.property('secretKey').which.is.not.null;
+        })
+    );
+
     describe('with include options', () => {
 
       it('should consider scopes and additional included model (object)', () =>
@@ -102,6 +112,32 @@ describe('scopes', () => {
             expect(shoe).to.have.property('owner').which.is.not.null;
           })
         ).not.to.be.rejected
+      );
+
+      it('should not consider default scope due to unscoped call, but additonal includes (object)', () =>
+
+        ShoeWithScopes
+          .unscoped()
+          .findOne({
+            include: [{model: Person}]
+          })
+          .then(shoe => {
+            expect(shoe).to.have.property('secretKey').which.is.not.null;
+            expect(shoe).to.have.property('owner').which.is.not.null;
+          })
+      );
+
+      it('should not consider default scope due to unscoped call, but additonal includes (model)', () =>
+
+        ShoeWithScopes
+          .unscoped()
+          .findOne({
+            include: [Person]
+          })
+          .then(shoe => {
+            expect(shoe).to.have.property('secretKey').which.is.not.null;
+            expect(shoe).to.have.property('owner').which.is.not.null;
+          })
       );
 
     });

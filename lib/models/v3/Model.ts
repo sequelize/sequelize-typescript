@@ -37,7 +37,7 @@ export const Model: any = (() => {
 
           let targetModel = this.Model;
 
-          if (this.scoped) {
+          if (this.scoped !== undefined) {
             // Adds scope info to 'this' context
             targetModel = Object.create(targetModel);
             targetModel.$scope = this.$scope;
@@ -49,9 +49,9 @@ export const Model: any = (() => {
       }
     });
 
-  // 'scope' need to be called with 'this'context
+  // 'scope' and 'unscoped' need to be called with 'this' context
   // instead of 'this.Model' context
-  _Model['scope'] = function(...args: any[]): any {
+  _Model['scope'] = _Model['unscoped'] = function(...args: any[]): any {
     return SeqModelProto.scope.call(this, ...args);
   };
 
