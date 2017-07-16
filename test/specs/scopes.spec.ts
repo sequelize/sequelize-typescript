@@ -41,7 +41,8 @@ describe('scopes', () => {
         secondaryColor: 'blue',
         producedAt: new Date(),
         manufacturer: {
-          brand: BRAND
+          brand: BRAND,
+          notInScopeBrandOnly: 'invisible :)',
         },
         owner: {
           name: OWNER
@@ -78,7 +79,7 @@ describe('scopes', () => {
         .unscoped()
         .findOne()
         .then(shoe => {
-          expect(shoe).to.have.property('secretKey').which.is.not.null;
+          expect(shoe).to.have.property('secretKey').which.is.a('string');
         })
     );
 
@@ -137,6 +138,61 @@ describe('scopes', () => {
           .then(shoe => {
             expect(shoe).to.have.property('secretKey').which.is.not.null;
             expect(shoe).to.have.property('owner').which.is.not.null;
+          })
+      );
+
+      describe('with using scoped included model', () => {
+
+        it('should consider scope of included model (without own scope)', () =>
+          ShoeWithScopes
+            .findOne({
+              include: [Manufacturer.scope('brandOnly')]
+            })
+            .then(shoe => {
+              expect(shoe).to.have.property('manufacturer')
+                .that.have.property('notInScopeBrandOnly')
+                .which.is.undefined;
+            })
+        );
+
+        it('should consider scope of included model (with own scope)', () =>
+          ShoeWithScopes
+            .scope('red')
+            .findOne({
+              include: [Manufacturer.scope('brandOnly')]
+            })
+            .then(shoe => {
+              expect(shoe).to.have.property('manufacturer')
+                .that.have.property('notInScopeBrandOnly')
+                .which.is.undefined;
+            })
+        );
+
+      });
+
+    });
+
+    describe('with nested scope', () => {
+
+      it('should consider nested scope', () =>
+        ShoeWithScopes
+          .scope('manufacturerWithScope')
+          .findOne()
+          .then(shoe => {
+            expect(shoe).to.have.property('manufacturer')
+              .that.have.property('notInScopeBrandOnly')
+              .which.is.undefined;
+          })
+      );
+
+      it('should not consider nested scope', () =>
+        ShoeWithScopes
+          .scope('full')
+          .findOne()
+          .then(shoe => {
+            expect(shoe).to.have.property('manufacturer')
+              .that.have.property('notInScopeBrandOnly')
+              .which.is.a('string');
           })
       );
 

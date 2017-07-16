@@ -141,10 +141,16 @@ export function setAssociations(target: any, associations: ISequelizeAssociation
 }
 
 export function getAssociationsByRelation(target: any, relatedClass: any): ISequelizeAssociation[] {
-
   const associations = getAssociations(target);
 
-  return (associations || []).filter(association => association.relatedClassGetter() === relatedClass);
+  return (associations || []).filter(association => {
+    const _relatedClass = association.relatedClassGetter();
+    return (
+      _relatedClass.prototype === relatedClass.prototype || // v3 + v4
+      /* istanbul ignore next */
+      relatedClass.prototype instanceof _relatedClass // v4 (for child classes)
+    );
+  });
 }
 
 /**
