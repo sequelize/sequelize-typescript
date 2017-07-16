@@ -144,7 +144,8 @@ export function getAssociationsByRelation(target: any, relatedClass: any): ISequ
 
   const associations = getAssociations(target);
 
-  return (associations || []).filter(association => association.relatedClassGetter() === relatedClass);
+  return (associations || []).filter(association =>
+  association.relatedClassGetter().prototype === relatedClass.prototype);
 }
 
 /**
