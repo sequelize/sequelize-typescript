@@ -17,5 +17,5 @@ export interface IBuildOptions extends ReturningOptions {
   /**
    * an array of include options - Used to build prefetched/included model instances. See `set`
    */
-  include?: Array<Model<any> | IIncludeOptions>;
+  include?: Array<typeof Model | IIncludeOptions>;
 }
