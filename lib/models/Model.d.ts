@@ -327,14 +327,16 @@ export declare class Model<T> extends Hooks {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate<T extends Model<T>>(options: IFindOrInitializeOptions<T>): Promise<[T, boolean]>;
-
+  static findOrCreate<T extends Model<T>>(options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrCreate<T extends Model<T>, A>(options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
-  static findCreateFind<T extends Model<T>>(options: IFindCreateFindOptions<T>): Promise<T>;
-
+  static findCreateFind<T extends Model<T>>(options: IFindCreateFindOptions<any>): Promise<[T, boolean]>;
+  static findCreateFind<T extends Model<T>, A>(options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
+  
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
    * either the primary key or a unique key is found. Note that the unique index must be defined in your
