@@ -4,11 +4,21 @@ import {addAttributeOptions} from "../../services/models";
 /**
  * Don't allow empty strings
  */
-export function NotEmpty(target: any, propertyName: string): void {
+export function NotEmpty({msg}: {msg?: string}): Function {
 
-  addAttributeOptions(target, propertyName, {
-    validate: {
-      notEmpty: true
-    }
-  });
+  let options: boolean | {msg: string};
+      
+  if (msg) {
+    options = {msg};
+  } else {
+    options = true;
+  }
+  
+  return (target: any, propertyName: string) => {
+    addAttributeOptions(target, propertyName, {
+      validate: {
+        notEmpty: options
+      }
+    });
+  }
 }
