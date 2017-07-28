@@ -95,12 +95,6 @@ describe('table_column', () => {
       expect(shoeDefineOptions).not.to.be.undefined;
     });
 
-    it('should have automatically inferred tableName', () => {
-      const userDefineOptions = getOptions(User.prototype);
-
-      expect(userDefineOptions).to.have.property('tableName', User.name);
-    });
-
     it('should have explicitly defined tableName', () => {
       const shoeDefineOptions = getOptions(Shoe.prototype);
 
@@ -230,7 +224,7 @@ describe('table_column', () => {
         force: true, logging: _.after(2, _.once((sql) => {
 
           // tslint:disable:max-line-length
-          expect(sql).to.match(/CREATE TABLE IF NOT EXISTS `Bottle` \(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `brand` VARCHAR\(5\), `key` CHAR\(2\), `num` INTEGER\(100\)\)/);
+          expect(sql).to.match(/CREATE TABLE IF NOT EXISTS `Bottles` \(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `brand` VARCHAR\(5\), `key` CHAR\(2\), `num` INTEGER\(100\)\)/);
         }))
       });
     });
