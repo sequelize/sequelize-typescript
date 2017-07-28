@@ -78,8 +78,8 @@ class Person extends Model<Person> {}
 
 Decorator                             | Description
 --------------------------------------|---------------------
- `@Table`                             | sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` automatically
- `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration) (also sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` if not already defined by define options) 
+ `@Table`                             | sets `options.modelName=<CLASS_NAME>` automatically
+ `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration) (also sets `options.modelName=<CLASS_NAME>` if not already defined by define options)
 
 #### Primary key
 A primary key (`id`) will be inherited from base class `Model`. This primary key is by default an `INTEGER` and has 
@@ -571,7 +571,7 @@ which does not throw an error.
 ### Minification
 If you need to minify your code, you need to set `tableName` and `modelName` 
 in the `DefineOptions` for `@Table` annotation. sequelize-typescript
-uses the class name as default name for `tableName` and `modelName`. 
+uses the class name as default name for `modelName`, and `tableName` is generated from that.
 When the code is minified the class name will no longer be the originally
 defined one (So that `class User` will become `class b` for example).
 
