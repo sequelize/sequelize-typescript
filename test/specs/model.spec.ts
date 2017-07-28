@@ -538,7 +538,7 @@ describe('model', () => {
         expect(idx1.unique).to.be.ok;
 
 
-        expect(idx2.name).to.equal('model_a_field_c');
+        expect(idx2.name).to.equal('model_as_field_c');
         expect(idx2.unique).not.to.be.ok;
 
       });
@@ -1055,7 +1055,7 @@ describe('model', () => {
             fields: ['secretValue'], logging: (sql) => {
               test = true;
               // tslint:disable:max-line-length
-              expect(sql).to.match(/UPDATE\s+[`"]+User[`"]+\s+SET\s+[`"]+secretValue[`"]='43',[`"]+updatedAt[`"]+='[^`",]+'\s+WHERE [`"]+id[`"]+\s=\s1/);
+              expect(sql).to.match(/UPDATE\s+[`"]+Users[`"]+\s+SET\s+[`"]+secretValue[`"]='43',[`"]+updatedAt[`"]+='[^`",]+'\s+WHERE [`"]+id[`"]+\s=\s1/);
             }
           });
         });
