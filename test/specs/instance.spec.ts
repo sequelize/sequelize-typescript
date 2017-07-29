@@ -20,6 +20,7 @@ import {UserWithValidation} from "../models/UserWithValidation";
 import {UserWithNoAutoIncrementation} from "../models/UserWithNoAutoIncrementation";
 import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
 import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
+import {UserWithVersion} from "../models/UserWithVersion";
 import chaiDatetime = require('chai-datetime');
 import {IDefineOptions} from "../../lib/interfaces/IDefineOptions";
 // import {UserWithSwag} from "../models/UserWithSwag";
@@ -1480,6 +1481,29 @@ describe('instance', () => {
           });
       });
     });
+
+
+    describe('with version option', () => {
+
+      it("version column is updated by sequelize", () => {
+        let version = undefined;
+          UserWithCustomUpdatedAt
+            .sync()
+            .then(() => UserWithVersion.create<UserWithVersion>({ name: 'john doe' }))
+            .then((johnDoe: UserWithVersion) => {
+              expect(johnDoe.version).not.to.be.undefined;
+              version = johnDoe.version;
+              return johnDoe.update({name: 'doe john'});
+            })
+            .then((johnDoe: UserWithVersion) => {
+              expect(johnDoe.name).not.equals('doe john');
+              expect(johnDoe.version).not.equals(version);
+              return johnDoe.update({});
+            })
+        }
+      )
+    });
+
 
     it('should fail a validation upon creating', () =>
       User
