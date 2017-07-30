@@ -35,21 +35,16 @@ export function addAssociation(target: any,
                                otherKey?: string): void {
 
   let associations = getAssociations(target);
+  let throughClassGetter;
+  let options: Partial<ConcatAssociationOptions> = {};
 
   if (!associations) {
     associations = [];
-    setAssociations(target, associations);
   }
-
-  let throughClassGetter;
-
   if (typeof through === 'function') {
     throughClassGetter = through;
     through = undefined;
   }
-
-  let options: Partial<ConcatAssociationOptions> = {};
-
   if (typeof optionsOrForeignKey === 'string') {
     options.foreignKey = {name: optionsOrForeignKey};
   } else {
@@ -67,6 +62,7 @@ export function addAssociation(target: any,
     as,
     options
   });
+  setAssociations(target, associations);
 }
 
 /**
@@ -131,18 +127,18 @@ export function getForeignKey(model: typeof Model,
  * Returns association meta data from specified class
  */
 export function getAssociations(target: any): ISequelizeAssociation[] | undefined {
-
-  return Reflect.getMetadata(ASSOCIATIONS_KEY, target);
+  const associations = Reflect.getMetadata(ASSOCIATIONS_KEY, target);
+  if (associations) {
+    return [...associations];
+  }
 }
 
 export function setAssociations(target: any, associations: ISequelizeAssociation[]): void {
-
   Reflect.defineMetadata(ASSOCIATIONS_KEY, associations, target);
 }
 
 export function getAssociationsByRelation(target: any, relatedClass: any): ISequelizeAssociation[] {
   const associations = getAssociations(target);
-
   return (associations || []).filter(association => {
     const _relatedClass = association.relatedClassGetter();
     return (
@@ -159,18 +155,15 @@ export function getAssociationsByRelation(target: any, relatedClass: any): ISequ
 export function addForeignKey(target: any,
                               relatedClassGetter: ModelClassGetter,
                               foreignKey: string): void {
-
   let foreignKeys = getForeignKeys(target);
-
   if (!foreignKeys) {
     foreignKeys = [];
-    setForeignKeys(target, foreignKeys);
   }
-
   foreignKeys.push({
     relatedClassGetter,
     foreignKey
   });
+  setForeignKeys(target, foreignKeys);
 }
 
 /**
@@ -205,7 +198,6 @@ export function processAssociation(sequelize: BaseSequelize,
   let otherKey;
 
   if (association.relation === BELONGS_TO_MANY) {
-
     otherKey = getOtherKey(association);
     through = getThroughClass(sequelize, association);
   }
@@ -235,7 +227,6 @@ export function processAssociation(sequelize: BaseSequelize,
 export function getThroughClass(sequelize: BaseSequelize,
                                 association: ISequelizeAssociation): any {
   if (association.through) {
-
     if (!sequelize.thoughMap[association.through]) {
       const throughModel = sequelize.getThroughModel(association.through);
       sequelize.addModels([throughModel]);
@@ -249,15 +240,16 @@ export function getThroughClass(sequelize: BaseSequelize,
 /**
  * Returns foreign key meta data from specified class
  */
-function getForeignKeys(target: any): ISequelizeForeignKeyConfig[] | undefined {
-
-  return Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
+export function getForeignKeys(target: any): ISequelizeForeignKeyConfig[] | undefined {
+  const foreignKeys = Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
+  if (foreignKeys) {
+    return [...foreignKeys];
+  }
 }
 
 /**
  * Sets foreign key meta data
  */
 function setForeignKeys(target: any, foreignKeys: any[]): void {
-
   Reflect.defineMetadata(FOREIGN_KEYS_KEY, foreignKeys, target);
 }
