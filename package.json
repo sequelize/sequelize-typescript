@@ -22,7 +22,7 @@
     "url": "git+https://github.com/RobinBuschmann/sequelize-typescript.git"
   },
   "author": "Robin Buschmann",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/RobinBuschmann/sequelize-typescript/issues"
   },
