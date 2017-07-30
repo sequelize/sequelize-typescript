@@ -467,6 +467,11 @@ export declare class Model<T> extends Hooks {
   deletedAt?: Date|any;
 
   /**
+   * version number automatically created by sequelize if table options.version is true
+   */
+  version?: number;
+
+  /**
    * Returns true if this instance has not yet been persisted to the database
    */
   isNewRecord: boolean;
