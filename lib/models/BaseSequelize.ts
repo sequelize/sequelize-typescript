@@ -2,7 +2,7 @@ import {Model} from "./Model";
 import {getModels} from "../services/models";
 import {getAssociations, processAssociation} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
-import {resolveScopes} from "../services/models";
+import {resolveScopes} from "../services/scopes";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
 import {extend} from "../utils/object";
 import {ISequelizeAssociation} from "../interfaces/ISequelizeAssociation";

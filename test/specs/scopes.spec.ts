@@ -1,7 +1,7 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {createSequelize} from "../utils/sequelize";
-import {getScopeOptions} from "../../lib/services/models";
+import {getScopeOptions} from "../../lib/services/scopes";
 import {ShoeWithScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithScopes";
 import {Manufacturer} from "../models/Manufacturer";
 import {Person} from "../models/Person";
@@ -197,6 +197,19 @@ describe('scopes', () => {
       );
 
     });
+
+    // describe('with scope function', () => {
+    //
+    //   it('should consider nested scope', () =>
+    //     ShoeWithScopes
+    //       .scope({method: ['primaryColor', 'yellow']})
+    //       .findOne()
+    //       .then(shoe => {
+    //         expect(shoe).to.have.property('primaryColor', 'yellow');
+    //       })
+    //   );
+    //
+    // });
 
   });
 

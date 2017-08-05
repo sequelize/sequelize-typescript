@@ -6,14 +6,10 @@ import {Model} from "../models/Model";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {inferDataType} from "../utils/data-type";
 import {deepAssign} from "../utils/object";
-import {IScopeOptions} from "../interfaces/IScopeOptions";
-import {IFindOptions} from "../interfaces/IFindOptions";
 import {getAssociationsByRelation} from "./association";
 import {uniqueFilter} from "../utils/array";
-import {IScopeFindOptions} from "../interfaces/IScopeFindOptions";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
-const SCOPES_KEY = 'sequelize:scopes';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
 const OPTIONS_KEY = 'sequelize:options';
 const DEFAULT_OPTIONS: DefineOptions<any> = {
@@ -211,21 +207,6 @@ export function getModels(arg: Array<typeof Model | string>): Array<typeof Model
 }
 
 /**
- * Resolves scopes and adds them to the specified models
- */
-export function resolveScopes(models: Array<typeof Model>): void {
-  models.forEach(model => {
-    const options = getScopeOptions(model.prototype);
-
-    if (options) {
-      Object
-        .keys(options)
-        .forEach(key => resolveScope(key, model, options[key]));
-    }
-  });
-}
-
-/**
  * Resolves all model getters of specified options object
  * recursively.
  * So that {model: () => Person} will be converted to
@@ -254,26 +235,6 @@ export function resolveModelGetter(options: any): void {
 }
 
 /**
- * Adds scope option meta data for specified prototype
- */
-export function addScopeOptions(target: any, options: IScopeOptions): void {
-  const _options = getScopeOptions(target) || {};
-
-  setScopeOptions(target, deepAssign({}, _options, options));
-}
-
-/**
- * Returns scope option meta data from specified target
- */
-export function getScopeOptions(target: any): IScopeOptions | undefined {
-  const options = Reflect.getMetadata(SCOPES_KEY, target);
-
-  if (options) {
-    return deepAssign({}, options);
-  }
-}
-
-/**
  * Pre conform includes, so that "as" value can be inferred from source
  */
 export function inferAlias(options: any, source: any): any {
@@ -299,15 +260,6 @@ export function inferAlias(options: any, source: any): any {
   });
 
   return options;
-}
-
-/**
- * Resolves scope
- */
-function resolveScope(scopeName: string, model: typeof Model, options: IScopeFindOptions | undefined): void {
-  resolveModelGetter(options);
-  options = inferAlias(options, model);
-  model.addScope(scopeName, options as IFindOptions, {override: true});
 }
 
 /**
@@ -342,14 +294,6 @@ function inferAliasForInclude(include: any, source: any): any {
   }
 
   return include;
-}
-
-/**
- * Set scope option meta data for specified prototype
- */
-function setScopeOptions(target: any, options: IScopeOptions): void {
-
-  Reflect.defineMetadata(SCOPES_KEY, options, target);
 }
 
 /**

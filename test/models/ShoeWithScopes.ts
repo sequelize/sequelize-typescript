@@ -18,7 +18,11 @@ export const SHOE_SCOPES = {
   },
   manufacturerWithScope: {
     include: [() => Manufacturer.scope('brandOnly')]
-  }
+  },
+  primaryColor: primaryColor => ({
+      where: {primaryColor}
+    }
+  )
 };
 
 @DefaultScope(SHOE_DEFAULT_SCOPE)
