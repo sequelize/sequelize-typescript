@@ -1,8 +1,12 @@
+/* tslint:disable:max-classes-per-file */
+
 import {expect} from 'chai';
 import {createSequelize} from "../../utils/sequelize";
 import {Game} from "../../models/exports/Game";
 import Gamer from "../../models/exports/gamer.model";
 import {Sequelize} from "../../../lib/models/Sequelize";
+import {Model} from '../../../lib/models/Model';
+import {Table} from '../../../lib/annotations/Table';
 
 describe('sequelize', () => {
 
@@ -12,6 +16,35 @@ describe('sequelize', () => {
 
     it('should equal Sequelize class', () => {
       expect(sequelize.constructor).to.equal(Sequelize);
+    });
+
+  });
+
+  describe('global define options', () => {
+
+    const DEFINE_OPTIONS = {timestamps: true, underscoredAll: true};
+    const sequelizeWithDefine = createSequelize(false, DEFINE_OPTIONS);
+
+    it('should have define options', () => {
+      expect(sequelizeWithDefine)
+        .to.have.property('options')
+        .that.has.property('define')
+        .that.eqls(DEFINE_OPTIONS)
+      ;
+    });
+
+    it('should set define options for models', () => {
+      @Table
+      class User extends Model<User> {}
+      sequelizeWithDefine.addModels([User]);
+
+      Object
+        .keys(DEFINE_OPTIONS)
+        .forEach(key => {
+          expect(User)
+            .to.have.property('options')
+            .that.have.property(key, DEFINE_OPTIONS[key]);
+        });
     });
 
   });
