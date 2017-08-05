@@ -1,7 +1,7 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {createSequelize} from "../utils/sequelize";
-import {getScopeOptions} from "../../lib/services/models";
+import {getScopeOptions} from "../../lib/services/scopes";
 import {ShoeWithScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithScopes";
 import {Manufacturer} from "../models/Manufacturer";
 import {Person} from "../models/Person";
@@ -193,6 +193,29 @@ describe('scopes', () => {
             expect(shoe).to.have.property('manufacturer')
               .that.have.property('notInScopeBrandOnly')
               .which.is.a('string');
+          })
+      );
+
+    });
+
+    describe('with scope function', () => {
+
+      it('should find appropriate shoe due to correctly passed scope function param', () =>
+        ShoeWithScopes
+          .scope({method: ['primaryColor', 'red']})
+          .findOne()
+          .then(shoe => {
+            expect(shoe).to.have.property('primaryColor', 'red');
+          })
+      );
+
+      it('should find appropriate shoe due to correctly passed scope function param including associated model', () =>
+        ShoeWithScopes
+          .scope({method: ['primaryColorWithManufacturer', 'red']})
+          .findOne()
+          .then(shoe => {
+            expect(shoe).to.have.property('primaryColor', 'red');
+            expect(shoe).to.have.property('manufacturer').that.is.an('object');
           })
       );
 

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {addScopeOptions} from "../services/models";
+import {addScopeOptions} from "../services/scopes";
 import {IScopeFindOptions} from "../interfaces/IScopeFindOptions";
 
 /**
