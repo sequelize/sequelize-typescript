@@ -22,6 +22,11 @@ export const SHOE_SCOPES = {
   primaryColor: primaryColor => ({
       where: {primaryColor}
     }
+  ),
+  primaryColorWithManufacturer: primaryColor => ({
+      include: [Manufacturer],
+      where: {primaryColor},
+    }
   )
 };
 

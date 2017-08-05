@@ -198,18 +198,28 @@ describe('scopes', () => {
 
     });
 
-    // describe('with scope function', () => {
-    //
-    //   it('should consider nested scope', () =>
-    //     ShoeWithScopes
-    //       .scope({method: ['primaryColor', 'yellow']})
-    //       .findOne()
-    //       .then(shoe => {
-    //         expect(shoe).to.have.property('primaryColor', 'yellow');
-    //       })
-    //   );
-    //
-    // });
+    describe('with scope function', () => {
+
+      it('should find appropriate shoe due to correctly passed scope function param', () =>
+        ShoeWithScopes
+          .scope({method: ['primaryColor', 'red']})
+          .findOne()
+          .then(shoe => {
+            expect(shoe).to.have.property('primaryColor', 'red');
+          })
+      );
+
+      it('should find appropriate shoe due to correctly passed scope function param including associated model', () =>
+        ShoeWithScopes
+          .scope({method: ['primaryColorWithManufacturer', 'red']})
+          .findOne()
+          .then(shoe => {
+            expect(shoe).to.have.property('primaryColor', 'red');
+            expect(shoe).to.have.property('manufacturer').that.is.an('object');
+          })
+      );
+
+    });
 
   });
 

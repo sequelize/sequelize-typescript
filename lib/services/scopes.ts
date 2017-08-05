@@ -46,9 +46,14 @@ export function getScopeOptions(target: any): IScopeOptions | undefined {
 /**
  * Resolves scope
  */
-function resolveScope(scopeName: string, model: typeof Model, options: IScopeFindOptions | undefined): void {
+function resolveScope(scopeName: string, model: typeof Model, options: IScopeFindOptions | Function | undefined): void {
   resolveModelGetter(options);
-  options = inferAlias(options, model);
+  if (typeof options === 'function') {
+    const fn: Function = options;
+    options = (...args: any[]) => inferAlias(fn(...args), model);
+  } else {
+    options = inferAlias(options, model);
+  }
   model.addScope(scopeName, options as IFindOptions, {override: true});
 }
 
