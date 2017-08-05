@@ -7,7 +7,7 @@ import {addAttributeOptions} from "../../services/models";
 export function Length({msg, min, max}: {msg?: string; min?: number; max?: number}): Function {
 
   let options: [number, number] | {msg: string, args: [number, number]};
-  const length = [min, max] as [number, number];
+  const length = [min || 0, max] as [number, number];
 
   if (msg) {
     options = {args: length, msg: msg as string};
