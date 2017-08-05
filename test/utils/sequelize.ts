@@ -1,14 +1,15 @@
 import {Sequelize} from "../../lib/models/Sequelize";
 import * as OriginSequelize from "sequelize";
-import {Sequelize as SequelizeType} from "sequelize";
+import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
 
-export function createSequelize(useModelsInPath: boolean = true): Sequelize {
+export function createSequelize(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
 
   return new Sequelize({
     name: '__',
     dialect: 'sqlite',
     username: 'root',
     password: '',
+    define,
     storage: ':memory:',
     logging: !('SEQ_SILENT' in process.env),
     modelPaths: useModelsInPath ? [__dirname + '/../models'] : []

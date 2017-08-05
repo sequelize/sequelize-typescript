@@ -12,7 +12,7 @@ import {uniqueFilter} from "../utils/array";
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
 const OPTIONS_KEY = 'sequelize:options';
-const DEFAULT_OPTIONS: DefineOptions<any> = {
+export const DEFAULT_DEFINE_OPTIONS: DefineOptions<any> = {
   timestamps: false
 };
 export const PROPERTY_LINK_TO_ORIG = '__origClass';
@@ -137,7 +137,7 @@ export function getOptions(target: any): DefineOptions<any> | undefined {
  * Sets seuqlize define options to class prototype
  */
 export function setOptions(target: any, options: DefineOptions<any>): void {
-  Reflect.defineMetadata(OPTIONS_KEY, {...DEFAULT_OPTIONS, ...options}, target);
+  Reflect.defineMetadata(OPTIONS_KEY, {...options}, target);
 }
 
 /**

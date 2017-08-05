@@ -1,5 +1,5 @@
 import {Model} from "./Model";
-import {getModels} from "../services/models";
+import {DEFAULT_DEFINE_OPTIONS, getModels} from "../services/models";
 import {getAssociations, processAssociation} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {resolveScopes} from "../services/scopes";
@@ -28,13 +28,16 @@ export abstract class BaseSequelize {
    * Prepares sequelize config passed to original sequelize constructor
    */
   static prepareConfig(config: ISequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
+    if (!config.define) {
+      config.define = {};
+    }
+    config.define = {...DEFAULT_DEFINE_OPTIONS, ...config.define};
 
     if (config.validateOnly) {
 
       return this.getValidationOnlyConfig(config);
     }
-
-    return config as ISequelizeConfig;
+    return {...config as ISequelizeConfig};
   }
 
   static getValidationOnlyConfig(config: ISequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
