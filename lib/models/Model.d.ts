@@ -469,7 +469,7 @@ export declare class Model<T> extends Hooks {
   /**
    * version number automatically created by sequelize if table options.version is true
    */
-  version?: number;
+  version?: number|any;
 
   /**
    * Returns true if this instance has not yet been persisted to the database
