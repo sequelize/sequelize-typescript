@@ -64,7 +64,8 @@
     "ts-node": "3.0.4",
     "tslint": "4.3.1",
     "typescript": "2.2.1",
-    "uuid-validate": "0.0.2"
+    "uuid-validate": "0.0.2",
+    "sqlite3": "3.1.9"
   },
   "engines": {
     "node": ">=0.8.15"
