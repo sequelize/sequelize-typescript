@@ -21,6 +21,7 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [Multiple relations of same models](#multiple-relations-of-same-models)
  - [Model validation](#model-validation)
  - [Scopes](#scopes)
+ - [Hooks](#hooks)
  - [Why `() => Model`?](#user-content-why---model)
  - [Recommendations and limitations](#recommendations-and-limitations)
 
@@ -549,6 +550,34 @@ export class ShoeWithScopes extends Model<ShoeWithScopes> {
 
   @BelongsTo(() => Manufacturer)
   manufacturer: Manufacturer;
+}
+```
+
+## Hooks
+Hooks can be attached to your models. All Model-level hooks are supported. See [the related unit tests](test/models/Hook.ts) for a summary.
+
+Each hook must be a `static` method. Multiple hooks can be attached to a single method, and you can define multiple methods for a given hook.
+
+The name of the method cannot be the same as the name of the hook (for example, a `@BeforeCreate` hook method cannot be named `beforeCreate`). That’s because Sequelize has pre-defined methods with those names.
+
+```typescript
+@Table
+export class Person extends Model<Person> {
+  @Column
+  name: string;
+
+  @BeforeUpdate
+  @BeforeCreate
+  static makeUpperCase(instance: Person) {
+    // this will be called when an instance is created or updated
+    instance.name = instance.name.toLocaleUpperCase();
+  }
+
+  @BeforeCreate
+  static addUnicorn(instance: Person) {
+    // this will also be called when an instance is created
+    instance.name += ' 🦄';
+  }
 }
 ```
 
