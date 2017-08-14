@@ -227,12 +227,12 @@ export function processAssociation(sequelize: BaseSequelize,
 export function getThroughClass(sequelize: BaseSequelize,
                                 association: ISequelizeAssociation): any {
   if (association.through) {
-    if (!sequelize.thoughMap[association.through]) {
+    if (!sequelize.throughMap[association.through]) {
       const throughModel = sequelize.getThroughModel(association.through);
       sequelize.addModels([throughModel]);
-      sequelize.thoughMap[association.through] = throughModel;
+      sequelize.throughMap[association.through] = throughModel;
     }
-    return sequelize.thoughMap[association.through];
+    return sequelize.throughMap[association.through];
   }
   return (association.throughClassGetter as () => typeof Model)();
 }

@@ -15,7 +15,7 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   // to fix "$1" called with something that's not an instance of Sequelize.Model
   Model: any = Function;
 
-  thoughMap: { [through: string]: any } = {};
+  throughMap: { [through: string]: any } = {};
   _: { [modelName: string]: typeof Model } = {};
   init: (config: ISequelizeConfig) => void;
   addModels: (models: Array<typeof Model> | string[]) => void;
