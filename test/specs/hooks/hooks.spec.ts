@@ -15,10 +15,6 @@ chai.use(sinonChai);
 describe('hook', () => {
   const sequelize: Sequelize = createSequelize(false);
 
-  before(() => {
-
-  });
-
   beforeEach(() => {
 
     return sequelize.sync({force: true});
