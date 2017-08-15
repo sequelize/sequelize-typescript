@@ -15,7 +15,7 @@ export interface IBaseIncludeOptions {
    * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
    * unless you explicitly set `required: false`
    */
-  where?: WhereOptions;
+  where?: WhereOptions<any>;
 
   /**
    * A list of attributes to select from the child model
