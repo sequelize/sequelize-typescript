@@ -2,10 +2,11 @@ import {Sequelize} from "../../lib/models/Sequelize";
 import * as OriginSequelize from "sequelize";
 import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
 
+
 export function createSequelize(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
 
   return new Sequelize({
-    name: '__',
+    database: '__',
     dialect: 'sqlite',
     username: 'root',
     password: '',
@@ -14,6 +15,22 @@ export function createSequelize(useModelsInPath: boolean = true, define: DefineO
     logging: !('SEQ_SILENT' in process.env),
     modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
   });
+}
+
+export function createSequelizeUriObject(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
+
+  return new Sequelize({
+    uri: 'sqlite://root@localhost/__',
+    dialect: 'sqlite',
+    define,
+    storage: ':memory:',
+    logging: !('SEQ_SILENT' in process.env),
+    modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
+  });
+}
+export function createSequelizeUriString(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
+
+  return new Sequelize("sqlite://root@localhost/__");
 }
 
 export function createSequelizeValidationOnly(useModelsInPath: boolean = true): Sequelize {

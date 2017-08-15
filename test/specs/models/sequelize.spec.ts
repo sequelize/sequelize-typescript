@@ -1,7 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 
 import {expect} from 'chai';
-import {createSequelize} from "../../utils/sequelize";
+import {createSequelize, createSequelizeUriObject, createSequelizeUriString} from "../../utils/sequelize";
 import {Game} from "../../models/exports/Game";
 import Gamer from "../../models/exports/gamer.model";
 import {Sequelize} from "../../../lib/models/Sequelize";
@@ -16,6 +16,24 @@ describe('sequelize', () => {
 
     it('should equal Sequelize class', () => {
       expect(sequelize.constructor).to.equal(Sequelize);
+    });
+
+  });
+
+  describe('constructor using uri in options object', () => {
+
+    const sequelizeUri = createSequelizeUriString(false);
+    it('should equal Sequelize class', () => {
+      expect(sequelizeUri.constructor).to.equal(Sequelize);
+    });
+
+  });
+
+  describe('constructor using uri string', () => {
+
+    const sequelizeUri = createSequelizeUriObject(false);
+    it('should equal Sequelize class', () => {
+      expect(sequelizeUri.constructor).to.equal(Sequelize);
     });
 
   });

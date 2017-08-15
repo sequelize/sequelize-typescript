@@ -5,7 +5,7 @@ export interface ISequelizeConfig extends Options {
   /**
    * Name of database
    */
-  name: string;
+  database: string;
 
   /**
    * Username of database
