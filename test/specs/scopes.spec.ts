@@ -71,6 +71,11 @@ describe('scopes', () => {
 
           expect(yellowShoes).to.be.empty;
         })
+        .then(() => ShoeWithScopes.scope('noImg').findAll())
+        .then(noImgShoes => {
+
+          expect(noImgShoes).to.be.not.empty;
+        })
     );
 
     it('should not consider default scope due to unscoped call', () =>

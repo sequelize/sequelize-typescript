@@ -46,8 +46,10 @@ export function deepAssign(target: any, ...sources: any[]): any {
         } else if (sourceValue instanceof Date) {
 
           targetValue = new Date(sourceValue);
-        } else {
+        } else if (sourceValue === null) {
 
+          targetValue = null;
+        } else {
           deepAssign(targetValue, sourceValue);
         }
       } else {

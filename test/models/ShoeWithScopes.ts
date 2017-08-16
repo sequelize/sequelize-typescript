@@ -16,6 +16,9 @@ export const SHOE_SCOPES = {
   red: {
     where: {primaryColor: 'red'}
   },
+  noImg: {
+    where: {img: null}
+  },
   manufacturerWithScope: {
     include: [() => Manufacturer.scope('brandOnly')]
   },
