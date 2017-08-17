@@ -44,8 +44,7 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
     return Through;
   }
 
-  adjustAssociation(model: any, association: ISequelizeAssociation): void {
-  }
+  adjustAssociation(model: any, association: ISequelizeAssociation): void {}
 
   /**
    * Creates sequelize models and registers these models

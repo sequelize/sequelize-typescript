@@ -2,7 +2,6 @@ import {Sequelize} from "../../lib/models/Sequelize";
 import * as OriginSequelize from "sequelize";
 import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
 
-
 export function createSequelize(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
 
   return new Sequelize({
@@ -28,6 +27,7 @@ export function createSequelizeUriObject(useModelsInPath: boolean = true, define
     modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
   });
 }
+
 export function createSequelizeUriString(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
 
   return new Sequelize("sqlite://root@localhost/__");
