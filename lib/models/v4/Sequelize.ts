@@ -9,8 +9,8 @@ import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
 
 export class Sequelize extends OriginSequelize implements BaseSequelize {
 
-  thoughMap: { [through: string]: any } = {};
-  _: { [modelName: string]: typeof Model } = {};
+  thoughMap: {[through: string]: any} = {};
+  _: {[modelName: string]: typeof Model} = {};
   init: (config: SequelizeConfig) => void;
   addModels: (models: Array<typeof Model> | string[]) => void;
   associateModels: (models: Array<typeof Model>) => void;

@@ -32,10 +32,11 @@
   "dependencies": {
     "@types/node": "6.0.41",
     "@types/reflect-metadata": "0.0.4",
-    "@types/sequelize": "4.0.68",
+    "@types/sequelize": "4.0.69",
     "es6-shim": "0.35.3"
   },
   "devDependencies": {
+    "@types/bluebird": "3.5.4",
     "@types/chai": "3.4.35",
     "@types/chai-as-promised": "0.0.29",
     "@types/chai-datetime": "0.0.30",

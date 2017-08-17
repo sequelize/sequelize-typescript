@@ -1,14 +1,12 @@
 import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
 import {Model} from "../Model";
-import {ISequelizeConfig} from "../../interfaces/ISequelizeConfig";
+import {SequelizeConfig} from "../../types/SequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {PROPERTY_LINK_TO_ORIG} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 import {Table} from "../../annotations/Table";
 import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
-
-let preparedConfig;
 
 export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
@@ -17,24 +15,27 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
   thoughMap: { [through: string]: any } = {};
   _: { [modelName: string]: typeof Model } = {};
-  init: (config: ISequelizeConfig) => void;
+  init: (config: SequelizeConfig) => void;
   addModels: (models: Array<typeof Model> | string[]) => void;
   associateModels: (models: Array<typeof Model>) => void;
 
-  constructor(config: ISequelizeConfig) {
-    // a spread operator would be the more reasonable approach here,
-    // but this is currently not possible due to a bug by ts
-    // https://github.com/Microsoft/TypeScript/issues/4130
-    // TODO@robin probably make the constructor private and
-    // TODO       use a static factory function instead
+  constructor(config: SequelizeConfig | string) {
+
     super(
-      (preparedConfig = BaseSequelize.prepareConfig(config), preparedConfig.name),
-      preparedConfig.username,
-      preparedConfig.password,
-      preparedConfig
+      (typeof config === "string") ?
+        config : // URI string
+        BaseSequelize.isISequelizeUriConfig(config) ?
+          config.uri : // URI string from ISequelizeUriConfig
+          BaseSequelize.prepareConfig(config) // Config object (ISequelizeConfig)
     );
 
-    this.init(config);
+    if (BaseSequelize.isISequelizeUriConfig(config)) {
+      this.options = {...this.options, ...config};
+    }
+
+    if (typeof config !== "string") {
+      this.init(config);
+    }
   }
 
   getThroughModel(through: string): typeof Model {

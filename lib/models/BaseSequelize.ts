@@ -22,10 +22,6 @@ export abstract class BaseSequelize {
   thoughMap: { [through: string]: any } = {};
   _: { [modelName: string]: (typeof Model) } = {};
 
-  static isISequelizeConfig(obj: any): obj is ISequelizeConfig {
-    return obj.hasOwnProperty("database") && obj.hasOwnProperty("username");
-  }
-
   static isISequelizeDbNameConfig(obj: any): obj is ISequelizeDbNameConfig {
     return obj.hasOwnProperty("name") && obj.hasOwnProperty("username");
   }
@@ -54,8 +50,7 @@ export abstract class BaseSequelize {
     }
 
     if (BaseSequelize.isISequelizeDbNameConfig(config)) {
-      // Sequelize uses "database" property as a database name.
-      // @TODO: "name" property is deprecated, use "database" instead
+      // @TODO: deprecate "name" property, use "database" instead
       const database = config.name;
       return {...config, database} as ISequelizeConfig;
     }
