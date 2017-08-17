@@ -73,7 +73,7 @@ describe('sequelize', () => {
     it('should contain additional Sequelize options', () => {
       expect(sequelizeUri)
         .to.have.property('options')
-        .to.have.property('pool')
+        .that.have.property('pool')
         .that.have.property('max')
         .that.eqls(8);
     });

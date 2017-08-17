@@ -50,9 +50,8 @@ export abstract class BaseSequelize {
     }
 
     if (BaseSequelize.isISequelizeDbNameConfig(config)) {
-      // @TODO: deprecate "name" property, use "database" instead
-      const database = config.name;
-      return {...config, database} as ISequelizeConfig;
+      // @TODO: remove deprecated "name" property
+      return {...config, database: config.name} as ISequelizeConfig;
     }
 
     return {...config as SequelizeConfig};
