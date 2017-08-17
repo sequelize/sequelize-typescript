@@ -2,7 +2,7 @@ import {Options} from 'sequelize';
 
 /**
  * This class is for deprecated "name" property.
- * For cPlease
+ * For congruence to Sequelize config, use "database" instead.
  */
 export interface ISequelizeDbNameConfig extends Options {
 
