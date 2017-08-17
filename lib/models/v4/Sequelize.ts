@@ -11,7 +11,7 @@ let preparedConfig;
 
 export class Sequelize extends OriginSequelize implements BaseSequelize {
 
-  thoughMap: {[through: string]: any} = {};
+  throughMap: {[through: string]: any} = {};
   _: {[modelName: string]: typeof Model} = {};
   init: (config: ISequelizeConfig) => void;
   addModels: (models: Array<typeof Model>|string[]) => void;

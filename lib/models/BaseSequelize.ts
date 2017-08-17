@@ -17,7 +17,7 @@ import {ISequelizeAssociation} from "../interfaces/ISequelizeAssociation";
  */
 export abstract class BaseSequelize {
 
-  thoughMap: { [through: string]: any } = {};
+  throughMap: { [through: string]: any } = {};
   _: { [modelName: string]: (typeof Model) } = {};
 
   static extend(target: any): void {
