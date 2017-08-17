@@ -5,7 +5,7 @@ import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
 export function createSequelize(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
 
   return new Sequelize({
-    name: '__',
+    database: '__',
     dialect: 'sqlite',
     username: 'root',
     password: '',

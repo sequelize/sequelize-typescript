@@ -1,21 +1,11 @@
 import {Options} from 'sequelize';
 
-export interface ISequelizeConfig extends Options {
+export interface ISequelizeUriConfig extends Options {
 
   /**
-   * Name of database
+   * Uri connection string to database
    */
-  database: string;
-
-  /**
-   * Username of database
-   */
-  username: string;
-
-  /**
-   * Password for database user
-   */
-  password: string;
+  uri: string;
 
   /**
    * Path to models, which should be loaded

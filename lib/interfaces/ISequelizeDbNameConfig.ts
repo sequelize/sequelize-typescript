@@ -1,11 +1,16 @@
 import {Options} from 'sequelize';
 
-export interface ISequelizeConfig extends Options {
+/**
+ * This class is dedicated for deprecated "name" property.
+ * For congruence to Sequelize config, use "database" instead.
+ */
+export interface ISequelizeDbNameConfig extends Options {
 
   /**
    * Name of database
+   * @deprecated: name is deprecated. Use database instead.
    */
-  database: string;
+  name: string;
 
   /**
    * Username of database

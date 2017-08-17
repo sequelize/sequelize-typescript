@@ -2,6 +2,9 @@ import {Model} from "./Model";
 import {DEFAULT_DEFINE_OPTIONS, getModels} from "../services/models";
 import {getAssociations, processAssociation} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
+import {ISequelizeUriConfig} from "../interfaces/ISequelizeUriConfig";
+import {ISequelizeDbNameConfig} from "../interfaces/ISequelizeDbNameConfig";
+import {SequelizeConfig} from "../types/SequelizeConfig";
 import {resolveScopes} from "../services/scopes";
 import {installHooks} from "../services/hooks";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
@@ -20,6 +23,14 @@ export abstract class BaseSequelize {
   throughMap: { [through: string]: any } = {};
   _: { [modelName: string]: (typeof Model) } = {};
 
+  static isISequelizeDbNameConfig(obj: any): obj is ISequelizeDbNameConfig {
+    return obj.hasOwnProperty("name") && obj.hasOwnProperty("username");
+  }
+
+  static isISequelizeUriConfig(obj: any): obj is ISequelizeUriConfig {
+    return obj.hasOwnProperty("uri");
+  }
+
   static extend(target: any): void {
 
     extend(target, this);
@@ -28,7 +39,7 @@ export abstract class BaseSequelize {
   /**
    * Prepares sequelize config passed to original sequelize constructor
    */
-  static prepareConfig(config: ISequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
+  static prepareConfig(config: SequelizeConfig | ISequelizeValidationOnlyConfig): SequelizeConfig {
     if (!config.define) {
       config.define = {};
     }
@@ -38,13 +49,19 @@ export abstract class BaseSequelize {
 
       return this.getValidationOnlyConfig(config);
     }
-    return {...config as ISequelizeConfig};
+
+    if (BaseSequelize.isISequelizeDbNameConfig(config)) {
+      // @TODO: remove deprecated "name" property
+      return {...config, database: config.name} as ISequelizeConfig;
+    }
+
+    return {...config as SequelizeConfig};
   }
 
-  static getValidationOnlyConfig(config: ISequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
+  static getValidationOnlyConfig(config: SequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
     return {
       ...config,
-      name: '_name_',
+      database: '_name_',
       username: '_username_',
       password: '_password_',
       dialect: 'sqlite',
@@ -66,7 +83,7 @@ export abstract class BaseSequelize {
     models.forEach(model => this._[model.name] = model);
   }
 
-  init(config: ISequelizeConfig): void {
+  init(config: SequelizeConfig): void {
 
     if (config.modelPaths) this.addModels(config.modelPaths);
   }

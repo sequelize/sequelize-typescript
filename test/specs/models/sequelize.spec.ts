@@ -11,11 +11,85 @@ import {Table} from '../../../lib/annotations/Table';
 describe('sequelize', () => {
 
   const sequelize = createSequelize(false);
+  const connectionUri = "sqlite://root@localhost/__";
+
+  function testOptionsProp(instance: Sequelize): void {
+    expect(instance).to.have.property('options').that.have.property('dialect').that.eqls('sqlite');
+    expect(instance).to.have.property('config').that.have.property('host').that.eqls('localhost');
+    expect(instance).to.have.property('config').that.have.property('database').that.eqls('__');
+    expect(instance).to.have.property('config').that.have.property('username').that.eqls('root');
+  }
 
   describe('constructor', () => {
 
     it('should equal Sequelize class', () => {
       expect(sequelize.constructor).to.equal(Sequelize);
+    });
+
+  });
+
+  describe('constructor: using "name" property as a db name', () => {
+
+    const db = '__';
+    const sequelizeDbName = new Sequelize({
+      name: db,
+      dialect: 'sqlite',
+      username: 'root',
+      password: '',
+      storage: ':memory:',
+      logging: !('SEQ_SILENT' in process.env)
+    });
+
+    it('should equal Sequelize class', () => {
+      expect(sequelizeDbName.constructor).to.equal(Sequelize);
+    });
+
+    it('should contain database property, which equal to db.', () => {
+      expect(sequelizeDbName)
+        .to.have.property('config')
+        .that.have.property('database')
+        .that.eqls(db);
+    });
+
+  });
+
+  describe('constructor using uri in options object', () => {
+
+    const sequelizeUri = new Sequelize({
+      uri: connectionUri,
+      storage: ':memory:',
+      logging: !('SEQ_SILENT' in process.env),
+      pool: {max: 8, min: 0}
+    });
+
+    it('should equal Sequelize class', () => {
+      expect(sequelizeUri.constructor).to.equal(Sequelize);
+    });
+
+    it('should contain valid options extracted from connection string', () => {
+      testOptionsProp(sequelizeUri);
+    });
+
+    it('should contain additional Sequelize options', () => {
+      expect(sequelizeUri)
+        .to.have.property('options')
+        .that.have.property('pool')
+        .that.have.property('max')
+        .that.eqls(8);
+    });
+
+  });
+
+  describe('constructor using uri string', () => {
+
+    const sequelizeUri = new Sequelize(connectionUri);
+
+    it('should equal Sequelize class', () => {
+      expect(sequelizeUri.constructor).to.equal(Sequelize);
+    });
+
+    it('should contain valid options extracted from connection string', () => {
+      testOptionsProp(sequelizeUri);
     });
 
   });
