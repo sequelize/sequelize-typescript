@@ -3,6 +3,7 @@ import {DEFAULT_DEFINE_OPTIONS, getModels} from "../services/models";
 import {getAssociations, processAssociation} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {resolveScopes} from "../services/scopes";
+import {installHooks} from "../services/hooks";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
 import {extend} from "../utils/object";
 import {ISequelizeAssociation} from "../interfaces/ISequelizeAssociation";
@@ -61,6 +62,7 @@ export abstract class BaseSequelize {
     models.forEach(model => model.isInitialized = true);
     this.associateModels(models);
     resolveScopes(models);
+    installHooks​​(models);
     models.forEach(model => this._[model.name] = model);
   }
 

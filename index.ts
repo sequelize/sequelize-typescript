@@ -51,6 +51,40 @@ export {NotIn} from "./lib/annotations/validation/NotIn";
 export {NotNull} from "./lib/annotations/validation/NotNull";
 export {Validate} from "./lib/annotations/validation/Validate";
 
+// hooks
+export {BeforeValidate} from "./lib/annotations/hooks/BeforeValidate";
+export {AfterValidate} from "./lib/annotations/hooks/AfterValidate";
+export {ValidationFailed} from "./lib/annotations/hooks/ValidationFailed";
+export {BeforeCreate} from "./lib/annotations/hooks/BeforeCreate";
+export {AfterCreate} from "./lib/annotations/hooks/AfterCreate";
+export {BeforeDestroy} from "./lib/annotations/hooks/BeforeDestroy";
+export {AfterDestroy} from "./lib/annotations/hooks/AfterDestroy";
+export {BeforeRestore} from "./lib/annotations/hooks/BeforeRestore";
+export {AfterRestore} from "./lib/annotations/hooks/AfterRestore";
+export {BeforeUpdate} from "./lib/annotations/hooks/BeforeUpdate";
+export {AfterUpdate} from "./lib/annotations/hooks/AfterUpdate";
+export {BeforeSave} from "./lib/annotations/hooks/BeforeSave";
+export {AfterSave} from "./lib/annotations/hooks/AfterSave";
+export {BeforeUpsert} from "./lib/annotations/hooks/BeforeUpsert";
+export {AfterUpsert} from "./lib/annotations/hooks/AfterUpsert";
+export {BeforeBulkCreate} from "./lib/annotations/hooks/BeforeBulkCreate";
+export {AfterBulkCreate} from "./lib/annotations/hooks/AfterBulkCreate";
+export {BeforeBulkDestroy} from "./lib/annotations/hooks/BeforeBulkDestroy";
+export {AfterBulkDestroy} from "./lib/annotations/hooks/AfterBulkDestroy";
+export {BeforeBulkRestore} from "./lib/annotations/hooks/BeforeBulkRestore";
+export {AfterBulkRestore} from "./lib/annotations/hooks/AfterBulkRestore";
+export {BeforeBulkUpdate} from "./lib/annotations/hooks/BeforeBulkUpdate";
+export {AfterBulkUpdate} from "./lib/annotations/hooks/AfterBulkUpdate";
+export {BeforeFind} from "./lib/annotations/hooks/BeforeFind";
+export {BeforeFindAfterExpandIncludeAll} from "./lib/annotations/hooks/BeforeFindAfterExpandIncludeAll";
+export {BeforeFindAfterOptions} from "./lib/annotations/hooks/BeforeFindAfterOptions";
+export {AfterFind} from "./lib/annotations/hooks/AfterFind";
+export {BeforeCount} from "./lib/annotations/hooks/BeforeCount";
+export {BeforeDelete} from "./lib/annotations/hooks/BeforeDelete";
+export {AfterDelete} from "./lib/annotations/hooks/AfterDelete";
+export {BeforeBulkDelete} from "./lib/annotations/hooks/BeforeBulkDelete";
+export {AfterBulkDelete} from "./lib/annotations/hooks/AfterBulkDelete";
+
 // interfaces
 export {IAssociationActionOptions} from "./lib/interfaces/IAssociationActionOptions";
 export {IBuildOptions} from "./lib/interfaces/IBuildOptions";
