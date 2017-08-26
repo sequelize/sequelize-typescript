@@ -41,11 +41,7 @@ export function deepAssign(target: any, ...sources: any[]): any {
           targetValue = null;
         } else {
           if (!targetValue) {
-            if (sourceValue.constructor && sourceValue.constructor.prototype) {
-              targetValue = Object.create(sourceValue.constructor.prototype);
-            } else {
-              targetValue = {};
-            }
+            targetValue = Object.create(sourceValue.constructor.prototype);
           }
           deepAssign(targetValue, sourceValue);
         }
