@@ -108,6 +108,16 @@ describe('utils', () => {
 
       });
 
+      it('should keep prototype chain', () => {
+        class Test {
+          protoFn(): any {}
+        }
+        const copy = deepAssign({}, {test: new Test()});
+
+        expect(copy.test)
+          .to.have.property('protoFn')
+          .that.is.a('function');
+      });
 
     });
 
