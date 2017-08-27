@@ -20,43 +20,34 @@ export function deepAssign(target: any, ...sources: any[]): any {
   return target;
 
   function assign(key: string | number, _target: any, _source: any): void {
-
     const sourceValue = _source[key];
-    if (sourceValue !== void 0) {
 
+    if (sourceValue !== void 0) {
       let targetValue = _target[key];
 
       if (Array.isArray(sourceValue)) {
-
         if (!Array.isArray(targetValue)) {
           targetValue = [];
         }
-
         const length = targetValue.length;
 
         sourceValue.forEach((_, index) => assign(length + index, targetValue, sourceValue));
-
       } else if (typeof sourceValue === 'object') {
-
-        targetValue = targetValue || {};
-
         if (sourceValue instanceof RegExp) {
-
           targetValue = cloneRegExp(sourceValue);
         } else if (sourceValue instanceof Date) {
-
           targetValue = new Date(sourceValue);
         } else if (sourceValue === null) {
-
           targetValue = null;
         } else {
+          if (!targetValue) {
+            targetValue = Object.create(sourceValue.constructor.prototype);
+          }
           deepAssign(targetValue, sourceValue);
         }
       } else {
-
         targetValue = sourceValue;
       }
-
       _target[key] = targetValue;
     }
   }
@@ -100,7 +91,7 @@ export function getAllPropertyNames(obj: any): string[] {
     obj = Object.getPrototypeOf(obj);
   } while (obj !== Object.prototype);
 
-  const exists: {[name: string]: boolean|undefined} = {};
+  const exists: { [name: string]: boolean | undefined } = {};
 
   return names.filter(name => {
 
