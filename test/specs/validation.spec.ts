@@ -14,6 +14,7 @@ import {Model} from "../../lib/models/Model";
 import {Table} from "../../lib/annotations/Table";
 import {Column} from "../../lib/annotations/Column";
 import {Length} from "../../lib/annotations/validation/Length";
+import {NotEmpty} from "../../lib/annotations/validation/NotEmpty";
 
 use(chaiAsPromised);
 
@@ -315,6 +316,73 @@ describe('validation', () => {
         }
       });
 
+    });
+
+    describe('NotEmpty', () => {
+
+      it('should not produce an error', () => {
+        @Table
+        class User extends Model<User> {
+          @NotEmpty @Column name: string;
+        }
+        const sequelizeValidationOnly = createSequelizeValidationOnly(false);
+        sequelizeValidationOnly.addModels([User]);
+        const user = new User({name: 'elisa'});
+
+        if (majorVersion === 3) {
+          return user.validate().then(err => expect(err).to.be.not.an('object'));
+        } else if (majorVersion === 4) {
+          return expect(user.validate()).to.be.not.rejected;
+        }
+      });
+
+      it('should produce an error', () => {
+        @Table
+        class User extends Model<User> {
+          @NotEmpty @Column name: string;
+        }
+        const sequelizeValidationOnly = createSequelizeValidationOnly(false);
+        sequelizeValidationOnly.addModels([User]);
+        const user = new User({name: ''});
+
+        if (majorVersion === 3) {
+          return user.validate().then(err => expect(err).to.be.an('object'));
+        } else if (majorVersion === 4) {
+          return expect(user.validate()).to.be.rejected;
+        }
+      });
+
+      it('should not produce an error (with msg)', () => {
+        @Table
+        class User extends Model<User> {
+          @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
+        }
+        const sequelizeValidationOnly = createSequelizeValidationOnly(false);
+        sequelizeValidationOnly.addModels([User]);
+        const user = new User({name: 'elisa'});
+
+        if (majorVersion === 3) {
+          return user.validate().then(err => expect(err).to.be.not.an('object'));
+        } else if (majorVersion === 4) {
+          return expect(user.validate()).to.be.not.rejected;
+        }
+      });
+
+      it('should produce an error (with msg)', () => {
+        @Table
+        class User extends Model<User> {
+          @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
+        }
+        const sequelizeValidationOnly = createSequelizeValidationOnly(false);
+        sequelizeValidationOnly.addModels([User]);
+        const user = new User({name: ''});
+
+        if (majorVersion === 3) {
+          return user.validate().then(err => expect(err.errors[0].message).to.eq('NotEmpty'));
+        } else if (majorVersion === 4) {
+          return expect(user.validate()).to.be.rejected;
+        }
+      });
     });
 
   });
