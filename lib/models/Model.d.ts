@@ -132,7 +132,7 @@ export declare class Model<T> extends Hooks {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope(options?: string | string[] | ScopeOptions | WhereOptions): typeof Model;
+  static scope(options?: string | string[] | ScopeOptions | WhereOptions<any>): typeof Model;
 
   /**
    * Search for multiple instances.
@@ -329,14 +329,14 @@ export declare class Model<T> extends Hooks {
    */
   static findOrCreate<T extends Model<T>>(options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
   static findOrCreate<T extends Model<T>, A>(options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
-  
+
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
   static findCreateFind<T extends Model<T>>(options: IFindCreateFindOptions<any>): Promise<[T, boolean]>;
   static findCreateFind<T extends Model<T>, A>(options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
-  
+
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
    * either the primary key or a unique key is found. Note that the unique index must be defined in your
