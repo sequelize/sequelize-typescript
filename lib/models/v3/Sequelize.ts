@@ -11,27 +11,26 @@ import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
 export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
   // to fix "$1" called with something that's not an instance of Sequelize.Model
-  Model: any = Function;
+  Model: any;
 
-  throughMap: { [through: string]: any } = {};
-  _: { [modelName: string]: typeof Model } = {};
+  throughMap: { [through: string]: any };
+  _: { [modelName: string]: typeof Model };
   init: (config: SequelizeConfig) => void;
   addModels: (models: Array<typeof Model> | string[]) => void;
   associateModels: (models: Array<typeof Model>) => void;
 
   constructor(config: SequelizeConfig | string) {
-
-    super(
-      (typeof config === "string") ?
-        config : // URI string
-        BaseSequelize.isISequelizeUriConfig(config) ?
-          config.uri : // URI string from ISequelizeUriConfig
-          BaseSequelize.prepareConfig(config) // Config object (ISequelizeConfig)
-    );
-
-    if (BaseSequelize.isISequelizeUriConfig(config)) {
-      this.options = {...this.options, ...config};
+    if (typeof config === "string") {
+      super(config)
+    } else if(BaseSequelize.isISequelizeUriConfig(config)) {
+      super(config.uri, config)
+    } else {
+      super(BaseSequelize.prepareConfig(config))
     }
+
+    this.throughMap = {}
+    this._ = {}
+    this.Model = Function
 
     if (typeof config !== "string") {
       this.init(config);
