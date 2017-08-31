@@ -1,8 +1,21 @@
 import {Sequelize} from "../../lib/models/Sequelize";
 import * as OriginSequelize from "sequelize";
 import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
+import {SequelizeConfig} from '../../lib/types/SequelizeConfig';
 
-export function createSequelize(useModelsInPath: boolean = true, define: DefineOptions<any> = {}): Sequelize {
+export function createSequelize(partialOptions: Partial<SequelizeConfig>): Sequelize;
+export function createSequelize(useModelsInPath?: boolean,
+                                define?: DefineOptions<any>): Sequelize;
+export function createSequelize(useModelsInPathOrPartialOptions?: boolean | Partial<SequelizeConfig>,
+                                define: DefineOptions<any> = {}): Sequelize {
+
+  let useModelsInPath = true;
+  let partialOptions = {};
+  if (typeof useModelsInPathOrPartialOptions === 'object') {
+    partialOptions = useModelsInPathOrPartialOptions;
+  } else if (typeof useModelsInPathOrPartialOptions === 'boolean') {
+    useModelsInPath = useModelsInPathOrPartialOptions;
+  }
 
   return new Sequelize({
     database: '__',
@@ -12,7 +25,8 @@ export function createSequelize(useModelsInPath: boolean = true, define: DefineO
     define,
     storage: ':memory:',
     logging: !('SEQ_SILENT' in process.env),
-    modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
+    modelPaths: useModelsInPath ? [__dirname + '/../models'] : [],
+    ...partialOptions,
   });
 }
 
