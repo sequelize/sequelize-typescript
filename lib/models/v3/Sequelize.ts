@@ -21,16 +21,16 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
   constructor(config: SequelizeConfig | string) {
     if (typeof config === "string") {
-      super(config)
-    } else if(BaseSequelize.isISequelizeUriConfig(config)) {
-      super(config.uri, config)
+      super(config);
+    } else if (BaseSequelize.isISequelizeUriConfig(config)) {
+      super(config.url, config);
     } else {
-      super(BaseSequelize.prepareConfig(config))
+      super(BaseSequelize.prepareConfig(config));
     }
 
-    this.throughMap = {}
-    this._ = {}
-    this.Model = Function
+    this.throughMap = {};
+    this._ = {};
+    this.Model = Function;
 
     if (typeof config !== "string") {
       this.init(config);

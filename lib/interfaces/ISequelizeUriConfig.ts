@@ -5,7 +5,7 @@ export interface ISequelizeUriConfig extends Options {
   /**
    * Uri connection string to database
    */
-  uri: string;
+  url: string;
 
   /**
    * Path to models, which should be loaded

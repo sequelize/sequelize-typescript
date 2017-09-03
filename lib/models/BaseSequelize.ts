@@ -28,7 +28,7 @@ export abstract class BaseSequelize {
   }
 
   static isISequelizeUriConfig(obj: any): obj is ISequelizeUriConfig {
-    return obj.hasOwnProperty("uri");
+    return obj.hasOwnProperty("url");
   }
 
   static extend(target: any): void {
@@ -79,7 +79,7 @@ export abstract class BaseSequelize {
     models.forEach(model => model.isInitialized = true);
     this.associateModels(models);
     resolveScopes(models);
-    installHooks​​(models);
+    installHooks(models);
     models.forEach(model => this._[model.name] = model);
   }
 
