@@ -56,7 +56,7 @@ describe('sequelize', () => {
   describe('constructor using uri in options object', () => {
 
     const sequelizeUri = new Sequelize({
-      uri: connectionUri,
+      url: connectionUri,
       storage: ':memory:',
       logging: !('SEQ_SILENT' in process.env),
       pool: {max: 8, min: 0}
