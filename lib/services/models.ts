@@ -249,7 +249,7 @@ export function inferAlias(options: any, source: any): any {
     options.include = [options.include];
   } else if (!options.include.length) {
     delete options.include;
-    return;
+    return options;
   }
 
   // convert all included elements to { model: Model } form
