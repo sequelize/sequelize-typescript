@@ -900,6 +900,36 @@ describe('model', () => {
           expect(u.username).to.equal('A fancy name');
         });
     });
+
+    it('should filter based on the where clause even if IFindOptions.include is []', () => {
+      @Table({paranoid: true, timestamps: true})
+      class User extends Model<User> {
+
+        @Column
+        username: string;
+      }
+      sequelize.addModels([User]);
+
+      return User.sync({force: true})
+        .then(() => {
+          return User.create({username: 'a1'});
+        })
+        .then(() => {
+          return User.create({username: 'a2'});
+        })
+        .then(() => {
+          return User.findOne<User>({where: {username: 'a2'}, include: []});
+        })
+        .then((u) => {
+          expect(u.username).to.equal('a2');
+        })
+        .then(() => {
+          return User.findOne<User>({where: {username: 'a1'}, include: []});
+        })
+        .then((u) => {
+          expect(u.username).to.equal('a1');
+        })
+    });
   });
 
   describe('findOrInitialize', () => {
