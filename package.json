@@ -21,6 +21,18 @@
     "type": "git",
     "url": "git+https://github.com/RobinBuschmann/sequelize-typescript.git"
   },
+  "keywords": [
+    "orm",
+    "object relational mapper",
+    "sequelize",
+    "typescript",
+    "decorators",
+    "mysql",
+    "sqlite",
+    "postgresql",
+    "postgres",
+    "mssql"
+  ],
   "author": "Robin Buschmann",
   "license": "MIT",
   "bugs": {
