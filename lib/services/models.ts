@@ -149,8 +149,10 @@ export function addOptions(target: any, options: DefineOptions<any>): void {
   if (!_options) {
     _options = {};
   }
-
-  setOptions(target, {..._options, ...options});
+  setOptions(target, {..._options, ...options, validate: {
+    ...(_options.validate || {}),
+    ...(options.validate || {}),
+  }});
 }
 
 /**

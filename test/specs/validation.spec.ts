@@ -465,6 +465,12 @@ describe('validation', () => {
 
         _sequelize.addModels([User]);
 
+        it('should have metadata for multiple validators', () => {
+          const {validate} = Reflect.getMetadata('sequelize:options', User.prototype);
+          expect(validate).to.have.property('nameValidator');
+          expect(validate).to.have.property('ageValidator');
+        });
+
         it('should throw due to wrong name', () => {
           const user =  new User({name: 'will', age: VALID_AGE});
 
