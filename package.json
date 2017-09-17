@@ -1,6 +1,6 @@
 {
   "name": "sequelize-typescript",
-  "version": "0.5.0-beta.1",
+  "version": "0.5.0",
   "description": "Decorators and some other extras for sequelize (v3 + v4)",
   "scripts": {
     "build": "tsc --project lib/models/v4 && tsc",
@@ -21,6 +21,18 @@
     "type": "git",
     "url": "git+https://github.com/RobinBuschmann/sequelize-typescript.git"
   },
+  "keywords": [
+    "orm",
+    "object relational mapper",
+    "sequelize",
+    "typescript",
+    "decorators",
+    "mysql",
+    "sqlite",
+    "postgresql",
+    "postgres",
+    "mssql"
+  ],
   "author": "Robin Buschmann",
   "license": "MIT",
   "bugs": {

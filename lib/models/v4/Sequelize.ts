@@ -9,25 +9,23 @@ import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
 
 export class Sequelize extends OriginSequelize implements BaseSequelize {
 
-  throughMap: {[through: string]: any} = {};
-  _: {[modelName: string]: typeof Model} = {};
+  throughMap: { [through: string]: any };
+  _: { [modelName: string]: typeof Model };
   init: (config: SequelizeConfig) => void;
   addModels: (models: Array<typeof Model> | string[]) => void;
   associateModels: (models: Array<typeof Model>) => void;
 
   constructor(config: SequelizeConfig | string) {
-
-    super(
-      (typeof config === "string") ?
-        config : // URI string
-        BaseSequelize.isISequelizeUriConfig(config) ?
-          config.uri : // URI string from ISequelizeUriConfig
-          BaseSequelize.prepareConfig(config) // Config object (ISequelizeConfig)
-    );
-
-    if (BaseSequelize.isISequelizeUriConfig(config)) {
-      this.options = {...this.options, ...config};
+    if (typeof config === "string") {
+      super(config);
+    } else if (BaseSequelize.isISequelizeUriConfig(config)) {
+      super(config.url, config);
+    } else {
+      super(BaseSequelize.prepareConfig(config));
     }
+
+    this.throughMap = {};
+    this._ = {};
 
     if (typeof config !== "string") {
       this.init(config);
@@ -44,7 +42,8 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
     return Through;
   }
 
-  adjustAssociation(model: any, association: ISequelizeAssociation): void {}
+  adjustAssociation(model: any, association: ISequelizeAssociation): void {
+  }
 
   /**
    * Creates sequelize models and registers these models
