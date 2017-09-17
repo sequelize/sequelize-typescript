@@ -15,6 +15,7 @@ import {Table} from "../../lib/annotations/Table";
 import {Column} from "../../lib/annotations/Column";
 import {Length} from "../../lib/annotations/validation/Length";
 import {NotEmpty} from "../../lib/annotations/validation/NotEmpty";
+import {Validator} from '../../lib/annotations/validation/Validator';
 
 use(chaiAsPromised);
 
@@ -209,6 +210,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @Length({min: 0, max: 5}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
@@ -225,6 +227,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @Length({min: 0, max: 5}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa tree'});
@@ -241,6 +244,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @Length({min: 5, max: 5}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elli'});
@@ -257,6 +261,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @Length({max: 5}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
@@ -273,6 +278,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @Length({max: 5}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa tree'});
@@ -289,6 +295,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @Length({min: 4}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
@@ -305,6 +312,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @Length({min: 5}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elli'});
@@ -325,6 +333,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @NotEmpty @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
@@ -341,6 +350,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @NotEmpty @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: ''});
@@ -357,6 +367,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
@@ -373,6 +384,7 @@ describe('validation', () => {
         class User extends Model<User> {
           @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
         }
+
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: ''});
@@ -383,6 +395,114 @@ describe('validation', () => {
           return expect(user.validate()).to.be.rejected;
         }
       });
+    });
+
+    describe('Validator', () => {
+
+      describe('simple model, one validator', () => {
+
+        const VALID_NAME = 'bob';
+        const ERROR_MESSAGE = `Invalid name: Only '${VALID_NAME}' is valid`;
+        const _sequelize = createSequelize({modelPaths: []});
+
+        @Table
+        class User extends Model<User> {
+          @Column name: string;
+          @Validator userValidator(): void {
+            if (this.name !== VALID_NAME) {
+              throw new Error(ERROR_MESSAGE);
+            }
+          }
+        }
+
+        _sequelize.addModels([User]);
+
+        it('should throw', () => {
+          const user =  new User({name: 'will'});
+
+          if (majorVersion === 3) {
+            return user.validate().then(err => expect(err.errors[0].message).to.eq(ERROR_MESSAGE));
+          } else if (majorVersion === 4) {
+            return expect(user.validate()).to.be.rejected;
+          }
+        });
+
+        it('should not throw', () => {
+          const user =  new User({name: VALID_NAME});
+
+          if (majorVersion === 3) {
+            return user.validate().then(err => expect(err).to.be.null);
+          } else if (majorVersion === 4) {
+            return expect(user.validate()).to.be.fulfilled;
+          }
+        });
+
+      });
+
+      describe('simple model, multiple validators', () => {
+
+        const VALID_NAME = 'bob';
+        const NAME_ERROR_MESSAGE = `Invalid name: Only '${VALID_NAME}' is valid`;
+        const VALID_AGE = 99;
+        const AGE_ERROR_MESSAGE = `Invalid age: Only '${VALID_AGE}' is valid`;
+        const _sequelize = createSequelize({modelPaths: []});
+
+        @Table
+        class User extends Model<User> {
+          @Column name: string;
+          @Column age: number;
+          @Validator nameValidator(): void {
+            if (this.name !== VALID_NAME) {
+              throw new Error(NAME_ERROR_MESSAGE);
+            }
+          }
+          @Validator ageValidator(): void {
+            if (this.age !== VALID_AGE) {
+              throw new Error(AGE_ERROR_MESSAGE);
+            }
+          }
+        }
+
+        _sequelize.addModels([User]);
+
+        it('should have metadata for multiple validators', () => {
+          const {validate} = Reflect.getMetadata('sequelize:options', User.prototype);
+          expect(validate).to.have.property('nameValidator');
+          expect(validate).to.have.property('ageValidator');
+        });
+
+        it('should throw due to wrong name', () => {
+          const user =  new User({name: 'will', age: VALID_AGE});
+
+          if (majorVersion === 3) {
+            return user.validate().then(err => expect(err.errors[0].message).to.eq(NAME_ERROR_MESSAGE));
+          } else if (majorVersion === 4) {
+            return expect(user.validate()).to.be.rejectedWith(NAME_ERROR_MESSAGE);
+          }
+        });
+
+        it('should throw due to wrong age', () => {
+          const user =  new User({name: VALID_NAME, age: 1});
+
+          if (majorVersion === 3) {
+            return user.validate().then(err => expect(err.errors[0].message).to.eq(AGE_ERROR_MESSAGE));
+          } else if (majorVersion === 4) {
+            return expect(user.validate()).to.be.rejectedWith(AGE_ERROR_MESSAGE);
+          }
+        });
+
+        // it('should not throw', () => {
+        //   const user =  new User({name: VALID_NAME});
+        //
+        //   if (majorVersion === 3) {
+        //     return user.validate().then(err => expect(err).to.be.null);
+        //   } else if (majorVersion === 4) {
+        //     return expect(user.validate()).to.be.fulfilled;
+        //   }
+        // });
+
+      });
+
     });
 
   });
