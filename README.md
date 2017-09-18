@@ -193,7 +193,7 @@ To make the defined models available, you have to configure a `Sequelize` instan
 import {Sequelize} from 'sequelize-typescript';
 
 const sequelize =  new Sequelize({
-        name: 'some_db',
+        database: 'some_db',
         dialect: 'sqlite',
         username: 'root',
         password: '',
