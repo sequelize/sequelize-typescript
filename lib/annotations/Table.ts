@@ -20,8 +20,6 @@ export function Table(arg: any): void|Function {
 
 function annotate(target: any, options: IDefineOptions = {}): void {
 
-  if (!options.tableName) options.tableName = target.name;
-
   options.instanceMethods = target.prototype;
   options.classMethods = target;
 
