@@ -95,10 +95,10 @@ describe('table_column', () => {
       expect(shoeDefineOptions).not.to.be.undefined;
     });
 
-    it('should have automatically inferred tableName', () => {
+    it('should set freezeTableName to true', () => {
       const userDefineOptions = getOptions(User.prototype);
 
-      expect(userDefineOptions).to.have.property('tableName', User.name);
+      expect(userDefineOptions).to.have.property('freezeTableName', true);
     });
 
     it('should have explicitly defined tableName', () => {
