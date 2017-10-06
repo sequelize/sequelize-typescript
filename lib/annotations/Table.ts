@@ -20,7 +20,7 @@ export function Table(arg: any): void|Function {
 
 function annotate(target: any, options: IDefineOptions = {}): void {
 
-  if (!options.tableName) options.tableName = target.name;
+  if (options.freezeTableName === undefined) options.freezeTableName = true;
 
   options.instanceMethods = target.prototype;
   options.classMethods = target;
