@@ -8,13 +8,14 @@ import {
   AggregateOptions, InstanceIncrementDecrementOptions, DropOptions,
   InstanceUpdateOptions, InstanceDestroyOptions, InstanceRestoreOptions,
   SchemaOptions, GetTableNameOptions, AddScopeOptions, ScopeOptions,
-  WhereOptions, CountOptions, ValidationError, DefineAttributes
+  WhereOptions, ValidationError, DefineAttributes
 } from 'sequelize';
 import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
 import {IBuildOptions} from "../interfaces/IBuildOptions";
 import {ICreateOptions} from "../interfaces/ICreateOptions";
 import {IFindOrInitializeOptions} from "../interfaces/IFindOrInitializeOptions";
 import {IFindCreateFindOptions} from "../interfaces/IFindCreateFindOptions";
+import {ICountOptions} from '../interfaces/ICountOptions';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
@@ -232,7 +233,7 @@ export declare class Model<T> extends Hooks {
    *
    * If you provide an `include` option, the number of matching associations will be counted instead.
    */
-  static count(options?: CountOptions): Promise<number>;
+  static count(options?: ICountOptions): Promise<number>;
 
   /**
    * Find all the rows matching your query, within a specified offset / limit, and get the total number of
