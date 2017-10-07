@@ -14,6 +14,7 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
   init: (config: SequelizeConfig) => void;
   addModels: (models: Array<typeof Model> | string[]) => void;
   associateModels: (models: Array<typeof Model>) => void;
+  connectionManager: any;
 
   constructor(config: SequelizeConfig | string) {
     if (typeof config === "string") {

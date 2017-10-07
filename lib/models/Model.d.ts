@@ -22,10 +22,7 @@ import {ICountOptions} from '../interfaces/ICountOptions';
 /* tslint:disable:max-line-length */
 /* tslint:disable:max-classes-per-file */
 
-/**
- * Creates override for sequelize model to make the food
- */
-export declare class Model<T> extends Hooks {
+export declare abstract class Model<T> extends Hooks {
 
   constructor(values?: any, options?: IBuildOptions);
 
@@ -410,6 +407,11 @@ export declare class Model<T> extends Hooks {
    * Unscope the model
    */
   static unscoped(): typeof Model;
+
+  /**
+   * A reference to the sequelize instance
+   */
+  static sequelize: Sequelize;
 
   /**
    * Adds relation between specified instances and source instance

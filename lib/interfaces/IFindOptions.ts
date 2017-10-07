@@ -1,5 +1,5 @@
 import {WhereOptions, LoggingOptions, SearchPathOptions, col, and, or, FindOptionsAttributesArray,
-  literal} from 'sequelize';
+  literal, fn} from 'sequelize';
 import {Model} from "../models/Model";
 import {IIncludeOptions} from "./IIncludeOptions";
 
@@ -41,8 +41,8 @@ export interface IFindOptions extends LoggingOptions, SearchPathOptions {
    * first element is the column / function to order by, the second is the direction. For example:
    * `order: [['name', 'DESC']]`. In this way the column will be escaped, but the direction will not.
    */
-  order?: string | col | literal | Array<string | number | typeof Model | { model: typeof Model, as?: string }> |
-    Array<string | col | literal | Array<string | number | typeof Model | { model: typeof Model, as?: string }>>;
+  order?: string | col | fn | literal | Array<string | number | typeof Model | { model: typeof Model, as?: string }> |
+    Array<string | col | fn | literal | Array<string | number | typeof Model | { model: typeof Model, as?: string }>>;
 
   /**
    * Limit the results
