@@ -2050,7 +2050,7 @@ describe('instance', () => {
 
       return UserDestroy.sync().then(() => {
         return UserDestroy.create({newId: '123ABC', email: 'hello'}).then(() => {
-          return UserDestroy.findOne({where: {email: 'hello'}}).then((user) => {
+          return UserDestroy.findOne<UserDestroy>({where: {email: 'hello'}}).then((user) => {
             return user.destroy();
           });
         });
@@ -2165,7 +2165,7 @@ describe('instance', () => {
     it('can compare records with Date field', () =>
 
       User.create({username: 'fnord'}).then((user1) =>
-        User.findOne({where: {username: 'fnord'}}).then((user2) => {
+        User.findOne<User>({where: {username: 'fnord'}}).then((user2) => {
           expect(user1.equals(user2)).to.be.true;
         })
       )
@@ -2445,7 +2445,7 @@ describe('instance', () => {
       return ParanoidUser2.sync({force: true}).then(() => {
         return ParanoidUser2.bulkCreate(data);
       }).then(() => {
-        return ParanoidUser2.findOne({where: {secretValue: '42'}});
+        return ParanoidUser2.findOne<ParanoidUser2>({where: {secretValue: '42'}});
       }).then((user) => {
         return user.destroy().then(() => {
           return user.restore();
