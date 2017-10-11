@@ -180,7 +180,7 @@ export abstract class BaseModel {
    *
    * SEE DETAILS FOR ACTUAL FUNCTIONALITY ON DECLARATION FILE
    */
-  reload(options?: IFindOptions): Promise<this> {
+  reload(options?: IFindOptions<typeof BaseModel>): Promise<this> {
 
     return parentPrototype.reload.call(this, inferAlias(options, this));
   };
