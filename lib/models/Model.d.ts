@@ -81,7 +81,7 @@ export declare abstract class Model<T> extends Hooks {
    * @param {Object}          [options]
    * @param {Boolean}         [options.override=false]
    */
-  static addScope(name: string, scope: IFindOptions | Function, options?: AddScopeOptions): void;
+  static addScope<T extends Model<T>>(name: string, scope: IFindOptions<T> | Function, options?: AddScopeOptions): void;
 
   /**
    * Apply a scope created in `define` to the model. First let's look at how to create scopes:
@@ -194,25 +194,25 @@ export declare abstract class Model<T> extends Hooks {
    *
    * @see    {Sequelize#query}
    */
-  static findAll<T extends Model<T>>(options?: IFindOptions): Promise<T[]>;
+  static findAll<T extends Model<T>>(options?: IFindOptions<T>): Promise<T[]>;
 
-  static all<T extends Model<T>>(optionz?: IFindOptions): Promise<T[]>;
+  static all<T extends Model<T>>(options?: IFindOptions<T>): Promise<T[]>;
 
   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById<T extends Model<T>>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
+  static findById<T extends Model<T>>(identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
 
-  static findByPrimary<T extends Model<T>>(identifier?: number | string, options?: IFindOptions): Promise<T | null>;
+  static findByPrimary<T extends Model<T>>(identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne<T extends Model<T>>(options?: IFindOptions): Promise<T | null>;
+  static findOne<T extends Model<T>>(options?: IFindOptions<T>): Promise<T | null>;
 
-  static find<T extends Model<T>>(options?: IFindOptions): Promise<T | null>;
+  static find<T extends Model<T>>(options?: IFindOptions<T>): Promise<T | null>;
 
   /**
    * Run an aggregation method on the specified field
@@ -267,9 +267,9 @@ export declare abstract class Model<T> extends Hooks {
    * without
    * profiles will be counted
    */
-  static findAndCount<T extends Model<T>>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
+  static findAndCount<T extends Model<T>>(options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
 
-  static findAndCountAll<T extends Model<T>>(options?: IFindOptions): Promise<{rows: T[], count: number}>;
+  static findAndCountAll<T extends Model<T>>(options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
 
   /**
    * Find the maximum value of field
