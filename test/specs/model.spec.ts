@@ -207,7 +207,7 @@ describe('model', () => {
             {aNumber: 10},
             {aNumber: 12}
           ]).then(() => {
-            return User.findAll({where: {aNumber: {gte: 10}}}).then((users) => {
+            return User.findAll<User>({where: {aNumber: {$gte: 10}}}).then((users) => {
               expect(moment(user.createdAt).format('YYYY-MM-DD')).to.equal('2012-01-01');
               expect(moment(user.updatedAt).format('YYYY-MM-DD')).to.equal('2012-01-02');
               users.forEach((u) => {
