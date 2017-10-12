@@ -579,7 +579,7 @@ export declare abstract class Model<T> extends Hooks {
    * return a new instance. With this method, all references to the Instance are updated with the new data
    * and no new objects are created.
    */
-  reload(options?: IFindOptions): Promise<this>;
+  reload(options?: IFindOptions<this>): Promise<this>;
 
   /**
    * Validate the attribute of this instance according to validation rules set in the model definition.
