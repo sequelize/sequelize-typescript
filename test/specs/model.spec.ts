@@ -894,7 +894,7 @@ describe('model', () => {
           return User.create({username: 'A fancy name'});
         })
         .then(() => {
-          return User.findOne<User>({where: []});
+          return User.findOne<User>({where: {}});
         })
         .then((u) => {
           expect(u.username).to.equal('A fancy name');

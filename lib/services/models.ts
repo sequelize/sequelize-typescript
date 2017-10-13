@@ -178,9 +178,14 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
  */
 export function getModels(arg: Array<typeof Model | string>): Array<typeof Model> {
 
-  if (arg && typeof arg[0] === 'string') {
+  if (arg) {
 
     return arg.reduce((models: any[], dir) => {
+
+      if (typeof dir !== 'string') {
+        models.push(dir);
+        return models;
+      }
 
       const _models = fs
         .readdirSync(dir as string)

@@ -1014,10 +1014,10 @@ describe('instance', () => {
   });
 
   describe('complete', () => {
-
     it('gets triggered if an error occurs', () =>
+
       User
-        .findOne({where: ['asdasdasd']})
+        .findOne<User>({where: <any>{ bad: 'asdasdasd' }})
         .catch((err) => {
           expect(err).to.exist;
           expect(err.message).to.exist;
@@ -1936,9 +1936,9 @@ describe('instance', () => {
       ParanoidUser.create({username: 'cuss'})
         .then(() =>
           ParanoidUser.findAll<ParanoidUser>({
-            where: sequelize.and({
-              username: 'cuss'
-            })
+            where: {
+              [sequelize.Op ? sequelize.Op.and : '$and']: { username: 'cuss' }
+            }
           })
         )
         .then((users) => {
@@ -1947,9 +1947,9 @@ describe('instance', () => {
         })
         .then(() =>
           ParanoidUser.findAll({
-            where: sequelize.and({
-              username: 'cuss'
-            })
+            where: {
+              [sequelize.Op ? sequelize.Op.and : '$and']: { username: 'cuss' }
+            }
           })
         )
         .then((users) => {
@@ -1962,9 +1962,9 @@ describe('instance', () => {
       ParanoidUser.create({username: 'cuss'})
         .then(() =>
           ParanoidUser.findAll({
-            where: sequelize.or({
-              username: 'cuss'
-            })
+            where: {
+              [sequelize.Op ? sequelize.Op.or : '$or']: { username: 'cuss' }
+            }
           })
         )
         .then((users) => {
@@ -1973,9 +1973,9 @@ describe('instance', () => {
         })
         .then(() =>
           ParanoidUser.findAll({
-            where: sequelize.or({
-              username: 'cuss'
-            })
+            where: {
+              [sequelize.Op ? sequelize.Op.or : '$or']: { username: 'cuss' }
+            }
           })
         )
         .then((users) => {
