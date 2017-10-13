@@ -42,10 +42,10 @@
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
-    "@types/bluebird": "3.5.4",
-    "@types/node": "6.0.41",
-    "@types/reflect-metadata": "0.0.4",
-    "@types/sequelize": "4.0.73",
+    "@types/bluebird": "^3.5.15",
+    "@types/node": "^6.0.89",
+    "@types/reflect-metadata": "^0.0.4",
+    "@types/sequelize": "^4.0.76",
     "es6-shim": "0.35.3"
   },
   "devDependencies": {
@@ -74,9 +74,9 @@
     "sinon-chai": "2.8.0",
     "source-map-support": "0.4.14",
     "sqlite3": "3.1.8",
-    "ts-node": "3.0.4",
+    "ts-node": "3.3.0",
     "tslint": "4.3.1",
-    "typescript": "2.2.1",
+    "typescript": "2.5.3",
     "uuid-validate": "0.0.2"
   },
   "engines": {
