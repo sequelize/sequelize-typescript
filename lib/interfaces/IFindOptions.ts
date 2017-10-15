@@ -1,5 +1,7 @@
-import {WhereOptions, LoggingOptions, SearchPathOptions, col, FindOptionsAttributesArray,
-  literal, fn} from 'sequelize';
+import {
+  WhereOptions, LoggingOptions, SearchPathOptions, col, FindOptionsAttributesArray,
+  literal, fn, and, or
+} from 'sequelize';
 import {Model} from "../models/Model";
 import {IIncludeOptions} from "./IIncludeOptions";
 
@@ -11,7 +13,7 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions<T>;
+  where?: WhereOptions<T> | fn | or | Array<col | and | or | string>;
 
   /**
    * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with

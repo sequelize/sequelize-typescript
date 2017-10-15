@@ -1,6 +1,6 @@
 import {Model} from "./Model";
 import {DEFAULT_DEFINE_OPTIONS, getModels} from "../services/models";
-import {getAssociations, processAssociation} from "../services/association";
+import {getAssociations} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {ISequelizeUriConfig} from "../interfaces/ISequelizeUriConfig";
 import {ISequelizeDbNameConfig} from "../interfaces/ISequelizeDbNameConfig";
@@ -9,7 +9,7 @@ import {resolveScopes} from "../services/scopes";
 import {installHooks} from "../services/hooks";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
 import {extend} from "../utils/object";
-import {ISequelizeAssociation} from "../interfaces/ISequelizeAssociation";
+import {BaseAssociation} from './association/BaseAssociation';
 
 /**
  * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
@@ -99,7 +99,14 @@ export abstract class BaseSequelize {
 
       if (!associations) return;
 
-      associations.forEach(association => processAssociation(this, model, association));
+      associations.forEach(association => {
+        association.init(model, this);
+        const associatedClass = association.getAssociatedClass();
+        const relation = association.getAssociation();
+        const options = association.getSequelizeOptions();
+        model[relation](associatedClass, options);
+        this.adjustAssociation(model, association);
+      });
     });
   }
 
@@ -110,7 +117,7 @@ export abstract class BaseSequelize {
    */
   abstract getThroughModel(through: string): typeof Model;
 
-  abstract adjustAssociation(model: any, association: ISequelizeAssociation): void;
+  abstract adjustAssociation(model: any, association: BaseAssociation): void;
 
   abstract defineModels(models: Array<typeof Model>): void;
 

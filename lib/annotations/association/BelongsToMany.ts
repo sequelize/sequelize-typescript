@@ -1,36 +1,35 @@
-import {BELONGS_TO_MANY, addAssociation} from "../../services/association";
+import {addAssociation} from "../../services/association";
 import {ModelClassGetter} from "../../types/ModelClassGetter";
 import {IAssociationOptionsBelongsToMany} from "../../interfaces/IAssociationOptionsBelongsToMany";
+import {BelongsToManyAssociation} from '../../models/association/BelongsToManyAssociation';
 
-export function BelongsToMany(relatedClassGetter: ModelClassGetter,
-                              through: (ModelClassGetter) | string,
+export function BelongsToMany(associatedClassGetter: ModelClassGetter,
+                              through: ModelClassGetter | string,
                               foreignKey?: string,
                               otherKey?: string): Function;
-export function BelongsToMany(relatedClassGetter: ModelClassGetter,
+export function BelongsToMany(associatedClassGetter: ModelClassGetter,
                               options: IAssociationOptionsBelongsToMany): Function;
-export function BelongsToMany(relatedClassGetter: ModelClassGetter,
-                              throughOrOptions: (ModelClassGetter | string) | IAssociationOptionsBelongsToMany,
+export function BelongsToMany(associatedClassGetter: ModelClassGetter,
+                              throughOrOptions: ModelClassGetter | string | IAssociationOptionsBelongsToMany,
                               foreignKey?: string,
                               otherKey?: string): Function {
-  const typeOfThroughOrOptions = typeof throughOrOptions;
-  let through;
-  let options: Partial<IAssociationOptionsBelongsToMany>;
 
-  if (typeOfThroughOrOptions === 'string' || typeOfThroughOrOptions === 'function') {
-    through = throughOrOptions;
-  } else {
-    through = (throughOrOptions as IAssociationOptionsBelongsToMany).through;
-    options = throughOrOptions as IAssociationOptionsBelongsToMany;
-  }
   return (target: any, propertyName: string) => {
-    addAssociation(
-      target,
-      BELONGS_TO_MANY,
-      relatedClassGetter,
-      propertyName,
-      options || foreignKey,
-      through,
-      otherKey,
+    let options: Partial<IAssociationOptionsBelongsToMany> = {foreignKey, otherKey};
+
+    if (typeof throughOrOptions === 'string' ||
+      typeof throughOrOptions === 'function') {
+      options.through = throughOrOptions;
+    } else {
+      options = {...throughOrOptions};
+    }
+
+    if (!options.as) options.as = propertyName;
+
+    addAssociation(target, new BelongsToManyAssociation(
+      associatedClassGetter,
+      options as IAssociationOptionsBelongsToMany,
+      )
     );
   };
 }

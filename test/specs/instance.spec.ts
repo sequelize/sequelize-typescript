@@ -1,5 +1,6 @@
 import {expect, use} from 'chai';
 import {useFakeTimers} from 'sinon';
+import * as Promise from 'bluebird';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as validateUUID from 'uuid-validate';
 import {createSequelize} from "../utils/sequelize";
@@ -815,7 +816,7 @@ describe('instance', () => {
 
     it('should update the associations after one element deleted', () =>
       Team
-        .create<Team, {name: string; players: Array<{name: string}>}>({
+        .create<Team, { name: string; players: Array<{ name: string }> }>({
           name: 'the team',
           players: [{
             name: 'the player1'
@@ -1017,7 +1018,7 @@ describe('instance', () => {
 
     it('gets triggered if an error occurs', () =>
       User
-        .findOne({where: ['asdasdasd']})
+        .findOne<User>({where: ['asdasdasd']})
         .catch((err) => {
           expect(err).to.exist;
           expect(err.message).to.exist;
@@ -1486,10 +1487,10 @@ describe('instance', () => {
     describe('with version option', () => {
 
       it("version column is updated by sequelize", () => {
-        let version = undefined;
+          let version = undefined;
           UserWithCustomUpdatedAt
             .sync()
-            .then(() => UserWithVersion.create<UserWithVersion>({ name: 'john doe' }))
+            .then(() => UserWithVersion.create<UserWithVersion>({name: 'john doe'}))
             .then((johnDoe: UserWithVersion) => {
               expect(johnDoe.version).not.to.be.undefined;
               version = johnDoe.version;
@@ -1499,9 +1500,9 @@ describe('instance', () => {
               expect(johnDoe.name).not.equals('doe john');
               expect(johnDoe.version).not.equals(version);
               return johnDoe.update({});
-            })
+            });
         }
-      )
+      );
     });
 
 
@@ -1657,14 +1658,14 @@ describe('instance', () => {
 
         Promise
           .all([
-            UserEager.create({username: 'bart', age: 20}),
-            UserEager.create({username: 'lisa', age: 20}),
+            UserEager.create<UserEager>({username: 'bart', age: 20}),
+            UserEager.create<UserEager>({username: 'lisa', age: 20}),
             ProjectEager.create({title: 'detention1', overdueDays: 0}),
             ProjectEager.create({title: 'detention2', overdueDays: 0}),
             ProjectEager.create({title: 'exam1', overdueDays: 0}),
             ProjectEager.create({title: 'exam2', overdueDays: 0})
           ])
-          .then(([bart, lisa, detention1, detention2, exam1, exam2]) =>
+          .then(([bart, lisa, detention1, detention2, exam1, exam2]: any) =>
             Promise
               .all([
                 bart.$set('projects', [detention1, detention2]),
@@ -1961,7 +1962,7 @@ describe('instance', () => {
 
       ParanoidUser.create({username: 'cuss'})
         .then(() =>
-          ParanoidUser.findAll({
+          ParanoidUser.findAll<ParanoidUser>({
             where: sequelize.or({
               username: 'cuss'
             })

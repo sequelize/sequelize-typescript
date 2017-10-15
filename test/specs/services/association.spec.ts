@@ -1,73 +1,9 @@
 /* tslint:disable:max-classes-per-file */
 import {expect} from 'chai';
-import {addAssociation, addForeignKey, getAssociations, getForeignKeys} from "../../../lib/services/association";
+import {addForeignKey, getForeignKeys} from "../../../lib/services/association";
 import {Model} from "../../../lib/models/Model";
 
 describe('service.association', () => {
-
-  describe('addAssociation', () => {
-
-    it('should add association to target metadata', () => {
-      const target = {};
-      const RELATION = 'hasMany';
-      const AS_NAME = 'test';
-      const RELATED_CLASS_GETTER = () => class T extends Model<T> {};
-      addAssociation(target, RELATION, RELATED_CLASS_GETTER, AS_NAME);
-      const associations = getAssociations(target);
-
-      expect(associations).to.have.property('length', 1);
-      expect(associations[0]).to.eql({
-        relation: RELATION,
-        options: {},
-        through: undefined,
-        throughClassGetter: undefined,
-        as: AS_NAME,
-        relatedClassGetter: RELATED_CLASS_GETTER,
-      });
-    });
-
-    it('should add association to target metadata, but not parent', () => {
-      const parent = {};
-      const target = Object.create(parent);
-      const RELATION = 'hasMany';
-      const PARENT_RELATION = 'belongsToMany';
-      const AS_NAME = 'test';
-      const RELATED_CLASS_GETTER = () => class T extends Model<T> {};
-      addAssociation(parent, PARENT_RELATION, RELATED_CLASS_GETTER, AS_NAME);
-      addAssociation(target, RELATION, RELATED_CLASS_GETTER, AS_NAME);
-
-      const associations = getAssociations(target);
-      expect(associations).to.have.property('length', 2);
-      expect(associations[0]).to.eql({
-        relation: PARENT_RELATION,
-        options: {},
-        through: undefined,
-        throughClassGetter: undefined,
-        as: AS_NAME,
-        relatedClassGetter: RELATED_CLASS_GETTER,
-      });
-      expect(associations[1]).to.eql({
-        relation: RELATION,
-        options: {},
-        through: undefined,
-        throughClassGetter: undefined,
-        as: AS_NAME,
-        relatedClassGetter: RELATED_CLASS_GETTER,
-      });
-
-      const parentAssociations = getAssociations(parent);
-      expect(parentAssociations).to.have.property('length', 1);
-      expect(parentAssociations[0]).to.eql({
-        relation: PARENT_RELATION,
-        options: {},
-        through: undefined,
-        throughClassGetter: undefined,
-        as: AS_NAME,
-        relatedClassGetter: RELATED_CLASS_GETTER,
-      });
-    });
-
-  });
 
   describe('addForeignKey', () => {
 
