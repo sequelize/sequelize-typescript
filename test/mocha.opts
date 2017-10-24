@@ -1,2 +1,5 @@
+--require test/tsconfig.mocha
+--require source-map-support/register
 --recursive
 
+test/specs/**/*.ts
