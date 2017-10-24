@@ -203,28 +203,29 @@ describe('association', () => {
 
           Book.create(sherlockHolmesBook, {include: [Page]})
             .then(book => Book.findById(book.id))
-            .then(book =>
-              book
+            .then(book => {
+              if (!book) throw Error(`Book is null`);
+              return book
                 .$get('pages')
                 .then(pages => {
-
                   assertInstance(pages, sherlockHolmesBook.pages);
-                })
-            )
+                });
+            })
         );
 
         it('should get related instance of source instance', () =>
 
           Page.create(page1, {include: [Book]})
             .then(page => Page.findById(page.id))
-            .then(page =>
-              page
+            .then(page => {
+              if (!page) throw Error(`Page is null`);
+              return page
                 .$get('book')
                 .then(book => {
 
                   assertInstance(book, page1.book);
-                })
-            )
+                });
+            })
         );
       });
 
@@ -433,10 +434,11 @@ describe('association', () => {
             .then((book) =>
               Book
                 .findById(book.id)
-                .then(_book => _book.$has('pages', book.pages))
-                .then(result => {
-
-                  expect(result).to.be.true;
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$has('pages', book.pages)).to.be.true;
+                  }
                 })
             )
         );
@@ -451,10 +453,11 @@ describe('association', () => {
             .then(([book, page]) =>
               Book
                 .findById(book.id)
-                .then(_book => _book.$has('pages', page))
-                .then(result => {
-
-                  expect(result).to.be.false;
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$has('pages', book.pages)).to.be.false;
+                  }
                 })
             )
         );
@@ -469,10 +472,11 @@ describe('association', () => {
             .then((book) =>
               Book
                 .findById(book.id)
-                .then(_book => _book.$count('pages'))
-                .then(result => {
-
-                  expect(result).to.equal(sherlockHolmesBook.pages.length);
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$count('pages')).to.equal(sherlockHolmesBook.pages.length);
+                  }
                 })
             )
         );
@@ -483,10 +487,11 @@ describe('association', () => {
             .then((book) =>
               Book
                 .findById(book.id)
-                .then(_book => _book.$count('pages'))
-                .then(result => {
-
-                  expect(result).to.equal(0);
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$count('pages')).to.equal(0);
+                  }
                 })
             )
         );
@@ -907,24 +912,30 @@ describe('association', () => {
             .all([
               Book.create(sherlockHolmesBook, {include: [Author]})
                 .then(book => Book.findById(book.id))
-                .then(book =>
-                  book
-                    .$get('authors')
-                    .then(authors => {
+                .then(book => {
+                  expect(book).to.be.not.null;
+                  if (book) {
+                    return book
+                      .$get('authors')
+                      .then(authors => {
+                        assertInstance(authors, sherlockHolmesBook.authors);
+                      });
+                  }
 
-                      assertInstance(authors, sherlockHolmesBook.authors);
-                    })
-                ),
+                }),
               Author.create(julesVerne, {include: [Book]})
                 .then(author => Author.findById(author.id))
-                .then(author =>
-                  author
-                    .$get('books')
-                    .then(books => {
+                .then(author => {
+                  expect(author).to.be.not.null;
+                  if (author) {
+                    return author
+                      .$get('books')
+                      .then(books => {
 
-                      assertInstance(books, julesVerne.books);
-                    })
-                )
+                        assertInstance(books, julesVerne.books);
+                      });
+                  }
+                })
 
             ])
         );
@@ -1097,10 +1108,11 @@ describe('association', () => {
             .then((book) =>
               Book
                 .findById(book.id)
-                .then(_book => _book.$has('authors', book.authors))
-                .then(result => {
-
-                  expect(result).to.be.true;
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$has('authors', book.authors)).to.be.true;
+                  }
                 })
             )
         );
@@ -1115,10 +1127,11 @@ describe('association', () => {
             .then(([book, author]) =>
               Book
                 .findById(book.id)
-                .then(_book => _book.$has('authors', author))
-                .then(result => {
-
-                  expect(result).to.be.false;
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$has('authors', book.authors)).to.be.false;
+                  }
                 })
             )
         );
@@ -1133,10 +1146,11 @@ describe('association', () => {
             .then((book) =>
               Book
                 .findById(book.id)
-                .then(_book => _book.$count('authors'))
-                .then(result => {
-
-                  expect(result).to.equal(sherlockHolmesBook.authors.length);
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$count('authors')).to.equal(sherlockHolmesBook.authors.length);
+                  }
                 })
             )
         );
@@ -1147,10 +1161,11 @@ describe('association', () => {
             .then((author) =>
               Author
                 .findById(author.id)
-                .then(_author => _author.$count('books'))
-                .then(result => {
-
-                  expect(result).to.equal(0);
+                .then(_book => {
+                  expect(_book).to.be.not.null;
+                  if (_book) {
+                    expect(_book.$count('authors')).to.equal(0);
+                  }
                 })
             )
         );
@@ -1509,24 +1524,29 @@ describe('association', () => {
             .all([
               User.create(userWithAddress, {include: [Address]})
                 .then(user => User.findById(user.id))
-                .then(user =>
-                  user
-                    .$get('address')
-                    .then(address => {
+                .then(user => {
+                  expect(user).to.be.not.null;
+                  if (user) {
+                    return user
+                      .$get('address')
+                      .then(address => {
 
-                      assertInstance(address, userWithAddress.address);
-                    })
-                ),
+                        assertInstance(address, userWithAddress.address);
+                      });
+                  }
+                }),
               Address.create(emancipatedAddress, {include: [User]})
                 .then(author => Address.findById(author.id))
-                .then(author =>
-                  author
-                    .$get('user')
-                    .then(user => {
-
-                      assertInstance(user, emancipatedAddress.user);
-                    })
-                )
+                .then(author => {
+                  expect(author).to.be.not.null;
+                  if (author) {
+                    return author
+                      .$get('user')
+                      .then(user => {
+                        assertInstance(user, emancipatedAddress.user);
+                      });
+                  }
+                })
 
             ])
         );
