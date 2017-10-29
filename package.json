@@ -14,8 +14,7 @@
     "cover-v4": "npm run prepare-test-v4 && nyc --exclude lib/models/v3/**/*.js mocha",
     "exec-tests": "mocha test/specs/",
     "test": "npm run test-v4 && npm run test-v3",
-    "clean": "rimraf .nyc_output && rimraf coverage &&  npm install",
-    "cover": "npm run clean && npm run cover-v4 && npm run clean && npm run cover-v3",
+    "cover": "npm run cover-v4 && npm run cover-v3",
     "lint": "tslint ."
   },
   "repository": {
@@ -97,6 +96,7 @@
     ],
     "reporter": [
       "lcov",
+      "text",
       "text-summary"
     ],
     "cache": false,
