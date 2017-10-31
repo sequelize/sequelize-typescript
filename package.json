@@ -15,7 +15,7 @@
     "exec-tests": "mocha",
     "test": "npm run test-v4 && npm run test-v3",
     "clean-coverage": "rimraf .nyc_output && rimraf coverage",
-    "cover": "npm run clean-coverage && npm run cover-v4",
+    "cover": "npm install && npm run clean-coverage && npm run cover-v4",
     "lint": "tslint ."
   },
   "repository": {
