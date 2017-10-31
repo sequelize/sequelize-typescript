@@ -12,7 +12,7 @@
     "test-v4": "npm run prepare-test-v4 && npm run exec-tests",
     "cover-v3": "npm run prepare-test-v3 && nyc --exclude lib/models/v4/**/*.js mocha",
     "cover-v4": "npm run prepare-test-v4 && nyc --exclude lib/models/v3/**/*.js mocha",
-    "exec-tests": "mocha test/specs/",
+    "exec-tests": "mocha",
     "test": "npm run test-v4 && npm run test-v3",
     "cover": "npm run cover-v4",
     "lint": "tslint ."
