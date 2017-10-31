@@ -14,7 +14,8 @@
     "cover-v4": "npm run prepare-test-v4 && nyc --exclude lib/models/v3/**/*.js mocha",
     "exec-tests": "mocha",
     "test": "npm run test-v4 && npm run test-v3",
-    "cover": "npm run cover-v4",
+    "clean-coverage": "rimraf .nyc_output && rimraf coverage",
+    "cover": "npm run clean-coverage && npm run cover-v4",
     "lint": "tslint ."
   },
   "repository": {
@@ -70,9 +71,10 @@
     "nyc": "11.2.1",
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.9",
+    "rimraf": "2.6.2",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
-    "source-map-support": "0.4.14",
+    "source-map-support": "0.5.0",
     "sqlite3": "3.1.8",
     "ts-node": "3.3.0",
     "tslint": "4.3.1",
