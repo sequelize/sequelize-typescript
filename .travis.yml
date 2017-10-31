@@ -13,6 +13,7 @@ script:
   - npm run lint
   - npm run build
   - export SEQ_SILENT=true
+  - npm run test-v3
   - npm run cover
 
 after_success:
