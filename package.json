@@ -76,7 +76,7 @@
     "sqlite3": "3.1.8",
     "ts-node": "3.0.4",
     "tslint": "4.3.1",
-    "typescript": "2.2.1",
+    "typescript": "2.5.3",
     "uuid-validate": "0.0.2"
   },
   "engines": {
