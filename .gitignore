@@ -8,18 +8,21 @@
 # libraries
 node_modules
 
-# testing
-coverage
-.nyc_output
-
 #logs
 npm-debug.log
 
+# build
 **/*.js
 **/*.js.map
 **/*.d.ts
+
+# src
 !lib/models/Model.d.ts
 !lib/models/Model.js
 !lib/models/Sequelize.d.ts
 !lib/models/Sequelize.js
 
+# testing
+coverage
+.nyc_output
+!test/tsconfig.mocha.js

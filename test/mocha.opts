@@ -1,4 +1,4 @@
---require ts-node/register
+--require test/tsconfig.mocha
 --require source-map-support/register
 --recursive
 
