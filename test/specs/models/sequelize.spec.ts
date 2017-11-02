@@ -7,6 +7,12 @@ import Gamer from "../../models/exports/gamer.model";
 import {Sequelize} from "../../../lib/models/Sequelize";
 import {Model} from '../../../lib/models/Model';
 import {Table} from '../../../lib/annotations/Table';
+import PlayerGlob from "../../models/globs/match-sub-dir-files/players/player.model";
+import ShoeGlob from "../../models/globs/match-sub-dir-files/shoes/shoe.model";
+import TeamGlob from "../../models/globs/match-sub-dir-files/teams/team.model";
+import PlayerDir from "../../models/globs/match-dir-only/PlayerDir";
+import TeamDir from "../../models/globs/match-dir-only/TeamDir";
+import ShoeDir from "../../models/globs/match-dir-only/ShoeDir";
 
 describe('sequelize', () => {
 
@@ -104,7 +110,7 @@ describe('sequelize', () => {
         .to.have.property('options')
         .that.has.property('define')
         .that.eqls(DEFINE_OPTIONS)
-      ;
+        ;
     });
 
     it('should set define options for models', () => {
@@ -187,5 +193,64 @@ describe('sequelize', () => {
       expect(sequelize._).to.have.property('Gamer', Gamer);
     });
 
+  });
+
+  describe('Add models as glob and dir', () => {
+    it('should load classes from subfolders matching glob criteria', () => {
+      const db = '__';
+      const sequelizeGlob = new Sequelize({
+        name: db,
+        dialect: 'sqlite',
+        username: 'root',
+        password: '',
+        storage: ':memory:',
+        logging: !('SEQ_SILENT' in process.env),
+        modelPaths: [__dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
+      });
+
+      expect(sequelizeGlob._).to.have.property('PlayerGlob', PlayerGlob);
+      expect(sequelizeGlob._).to.have.property('TeamGlob', TeamGlob);
+      expect(sequelizeGlob._).to.have.property('ShoeGlob', ShoeGlob);
+
+    });
+
+    it('should load classes from folders', () => {
+      const db = '__';
+      const sequelizeFolder = new Sequelize({
+        name: db,
+        dialect: 'sqlite',
+        username: 'root',
+        password: '',
+        storage: ':memory:',
+        logging: !('SEQ_SILENT' in process.env),
+        modelPaths: [__dirname + '/../../models/globs/match-dir-only']
+      });
+
+      expect(sequelizeFolder._).to.have.property('PlayerDir', PlayerDir);
+      expect(sequelizeFolder._).to.have.property('TeamDir', TeamDir);
+      expect(sequelizeFolder._).to.have.property('ShoeDir', ShoeDir);
+
+    });
+
+    it('should load classes from folders and from glob', () => {
+      const db = '__';
+      const sequelizeGlobFolder = new Sequelize({
+        name: db,
+        dialect: 'sqlite',
+        username: 'root',
+        password: '',
+        storage: ':memory:',
+        logging: !('SEQ_SILENT' in process.env),
+        modelPaths: [__dirname + '/../../models/globs/match-dir-only', __dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
+      });
+
+      expect(sequelizeGlobFolder._).to.have.property('PlayerDir', PlayerDir);
+      expect(sequelizeGlobFolder._).to.have.property('TeamDir', TeamDir);
+      expect(sequelizeGlobFolder._).to.have.property('ShoeDir', ShoeDir);
+      expect(sequelizeGlobFolder._).to.have.property('PlayerGlob', PlayerGlob);
+      expect(sequelizeGlobFolder._).to.have.property('TeamGlob', TeamGlob);
+      expect(sequelizeGlobFolder._).to.have.property('ShoeGlob', ShoeGlob);
+
+    });
   });
 });

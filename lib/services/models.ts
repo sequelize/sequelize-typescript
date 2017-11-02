@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import * as fs from 'fs';
+import * as glob from 'glob';
 import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
@@ -182,14 +182,16 @@ export function getModels(arg: Array<typeof Model | string>): Array<typeof Model
 
     return arg.reduce((models: any[], dir) => {
 
-      const _models = fs
-        .readdirSync(dir as string)
+      if (!glob.hasMagic(dir)) dir = path.join(dir, '/*');
+      const _models = glob
+        .sync(dir as string)
         .filter(isImportable)
-        .map(getFilenameWithoutExtension)
+        .map(getFullfilepathWithoutExtension)
         .filter(uniqueFilter)
-        .map(fileName => {
-          const fullPath = path.join(dir, fileName);
+        .map(fullPath => {
+          
           const module = require(fullPath);
+          const fileName = getFilenameWithoutExtension(fullPath);
 
           if (!module[fileName] && !module.default) {
             throw new Error(`No default export defined for file "${fileName}" or ` +
@@ -312,4 +314,12 @@ function isImportable(file: string): boolean {
  */
 function getFilenameWithoutExtension(file: string): string {
   return path.parse(file).name;
+}
+
+/**
+ * Return the value of the full path with filename, without extension
+ */
+function getFullfilepathWithoutExtension(file: string): string {
+  const parsedFile = path.parse(file);
+  return path.join(parsedFile.dir, parsedFile.name);
 }
