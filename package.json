@@ -70,7 +70,6 @@
     "nyc": "11.2.1",
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.9",
-    "rimraf": "2.6.2",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
     "source-map-support": "0.5.0",
