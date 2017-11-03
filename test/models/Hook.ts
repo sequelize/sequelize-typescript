@@ -8,6 +8,14 @@ import { AfterSave, AfterUpdate, BeforeSave, BeforeUpdate } from "../../index";
 import { BeforeCreate, BeforeValidate, Column, Model, Table } from "../../index";
 import { BeforeFind, BeforeFindAfterExpandIncludeAll } from "../../index";
 import { BeforeBulkDelete, AfterBulkDelete, AfterDelete, BeforeDelete } from "../../index";
+import {AfterBulkSync} from '../../lib/annotations/hooks/AfterBulkSync';
+import {AfterConnect} from '../../lib/annotations/hooks/AfterConnect';
+import {AfterDefine} from '../../lib/annotations/hooks/AfterDefine';
+import {AfterInit} from '../../lib/annotations/hooks/AfterInit';
+import {BeforeBulkSync} from '../../lib/annotations/hooks/BeforeBulkSync';
+import {BeforeConnect} from '../../lib/annotations/hooks/BeforeConnect';
+import {BeforeDefine} from '../../lib/annotations/hooks/BeforeDefine';
+import {BeforeInit} from '../../lib/annotations/hooks/BeforeInit';
 
 /**
  * Model used to test hook decorators. Defined hooks are mocked out for testing.
@@ -78,6 +86,30 @@ export class Hook extends Model<Hook> {
 
   @AfterBulkCreate
   static afterBulkCreateHook(instances: Hook[], options: any): void {}
+
+  @BeforeBulkSync
+  static beforeBulkSyncHook(instances: Hook[], options: any): void {}
+
+  @AfterBulkSync
+  static afterBulkSyncHook(instances: Hook[], options: any): void {}
+
+  @BeforeConnect
+  static beforeConnectHook(instances: Hook[], options: any): void {}
+
+  @AfterConnect
+  static afterConnectHook(instances: Hook[], options: any): void {}
+
+  @BeforeDefine
+  static beforeDefineHook(instances: Hook[], options: any): void {}
+
+  @AfterDefine
+  static afterDefineHook(instances: Hook[], options: any): void {}
+
+  @BeforeInit
+  static beforeInitHook(instances: Hook[], options: any): void {}
+
+  @AfterInit
+  static afterInitHook(instances: Hook[], options: any): void {}
 
   @BeforeBulkDestroy
   static beforeBulkDestroyHook(options: any): void {}

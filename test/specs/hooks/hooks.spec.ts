@@ -81,6 +81,15 @@ describe('hook', () => {
     const afterFindHookStub = sinon.stub(Hook, 'afterFindHook');
     const beforeCountHookStub = sinon.stub(Hook, 'beforeCountHook');
 
+    const beforeBulkSyncHookStub = sinon.stub(Hook, 'beforeBulkSyncHook');
+    const afterBulkSyncHookStub = sinon.stub(Hook, 'afterBulkSyncHook');
+    const beforeConnectHookStub = sinon.stub(Hook, 'beforeConnectHook');
+    const afterConnectHookStub = sinon.stub(Hook, 'afterConnectHook');
+    const beforeDefineHookStub = sinon.stub(Hook, 'beforeDefineHook');
+    const afterDefineHookStub = sinon.stub(Hook, 'afterDefineHook');
+    const beforeInitHookStub = sinon.stub(Hook, 'beforeInitHook');
+    const afterInitHookStub = sinon.stub(Hook, 'afterInitHook');
+
     // these hooks are aliases for the equivalent “destroy” hooks
     const beforeDeleteHookStub = sinon.stub(Hook, 'beforeDeleteHook');
     const afterDeleteHookStub = sinon.stub(Hook, 'afterDeleteHook');
@@ -175,6 +184,15 @@ describe('hook', () => {
     expect(Hook['options'].hooks['beforeFindAfterOptions']).to.include(beforeFindAfterOptionsHookStub);
     expect(Hook['options'].hooks['afterFind']).to.include(afterFindHookStub);
     expect(Hook['options'].hooks['beforeCount']).to.include(beforeCountHookStub);
+
+    expect(Hook['options'].hooks['beforeBulkSync']).to.include(beforeBulkSyncHookStub);
+    expect(Hook['options'].hooks['afterBulkSync']).to.include(afterBulkSyncHookStub);
+    expect(Hook['options'].hooks['beforeConnect']).to.include(beforeConnectHookStub);
+    expect(Hook['options'].hooks['afterConnect']).to.include(afterConnectHookStub);
+    expect(Hook['options'].hooks['beforeDefine']).to.include(beforeDefineHookStub);
+    expect(Hook['options'].hooks['afterDefine']).to.include(afterDefineHookStub);
+    expect(Hook['options'].hooks['beforeInit']).to.include(beforeInitHookStub);
+    expect(Hook['options'].hooks['afterInit']).to.include(afterInitHookStub);
 
     expect(Hook['options'].hooks['beforeDestroy']).to.include(beforeDeleteHookStub);
     expect(Hook['options'].hooks['afterDestroy']).to.include(afterDeleteHookStub);
