@@ -207,7 +207,7 @@ describe('model', () => {
             {aNumber: 10},
             {aNumber: 12}
           ]).then(() => {
-            return User.findAll<User>({where: {aNumber: {$gte: 10}}}).then((users) => {
+            return User.findAll({where: {aNumber: {$gte: 10}}}).then((users) => {
               expect(moment(user.createdAt).format('YYYY-MM-DD')).to.equal('2012-01-01');
               expect(moment(user.updatedAt).format('YYYY-MM-DD')).to.equal('2012-01-02');
               users.forEach((u) => {
@@ -232,8 +232,8 @@ describe('model', () => {
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
-        return User.create<User>().then((user) => {
-          return User.create<User>().then((user2) => {
+        return User.create().then((user) => {
+          return User.create().then((user2) => {
             expect(user.aNumber).to.equal(5);
             expect(user2.aNumber).to.equal(5);
             expect(defaultFunction.callCount).to.equal(2);
@@ -260,7 +260,7 @@ describe('model', () => {
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
-        return User.create<User>({aNumber: 4}).then((user) => {
+        return User.create({aNumber: 4}).then((user) => {
           expect(user.updatedOn).to.exist;
           expect(user.dateCreated).to.exist;
           return user.destroy().then(() => {
@@ -284,7 +284,7 @@ describe('model', () => {
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
-        return User.create<User>({
+        return User.create({
           name: 'heyo'
         }).then((user) => {
           expect(user.createdAt).not.to.exist;
@@ -322,7 +322,7 @@ describe('model', () => {
       sequelize.addModels([Task]);
 
       return Task.sync({force: true}).then(() => {
-        return Task.build<Task>().save().then((record) => {
+        return Task.build().save().then((record) => {
           expect(record.title).to.be.a('string');
           expect(record.title).to.equal('');
           expect(titleSetter.notCalled).to.be.ok; // The setter method should not be invoked for default values
@@ -578,11 +578,11 @@ describe('model', () => {
       }
       sequelize.addModels([Task]);
 
-      expect(Task.build<Task>().title).to.equal('a task!');
-      expect(Task.build<Task>().foo).to.equal(2);
-      expect(Task.build<Task>().bar).to.not.be.ok;
-      expect(Task.build<Task>().foobar).to.equal('asd');
-      expect(Task.build<Task>().flag).to.be.false;
+      expect(Task.build().title).to.equal('a task!');
+      expect(Task.build().foo).to.equal(2);
+      expect(Task.build().bar).to.not.be.ok;
+      expect(Task.build().foobar).to.equal('asd');
+      expect(Task.build().flag).to.be.false;
     });
 
     it('fills the objects with default values', () => {
@@ -610,11 +610,11 @@ describe('model', () => {
       }
       sequelize.addModels([Task]);
 
-      expect(Task.build<Task>().title).to.equal('a task!');
-      expect(Task.build<Task>().foo).to.equal(2);
-      expect(Task.build<Task>().bar).to.not.be.ok;
-      expect(Task.build<Task>().foobar).to.equal('asd');
-      expect(Task.build<Task>().flag).to.be.false;
+      expect(Task.build().title).to.equal('a task!');
+      expect(Task.build().foo).to.equal(2);
+      expect(Task.build().bar).to.not.be.ok;
+      expect(Task.build().foobar).to.equal('asd');
+      expect(Task.build().flag).to.be.false;
     });
 
     it('attaches getter and setter methods from attribute definition', () => {
@@ -633,9 +633,9 @@ describe('model', () => {
       }
       sequelize.addModels([Product]);
 
-      expect(Product.build<Product>({price: 42}).price).to.equal('answer = 84');
+      expect(Product.build({price: 42}).price).to.equal('answer = 84');
 
-      const p = Product.build<Product>({price: 1});
+      const p = Product.build({price: 1});
       expect(p.price).to.equal('answer = 43');
 
       p.price = 0;
@@ -668,8 +668,8 @@ describe('model', () => {
       }
       sequelize.addModels([Product]);
 
-      expect(Product.build<Product>({price: 20}).priceInCents).to.equal(20 * 100);
-      expect(Product.build<Product>({priceInCents: 30 * 100}).price).to.equal('$' + 30);
+      expect(Product.build({price: 20}).priceInCents).to.equal(20 * 100);
+      expect(Product.build({priceInCents: 30 * 100}).price).to.equal('$' + 30);
     });
 
     it('attaches getter and setter methods from options only if not defined in attribute', () => {
@@ -703,7 +703,7 @@ describe('model', () => {
       }
       sequelize.addModels([Product]);
 
-      const p = Product.build<Product>({price1: 1, price2: 2});
+      const p = Product.build({price1: 1, price2: 2});
 
       expect(p.price1).to.equal(10);
       expect(p.price2).to.equal(20);
@@ -756,7 +756,7 @@ describe('model', () => {
 
         sequelize.addModels([Product, Tag, User]);
 
-        const product = Product.build<Product>({
+        const product = Product.build({
           id: 1,
           title: 'Chair',
           tags: [
@@ -822,7 +822,7 @@ describe('model', () => {
 
         sequelize.addModels([Product, Tag, User]);
 
-        const product = Product.build<Product>({
+        const product = Product.build({
           id: 1,
           title: 'Chair',
           categories: [
@@ -894,7 +894,7 @@ describe('model', () => {
           return User.create({username: 'A fancy name'});
         })
         .then(() => {
-          return User.findOne<User>({where: []});
+          return User.findOne({where: <any>[]});
         })
         .then((u) => {
           expect(u.username).to.equal('A fancy name');
@@ -918,13 +918,13 @@ describe('model', () => {
           return User.create({username: 'a2'});
         })
         .then(() => {
-          return User.findOne<User>({where: {username: 'a2'}, include: []});
+          return User.findOne({where: {username: 'a2'}, include: []});
         })
         .then((u) => {
           expect(u.username).to.equal('a2');
         })
         .then(() => {
-          return User.findOne<User>({where: {username: 'a1'}, include: []});
+          return User.findOne({where: {username: 'a1'}, include: []});
         })
         .then((u) => {
           expect(u.username).to.equal('a1');
@@ -971,8 +971,8 @@ describe('model', () => {
     describe('returns an instance if it already exists', () => {
       it('with a single find field', () => {
 
-        return MainUser.create<MainUser>({username: 'Username'}).then((user) => {
-          return MainUser.findOrInitialize<MainUser>({
+        return MainUser.create({username: 'Username'}).then((user) => {
+          return MainUser.findOrInitialize({
             where: {username: user.username}
           }).then(([_user, initialized]) => {
             expect(_user.id).to.equal(user.id);
@@ -984,8 +984,8 @@ describe('model', () => {
 
       it('with multiple find fields', () => {
 
-        return MainUser.create<MainUser>({username: 'Username', data: 'data'}).then((user) => {
-          return MainUser.findOrInitialize<MainUser>({
+        return MainUser.create({username: 'Username', data: 'data'}).then((user) => {
+          return MainUser.findOrInitialize({
             where: {
               username: user.username,
               data: user.data
@@ -1007,7 +1007,7 @@ describe('model', () => {
           data: 'ThisIsData'
         };
 
-        return MainUser.findOrInitialize<MainUser>({
+        return MainUser.findOrInitialize({
           where: data,
           defaults: defaultValues
         }).then(([user, initialized]) => {

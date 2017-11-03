@@ -23,7 +23,7 @@ describe('model-methods', () => {
 
     static findDemoUser(): Promise<User> {
 
-      return this.findOne<User>({where: {firstName: 'Peter', lastName: 'Parker'}});
+      return this.findOne({where: {firstName: 'Peter', lastName: 'Parker'}});
     }
   }
 
