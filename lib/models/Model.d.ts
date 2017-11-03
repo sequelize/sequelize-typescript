@@ -303,7 +303,7 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create<T extends Model<T>>(this: (new () => T), values?: T, options?: ICreateOptions): Promise<T>;
+  static create<T extends Model<T>>(this: (new () => T), values?: any, options?: ICreateOptions): Promise<T>;
   static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
   static create<A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
 
