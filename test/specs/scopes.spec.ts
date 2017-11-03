@@ -35,7 +35,7 @@ describe('scopes', () => {
     const OWNER = 'bob';
 
     beforeEach(() => ShoeWithScopes
-      .create<ShoeWithScopes>({
+      .create({
         secretKey: 'j435njk3',
         primaryColor: 'red',
         secondaryColor: 'blue',
@@ -93,7 +93,7 @@ describe('scopes', () => {
       it('should consider scopes and additional included model (object)', () =>
         expect(ShoeWithScopes
           .scope('full')
-          .findOne<ShoeWithScopes>({
+          .findOne({
             include: [{
               model: Person,
             }]

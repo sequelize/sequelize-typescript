@@ -57,7 +57,7 @@ export declare abstract class Model<T> extends Hooks {
    * @param schema The name of the schema
    * @param options
    */
-  static schema<T extends Model<T>>(schema: string, options?: SchemaOptions): Model<T>;
+  static schema<T extends Model<T>>(this: (new () => T), schema: string, options?: SchemaOptions): Model<T>;
 
   /**
    * Get the tablename of the model, taking schema into account. The method will return The name as a string
@@ -130,7 +130,7 @@ export declare abstract class Model<T> extends Hooks {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope(options?: string | string[] | ScopeOptions | WhereOptions<any>): typeof Model;
+  static scope<T extends Model<T>>(this: (new () => T), options?: string | string[] | ScopeOptions | WhereOptions<any>): typeof T;
 
   /**
    * Search for multiple instances.
@@ -194,25 +194,25 @@ export declare abstract class Model<T> extends Hooks {
    *
    * @see    {Sequelize#query}
    */
-  static findAll<T extends Model<T>>(options?: IFindOptions<T>): Promise<T[]>;
+  static findAll<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<T[]>;
 
-  static all<T extends Model<T>>(options?: IFindOptions<T>): Promise<T[]>;
+  static all<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<T[]>;
 
   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById<T extends Model<T>>(identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
+  static findById<T extends Model<T>>(this: (new () => T), identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
 
-  static findByPrimary<T extends Model<T>>(identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
+  static findByPrimary<T extends Model<T>>(this: (new () => T), identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne<T extends Model<T>>(options?: IFindOptions<T>): Promise<T | null>;
+  static findOne<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<T | null>;
 
-  static find<T extends Model<T>>(options?: IFindOptions<T>): Promise<T | null>;
+  static find<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<T | null>;
 
   /**
    * Run an aggregation method on the specified field
@@ -267,9 +267,9 @@ export declare abstract class Model<T> extends Hooks {
    * without
    * profiles will be counted
    */
-  static findAndCount<T extends Model<T>>(options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
+  static findAndCount<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
 
-  static findAndCountAll<T extends Model<T>>(options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
+  static findAndCountAll<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
 
   /**
    * Find the maximum value of field
@@ -289,30 +289,35 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<T extends Model<T>>(record?: any, options?: IBuildOptions): T;
-  static build<T extends Model<T>, A>(record?: A, options?: IBuildOptions): T;
+  static build<T extends Model<T>>(this: (new () => T), record?: any, options?: IBuildOptions): T;
+  static build<T extends Model<T>, A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
+  static build<A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild<T extends Model<T>>(records: any[], options?: IBuildOptions): T[];
-  static bulkBuild<T extends Model<T>, A>(records: A[], options?: IBuildOptions): T[];
+  static bulkBuild<T extends Model<T>>(this: (new () => T), records: any[], options?: IBuildOptions): T[];
+  static bulkBuild<T extends Model<T>, A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
+  static bulkBuild<A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create<T extends Model<T>>(values?: any, options?: ICreateOptions): Promise<T>;
-  static create<T extends Model<T>, A>(values?: A, options?: ICreateOptions): Promise<T>;
+  static create<T extends Model<T>>(this: (new () => T), values?: any, options?: ICreateOptions): Promise<T>;
+  static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
+  static create<A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize<T extends Model<T>>(options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
-  static findOrInitialize<T extends Model<T>, A>(options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrInitialize<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrInitialize<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrInitialize<A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
-  static findOrBuild<T extends Model<T>>(options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
-  static findOrBuild<T extends Model<T>, A>(options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrBuild<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrBuild<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrBuild<A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -325,15 +330,17 @@ export declare abstract class Model<T> extends Hooks {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate<T extends Model<T>>(options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
-  static findOrCreate<T extends Model<T>, A>(options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrCreate<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrCreate<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
+  static findOrCreate<A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
-  static findCreateFind<T extends Model<T>>(options: IFindCreateFindOptions<any>): Promise<[T, boolean]>;
-  static findCreateFind<T extends Model<T>, A>(options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
+  static findCreateFind<T extends Model<T>>(this: (new () => T), options: IFindCreateFindOptions<any>): Promise<[T, boolean]>;
+  static findCreateFind<T extends Model<T>, A>(this: (new () => T), options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
+  static findCreateFind<A>(this: (new () => T), options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -369,8 +376,9 @@ export declare abstract class Model<T> extends Hooks {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate<T extends Model<T>>(records: any[], options?: BulkCreateOptions): Promise<T[]>;
-  static bulkCreate<T extends Model<T>, A>(records: A[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T extends Model<T>>(this: (new () => T), records: any[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T extends Model<T>, A>(this: (new () => T), records: A[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<A>(this: (new () => T), records: A[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
@@ -394,8 +402,9 @@ export declare abstract class Model<T> extends Hooks {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update<T extends Model<T>>(values: any, options: UpdateOptions): Promise<[number, Array<T>]>;
-  static update<T extends Model<T>, A>(values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T extends Model<T>>(this: (new () => T), values: any, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T extends Model<T>, A>(this: (new () => T), values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<A>(this: (new () => T), values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
@@ -406,7 +415,7 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Unscope the model
    */
-  static unscoped(): typeof Model;
+  static unscoped<T extends Model<T>>(this: (new () => T)): typeof T;
 
   /**
    * A reference to the sequelize instance
