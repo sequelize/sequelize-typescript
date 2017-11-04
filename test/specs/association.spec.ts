@@ -18,6 +18,27 @@ use(chaiAsPromised);
 
 const Association: any = OriginSequelize['Association'];
 
+/* Some base classes that we can override later */
+class ConcreteModel<T> extends Model<T> {}
+class BookModel extends ConcreteModel<BookModel> {
+  title: string;
+  pages: PageModel[];
+  authors: AuthorModel[];
+}
+class PageModel extends ConcreteModel<BookModel> {
+  content: string;
+  bookId: number;
+  book: BookModel;
+}
+class AuthorModel extends ConcreteModel<AuthorModel> {
+  name: string;
+  books: BookWithAuthorModel;
+}
+class BookWithAuthorModel extends BookModel {
+  authors: AuthorModel[];
+}
+
+
 describe('association', () => {
 
   const sequelize: Sequelize = createSequelize(false);
@@ -36,8 +57,7 @@ describe('association', () => {
   const brom = {name: 'brom'};
 
   describe('One-to-many', () => {
-
-    function oneToManyTestSuites(Book: typeof Model, Page: typeof Model): void {
+    function oneToManyTestSuites(Book: typeof BookModel, Page: typeof PageModel): void {
 
       const sherlockHolmesBook = {
         title: 'Sherlock Holmes',
@@ -430,7 +450,7 @@ describe('association', () => {
 
         it('should return true due to relation between specified instances and source instance', () =>
 
-          Book.create<any>(sherlockHolmesBook, {include: [Page]})
+          Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
                 .findById(book.id)
@@ -446,7 +466,7 @@ describe('association', () => {
 
           Promise
             .all([
-              Book.create<any>(sherlockHolmesBook, {include: [Page]}),
+              Book.create(sherlockHolmesBook, {include: [Page]}),
               Page.create(page3)
             ])
             .then(([book, page]) =>
@@ -466,7 +486,7 @@ describe('association', () => {
 
         it('should return number of specified relations', () =>
 
-          Book.create<any>(sherlockHolmesBook, {include: [Page]})
+          Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
                 .findById(book.id)
@@ -499,17 +519,17 @@ describe('association', () => {
 
         it('should remove relation between specified instance and source instance', () =>
 
-          Book.create<any>(sherlockHolmesBook, {include: [Page]})
+          Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
-                .findById<any>(book.id, {include: [Page]})
+                .findById(book.id, {include: [Page]})
                 .then(_book => {
 
                   assertInstance(_book, sherlockHolmesBook);
 
                   return _book.$remove('page', _book.pages[0]);
                 })
-                .then(() => Book.findById<any>(book.id, {include: [Page]}))
+                .then(() => Book.findById(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, {
@@ -522,17 +542,17 @@ describe('association', () => {
 
         it('should remove relations between specified instances and source instance', () =>
 
-          Book.create<any>(sherlockHolmesBook, {include: [Page]})
+          Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
-                .findById<any>(book.id, {include: [Page]})
+                .findById(book.id, {include: [Page]})
                 .then(_book => {
 
                   assertInstance(_book, sherlockHolmesBook);
 
                   return _book.$remove('pages', _book.pages);
                 })
-                .then(() => Book.findById<any>(book.id, {include: [Page]}))
+                .then(() => Book.findById(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, {
@@ -547,17 +567,19 @@ describe('association', () => {
     describe('resolve foreign keys automatically', () => {
 
       @Table
-      class Book extends Model<Book> {
+      class Book extends Model<Book> implements BookModel {
 
         @Column
         title: string;
+
+        authors: any[];
 
         @HasMany(() => Page)
         pages: Page[];
       }
 
       @Table
-      class Page extends Model<Page> {
+      class Page extends Model<Page> implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -575,20 +597,24 @@ describe('association', () => {
     describe('set foreign keys explicitly', () => {
 
       @Table
-      class Book2 extends Model<Book2> {
+      class Book2 extends Model<Book2> implements BookModel {
 
         @Column
         title: string;
+
+        authors: any[];
 
         @HasMany(() => Page2, 'bookId')
         pages: Page2[];
       }
 
       @Table
-      class Page2 extends Model<Page2> {
+      class Page2 extends Model<Page2> implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
+
+        bookId: number;
 
         @BelongsTo(() => Book2, 'bookId')
         book: Book2;
@@ -597,7 +623,7 @@ describe('association', () => {
       oneToManyTestSuites(Book2, Page2);
     });
 
-    function oneToManyWithOptionsTestSuites(Book: typeof Model, Page: typeof Model, alternateName: boolean = false): void {
+    function oneToManyWithOptionsTestSuites(Book: typeof BookModel, Page: typeof PageModel, alternateName: boolean = false): void {
       const foreignKey = alternateName ? 'book_id' : 'bookId';
 
       beforeEach(() => {
@@ -650,7 +676,9 @@ describe('association', () => {
           };
 
           return Page.create(page, {include: [Book]})
-            .catch(err => expect(err.message).to.eq(`notNull Violation: ${foreignKey} cannot be null`));
+            .catch(err =>
+              expect(err.message)
+                .to.match(new RegExp(`^notNull Violation: (${Page.name}.${foreignKey}|${foreignKey}) cannot be null$`)));
         });
 
         it('should create instances that require a parent primary key', () => {
@@ -679,17 +707,19 @@ describe('association', () => {
     describe('resolve foreign keys automatically with association options', () => {
 
       @Table
-      class Book3 extends Model<Book3> {
+      class Book3 extends Model<Book3> implements BookModel {
 
         @Column
         title: string;
+
+        authors: any[];
 
         @HasMany(() => Page3, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
         pages: Page3[];
       }
 
       @Table
-      class Page3 extends Model<Page3> {
+      class Page3 extends Model<Page3> implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -707,17 +737,19 @@ describe('association', () => {
     describe('set foreign keys explicitly with association options', () => {
 
       @Table
-      class Book4 extends Model<Book4> {
+      class Book4 extends Model<Book4> implements BookModel {
 
         @Column
         title: string;
+
+        authors: any[];
 
         @HasMany(() => Page4, {foreignKey: {allowNull: false, name: 'book_id'}, onDelete: 'CASCADE'})
         pages: Page4[];
       }
 
       @Table
-      class Page4 extends Model<Page4> {
+      class Page4 extends Model<Page4> implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -735,20 +767,24 @@ describe('association', () => {
     describe('set foreign keys explicitly via options', () => {
 
       @Table
-      class Book5 extends Model<Book5> {
+      class Book5 extends Model<Book5> implements BookModel {
 
         @Column
         title: string;
+
+        authors: any[];
 
         @HasMany(() => Page5, {foreignKey: 'bookId'})
         pages: Page5[];
       }
 
       @Table
-      class Page5 extends Model<Page5> {
+      class Page5 extends Model<Page5> implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
+
+        bookId: number;
 
         @BelongsTo(() => Book5, {foreignKey: 'bookId'})
         book: Book5;
@@ -760,9 +796,9 @@ describe('association', () => {
 
   describe('Many-to-many', () => {
 
-    function manyToManyTestSuites(Book: typeof Model, Author: typeof Model, AuthorBook?: typeof Model): void {
+    function manyToManyTestSuites(Book: typeof BookModel, Author: typeof AuthorModel, AuthorBook?: typeof ConcreteModel): void {
 
-      const models = [Book, Author];
+      const models: Array<typeof ConcreteModel> = [Book, Author];
 
       if (AuthorBook) {
         models.push(AuthorBook);
@@ -1094,7 +1130,7 @@ describe('association', () => {
 
         it('should return true due to relation between specified instances and source instance', () =>
 
-          Book.create<any>(sherlockHolmesBook, {include: [Author]})
+          Book.create(sherlockHolmesBook, {include: [Author]})
             .then((book) =>
               Book
                 .findById(book.id)
@@ -1110,7 +1146,7 @@ describe('association', () => {
 
           Promise
             .all([
-              Book.create<any>(sherlockHolmesBook, {include: [Author]}),
+              Book.create(sherlockHolmesBook, {include: [Author]}),
               Author.create(elisa)
             ])
             .then(([book, author]) =>
@@ -1130,7 +1166,7 @@ describe('association', () => {
 
         it('should return number of specified relations', () =>
 
-          Book.create<any>(sherlockHolmesBook, {include: [Author]})
+          Book.create(sherlockHolmesBook, {include: [Author]})
             .then((book) =>
               Book
                 .findById(book.id)
@@ -1163,17 +1199,17 @@ describe('association', () => {
 
         it('should remove relation between specified instance and source instance', () =>
 
-          Book.create<any>(sherlockHolmesBook, {include: [Author]})
+          Book.create(sherlockHolmesBook, {include: [Author]})
             .then((book) =>
               Book
-                .findById<any>(book.id, {include: [Author]})
+                .findById(book.id, {include: [Author]})
                 .then(_book => {
 
                   assertInstance(_book, sherlockHolmesBook);
 
                   return _book.$remove('author', _book.authors[0]);
                 })
-                .then(() => Book.findById<any>(book.id, {include: [Author]}))
+                .then(() => Book.findById(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, {
@@ -1186,17 +1222,17 @@ describe('association', () => {
 
         it('should remove relations between specified instances and source instance', () =>
 
-          Author.create<any>(julesVerne, {include: [Book]})
+          Author.create(julesVerne, {include: [Book]})
             .then((author) =>
               Author
-                .findById<any>(author.id, {include: [Book]})
+                .findById(author.id, {include: [Book]})
                 .then(_author => {
 
                   assertInstance(_author, julesVerne);
 
                   return _author.$remove('books', _author.books);
                 })
-                .then(() => Author.findById<any>(author.id, {include: [Book]}))
+                .then(() => Author.findById(author.id, {include: [Book]}))
                 .then(_author => {
 
                   assertInstance(_author, {
@@ -1211,7 +1247,7 @@ describe('association', () => {
     describe('resolve foreign keys automatically', () => {
 
       @Table
-      class Book extends Model<Book> {
+      class Book extends BookModel {
 
         @Column
         title: string;
@@ -1228,6 +1264,7 @@ describe('association', () => {
 
         @ForeignKey(() => Author)
         authorId: number;
+
       }
 
       @Table
@@ -1246,7 +1283,7 @@ describe('association', () => {
     describe('set foreign keys automatically via options', () => {
 
       @Table
-      class Book4 extends Model<Book4> {
+      class Book4 extends BookModel {
 
         @Column
         title: string;
@@ -1285,7 +1322,7 @@ describe('association', () => {
     describe('set foreign keys explicitly', () => {
 
       @Table
-      class Book2 extends Model<Book2> {
+      class Book2 extends BookModel {
 
         @Column
         title: string;
@@ -1310,7 +1347,7 @@ describe('association', () => {
     describe('set foreign keys explicitly via options', () => {
 
       @Table
-      class Book3 extends Model<Book3> {
+      class Book3 extends BookModel {
 
         @Column
         title: string;
@@ -1347,6 +1384,8 @@ describe('association', () => {
 
         @Column
         title: string;
+
+        pages: any[];
 
         @BelongsToMany(() => Author66, {
           through: {
@@ -1390,6 +1429,8 @@ describe('association', () => {
 
         @Column
         title: string;
+
+        pages: any[];
 
         @BelongsToMany(() => Author66, {
           through: {
@@ -1506,7 +1547,7 @@ describe('association', () => {
       country: 'United States',
     };
 
-    function oneToOneTestSuites(User: typeof Model, Address: typeof Model): void {
+    function oneToOneTestSuites(User: typeof ConcreteModel, Address: typeof ConcreteModel): void {
 
       sequelize.addModels([User, Address]);
 
@@ -1820,8 +1861,8 @@ describe('association', () => {
       oneToOneTestSuites(User2, Address2);
     });
 
-    function oneToOneWithOptionsTestSuites(User: typeof Model,
-                                           Address: typeof Model,
+    function oneToOneWithOptionsTestSuites(User: typeof ConcreteModel,
+                                           Address: typeof ConcreteModel,
                                            alternateName: boolean = false,
                                            onDeleteAction: string = 'CASCADE'): void {
       const foreignKey = alternateName ? 'user_id' : 'userId';
@@ -1869,7 +1910,9 @@ describe('association', () => {
         it('should fail creating instances that require a primary key', () => {
 
           return Address.create(petersAddress, {include: [User]})
-            .catch(err => expect(err.message).to.match(new RegExp(`notNull Violation: ${foreignKey} cannot be null`)));
+            .catch(err =>
+              expect(err.message)
+                .to.match(new RegExp(`^notNull Violation: (${Address.name}.${foreignKey}|${foreignKey}) cannot be null$`)));
         });
 
         it('should create instances that require a parent primary key', () => {

@@ -221,10 +221,10 @@ export class User extends Model<User> {}
 ### Build and create
 Instantiation and inserts can be achieved in the good old sequelize way
 ```typescript
-const person = Person.build<Person>({name: 'bob', age: 99});
+const person = Person.build({name: 'bob', age: 99});
 person.save();
 
-Person.create<Person>({name: 'bob', age: 99});
+Person.create({name: 'bob', age: 99});
 ```
 but *sequelize-typescript* also makes it possible to create instances with `new`:
 ```typescript
@@ -237,7 +237,7 @@ Finding and updating entries does also work like using native sequelize. So see 
 [docs](http://docs.sequelizejs.com/manual/tutorial/models-usage.html) for more details.
 ```typescript
 Person
- .findOne<Person>()
+ .findOne()
  .then(person => {
      
      person.age = 100;
@@ -245,7 +245,7 @@ Person
  });
 
 Person
- .update<Person>({
+ .update({
    name: 'bobby'
  }, {where: {id: 1}})
  .then(() => {
@@ -290,7 +290,7 @@ That's all, *sequelize-typescript* does everything else for you. So when retriev
 ```typescript
 
 Team
- .findOne<Team>({include: [Player]})
+ .findOne({include: [Player]})
  .then(team => {
      
      team.players.forEach(player => console.log(`Player ${player.name}`));

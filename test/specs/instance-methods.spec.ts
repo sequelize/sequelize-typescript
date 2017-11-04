@@ -35,9 +35,9 @@ describe('instance-methods', () => {
   beforeEach(() => sequelize.sync({force: true}));
 
   const suites: Array<[string, () => Promise<User>]> = [
-    ['build', () => Promise.resolve<User>(User.build<User>({firstName: 'Peter', lastName: 'Parker'}))],
+    ['build', () => Promise.resolve<User>(User.build({firstName: 'Peter', lastName: 'Parker'}))],
     ['new', () => Promise.resolve<User>(new User({firstName: 'Peter', lastName: 'Parker'}))],
-    ['create', () => (User.create<User>({firstName: 'Peter', lastName: 'Parker'}))],
+    ['create', () => (User.create({firstName: 'Peter', lastName: 'Parker'}))],
   ];
 
   suites.forEach(([name, create]) => {
@@ -86,7 +86,7 @@ describe('instance-methods', () => {
 
           return user
             .save()
-            .then(() => User.findById<User>(user.id))
+            .then(() => User.findById(user.id))
             .then(_user => {
 
               expect(_user.firstName).to.equal(firstName);

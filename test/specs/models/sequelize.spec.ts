@@ -149,7 +149,7 @@ describe('sequelize', () => {
 
         expect(() => Gamer.build({})).not.to.throw;
 
-        const gamer = Gamer.build<Gamer>({nickname: 'the_gamer'});
+        const gamer = Gamer.build({nickname: 'the_gamer'});
 
         expect(gamer.nickname).to.equal('the_gamer');
       });
@@ -164,7 +164,7 @@ describe('sequelize', () => {
 
         expect(() => Game.build({})).not.to.throw;
 
-        const game = Game.build<Game>({title: 'Commander Keen'});
+        const game = Game.build({title: 'Commander Keen'});
 
         expect(game.title).to.equal('Commander Keen');
       });

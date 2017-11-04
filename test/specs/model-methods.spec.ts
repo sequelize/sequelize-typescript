@@ -8,7 +8,7 @@ describe('model-methods', () => {
   const sequelize = createSequelize();
 
   @Table
-  class User777 extends Model<User777> {
+  class User extends Model<User> {
 
     @Column
     firstName: string;
@@ -16,30 +16,30 @@ describe('model-methods', () => {
     @Column
     lastName: string;
 
-    static createDemoUser(): User777 {
+    static createDemoUser(): User {
 
-      return new User777({firstName: 'Peter', lastName: 'Parker'});
+      return new User({firstName: 'Peter', lastName: 'Parker'});
     }
 
-    static findDemoUser(): Promise<User777> {
+    static findDemoUser(): Promise<User> {
 
-      return this.findOne<User777>({where: {firstName: 'Peter', lastName: 'Parker'}});
+      return this.findOne({where: {firstName: 'Peter', lastName: 'Parker'}});
     }
   }
 
-  sequelize.addModels([User777]);
+  sequelize.addModels([User]);
 
   beforeEach(() => sequelize.sync({force: true}));
 
   it('should work as expected', () => {
 
-    const user = User777.createDemoUser();
+    const user = User.createDemoUser();
 
-    expect(user).to.be.an.instanceOf(User777);
+    expect(user).to.be.an.instanceOf(User);
 
     return user
       .save()
-      .then(() => User777.findDemoUser())
+      .then(() => User.findDemoUser())
       .then(_user => expect(_user.equals(user)).to.be.true)
     ;
   });
