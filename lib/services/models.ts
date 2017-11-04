@@ -289,7 +289,7 @@ function inferAliasForInclude(include: any, source: any): any {
         throw new Error(`Alias cannot be inferred: "${source.name}" has multiple ` +
           `relations with "${include.model.name}"`);
       }
-      include.as = associations[0].as;
+      include.as = associations[0].getSequelizeOptions().as;
     }
   }
 

@@ -6,7 +6,8 @@ import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {PROPERTY_LINK_TO_ORIG} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 import {Table} from "../../annotations/Table";
-import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
+import {BaseAssociation} from '../association/BaseAssociation';
+import {IPreparedAssociationOptionsBelongsToMany} from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
 
 export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
@@ -52,21 +53,25 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
    * The association needs to be adjusted. So that throughModel properties
    * referencing a original sequelize Model instance
    */
-  adjustAssociation(model: any, association: ISequelizeAssociation): void {
+  adjustAssociation(model: any, association: BaseAssociation): void {
 
+    const options = association.getSequelizeOptions();
     // The associations has to be adjusted
-    const internalAssociation = model['associations'][association.as];
+    const internalAssociation = model['associations'][options.as as string];
 
     // String based through's need adjustment
     if (internalAssociation.oneFromSource &&
       internalAssociation.oneFromSource.as === 'Through') {
+      const belongsToManyOptions = options as IPreparedAssociationOptionsBelongsToMany;
+      const tableName = belongsToManyOptions.through.model.getTableName();
+
       // as and associationAccessor values referring to string "Through"
-      internalAssociation.oneFromSource.as = association.through;
-      internalAssociation.oneFromSource.options.as = association.through;
-      internalAssociation.oneFromSource.associationAccessor = association.through;
-      internalAssociation.oneFromTarget.as = association.through;
-      internalAssociation.oneFromTarget.options.as = association.through;
-      internalAssociation.oneFromTarget.associationAccessor = association.through;
+      internalAssociation.oneFromSource.as = tableName;
+      internalAssociation.oneFromSource.options.as = tableName;
+      internalAssociation.oneFromSource.associationAccessor = tableName;
+      internalAssociation.oneFromTarget.as = tableName;
+      internalAssociation.oneFromTarget.options.as = tableName;
+      internalAssociation.oneFromTarget.associationAccessor = tableName;
     }
 
     if (internalAssociation.throughModel && internalAssociation.throughModel.Model) {

@@ -5,7 +5,7 @@ import {SequelizeConfig} from "../../types/SequelizeConfig";
 import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 import {Table} from "../../annotations/Table";
-import {ISequelizeAssociation} from "../../interfaces/ISequelizeAssociation";
+import {BaseAssociation} from '../association/BaseAssociation';
 
 export class Sequelize extends OriginSequelize implements BaseSequelize {
 
@@ -43,7 +43,7 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
     return Through;
   }
 
-  adjustAssociation(model: any, association: ISequelizeAssociation): void {
+  adjustAssociation(model: any, association: BaseAssociation): void {
   }
 
   /**

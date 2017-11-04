@@ -150,8 +150,8 @@ describe('validation', () => {
       }
     };
 
-    const validPromises = [];
-    const invalidPromises = [];
+    const validPromises: Array<Promise<any>> = [];
+    const invalidPromises: Array<Promise<any>> = [];
 
     Object
       .keys(data)

@@ -1,2 +1,4 @@
+--require source-map-support/register
 --recursive
 
+test/specs/**/*.js
