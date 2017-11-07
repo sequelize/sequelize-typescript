@@ -553,6 +553,14 @@ export class ShoeWithScopes extends Model<ShoeWithScopes> {
 }
 ```
 
+Note that `Model.scope()` and `Model.unscoped()` are **not** typesafe.  Their return values must be explicily cast back to the correct Model type:
+
+```typescript
+(ShoeWithScopes.scope('full') as typeof ShoeWithScopes)
+.findAll(args)
+.then(shoes => '...');
+```
+
 ## Hooks
 Hooks can be attached to your models. All Model-level hooks are supported. See [the related unit tests](test/models/Hook.ts) for a summary.
 

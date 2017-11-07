@@ -6,10 +6,9 @@
     "emitDecoratorMetadata": true,
     "sourceMap": true,
     "strictNullChecks": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "pretty": true,
-    "skipLibCheck": true,
-    "lib": ["es2015"]
+    "lib": ["es2017"]
   },
   "include": [
     "./**/*"
