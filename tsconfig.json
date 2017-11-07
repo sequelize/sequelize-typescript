@@ -9,8 +9,7 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "pretty": true,
-    "skipLibCheck": true,
-    "lib": ["es2015"]
+    "lib": ["es2017"]
   },
   "include": [
     "lib/**/*"

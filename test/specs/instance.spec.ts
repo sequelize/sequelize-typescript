@@ -816,7 +816,7 @@ describe('instance', () => {
 
     it('should update the associations after one element deleted', () =>
       Team
-        .create<{name: string; players: Array<{name: string}>}>({
+        .create({
           name: 'the team',
           players: [{
             name: 'the player1'

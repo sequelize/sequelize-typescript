@@ -130,7 +130,7 @@ export declare abstract class Model<T> extends Hooks {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope<T extends Model<T>>(this: (new () => T), options?: string | string[] | ScopeOptions | WhereOptions<any>): typeof T;
+  static scope(options?: string | string[] | ScopeOptions | WhereOptions<any>): typeof Model;
 
   /**
    * Search for multiple instances.
@@ -291,21 +291,18 @@ export declare abstract class Model<T> extends Hooks {
    */
   static build<T extends Model<T>>(this: (new () => T), record?: any, options?: IBuildOptions): T;
   static build<T extends Model<T>, A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
-  static build<A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
   static bulkBuild<T extends Model<T>>(this: (new () => T), records: any[], options?: IBuildOptions): T[];
   static bulkBuild<T extends Model<T>, A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
-  static bulkBuild<A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
   static create<T extends Model<T>>(this: (new () => T), values?: any, options?: ICreateOptions): Promise<T>;
   static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
-  static create<A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
@@ -313,11 +310,9 @@ export declare abstract class Model<T> extends Hooks {
    */
   static findOrInitialize<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
   static findOrInitialize<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
-  static findOrInitialize<A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   static findOrBuild<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
   static findOrBuild<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
-  static findOrBuild<A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -332,7 +327,6 @@ export declare abstract class Model<T> extends Hooks {
    */
   static findOrCreate<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
   static findOrCreate<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
-  static findOrCreate<A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
@@ -340,7 +334,6 @@ export declare abstract class Model<T> extends Hooks {
    */
   static findCreateFind<T extends Model<T>>(this: (new () => T), options: IFindCreateFindOptions<any>): Promise<[T, boolean]>;
   static findCreateFind<T extends Model<T>, A>(this: (new () => T), options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
-  static findCreateFind<A>(this: (new () => T), options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -378,7 +371,6 @@ export declare abstract class Model<T> extends Hooks {
    */
   static bulkCreate<T extends Model<T>>(this: (new () => T), records: any[], options?: BulkCreateOptions): Promise<T[]>;
   static bulkCreate<T extends Model<T>, A>(this: (new () => T), records: A[], options?: BulkCreateOptions): Promise<T[]>;
-  static bulkCreate<A>(this: (new () => T), records: A[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
@@ -404,8 +396,6 @@ export declare abstract class Model<T> extends Hooks {
    */
   static update<T extends Model<T>>(this: (new () => T), values: any, options: UpdateOptions): Promise<[number, Array<T>]>;
   static update<T extends Model<T>, A>(this: (new () => T), values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
-  static update<A>(this: (new () => T), values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
-
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
    * their types.
@@ -415,7 +405,7 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Unscope the model
    */
-  static unscoped<T extends Model<T>>(this: (new () => T)): typeof T;
+  static unscoped(): typeof Model;
 
   /**
    * A reference to the sequelize instance
