@@ -10,7 +10,7 @@ import {
 import {User} from "../models/User";
 import {TimeStampsUser} from "../models/TimeStampsUser";
 import {Book} from "../models/Book";
-import {Page} from "../models/Page";
+import { Page } from '../models/Page';
 import {Team} from "../models/Team";
 import {Player} from "../models/Player";
 import {Shoe} from "../models/Shoe";
@@ -683,6 +683,27 @@ describe('instance', () => {
           expect(_updatedUser.updatedAt).to.be.least(originallyUpdatedAt);
         });
     });
+
+    it('should udpate associations when given ids instead of models', async() =>
+      Book
+        .sync({force: true})
+        .then(() => Page.sync({force: true}))
+        .then(() => Book.create<Book>({title: 'Everything Was Fine Until Whatever'}))
+        .then((book) =>
+          Page
+            .create<Page>({content: 'om nom nom'})
+            .then((page) =>
+              book
+                .$set<Page>('pages', [page.id as number])
+                .then(() => Book.findById<Book>(book.id, {include: [Page]}))
+                .then((bookAgain) => {
+                  expect(bookAgain.pages.length).to.equal(1);
+                  expect(bookAgain.pages[0].content).to.equal('om nom nom');
+                }
+              )
+            )
+        )
+    );
 
     it('should update the associations as well', () =>
       Book
