@@ -99,6 +99,7 @@ export {IScopeIncludeAssociation} from "./lib/interfaces/IScopeIncludeAssociatio
 export {IScopeIncludeOptions} from "./lib/interfaces/IScopeIncludeOptions";
 export {IScopeOptions} from "./lib/interfaces/IScopeOptions";
 export {ISequelizeConfig} from "./lib/interfaces/ISequelizeConfig";
+export {ISequelizeUriConfig} from "./lib/interfaces/ISequelizeUriConfig";
 export {ISequelizeForeignKeyConfig} from "./lib/interfaces/ISequelizeForeignKeyConfig";
 export {ISequelizeValidationOnlyConfig} from "./lib/interfaces/ISequelizeValidationOnlyConfig";
 
