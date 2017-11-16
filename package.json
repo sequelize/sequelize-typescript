@@ -45,7 +45,7 @@
     "@types/bluebird": "3.5.18",
     "@types/node": "6.0.41",
     "@types/reflect-metadata": "0.0.4",
-    "@types/sequelize": "4.0.73",
+    "@types/sequelize": "4.0.79",
     "es6-shim": "0.35.3"
   },
   "devDependencies": {
