@@ -78,4 +78,19 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
    * https://github.com/sequelize/sequelize/blob/master/docs/docs/models-usage.md#user-content-manipulating-the-dataset-with-limit-offset-order-and-group
    */
   group?: string | string[] | Object;
+
+  /**
+   * Apply DISTINCT(col) for FindAndCount(all)
+   */
+  distinct?: boolean;
+
+  /**
+   * Prevents a subquery on the main table when using include
+   */
+  subQuery?: boolean;
+
+  /**
+   * Throw EmptyResultError if a record is not found
+   */
+  rejectOnEmpty?: boolean;
 }
