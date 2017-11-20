@@ -15,7 +15,8 @@
     "exec-tests": "mocha",
     "test": "npm run test-v4 && npm run test-v3",
     "cover": "npm run cover-v4 && npm run cover-v3",
-    "lint": "tslint ."
+    "lint": "tslint .",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
