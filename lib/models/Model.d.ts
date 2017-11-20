@@ -28,6 +28,8 @@ export declare abstract class Model<T> extends Hooks {
 
   static isInitialized: boolean;
 
+  static associations?: { [key: string]: any };
+
   /**
    * Remove attribute from model definition
    *
