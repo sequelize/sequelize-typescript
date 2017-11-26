@@ -60,7 +60,7 @@ describe('scopes', () => {
 
     it('should consider other scopes', () =>
 
-      (ShoeWithScopes.scope('full') as typeof ShoeWithScopes).findOne()
+      ShoeWithScopes.scope('full').findOne()
         .then(shoe => {
 
           expect(shoe).to.have.property('manufacturer').which.is.not.null;
@@ -79,8 +79,8 @@ describe('scopes', () => {
     );
 
     it('should not consider default scope due to unscoped call', () =>
-      (ShoeWithScopes
-        .unscoped() as typeof ShoeWithScopes)
+      ShoeWithScopes
+        .unscoped()
         .findOne()
         .then(shoe => {
           expect(shoe).to.have.property('secretKey').which.is.a('string');
@@ -91,37 +91,37 @@ describe('scopes', () => {
 
       it('should consider scopes and additional included model (object)', () =>
         expect(
-          (ShoeWithScopes.scope('full') as typeof ShoeWithScopes)
-          .findOne({
-            include: [{
-              model: Person,
-            }]
-          })
-          .then(shoe => {
-            expect(shoe).to.have.property('manufacturer').which.is.not.null;
-            expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
-            expect(shoe).to.have.property('owner').which.is.not.null;
-          })
+          ShoeWithScopes.scope('full')
+            .findOne({
+              include: [{
+                model: Person,
+              }]
+            })
+            .then(shoe => {
+              expect(shoe).to.have.property('manufacturer').which.is.not.null;
+              expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
+              expect(shoe).to.have.property('owner').which.is.not.null;
+            })
         ).not.to.be.rejected
       );
 
       it('should consider scopes and additional included model (model)', () =>
         expect(
-          (ShoeWithScopes.scope('full') as typeof ShoeWithScopes)
-          .findOne({
-            include: [Person]
-          })
-          .then(shoe => {
-            expect(shoe).to.have.property('manufacturer').which.is.not.null;
-            expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
-            expect(shoe).to.have.property('owner').which.is.not.null;
-          })
+          ShoeWithScopes.scope('full')
+            .findOne({
+              include: [Person]
+            })
+            .then(shoe => {
+              expect(shoe).to.have.property('manufacturer').which.is.not.null;
+              expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
+              expect(shoe).to.have.property('owner').which.is.not.null;
+            })
         ).not.to.be.rejected
       );
 
       it('should not consider default scope due to unscoped call, but additonal includes (object)', () =>
 
-        (ShoeWithScopes.unscoped() as typeof ShoeWithScopes)
+        ShoeWithScopes.unscoped()
           .findOne({
             include: [{model: Person}]
           })
@@ -133,8 +133,8 @@ describe('scopes', () => {
 
       it('should not consider default scope due to unscoped call, but additonal includes (model)', () =>
 
-        (ShoeWithScopes
-        .unscoped() as typeof ShoeWithScopes)
+        ShoeWithScopes
+          .unscoped()
           .findOne({
             include: [Person]
           })
@@ -159,7 +159,7 @@ describe('scopes', () => {
         );
 
         it('should consider scope of included model (with own scope)', () =>
-          (ShoeWithScopes.scope('red') as typeof ShoeWithScopes)
+          ShoeWithScopes.scope('red')
             .findOne({
               include: [Manufacturer.scope('brandOnly') as typeof Manufacturer]
             })
@@ -177,7 +177,7 @@ describe('scopes', () => {
     describe('with nested scope', () => {
 
       it('should consider nested scope', () =>
-        (ShoeWithScopes.scope('manufacturerWithScope') as typeof ShoeWithScopes)
+        ShoeWithScopes.scope('manufacturerWithScope')
           .findOne()
           .then(shoe => {
             expect(shoe).to.have.property('manufacturer')
@@ -187,7 +187,7 @@ describe('scopes', () => {
       );
 
       it('should not consider nested scope', () =>
-        (ShoeWithScopes.scope('full') as typeof ShoeWithScopes)
+        ShoeWithScopes.scope('full')
           .findOne()
           .then(shoe => {
             expect(shoe).to.have.property('manufacturer')
@@ -201,7 +201,7 @@ describe('scopes', () => {
     describe('with scope function', () => {
 
       it('should find appropriate shoe due to correctly passed scope function param', () =>
-        (ShoeWithScopes.scope({method: ['primaryColor', 'red']})  as typeof ShoeWithScopes)
+        ShoeWithScopes.scope({method: ['primaryColor', 'red']})
           .findOne()
           .then(shoe => {
             expect(shoe).to.have.property('primaryColor', 'red');
@@ -209,7 +209,7 @@ describe('scopes', () => {
       );
 
       it('should find appropriate shoe due to correctly passed scope function param including associated model', () =>
-        (ShoeWithScopes.scope({method: ['primaryColorWithManufacturer', 'red']})  as typeof ShoeWithScopes)
+        ShoeWithScopes.scope({method: ['primaryColorWithManufacturer', 'red']})
           .findOne()
           .then(shoe => {
             expect(shoe).to.have.property('primaryColor', 'red');

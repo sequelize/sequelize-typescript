@@ -21,6 +21,8 @@ import {ICountOptions} from '../interfaces/ICountOptions';
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
 /* tslint:disable:max-classes-per-file */
+type ForTypeOf<T> = {[P in keyof T]: T[P]};
+type NonAbstractTypeOfModel<T> = (new () => T) & ForTypeOf<typeof Model>;
 
 export declare abstract class Model<T> extends Hooks {
 
@@ -132,7 +134,7 @@ export declare abstract class Model<T> extends Hooks {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope(options?: string | string[] | ScopeOptions | WhereOptions<any>): typeof Model;
+  static scope<T>(this: NonAbstractTypeOfModel<T>, options?: string | string[] | ScopeOptions | WhereOptions<any>): NonAbstractTypeOfModel<T>;
 
   /**
    * Search for multiple instances.
@@ -407,7 +409,7 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Unscope the model
    */
-  static unscoped(): typeof Model;
+  static unscoped<T>(this: NonAbstractTypeOfModel<T>): NonAbstractTypeOfModel<T>;
 
   /**
    * A reference to the sequelize instance
