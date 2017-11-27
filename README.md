@@ -11,6 +11,7 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [`@Column` API](#column-api)
  - [Usage](#usage)
    - [Configuration](#configuration)
+   - [globs](#globs)
    - [Model-path resolving](#model-path-resolving)
  - [Model association](#model-association)
    - [One-to-many](#one-to-many)
@@ -63,6 +64,8 @@ class Person extends Model<Person> {
 ```
 The model needs to extend the `Model` class and has to be annotated with the `@Table` decorator. All properties that
 should appear as a column in the database require the `@Column` annotation.
+
+See more advanced example [here](https://github.com/RobinBuschmann/sequelize-typescript-example).
  
 ### `@Table`
 The `@Table` annotation can be used without passing any parameters. To specify some more define options, use
@@ -209,6 +212,18 @@ sequelize config or add the required models later on by calling `sequelize.addMo
 sequelize.addModels([Person]);
 sequelize.addModels(['path/to/models']);
 ```
+### globs
+```typescript
+import {Sequelize} from 'sequelize-typescript';
+
+const sequelize =  new Sequelize({
+        ...
+        modelPaths: [__dirname + '/**/*.model.ts']
+});
+// or
+sequelize.addModels([__dirname + '/**/*.model.ts']);
+```
+
 #### Model-path resolving
 When using a path to resolve the required models, either the class has to be exported as default or if not exported
 as default, the file should have the same name as the corresponding class:

@@ -13,7 +13,14 @@ describe('utils', () => {
       const childSourceA = {f: childSourceF};
       const childSourceB = {};
       const source1 = {a: childSourceA, b: childSourceB, c: 1, d: 'd', over: 'ride', regex: /reg/gim, notNull: null};
-      const source2 = {e: 'für elisa', g: () => null, arr: [{h: 1}, {}, 'e'], over: 'ridden', nullable: null, notNull: 'notNull'};
+      const source2 = {
+        e: 'für elisa',
+        g: () => null,
+        arr: [{h: 1}, {}, 'e'],
+        over: 'ridden',
+        nullable: null,
+        notNull: 'notNull'
+      };
       const sourceKeys = [].concat(Object.keys(source1), Object.keys(source2));
 
       it('should not be undefined', () => {
@@ -110,14 +117,26 @@ describe('utils', () => {
 
       it('should keep prototype chain', () => {
         class Test {
-          protoFn(): any {}
+          protoFn(): any {
+          }
         }
+
         const copy = deepAssign({}, {test: new Test()});
 
         expect(copy.test)
           .to.have.property('protoFn')
           .that.is.a('function');
       });
+
+      if (Object.getOwnPropertySymbols) {
+        it('should copy symbol based objects', () => {
+          const symbol = Symbol('test');
+          const value = 'test';
+          const copy = deepAssign({}, {[symbol]: value});
+
+          expect(copy[symbol]).to.equal(value);
+        });
+      }
 
     });
 
