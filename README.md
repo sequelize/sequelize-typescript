@@ -18,7 +18,7 @@ Decorators and some other extras for sequelize (v3 + v4).
    - [Many-to-many](#many-to-many)
    - [One-to-one](#one-to-one)
    - [`@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API](#foreignkey-belongsto-hasmany-hasone-belongstomany-api)
-   - [Generated getter and setter](#type-safe-usage-of-generated-getter-and-setter)
+   - [Generated getter and setter](#type-safe-usage-of-auto-generated-functions)
    - [Multiple relations of same models](#multiple-relations-of-same-models)
  - [Model validation](#model-validation)
  - [Scopes](#scopes)
