@@ -15,11 +15,17 @@ export function deepAssign(target: any, ...sources: any[]): any {
       .getOwnPropertyNames(source)
       .forEach(key => assign(key, target, source))
     ;
+    /* istanbul ignore next */
+    if (Object.getOwnPropertySymbols) {
+      Object
+        .getOwnPropertySymbols(source)
+        .forEach(key => assign(key, target, source))
+      ;
+    }
   });
-
   return target;
 
-  function assign(key: string | number, _target: any, _source: any): void {
+  function assign(key: string | number | symbol, _target: any, _source: any): void {
     const sourceValue = _source[key];
 
     if (sourceValue !== void 0) {
