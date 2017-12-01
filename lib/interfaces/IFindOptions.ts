@@ -92,5 +92,5 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   /**
    * Throw EmptyResultError if a record is not found
    */
-  rejectOnEmpty?: boolean;
+  rejectOnEmpty?: boolean | Error;
 }
