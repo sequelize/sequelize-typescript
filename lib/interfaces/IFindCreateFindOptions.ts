@@ -5,6 +5,6 @@ export interface IFindCreateFindOptions<TAttributes> extends IFindOptions<TAttri
   /**
    * Default values to use if building a new instance
    */
-  defaults?: TAttributes;
+  defaults?: Partial<TAttributes>;
 
 }
