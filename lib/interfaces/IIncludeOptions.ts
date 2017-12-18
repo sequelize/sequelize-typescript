@@ -22,4 +22,10 @@ export interface IIncludeOptions extends IBaseIncludeOptions {
    */
   include?: Array<typeof Model | IIncludeOptions>;
 
+  /**
+   * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
+   * be returned. Only applies if `options.paranoid` is true for the model.
+   */
+  paranoid?: boolean;
+
 }
