@@ -41,8 +41,8 @@ export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
    * first element is the column / function to order by, the second is the direction. For example:
    * `order: [['name', 'DESC']]`. In this way the column will be escaped, but the direction will not.
    */
-  order?: string | col | literal | Array<string | number | ModelClassGetter | { model: ModelClassGetter, as?: string }> |
-    Array<string | col | literal | Array<string | number | ModelClassGetter | { model: ModelClassGetter, as?: string }>>;
+  order?: string | col | literal | Array<string | col | number | ModelClassGetter | { model: ModelClassGetter, as?: string }> |
+    Array<string | col | literal | Array<string | col | number | ModelClassGetter | { model: ModelClassGetter, as?: string }>>;
 
   /**
    * Limit the results
