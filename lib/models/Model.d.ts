@@ -24,6 +24,18 @@ import {ICountOptions} from '../interfaces/ICountOptions';
 type ForTypeOf<T> = {[P in keyof T]: T[P]};
 type NonAbstractTypeOfModel<T> = (new () => T) & ForTypeOf<typeof Model>;
 
+type Diff<T extends string, U extends string> = ({[P in T]: P} & {[P in U]: never} & {[x: string]: never})[T];
+type Omit<T, K extends keyof T> = {[P in Diff<keyof T, K>]: T[P]};
+
+type GetAttributes<T extends Model<T>> =
+  Partial<Omit<T,keyof Model<any>>> | {
+  id?: number|any;
+  createdAt?: Date|any;
+  updatedAt?: Date|any;
+  deletedAt?: Date|any;
+  version?: number|any;
+};
+
 export declare abstract class Model<T> extends Hooks {
 
   constructor(values?: any, options?: IBuildOptions);
@@ -293,29 +305,29 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<T extends Model<T>>(this: (new () => T), record?: any, options?: IBuildOptions): T;
+  static build<T extends Model<T>>(this: (new () => T), record?: GetAttributes<T>, options?: IBuildOptions): T;
   static build<T extends Model<T>, A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild<T extends Model<T>>(this: (new () => T), records: any[], options?: IBuildOptions): T[];
+  static bulkBuild<T extends Model<T>>(this: (new () => T), records: GetAttributes<T>[], options?: IBuildOptions): T[];
   static bulkBuild<T extends Model<T>, A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create<T extends Model<T>>(this: (new () => T), values?: any, options?: ICreateOptions): Promise<T>;
+  static create<T extends Model<T>>(this: (new () => T), values?: GetAttributes<T>, options?: ICreateOptions): Promise<T>;
   static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrInitialize<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<GetAttributes<T>>): Promise<[T, boolean]>;
   static findOrInitialize<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
-  static findOrBuild<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrBuild<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<GetAttributes<T>>): Promise<[T, boolean]>;
   static findOrBuild<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
@@ -329,14 +341,14 @@ export declare abstract class Model<T> extends Hooks {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<any>): Promise<[T, boolean]>;
+  static findOrCreate<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<GetAttributes<T>>): Promise<[T, boolean]>;
   static findOrCreate<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
-  static findCreateFind<T extends Model<T>>(this: (new () => T), options: IFindCreateFindOptions<any>): Promise<[T, boolean]>;
+  static findCreateFind<T extends Model<T>>(this: (new () => T), options: IFindCreateFindOptions<GetAttributes<T>>): Promise<[T, boolean]>;
   static findCreateFind<T extends Model<T>, A>(this: (new () => T), options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
 
   /**
@@ -373,7 +385,7 @@ export declare abstract class Model<T> extends Hooks {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate<T extends Model<T>>(this: (new () => T), records: any[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T extends Model<T>>(this: (new () => T), records: GetAttributes<T>[], options?: BulkCreateOptions): Promise<T[]>;
   static bulkCreate<T extends Model<T>, A>(this: (new () => T), records: A[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
@@ -398,7 +410,7 @@ export declare abstract class Model<T> extends Hooks {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update<T extends Model<T>>(this: (new () => T), values: any, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T extends Model<T>>(this: (new () => T), values: GetAttributes<T>, options: UpdateOptions): Promise<[number, Array<T>]>;
   static update<T extends Model<T>, A>(this: (new () => T), values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
