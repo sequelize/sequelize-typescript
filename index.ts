@@ -90,6 +90,7 @@ export {IAssociationActionOptions} from "./lib/interfaces/IAssociationActionOpti
 export {IBuildOptions} from "./lib/interfaces/IBuildOptions";
 export {IDefineScopeOptions} from "./lib/interfaces/IDefineScopeOptions";
 export {IFindOptions} from "./lib/interfaces/IFindOptions";
+export {ICountOptions} from "./lib/interfaces/ICountOptions";
 export {ICreateOptions} from "./lib/interfaces/ICreateOptions";
 export {IIncludeAssociation} from "./lib/interfaces/IIncludeAssociation";
 export {IIncludeOptions} from "./lib/interfaces/IIncludeOptions";

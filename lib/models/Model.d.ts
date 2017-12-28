@@ -234,7 +234,7 @@ export declare abstract class Model<T> extends Hooks {
    *
    * If you provide an `include` option, the number of matching associations will be counted instead.
    */
-  static count(options?: ICountOptions): Promise<number>;
+  static count<T extends Model<T>>(this: (new () => T), options?: ICountOptions<T>): Promise<number>;
 
   /**
    * Find all the rows matching your query, within a specified offset / limit, and get the total number of
