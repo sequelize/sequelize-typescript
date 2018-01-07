@@ -16,29 +16,26 @@ import {ICreateOptions} from "../interfaces/ICreateOptions";
 import {IFindOrInitializeOptions} from "../interfaces/IFindOrInitializeOptions";
 import {IFindCreateFindOptions} from "../interfaces/IFindCreateFindOptions";
 import {ICountOptions} from '../interfaces/ICountOptions';
+import {NonAbstract, Omit, RecursivePartial} from '../utils/types';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
 /* tslint:disable:max-classes-per-file */
-type ForTypeOf<T> = {[P in keyof T]: T[P]};
-type NonAbstractTypeOfModel<T> = (new () => T) & ForTypeOf<typeof Model>;
+type NonAbstractTypeOfModel<T> = (new () => T) & NonAbstract<typeof Model>;
 
-type Diff<T extends string, U extends string> = ({[P in T]: P} & {[P in U]: never} & {[x: string]: never})[T];
-type Omit<T, K extends keyof T> = {[P in Diff<keyof T, K>]: T[P]};
-
-type GetAttributes<T extends Model<T>> =
-  Partial<Omit<T,keyof Model<any>>> | {
-  id?: number|any;
-  createdAt?: Date|any;
-  updatedAt?: Date|any;
-  deletedAt?: Date|any;
-  version?: number|any;
+export type FilteredModelAttributes<T extends Model<T>> =
+  RecursivePartial<Omit<T, keyof Model<any>>> & {
+  id?: number | any;
+  createdAt?: Date | any;
+  updatedAt?: Date | any;
+  deletedAt?: Date | any;
+  version?: number | any;
 };
 
-export declare abstract class Model<T> extends Hooks {
+export declare abstract class Model<T extends Model<T>> extends Hooks {
 
-  constructor(values?: any, options?: IBuildOptions);
+  constructor(values?: FilteredModelAttributes<T>, options?: IBuildOptions);
 
   static isInitialized: boolean;
 
@@ -284,9 +281,9 @@ export declare abstract class Model<T> extends Hooks {
    * without
    * profiles will be counted
    */
-  static findAndCount<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
+  static findAndCount<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<{ rows: T[], count: number }>;
 
-  static findAndCountAll<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<{rows: T[], count: number}>;
+  static findAndCountAll<T extends Model<T>>(this: (new () => T), options?: IFindOptions<T>): Promise<{ rows: T[], count: number }>;
 
   /**
    * Find the maximum value of field
@@ -306,29 +303,29 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<T extends Model<T>>(this: (new () => T), record?: GetAttributes<T>, options?: IBuildOptions): T;
+  static build<T extends Model<T>>(this: (new () => T), record?: FilteredModelAttributes<T>, options?: IBuildOptions): T;
   static build<T extends Model<T>, A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild<T extends Model<T>>(this: (new () => T), records: GetAttributes<T>[], options?: IBuildOptions): T[];
+  static bulkBuild<T extends Model<T>>(this: (new () => T), records: FilteredModelAttributes<T>[], options?: IBuildOptions): T[];
   static bulkBuild<T extends Model<T>, A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create<T extends Model<T>>(this: (new () => T), values?: GetAttributes<T>, options?: ICreateOptions): Promise<T>;
+  static create<T extends Model<T>>(this: (new () => T), values?: FilteredModelAttributes<T>, options?: ICreateOptions): Promise<T>;
   static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<GetAttributes<T>>): Promise<[T, boolean]>;
+  static findOrInitialize<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
   static findOrInitialize<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
-  static findOrBuild<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<GetAttributes<T>>): Promise<[T, boolean]>;
+  static findOrBuild<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
   static findOrBuild<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
@@ -342,14 +339,14 @@ export declare abstract class Model<T> extends Hooks {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<GetAttributes<T>>): Promise<[T, boolean]>;
+  static findOrCreate<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
   static findOrCreate<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
-  static findCreateFind<T extends Model<T>>(this: (new () => T), options: IFindCreateFindOptions<GetAttributes<T>>): Promise<[T, boolean]>;
+  static findCreateFind<T extends Model<T>>(this: (new () => T), options: IFindCreateFindOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
   static findCreateFind<T extends Model<T>, A>(this: (new () => T), options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
 
   /**
@@ -386,7 +383,7 @@ export declare abstract class Model<T> extends Hooks {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate<T extends Model<T>>(this: (new () => T), records: GetAttributes<T>[], options?: BulkCreateOptions): Promise<T[]>;
+  static bulkCreate<T extends Model<T>>(this: (new () => T), records: FilteredModelAttributes<T>[], options?: BulkCreateOptions): Promise<T[]>;
   static bulkCreate<T extends Model<T>, A>(this: (new () => T), records: A[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
@@ -411,8 +408,9 @@ export declare abstract class Model<T> extends Hooks {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update<T extends Model<T>>(this: (new () => T), values: GetAttributes<T>, options: UpdateOptions): Promise<[number, Array<T>]>;
+  static update<T extends Model<T>>(this: (new () => T), values: FilteredModelAttributes<T>, options: UpdateOptions): Promise<[number, Array<T>]>;
   static update<T extends Model<T>, A>(this: (new () => T), values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
+
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
    * their types.
@@ -429,21 +427,24 @@ export declare abstract class Model<T> extends Hooks {
    */
   static sequelize: Sequelize;
 
+
+  dataValues: FilteredModelAttributes<this>;
+
   /**
    * Adds relation between specified instances and source instance
    */
-  $add<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: IAssociationActionOptions): Promise<this>;
+  $add<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: IAssociationActionOptions): Promise<this>;
 
   /**
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: IAssociationActionOptions): Promise<this>;
+  $set<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: IAssociationActionOptions): Promise<this>;
 
   /**
    * Returns related instance (specified by propertyKey) of source instance
    */
-  $get<R extends Model<R>>(propertyKey: string, options?: any): Promise<R|R[]>; // TODO@robin options interface
+  $get<R extends Model<R>>(propertyKey: string, options?: any): Promise<R | R[]>; // TODO@robin options interface
 
   /**
    * Counts related instances (specified by propertyKey) of source instance
@@ -453,42 +454,42 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Creates instances and relate them to source instance
    */
-  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R|this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
+  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R | this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
 
   /**
    * Checks if specified instances is related to source instance
    */
-  $has<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: any): Promise<this>;
+  $has<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: any): Promise<this>;
 
   /**
    * Removes specified instances from source instance
    */
-  $remove<R extends Model<R>>(propertyKey: string, instances: R|R[], options?: any): Promise<this>;
+  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: any): Promise<this>;
 
   /**
    * Default id automatically created by sequelize
    */
-  id?: number|any;
+  id?: number | any;
 
   /**
    * createdAt timestamps automatically created by sequelize if timestamps is true
    */
-  createdAt?: Date|any;
+  createdAt?: Date | any;
 
   /**
    * updatedAt timestamps automatically created by sequelize if timestamps is true
    */
-  updatedAt?: Date|any;
+  updatedAt?: Date | any;
 
   /**
    * deletedAt timestamps automatically created by sequelize if paranoid is true
    */
-  deletedAt?: Date|any;
+  deletedAt?: Date | any;
 
   /**
    * version number automatically created by sequelize if table options.version is true
    */
-  version?: number|any;
+  version?: number | any;
 
   /**
    * Returns true if this instance has not yet been persisted to the database
@@ -530,8 +531,8 @@ export declare abstract class Model<T> extends Hooks {
    *
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
-  get(key: string, options?: {plain?: boolean, clone?: boolean}): any;
-  get(options?: {plain?: boolean, clone?: boolean}): any;
+  get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
+  get(options?: { plain?: boolean, clone?: boolean }): any;
 
 
   /**
@@ -605,7 +606,7 @@ export declare abstract class Model<T> extends Hooks {
    *
    * @param options.skip An array of strings. All properties that are in this array will not be validated
    */
-  validate(options?: {skip?: string[]}): Promise<ValidationError>;
+  validate(options?: { skip?: string[] }): Promise<ValidationError>;
 
   /**
    * This is the same as calling `set` and then calling `save`.
@@ -648,7 +649,7 @@ export declare abstract class Model<T> extends Hooks {
    *               If and object is provided, each column is incremented by the value given.
    */
   increment(fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions&{silent?: boolean}): Promise<this>;
+            options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -671,7 +672,7 @@ export declare abstract class Model<T> extends Hooks {
    *               If and object is provided, each column is decremented by the value given
    */
   decrement(fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions&{silent?: boolean}): Promise<this>;
+            options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same
