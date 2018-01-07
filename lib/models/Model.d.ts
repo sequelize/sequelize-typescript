@@ -514,6 +514,11 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   where(): Object;
 
   /**
+   * Returns a plain object that includes all the attributes for this instance.
+   */
+  dataValues: ForTypeOf<this>;
+
+  /**
    * Get the value of the underlying data value
    */
   getDataValue(key: string): any;
