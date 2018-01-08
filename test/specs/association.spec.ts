@@ -19,7 +19,7 @@ use(chaiAsPromised);
 const Association: any = OriginSequelize['Association'];
 
 /* Some base classes that we can override later */
-class ConcreteModel<T> extends Model<T> {}
+class ConcreteModel<T extends Model<T>> extends Model<T> {}
 class BookModel extends ConcreteModel<BookModel> {
   title: string;
   pages: PageModel[];
