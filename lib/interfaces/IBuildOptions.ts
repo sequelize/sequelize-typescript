@@ -2,7 +2,7 @@ import {ReturningOptions} from 'sequelize';
 import {IIncludeOptions} from "./IIncludeOptions";
 import {Model} from "../models/Model";
 
-export interface IBuildOptions extends ReturningOptions {
+export interface IBuildOptions<T extends Model<any> = Model<any>> extends ReturningOptions {
 
   /**
    * If set to true, values will ignore field and virtual setters.
@@ -17,5 +17,5 @@ export interface IBuildOptions extends ReturningOptions {
   /**
    * an array of include options - Used to build prefetched/included model instances. See `set`
    */
-  include?: Array<typeof Model | IIncludeOptions>;
+  include?: Array<typeof Model | IIncludeOptions<T>>;
 }

@@ -21,7 +21,7 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
    * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
    * have in the returned instance
    */
-  attributes?: FindOptionsAttributesArray | { include?: FindOptionsAttributesArray, exclude?: Array<string> };
+  attributes?: FindOptionsAttributesArray<T> | { include?: FindOptionsAttributesArray<T>, exclude?: Array<keyof T> };
 
   /**
    * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -35,7 +35,7 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
    * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
    * the as attribute when eager loading Y).
    */
-  include?: Array<typeof Model | IIncludeOptions>;
+  include?: Array<typeof Model | IIncludeOptions<T>>;
 
   /**
    * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide

@@ -1,6 +1,6 @@
 import {IScopeFindOptions} from "./IScopeFindOptions";
 
-export interface IDefineScopeOptions {
+export interface IDefineScopeOptions<T = any> {
 
-  [scopeName: string]: IScopeFindOptions | Function | undefined;
+  [scopeName: string]: IScopeFindOptions<T> | Function | undefined;
 }

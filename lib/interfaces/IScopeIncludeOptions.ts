@@ -5,7 +5,7 @@ import {IBaseIncludeOptions} from "./IBaseIncludeOptions";
 /**
  * Complex include options
  */
-export interface IScopeIncludeOptions extends IBaseIncludeOptions {
+export interface IScopeIncludeOptions<T = any> extends IBaseIncludeOptions<T> {
 
   /**
    * The model you want to eagerly load
@@ -20,6 +20,6 @@ export interface IScopeIncludeOptions extends IBaseIncludeOptions {
   /**
    * Load further nested related models
    */
-  include?: Array<ModelClassGetter | IScopeIncludeOptions>;
+  include?: Array<ModelClassGetter | IScopeIncludeOptions<T>>;
 
 }

@@ -28,7 +28,7 @@ type Diff<T extends string, U extends string> = ({[P in T]: P} & {[P in U]: neve
 type Omit<T, K extends keyof T> = {[P in Diff<keyof T, K>]: T[P]};
 
 type GetAttributes<T extends Model<T>> =
-  Partial<Omit<T,keyof Model<any>>> | {
+  Partial<Omit<T, keyof Model<any>>> | {
   id?: number|any;
   createdAt?: Date|any;
   updatedAt?: Date|any;
@@ -38,7 +38,7 @@ type GetAttributes<T extends Model<T>> =
 
 export declare abstract class Model<T> extends Hooks {
 
-  constructor(values?: any, options?: IBuildOptions);
+  constructor(values?: any, options?: IBuildOptions<Model<T>>);
 
   static isInitialized: boolean;
 
@@ -97,7 +97,7 @@ export declare abstract class Model<T> extends Hooks {
    * @param {Object}          [options]
    * @param {Boolean}         [options.override=false]
    */
-  static addScope<T extends Model<T>>(name: string, scope: IFindOptions<T> | Function, options?: AddScopeOptions): void;
+  static addScope<T = any>(name: string, scope: IFindOptions<T> | Function, options?: AddScopeOptions): void;
 
   /**
    * Apply a scope created in `define` to the model. First let's look at how to create scopes:
@@ -306,20 +306,20 @@ export declare abstract class Model<T> extends Hooks {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<T extends Model<T>>(this: (new () => T), record?: GetAttributes<T>, options?: IBuildOptions): T;
-  static build<T extends Model<T>, A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
+  static build<T extends Model<T>>(this: (new () => T), record?: GetAttributes<T>, options?: IBuildOptions<T>): T;
+  static build<T extends Model<T>, A>(this: (new () => T), record?: A, options?: IBuildOptions<T>): T;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild<T extends Model<T>>(this: (new () => T), records: GetAttributes<T>[], options?: IBuildOptions): T[];
-  static bulkBuild<T extends Model<T>, A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
+  static bulkBuild<T extends Model<T>>(this: (new () => T), records: GetAttributes<T>[], options?: IBuildOptions<T>): T[];
+  static bulkBuild<T extends Model<T>, A>(this: (new () => T), records: A[], options?: IBuildOptions<T>): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create<T extends Model<T>>(this: (new () => T), values?: GetAttributes<T>, options?: ICreateOptions): Promise<T>;
-  static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
+  static create<T extends Model<T>>(this: (new () => T), values?: GetAttributes<T>, options?: ICreateOptions<T>): Promise<T>;
+  static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions<T>): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.

@@ -5,7 +5,7 @@ import {IBaseIncludeOptions} from "./IBaseIncludeOptions";
 /**
  * Complex include options
  */
-export interface IIncludeOptions extends IBaseIncludeOptions {
+export interface IIncludeOptions<T = any> extends IBaseIncludeOptions<T> {
 
   /**
    * The model you want to eagerly load
@@ -20,7 +20,7 @@ export interface IIncludeOptions extends IBaseIncludeOptions {
   /**
    * Load further nested related models
    */
-  include?: Array<typeof Model | IIncludeOptions>;
+  include?: Array<typeof Model | IIncludeOptions<T>>;
 
   /**
    * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will

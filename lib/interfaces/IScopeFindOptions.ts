@@ -6,12 +6,12 @@ import {ModelClassGetter} from "../types/ModelClassGetter";
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
 
-export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
+export interface IScopeFindOptions<T = any> extends LoggingOptions, SearchPathOptions {
 
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions<any> | Array<col | and | or | string> | col | and | or | string;
+  where?: WhereOptions<T> | Array<col | and | or | string> | col | and | or | string;
 
   /**
    * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
@@ -19,7 +19,7 @@ export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
    * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
    * have in the returned instance
    */
-  attributes?: FindOptionsAttributesArray | { include?: FindOptionsAttributesArray, exclude?: Array<string> };
+  attributes?: FindOptionsAttributesArray<T> | { include?: FindOptionsAttributesArray<T>, exclude?: Array<keyof T> };
 
   /**
    * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -33,7 +33,7 @@ export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
    * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
    * the as attribute when eager loading Y).
    */
-  include?: Array<ModelClassGetter | IScopeIncludeOptions>;
+  include?: Array<ModelClassGetter | IScopeIncludeOptions<T>>;
 
   /**
    * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide

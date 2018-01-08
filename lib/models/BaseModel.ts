@@ -95,7 +95,7 @@ export abstract class BaseModel {
   /**
    * Prepares build options for instantiation of a model
    */
-  static prepareInstantiationOptions(options: BuildOptions, source: any): BuildOptions {
+  static prepareInstantiationOptions<T>(options: BuildOptions<T>, source: any): BuildOptions<T> {
 
     options = inferAlias(options, source);
 

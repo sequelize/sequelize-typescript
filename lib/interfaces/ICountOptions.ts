@@ -12,7 +12,7 @@ export interface ICountOptions<T> extends LoggingOptions, SearchPathOptions {
   /**
    * Include options. See `find` for details
    */
-  include?: Array<typeof Model | IIncludeOptions>;
+  include?: Array<typeof Model | IIncludeOptions<T>>;
 
   /**
    * Apply COUNT(DISTINCT(col))
@@ -22,7 +22,7 @@ export interface ICountOptions<T> extends LoggingOptions, SearchPathOptions {
   /**
    * Used in conjustion with `group`
    */
-  attributes?: Array<string | [string, string]>;
+  attributes?: Array<keyof T | [keyof T, string]>;
 
   /**
    * For creating complex counts. Will return multiple rows as needed.
