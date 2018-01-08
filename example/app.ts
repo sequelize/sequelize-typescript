@@ -10,7 +10,7 @@ import Book from "./models/Book";
 /* tslint:disable:no-console */
 /* tslint:disable:no-unused-new */
 
-const s = new Sequelize({
+new Sequelize({
   validateOnly: true,
   modelPaths: [__dirname + '/models/validation-only']
 });
