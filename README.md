@@ -218,10 +218,10 @@ import {Sequelize} from 'sequelize-typescript';
 
 const sequelize =  new Sequelize({
         ...
-        modelPaths: [__dirname + '/**/*.model.ts']
+        modelPaths: [__dirname + '/**/*.model.js']
 });
 // or
-sequelize.addModels([__dirname + '/**/*.model.ts']);
+sequelize.addModels([__dirname + '/**/*.model.js']);
 ```
 
 #### Model-path resolving
