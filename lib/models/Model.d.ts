@@ -444,7 +444,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Returns related instance (specified by propertyKey) of source instance
    */
-  $get<R extends Model<R>>(propertyKey: string, options?: any): Promise<R | R[]>; // TODO@robin options interface
+  $get<R extends Model<R>>(propertyKey: string, options?: any): Promise<R>; // TODO@robin options interface
 
   /**
    * Counts related instances (specified by propertyKey) of source instance
