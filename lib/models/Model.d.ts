@@ -573,7 +573,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *
    * If changed is called without an argument and no keys have changed, it will return `false`.
    */
-  changed(key: string): boolean;
+  changed(key: string, value?: any): boolean;
   changed(): boolean | string[];
 
   /**
