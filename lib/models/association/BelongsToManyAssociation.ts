@@ -7,26 +7,23 @@ import {Association} from '../../enums/Association';
 import {IAssociationOptionsBelongsToMany} from '../../interfaces/IAssociationOptionsBelongsToMany';
 import {IPreparedThroughOptions} from '../../interfaces/IPreparedThroughOptions';
 import {IPreparedAssociationOptionsBelongsToMany} from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
+import {ModelNotInitializedError} from '../errors/ModelNotInitializedError';
 
 export class BelongsToManyAssociation extends BaseAssociation {
 
-  constructor(private associatedClassGetter: ModelClassGetter,
+  constructor(associatedClassGetter: ModelClassGetter,
               private options: IAssociationOptionsBelongsToMany) {
-    super();
+    super(associatedClassGetter);
   }
 
   getAssociation(): Association {
     return Association.BelongsToMany;
   }
 
-  getAssociatedClass(): typeof Model {
-    return this.associatedClassGetter();
-  }
-
   protected getPreparedOptions(modelClass: typeof Model,
                                sequelize: BaseSequelize): AssociationOptions {
     const options: IPreparedAssociationOptionsBelongsToMany = {...this.options as any};
-    const associatedClass = this.associatedClassGetter();
+    const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(modelClass, sequelize);
 
     options.through = throughOptions;
@@ -44,7 +41,13 @@ export class BelongsToManyAssociation extends BaseAssociation {
       typeof through === 'object' ? {...through} : {} as any;
 
     if (typeof model === 'function') {
-      throughOptions.model = model();
+      const throughModelClass = model();
+      if (!throughModelClass.isInitialized) {
+        throw new ModelNotInitializedError(throughModelClass, {
+          cause: 'before association can be resolved.'
+        });
+      }
+      throughOptions.model = throughModelClass;
     } else if (typeof model === 'string') {
       if (!sequelize.throughMap[model]) {
         const throughModel = sequelize.getThroughModel(model);
