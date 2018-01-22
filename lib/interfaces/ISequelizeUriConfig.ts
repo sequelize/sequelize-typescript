@@ -17,5 +17,5 @@ export interface ISequelizeUriConfig extends Options {
    * if set to true. For this configuration it is always false.
    * See ISequelizeValidationOnlyConfig interface
    */
-  validateOnly?: false;
+  validateOnly?: boolean;
 }
