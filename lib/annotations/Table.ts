@@ -3,7 +3,7 @@ import {setModelName, addOptions} from "../services/models";
 import {IDefineOptions} from "../interfaces/IDefineOptions";
 
 export function Table(options: IDefineOptions): Function;
-export function Table(target: any): Function;
+export function Table(target: any): void|Function;
 export function Table(arg: any): void|Function {
 
   if (typeof arg === 'function') {
