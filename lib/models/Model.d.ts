@@ -560,10 +560,10 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * @param options.reset Clear all previously set data values
    */
   set(key: string, value: any, options?: InstanceSetOptions): this;
-  set(keys: Object, options?: InstanceSetOptions): this;
+  set(keys: Partial<T>, options?: InstanceSetOptions): this;
 
   setAttributes(key: string, value: any, options?: InstanceSetOptions): this;
-  setAttributes(keys: Object, options?: InstanceSetOptions): this;
+  setAttributes(keys: Partial<T>, options?: InstanceSetOptions): this;
 
   /**
    * If changed is called with a string it will return a boolean indicating whether the value of that key in
@@ -612,10 +612,10 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * This is the same as calling `set` and then calling `save`.
    */
   update(key: string, value: any, options?: InstanceUpdateOptions): Promise<this>;
-  update(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
+  update(keys: Partial<T>, options?: InstanceUpdateOptions): Promise<this>;
 
   updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): Promise<this>;
-  updateAttributes(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
+  updateAttributes(keys: Partial<T>, options?: InstanceUpdateOptions): Promise<this>;
 
   /**
    * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
