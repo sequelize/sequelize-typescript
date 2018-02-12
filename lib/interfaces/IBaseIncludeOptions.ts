@@ -33,4 +33,5 @@ export interface IBaseIncludeOptions {
    */
   through?: IncludeThroughOptions;
 
+  all?: boolean | string;
 }
