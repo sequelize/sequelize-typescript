@@ -8,6 +8,7 @@ export class ModelNotInitializedError extends Error {
 
   constructor(modelClass: typeof Model,
               options: ModelNotInitializedErrorOptions) {
+    /* istanbul ignore next */
     super();
     let cause = options['cause'];
     if (!('cause' in options)) {
