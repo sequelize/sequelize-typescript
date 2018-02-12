@@ -433,13 +433,13 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Adds relation between specified instances and source instance
    */
-  $add<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: IAssociationActionOptions): Promise<this>;
+  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
 
   /**
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: IAssociationActionOptions): Promise<this>;
+  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
 
   /**
    * Returns related instance (specified by propertyKey) of source instance
@@ -459,12 +459,12 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Checks if specified instances is related to source instance
    */
-  $has<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: any): Promise<this>;
+  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
 
   /**
    * Removes specified instances from source instance
    */
-  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[], options?: any): Promise<this>;
+  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
 
   /**
    * Default id automatically created by sequelize
