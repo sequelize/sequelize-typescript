@@ -1,7 +1,8 @@
-import {Error} from 'sequelize';
 import {Model} from '../Model';
 
 export class ModelNotInitializedError extends Error {
+
+  message: string;
 
   constructor(modelClass: typeof Model,
               {accessedPropertyKey, cause}: {
