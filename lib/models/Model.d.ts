@@ -449,7 +449,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Counts related instances (specified by propertyKey) of source instance
    */
-  $count(propertyKey: string, options?: any): Promise<this>;
+  $count(propertyKey: string, options?: any): Promise<number>;
 
   /**
    * Creates instances and relate them to source instance
