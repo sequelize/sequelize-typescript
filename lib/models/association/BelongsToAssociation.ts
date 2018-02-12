@@ -8,23 +8,19 @@ import {Association} from '../../enums/Association';
 
 export class BelongsToAssociation extends BaseAssociation {
 
-  constructor(private associatedClassGetter: ModelClassGetter,
+  constructor(associatedClassGetter: ModelClassGetter,
               private options: AssociationOptionsBelongsTo) {
-    super();
+    super(associatedClassGetter);
   }
 
   getAssociation(): Association {
     return Association.BelongsTo;
   }
 
-  getAssociatedClass(): typeof Model {
-    return this.associatedClassGetter();
-  }
-
   protected getPreparedOptions(model: typeof Model,
                                sequelize: BaseSequelize): AssociationOptions {
     const options = {...this.options};
-    const associatedClass = this.associatedClassGetter();
+    const associatedClass = this.getAssociatedClass();
 
     options.foreignKey = this.getForeignKeyOptions(associatedClass, model, options.foreignKey);
 

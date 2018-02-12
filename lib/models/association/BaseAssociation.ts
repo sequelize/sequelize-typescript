@@ -4,17 +4,30 @@ import {Model} from '../Model';
 import {AssociationForeignKeyOptions} from 'sequelize';
 import {BaseSequelize} from '../BaseSequelize';
 import {Association} from '../../enums/Association';
+import {ModelClassGetter} from '../../types/ModelClassGetter';
+import {ModelNotInitializedError} from '../errors/ModelNotInitializedError';
 
 export abstract class BaseAssociation {
 
   private _options: AssociationOptions;
 
-  abstract getAssociation(): Association;
+  constructor(private associatedClassGetter: ModelClassGetter) {
+  }
 
-  abstract getAssociatedClass(): typeof Model;
+  abstract getAssociation(): Association;
 
   protected abstract getPreparedOptions(model: typeof Model,
                                         sequelize: BaseSequelize): AssociationOptions;
+
+  getAssociatedClass(): typeof Model {
+    const modelClass = this.associatedClassGetter();
+    if (!modelClass.isInitialized) {
+      throw new ModelNotInitializedError(modelClass, {
+        cause: 'before association can be resolved.'
+      });
+    }
+    return modelClass;
+  }
 
   init(model: typeof Model,
        sequelize: BaseSequelize): void {

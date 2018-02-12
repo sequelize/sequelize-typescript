@@ -6,6 +6,7 @@ import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions
 import {INFER_ALIAS_MAP, inferAlias} from "../services/models";
 import {extend, getAllPropertyNames} from "../utils/object";
 import {IFindOptions} from "../interfaces/IFindOptions";
+import {ModelNotInitializedError} from './errors/ModelNotInitializedError';
 
 const parentPrototype = majorVersion === 3 ? (Instance as any).prototype : (Model as any).prototype;
 
@@ -72,8 +73,7 @@ export abstract class BaseModel {
      */
     function checkInitialization(model: typeof BaseModel, propertyKey: string): void {
       if (!model.isInitialized) {
-        throw new Error(`Model not initialized: "${model.name}" needs to be added to a Sequelize instance ` +
-          `before "${propertyKey}" can be called.`);
+        throw new ModelNotInitializedError(model as any, {accessedPropertyKey: propertyKey});
       }
     }
 

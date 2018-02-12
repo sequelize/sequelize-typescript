@@ -19,21 +19,26 @@ use(chaiAsPromised);
 const Association: any = OriginSequelize['Association'];
 
 /* Some base classes that we can override later */
-class ConcreteModel<T extends Model<T>> extends Model<T> {}
+class ConcreteModel<T extends Model<T>> extends Model<T> {
+}
+
 class BookModel extends ConcreteModel<BookModel> {
   title: string;
   pages: PageModel[];
   authors: AuthorModel[];
 }
+
 class PageModel extends ConcreteModel<BookModel> {
   content: string;
   bookId: number;
   book: BookModel;
 }
+
 class AuthorModel extends ConcreteModel<AuthorModel> {
   name: string;
   books: BookWithAuthorModel;
 }
+
 class BookWithAuthorModel extends BookModel {
   authors: AuthorModel[];
 }
@@ -792,6 +797,27 @@ describe('association', () => {
 
       oneToManyTestSuites(Book5, Page5);
     });
+
+    it('Should throw error when trying to resolve associations with uninitialized Models', () => {
+
+      const _sequelize = createSequelize(false);
+
+      @Table
+      class Friend extends Model<Friend> {
+      }
+
+      @Table
+      class User extends Model<User> {
+
+        @HasOne(() => Friend, 'userId')
+        friend: Friend;
+      }
+
+      expect(() =>
+        _sequelize.addModels([User])
+      ).to.throw(new RegExp('Model not initialized: "Friend" needs to be added to a ' +
+        'Sequelize instance before association can be resolved'));
+    });
   });
 
   describe('Many-to-many', () => {
@@ -1477,7 +1503,7 @@ describe('association', () => {
             }
           },
           foreignKeyConstraint: true,
-          foreignKey:  'subscriberId',
+          foreignKey: 'subscriberId',
           otherKey: 'targetId',
           constraints: false,
         })
@@ -1507,6 +1533,31 @@ describe('association', () => {
           .to.have.property('scope').that.eqls({targetType: 'user'});
       });
 
+    });
+
+    it('Should throw error when trying to resolve associations with uninitialized Models', () => {
+
+      const _sequelize = createSequelize(false);
+
+      @Table
+      class UserFriend extends Model<UserFriend> {
+      }
+
+      @Table
+      class Friend extends Model<Friend> {
+      }
+
+      @Table
+      class User extends Model<User> {
+
+        @BelongsToMany(() => Friend, () => UserFriend)
+        friend: Friend;
+      }
+
+      expect(() =>
+        _sequelize.addModels([User, Friend])
+      ).to.throw(new RegExp('Model not initialized: "UserFriend" needs to be added to a ' +
+        'Sequelize instance before association can be resolved'));
     });
 
   });
