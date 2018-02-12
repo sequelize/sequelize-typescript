@@ -1,21 +1,17 @@
 import {Model} from '../Model';
 
+export type ModelNotInitializedErrorOptions = { cause: string } | { accessedPropertyKey: string };
+
 export class ModelNotInitializedError extends Error {
 
   message: string;
 
   constructor(modelClass: typeof Model,
-              {accessedPropertyKey, cause}: {
-                accessedPropertyKey?: string,
-                cause?: string
-              }) {
+              options: ModelNotInitializedErrorOptions) {
     super();
-    if (!cause) {
-      if (accessedPropertyKey) {
-        cause = `before "${accessedPropertyKey}" can be called.`;
-      } else {
-        cause = 'before it can be used.';
-      }
+    let cause = options['cause'];
+    if (!('cause' in options)) {
+      cause = `before "${options['accessedPropertyKey']}" can be called.`;
     }
     this.message = `Model not initialized: "${modelClass.name}" ` +
       `needs to be added to a Sequelize instance ${cause}`;
