@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import {Sequelize} from './Sequelize';
-import {IFindOptions} from '../interfaces/IFindOptions';
+import { Sequelize } from './Sequelize';
+import { IFindOptions } from '../interfaces/IFindOptions';
 import * as Promise from 'bluebird';
 import {
   SyncOptions, UpsertOptions, BulkCreateOptions, UpdateOptions, RestoreOptions,
@@ -10,13 +10,14 @@ import {
   SchemaOptions, GetTableNameOptions, AddScopeOptions, ScopeOptions,
   WhereOptions, ValidationError, DefineAttributes
 } from 'sequelize';
-import {IAssociationActionOptions} from "../interfaces/IAssociationActionOptions";
-import {IBuildOptions} from "../interfaces/IBuildOptions";
-import {ICreateOptions} from "../interfaces/ICreateOptions";
-import {IFindOrInitializeOptions} from "../interfaces/IFindOrInitializeOptions";
-import {IFindCreateFindOptions} from "../interfaces/IFindCreateFindOptions";
-import {ICountOptions} from '../interfaces/ICountOptions';
-import {NonAbstract, Omit, RecursivePartial} from '../utils/types';
+import { IAssociationActionOptions } from "../interfaces/IAssociationActionOptions";
+import { IBuildOptions } from "../interfaces/IBuildOptions";
+import { ICreateOptions } from "../interfaces/ICreateOptions";
+import { IFindOrInitializeOptions } from "../interfaces/IFindOrInitializeOptions";
+import { IFindCreateFindOptions } from "../interfaces/IFindCreateFindOptions";
+import { IPartialDefineAttributeColumnOptions } from "../interfaces/IPartialDefineAttributeColumnOptions";
+import { ICountOptions } from '../interfaces/ICountOptions';
+import { NonAbstract, Omit, RecursivePartial } from '../utils/types';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
@@ -26,16 +27,21 @@ type NonAbstractTypeOfModel<T> = (new () => T) & NonAbstract<typeof Model>;
 
 export type FilteredModelAttributes<T extends Model<T>> =
   RecursivePartial<Omit<T, keyof Model<any>>> & {
-  id?: number | any;
-  createdAt?: Date | any;
-  updatedAt?: Date | any;
-  deletedAt?: Date | any;
-  version?: number | any;
-};
+    id?: number | any;
+    createdAt?: Date | any;
+    updatedAt?: Date | any;
+    deletedAt?: Date | any;
+    version?: number | any;
+  };
 
 export declare abstract class Model<T extends Model<T>> extends Hooks {
 
   constructor(values?: FilteredModelAttributes<T>, options?: IBuildOptions);
+
+  static primaryKeyAttributes: string[];
+  static primaryKeyAttribute: string;
+  static attributes: { [key: string]: IPartialDefineAttributeColumnOptions };
+  static rawAttributes: { [key: string]: IPartialDefineAttributeColumnOptions };
 
   static isInitialized: boolean;
 
@@ -649,7 +655,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *               If and object is provided, each column is incremented by the value given.
    */
   increment(fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
+    options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -672,7 +678,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *               If and object is provided, each column is decremented by the value given
    */
   decrement(fields: string | string[] | Object,
-            options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
+    options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same
@@ -739,7 +745,7 @@ declare class Hooks {
    * @param fn A callback function that is called with instance, options
    */
   static beforeValidate<T extends Model<T>>(name: string,
-                                            fn: (instance: T, options: Object, fn?: Function) => void): void;
+    fn: (instance: T, options: Object, fn?: Function) => void): void;
   static beforeValidate<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
@@ -749,7 +755,7 @@ declare class Hooks {
    * @param fn A callback function that is called with instance, options
    */
   static afterValidate<T extends Model<T>>(name: string,
-                                           fn: (instance: T, options: Object, fn?: Function) => void): void;
+    fn: (instance: T, options: Object, fn?: Function) => void): void;
   static afterValidate<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
@@ -759,7 +765,7 @@ declare class Hooks {
    * @param fn A callback function that is called with attributes, options
    */
   static beforeCreate<T extends Model<T>>(name: string,
-                                          fn: (attributes: T, options: Object, fn?: Function) => void): void;
+    fn: (attributes: T, options: Object, fn?: Function) => void): void;
   static beforeCreate<T extends Model<T>>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
 
   /**
@@ -769,7 +775,7 @@ declare class Hooks {
    * @param fn A callback function that is called with attributes, options
    */
   static afterCreate<T extends Model<T>>(name: string,
-                                         fn: (attributes: T, options: Object, fn?: Function) => void): void;
+    fn: (attributes: T, options: Object, fn?: Function) => void): void;
   static afterCreate<T extends Model<T>>(fn: (attributes: T, options: Object, fn?: Function) => void): void;
 
   /**
@@ -780,11 +786,11 @@ declare class Hooks {
    * @alias beforeDelete
    */
   static beforeDestroy<T extends Model<T>>(name: string,
-                                           fn: (instance: T, options: Object, fn?: Function) => void): void;
+    fn: (instance: T, options: Object, fn?: Function) => void): void;
   static beforeDestroy<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   static beforeDelete<T extends Model<T>>(name: string,
-                                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+    fn: (instance: T, options: Object, fn?: Function) => void): void;
   static beforeDelete<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
@@ -795,7 +801,7 @@ declare class Hooks {
    * @alias afterDelete
    */
   static afterDestroy<T extends Model<T>>(name: string,
-                                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+    fn: (instance: T, options: Object, fn?: Function) => void): void;
   static afterDestroy<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   static afterDelete<T extends Model<T>>(name: string, fn: (instance: T, options: Object, fn?: Function) => void): void;
@@ -808,10 +814,10 @@ declare class Hooks {
    * @param fn A callback function that is called with instance, options
    */
   static beforeUpdate(name: string,
-                      fn: (instance: any, options: Object, fn?: Function) => void): void;
+    fn: (instance: any, options: Object, fn?: Function) => void): void;
   static beforeUpdate(fn: (instance: any, options: Object, fn?: Function) => void): void;
   static beforeUpdate<T extends Model<T>>(name: string,
-                                          fn: (instance: T, options: Object, fn?: Function) => void): void;
+    fn: (instance: T, options: Object, fn?: Function) => void): void;
   static beforeUpdate<T extends Model<T>>(fn: (instance: T, options: Object, fn?: Function) => void): void;
 
   /**
@@ -830,7 +836,7 @@ declare class Hooks {
    * @param fn A callback function that is called with instances, options
    */
   static beforeBulkCreate<T extends Model<T>>(name: string,
-                                              fn: (instances: T[], options: Object, fn?: Function) => void): void;
+    fn: (instances: T[], options: Object, fn?: Function) => void): void;
   static beforeBulkCreate<T extends Model<T>>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
 
   /**
@@ -841,7 +847,7 @@ declare class Hooks {
    * @name afterBulkCreate
    */
   static afterBulkCreate<T extends Model<T>>(name: string,
-                                             fn: (instances: T[], options: Object, fn?: Function) => void): void;
+    fn: (instances: T[], options: Object, fn?: Function) => void): void;
   static afterBulkCreate<T extends Model<T>>(fn: (instances: T[], options: Object, fn?: Function) => void): void;
 
   /**
@@ -906,7 +912,7 @@ declare class Hooks {
    * @param fn   A callback function that is called with options
    */
   static beforeFindAfterExpandIncludeAll(name: string,
-                                         fn: (options: Object, fn?: Function) => void): void;
+    fn: (options: Object, fn?: Function) => void): void;
   static beforeFindAfterExpandIncludeAll(fn: (options: Object, fn?: Function) => void): void;
 
   /**
@@ -925,10 +931,10 @@ declare class Hooks {
    * @param fn   A callback function that is called with instance(s), options
    */
   static afterFind<T extends Model<T>>(name: string,
-                                       fn: (instancesOrInstance: T[] | T, options: Object,
-                                            fn?: Function) => void): void;
+    fn: (instancesOrInstance: T[] | T, options: Object,
+      fn?: Function) => void): void;
   static afterFind<T extends Model<T>>(fn: (instancesOrInstance: T[] | T, options: Object,
-                                            fn?: Function) => void): void;
+    fn?: Function) => void): void;
 
   /**
    * A hook that is run before a define call
