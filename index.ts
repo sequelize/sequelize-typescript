@@ -16,6 +16,7 @@ export {CreatedAt} from "./lib/annotations/CreatedAt";
 export {DeletedAt} from "./lib/annotations/DeletedAt";
 export {UpdatedAt} from "./lib/annotations/UpdatedAt";
 export {Unique} from "./lib/annotations/Unique";
+export {Comment} from "./lib/annotations/Comment";
 
 export {Contains} from "./lib/annotations/validation/Contains";
 export {Equals} from "./lib/annotations/validation/Equals";

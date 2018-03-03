@@ -16,6 +16,7 @@ import {ICreateOptions} from "../interfaces/ICreateOptions";
 import {IFindOrInitializeOptions} from "../interfaces/IFindOrInitializeOptions";
 import {IFindCreateFindOptions} from "../interfaces/IFindCreateFindOptions";
 import {ICountOptions} from '../interfaces/ICountOptions';
+import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {NonAbstract, Omit, RecursivePartial} from '../utils/types';
 
 /* tslint:disable:member-ordering */
@@ -36,6 +37,11 @@ export type FilteredModelAttributes<T extends Model<T>> =
 export declare abstract class Model<T extends Model<T>> extends Hooks {
 
   constructor(values?: FilteredModelAttributes<T>, options?: IBuildOptions);
+
+  static primaryKeyAttributes: string[];
+  static primaryKeyAttribute: string;
+  static attributes: { [key: string]: IPartialDefineAttributeColumnOptions };
+  static rawAttributes: { [key: string]: IPartialDefineAttributeColumnOptions };
 
   static isInitialized: boolean;
 

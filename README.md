@@ -157,6 +157,7 @@ Decorator                             | Description
  `@Unique`                            | sets `attribute.unique=true`
  `@Default(value: any)`               | sets `attribute.defaultValue` to specified value
  `@PrimaryKey`                        | sets `attribute.primaryKey=true`
+ `@Comment(value: string)`            | sets `attribute.comment` to specified string
  Validate annotations                 | see [Model validation](#model-validation)
 
 ### Type inference
