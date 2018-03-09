@@ -10,7 +10,6 @@ import {Person} from "../models/Person";
 import {Model} from '../../lib/models/Model';
 import {Table} from '../../lib/annotations/Table';
 import {Scopes} from '../../lib/annotations/Scopes';
-import {majorVersion} from '../../lib/utils/versioning';
 import {Column} from '../../lib/annotations/Column';
 import {UpdatedAt} from '../../lib/annotations/UpdatedAt';
 import chaiDatetime = require('chai-datetime');
@@ -229,54 +228,50 @@ describe('scopes', () => {
 
     });
 
-    if (majorVersion > 3) {
+    describe('with symbols', () => {
+      const _sequelize = createSequelize(false);
 
-      describe('with symbols', () => {
-        const _sequelize = createSequelize(false);
+      @Scopes({
+        bob: {where: {name: {[Op.like]: '%bob%'}}},
+        updated: {where: {updated: {[Op.gt]: new Date(2000, 1)}}},
+      })
+      @Table
+      class Person extends Model<Person> {
 
-        @Scopes({
-          bob: {where: {name: {[Op.like]: '%bob%'}}},
-          updated: {where: {updated: {[Op.gt]: new Date(2000, 1)}}},
-        })
-        @Table
-        class Person extends Model<Person> {
+        @Column
+        name: string;
 
-          @Column
-          name: string;
+        @UpdatedAt
+        updated: Date;
+      }
 
-          @UpdatedAt
-          updated: Date;
-        }
+      _sequelize.addModels([Person]);
 
-        _sequelize.addModels([Person]);
+      beforeEach(() => _sequelize.sync({force: true}));
 
-        beforeEach(() => _sequelize.sync({force: true}));
-
-        it('should consider symbols while finding elements', () => {
-          return Person
-            .create({name: '1bob2'})
-            .then(() => Person.create({name: 'bob'}))
-            .then(() => Person.create({name: 'bobby'}))
-            .then(() => Person.create({name: 'robert'}))
-            .then(() => (Person.scope('bob') as typeof Person).findAll())
-            .then(persons => expect(persons).to.have.property('length', 3))
-            ;
-        });
-
-        it('should consider symbols on timestamp column while finding elements', () => {
-          const clock = useFakeTimers(+new Date());
-          return Person
-            .create({name: 'test'})
-            .then(() => (Person.scope('updated') as typeof Person).findAll())
-            .then(() => Person.findAll())
-            .then(persons => expect(persons).to.have.property('length', 1))
-            .then(() => clock.restore())
-            ;
-        });
-
+      it('should consider symbols while finding elements', () => {
+        return Person
+          .create({name: '1bob2'})
+          .then(() => Person.create({name: 'bob'}))
+          .then(() => Person.create({name: 'bobby'}))
+          .then(() => Person.create({name: 'robert'}))
+          .then(() => (Person.scope('bob') as typeof Person).findAll())
+          .then(persons => expect(persons).to.have.property('length', 3))
+          ;
       });
-    }
 
+      it('should consider symbols on timestamp column while finding elements', () => {
+        const clock = useFakeTimers(+new Date());
+        return Person
+          .create({name: 'test'})
+          .then(() => (Person.scope('updated') as typeof Person).findAll())
+          .then(() => Person.findAll())
+          .then(persons => expect(persons).to.have.property('length', 1))
+          .then(() => clock.restore())
+          ;
+      });
+
+    });
 
   });
 

@@ -8,7 +8,6 @@ import {
   ShoeWithValidation, KEY_VALUE, PARTIAL_SPECIAL_VALUE, BRAND_LENGTH,
   hexColor, HEX_REGEX, PRODUCED_AT_IS_AFTER, PRODUCED_AT_IS_BEFORE, UUID_VERSION, MAX, MIN, NOT, IS_IN, NOT_CONTAINS
 } from "../models/ShoeWithValidation";
-import {majorVersion} from "../../lib/utils/versioning";
 import {Is} from "../../lib/annotations/validation/Is";
 import {Model} from "../../lib/models/Model";
 import {Table} from "../../lib/annotations/Table";
@@ -164,26 +163,14 @@ describe('validation', () => {
 
           const shoe = new ShoeWithValidation({[key]: value});
 
-          if (majorVersion === 3) {
-
-            return shoe.validate().then(err => expect(err).to.be.null);
-          } else if (majorVersion === 4) {
-
-            return expect(shoe.validate()).to.be.fulfilled;
-          }
+          return expect(shoe.validate()).to.be.fulfilled;
         })));
 
         invalidPromises.push(Promise.all(invalid.map(value => {
 
           const shoe = new ShoeWithValidation({[key]: value});
 
-          if (majorVersion === 3) {
-
-            return shoe.validate().then(err => expect(err).to.be.an('object'));
-          } else if (majorVersion === 4) {
-
-            return expect(shoe.validate()).to.be.rejected;
-          }
+          return expect(shoe.validate()).to.be.rejected;
         })));
 
       });
@@ -215,11 +202,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.not.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.not.rejected;
-        }
+        return expect(user.validate()).to.be.not.rejected;
       });
 
       it('should produce an error due to unfulfilled max', () => {
@@ -232,11 +215,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa tree'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.rejected;
-        }
+        return expect(user.validate()).to.be.rejected;
       });
 
       it('should produce an error due to unfulfilled min', () => {
@@ -249,11 +228,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elli'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.rejected;
-        }
+        return expect(user.validate()).to.be.rejected;
       });
 
       it('should not produce an error (max only)', () => {
@@ -266,11 +241,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.not.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.not.rejected;
-        }
+        return expect(user.validate()).to.be.not.rejected;
       });
 
       it('should produce an error (max only)', () => {
@@ -283,11 +254,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa tree'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.rejected;
-        }
+        return expect(user.validate()).to.be.rejected;
       });
 
       it('should not produce an error (min only)', () => {
@@ -300,11 +267,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.not.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.not.rejected;
-        }
+        return expect(user.validate()).to.be.not.rejected;
       });
 
       it('should produce an error (min only)', () => {
@@ -317,11 +280,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elli'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.rejected;
-        }
+        return expect(user.validate()).to.be.rejected;
       });
 
     });
@@ -338,11 +297,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.not.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.not.rejected;
-        }
+        return expect(user.validate()).to.be.not.rejected;
       });
 
       it('should produce an error', () => {
@@ -355,11 +310,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: ''});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.rejected;
-        }
+        return expect(user.validate()).to.be.rejected;
       });
 
       it('should not produce an error (with msg)', () => {
@@ -372,11 +323,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: 'elisa'});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err).to.be.not.an('object'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.not.rejected;
-        }
+        return expect(user.validate()).to.be.not.rejected;
       });
 
       it('should produce an error (with msg)', () => {
@@ -389,11 +336,7 @@ describe('validation', () => {
         sequelizeValidationOnly.addModels([User]);
         const user = new User({name: ''});
 
-        if (majorVersion === 3) {
-          return user.validate().then(err => expect(err.errors[0].message).to.eq('NotEmpty'));
-        } else if (majorVersion === 4) {
-          return expect(user.validate()).to.be.rejected;
-        }
+        return expect(user.validate()).to.be.rejected;
       });
     });
 
@@ -408,6 +351,7 @@ describe('validation', () => {
         @Table
         class User extends Model<User> {
           @Column name: string;
+
           @Validator userValidator(): void {
             if (this.name !== VALID_NAME) {
               throw new Error(ERROR_MESSAGE);
@@ -418,23 +362,15 @@ describe('validation', () => {
         _sequelize.addModels([User]);
 
         it('should throw', () => {
-          const user =  new User({name: 'will'});
+          const user = new User({name: 'will'});
 
-          if (majorVersion === 3) {
-            return user.validate().then(err => expect(err.errors[0].message).to.eq(ERROR_MESSAGE));
-          } else if (majorVersion === 4) {
-            return expect(user.validate()).to.be.rejected;
-          }
+          return expect(user.validate()).to.be.rejected;
         });
 
         it('should not throw', () => {
-          const user =  new User({name: VALID_NAME});
+          const user = new User({name: VALID_NAME});
 
-          if (majorVersion === 3) {
-            return user.validate().then(err => expect(err).to.be.null);
-          } else if (majorVersion === 4) {
-            return expect(user.validate()).to.be.fulfilled;
-          }
+          return expect(user.validate()).to.be.fulfilled;
         });
 
       });
@@ -451,11 +387,13 @@ describe('validation', () => {
         class User extends Model<User> {
           @Column name: string;
           @Column age: number;
+
           @Validator nameValidator(): void {
             if (this.name !== VALID_NAME) {
               throw new Error(NAME_ERROR_MESSAGE);
             }
           }
+
           @Validator ageValidator(): void {
             if (this.age !== VALID_AGE) {
               throw new Error(AGE_ERROR_MESSAGE);
@@ -472,34 +410,16 @@ describe('validation', () => {
         });
 
         it('should throw due to wrong name', () => {
-          const user =  new User({name: 'will', age: VALID_AGE});
+          const user = new User({name: 'will', age: VALID_AGE});
 
-          if (majorVersion === 3) {
-            return user.validate().then(err => expect(err.errors[0].message).to.eq(NAME_ERROR_MESSAGE));
-          } else if (majorVersion === 4) {
-            return expect(user.validate()).to.be.rejectedWith(NAME_ERROR_MESSAGE);
-          }
+          return expect(user.validate()).to.be.rejectedWith(NAME_ERROR_MESSAGE);
         });
 
         it('should throw due to wrong age', () => {
-          const user =  new User({name: VALID_NAME, age: 1});
+          const user = new User({name: VALID_NAME, age: 1});
 
-          if (majorVersion === 3) {
-            return user.validate().then(err => expect(err.errors[0].message).to.eq(AGE_ERROR_MESSAGE));
-          } else if (majorVersion === 4) {
-            return expect(user.validate()).to.be.rejectedWith(AGE_ERROR_MESSAGE);
-          }
+          return expect(user.validate()).to.be.rejectedWith(AGE_ERROR_MESSAGE);
         });
-
-        // it('should not throw', () => {
-        //   const user =  new User({name: VALID_NAME});
-        //
-        //   if (majorVersion === 3) {
-        //     return user.validate().then(err => expect(err).to.be.null);
-        //   } else if (majorVersion === 4) {
-        //     return expect(user.validate()).to.be.fulfilled;
-        //   }
-        // });
 
       });
 

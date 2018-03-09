@@ -63,7 +63,10 @@ export function getAssociationsByRelation(target: any,
   const associations = getAssociations(target);
   return (associations || []).filter(association => {
     const _relatedClass = association.getAssociatedClass();
-    return relatedClass.prototype instanceof _relatedClass; // v4 (for child classes)
+    return (
+      _relatedClass.prototype === relatedClass.prototype ||
+      relatedClass.prototype instanceof _relatedClass
+    );
   });
 }
 
