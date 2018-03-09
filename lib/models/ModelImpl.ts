@@ -1,4 +1,4 @@
-import {BuildOptions, Model as SeqModel} from 'sequelize';
+import {Model as SeqModel} from 'sequelize';
 import * as Promise from 'bluebird';
 import {IDummyConstructor} from "../interfaces/IDummyConstructor";
 import {capitalize} from '../utils/string';
@@ -15,7 +15,7 @@ export class Model extends _SeqModel {
   static isInitialized: boolean = false;
 
   constructor(values?: any, options?: any) {
-    super(values, prepareInstantiationOptions(options, new.target));
+    super(values, inferAlias(options, new.target));
   }
 
   /**
@@ -159,28 +159,4 @@ function tryPrepareOptions(model: typeof Model, propertyKey: string, args: any[]
       args[optionIndex] = inferAlias(options, model);
     }
   }
-}
-
-/**
- * Prepares build options for instantiation of a model
- */
-function prepareInstantiationOptions(options: BuildOptions, source: any): BuildOptions {
-
-  options = inferAlias(options, source);
-
-  if (!('isNewRecord' in options)) options.isNewRecord = true;
-  if (!('$schema' in options) && Model['$schema']) options['$schema'] = Model['$schema'];
-  if (!('$schemaDelimiter' in options) && Model['$schemaDelimiter']) options['$schemaDelimiter'] = Model['$schemaDelimiter'];
-
-  // preventing TypeError: Cannot read property 'indexOf' of undefined(=includeNames)
-  if (!options['includeNames']) options['includeNames'] = [];
-
-  if (!options['includeValidated']) {
-    _SeqModel['_conformOptions'](options, source);
-    if (options.include) {
-      _SeqModel['_expandIncludeAll'].call(source, options);
-      _SeqModel['_validateIncludedElements'].call(source, options);
-    }
-  }
-  return options;
 }

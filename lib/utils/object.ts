@@ -108,21 +108,3 @@ export function getAllPropertyNames(obj: any): string[] {
     return isValid;
   });
 }
-
-/**
- * Extends target constructor function members and prototype members
- * by specified  source members
- */
-export function extend(target: Function, source: Function): void {
-  // copies all prototype members of this to target.prototype
-  Object
-    .keys(source.prototype)
-    .forEach(name => target.prototype[name] = source.prototype[name])
-  ;
-
-  // copies all static members of this to target
-  Object
-    .keys(source)
-    .forEach(name => target[name] = source[name])
-  ;
-}
