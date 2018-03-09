@@ -189,7 +189,7 @@ export function getModels(arg: Array<typeof Model | string>): Array<typeof Model
         .map(getFullfilepathWithoutExtension)
         .filter(uniqueFilter)
         .map(fullPath => {
-          
+
           const module = require(fullPath);
           const fileName = getFilenameWithoutExtension(fullPath);
 

@@ -2,10 +2,10 @@ import {AssociationOptions} from '../../interfaces/AssociationOptions';
 import {getForeignKeys} from '../../services/association';
 import {Model} from '../Model';
 import {AssociationForeignKeyOptions} from 'sequelize';
-import {BaseSequelize} from '../BaseSequelize';
 import {Association} from '../../enums/Association';
 import {ModelClassGetter} from '../../types/ModelClassGetter';
 import {ModelNotInitializedError} from '../errors/ModelNotInitializedError';
+import {Sequelize} from '../SequelizeImpl';
 
 export abstract class BaseAssociation {
 
@@ -17,7 +17,7 @@ export abstract class BaseAssociation {
   abstract getAssociation(): Association;
 
   protected abstract getPreparedOptions(model: typeof Model,
-                                        sequelize: BaseSequelize): AssociationOptions;
+                                        sequelize: Sequelize): AssociationOptions;
 
   getAssociatedClass(): typeof Model {
     const modelClass = this.associatedClassGetter();
@@ -30,7 +30,7 @@ export abstract class BaseAssociation {
   }
 
   init(model: typeof Model,
-       sequelize: BaseSequelize): void {
+       sequelize: Sequelize): void {
     if (!this._options) {
       this._options = this.getPreparedOptions(model, sequelize);
     }

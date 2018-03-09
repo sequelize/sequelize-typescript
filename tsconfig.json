@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es5",
+    "target": "es6",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
@@ -19,8 +19,6 @@
   ],
   "exclude": [
     "node_modules",
-    "lib/models/v4/Sequelize.ts",
-    "lib/models/v4/Model.ts",
     "test"
   ]
 }

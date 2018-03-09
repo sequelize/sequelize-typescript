@@ -1,27 +1,22 @@
+import 'reflect-metadata';
+import * as OriginSequelize from 'sequelize';
 import {Model} from "./Model";
-import {DEFAULT_DEFINE_OPTIONS, getModels} from "../services/models";
-import {getAssociations} from "../services/association";
-import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
-import {ISequelizeUriConfig} from "../interfaces/ISequelizeUriConfig";
-import {ISequelizeDbNameConfig} from "../interfaces/ISequelizeDbNameConfig";
 import {SequelizeConfig} from "../types/SequelizeConfig";
-import {resolveScopes} from "../services/scopes";
-import {installHooks} from "../services/hooks";
-import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
-import {extend} from "../utils/object";
-import {BaseAssociation} from './association/BaseAssociation';
+import {getModelName, getAttributes, getOptions, getModels, DEFAULT_DEFINE_OPTIONS} from "../services/models";
+import {Table} from "../annotations/Table";
+import {installHooks} from '../services/hooks';
+import {getAssociations} from '../services/association';
+import {resolveScopes} from '../services/scopes';
+import {ISequelizeConfig} from '../interfaces/ISequelizeConfig';
+import {ISequelizeUriConfig} from '../interfaces/ISequelizeUriConfig';
+import {ISequelizeValidationOnlyConfig} from '../interfaces/ISequelizeValidationOnlyConfig';
+import {ISequelizeDbNameConfig} from '../interfaces/ISequelizeDbNameConfig';
 
-/**
- * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
- * the transpile target, which is for v3/Sequelize and BaseSequelize ES5
- * and for v4/Sequelize ES6. This is needed for extending the original
- * Sequelize (version 4), which is an ES6 class: ES5 constructor-pattern
- * "classes" cannot extend ES6 classes
- */
-export abstract class BaseSequelize {
+export class Sequelize extends OriginSequelize {
 
-  throughMap: { [through: string]: any } = {};
-  _: { [modelName: string]: (typeof Model) } = {};
+  throughMap: { [through: string]: any };
+  _: { [modelName: string]: typeof Model };
+  connectionManager: any;
 
   static isISequelizeDbNameConfig(obj: any): obj is ISequelizeDbNameConfig {
     return obj.hasOwnProperty("name") && obj.hasOwnProperty("username");
@@ -29,11 +24,6 @@ export abstract class BaseSequelize {
 
   static isISequelizeUriConfig(obj: any): obj is ISequelizeUriConfig {
     return obj.hasOwnProperty("url");
-  }
-
-  static extend(target: any): void {
-
-    extend(target, this);
   }
 
   /**
@@ -46,11 +36,10 @@ export abstract class BaseSequelize {
     config.define = {...DEFAULT_DEFINE_OPTIONS, ...config.define};
 
     if (config.validateOnly) {
-
       return this.getValidationOnlyConfig(config);
     }
 
-    if (BaseSequelize.isISequelizeDbNameConfig(config)) {
+    if (Sequelize.isISequelizeDbNameConfig(config)) {
       // @TODO: remove deprecated "name" property
       return {...config, database: config.name} as ISequelizeConfig;
     }
@@ -67,6 +56,23 @@ export abstract class BaseSequelize {
       dialect: 'sqlite',
       dialectModulePath: __dirname + '/../utils/db-dialect-dummy'
     } as ISequelizeConfig;
+  }
+
+  constructor(config: SequelizeConfig | string) {
+    if (typeof config === "string") {
+      super(config);
+    } else if (Sequelize.isISequelizeUriConfig(config)) {
+      super(config.url, config);
+    } else {
+      super(Sequelize.prepareConfig(config));
+    }
+
+    this.throughMap = {};
+    this._ = {};
+
+    if (typeof config !== "string") {
+      this.init(config);
+    }
   }
 
   addModels(models: Array<typeof Model>): void;
@@ -105,20 +111,39 @@ export abstract class BaseSequelize {
         const relation = association.getAssociation();
         const options = association.getSequelizeOptions();
         model[relation](associatedClass, options);
-        this.adjustAssociation(model, association);
       });
     });
   }
 
+  getThroughModel(through: string): typeof Model {
+
+    // tslint:disable:max-classes-per-file
+    @Table({tableName: through, modelName: through})
+    class Through extends Model<Through> {
+    }
+
+    return Through;
+  }
+
   /**
-   * Since es6 classes cannot be extended by es5 constructor-functions the
-   * "through" model needs to be created by the appropriate sequelize version
-   * (sequelize v3 and v4 are transpiled with different targets (es5/es6))
+   * Creates sequelize models and registers these models
+   * in the registry
    */
-  abstract getThroughModel(through: string): typeof Model;
+  defineModels(models: Array<typeof Model>): void {
 
-  abstract adjustAssociation(model: any, association: BaseAssociation): void;
+    models.forEach(model => {
 
-  abstract defineModels(models: Array<typeof Model>): void;
+      const modelName = getModelName(model.prototype);
+      const attributes = getAttributes(model.prototype);
+      const options = getOptions(model.prototype);
+
+      if (!options) throw new Error(`@Table annotation is missing on class "${model['name']}"`);
+
+      options['modelName'] = modelName;
+      options['sequelize'] = this;
+
+      model['init'](attributes, options);
+    });
+  }
 
 }

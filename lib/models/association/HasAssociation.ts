@@ -1,10 +1,10 @@
 import {BaseAssociation} from './BaseAssociation';
 import {Model} from '../Model';
-import {BaseSequelize} from '../BaseSequelize';
 import {AssociationOptions} from '../../interfaces/AssociationOptions';
 import {ModelClassGetter} from '../../types/ModelClassGetter';
 import {AssociationOptionsHasMany, AssociationOptionsHasOne} from 'sequelize';
 import {Association} from '../../enums/Association';
+import {Sequelize} from '../SequelizeImpl';
 
 export class HasAssociation extends BaseAssociation {
 
@@ -19,7 +19,7 @@ export class HasAssociation extends BaseAssociation {
   }
 
   protected getPreparedOptions(model: typeof Model,
-                               sequelize: BaseSequelize): AssociationOptions {
+                               sequelize: Sequelize): AssociationOptions {
     const options = {...this.options};
     const associatedClass = this.getAssociatedClass();
 

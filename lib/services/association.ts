@@ -63,11 +63,7 @@ export function getAssociationsByRelation(target: any,
   const associations = getAssociations(target);
   return (associations || []).filter(association => {
     const _relatedClass = association.getAssociatedClass();
-    return (
-      _relatedClass.prototype === relatedClass.prototype || // v3 + v4
-      /* istanbul ignore next */
-      relatedClass.prototype instanceof _relatedClass // v4 (for child classes)
-    );
+    return relatedClass.prototype instanceof _relatedClass; // v4 (for child classes)
   });
 }
 
