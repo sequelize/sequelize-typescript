@@ -70,7 +70,8 @@ describe('model', () => {
 
     it('should throw an error', () => {
       @Table
-      class Test extends Model<Test> {}
+      class Test extends Model<Test> {
+      }
 
       expect(() => Test.beforeCreate(test => test)).to.throw(/^Model not initialized/);
     });
@@ -83,6 +84,7 @@ describe('model', () => {
       @Table({freezeTableName: true, tableName: 'FrozenUser'})
       class User extends Model<User> {
       }
+
       sequelize.addModels([User]);
 
       expect(User['tableName']).to.equal('FrozenUser');
@@ -92,6 +94,7 @@ describe('model', () => {
       @Table({freezeTableName: false, tableName: 'SuperUser'})
       class User extends Model<User> {
       }
+
       sequelize.addModels([User]);
 
       expect(User['tableName']).to.equal('SuperUser');
@@ -103,6 +106,7 @@ describe('model', () => {
         @Table({freezeTableName: false, tableName: 'SuperUser'})
         class User extends Model<User> {
         }
+
         sequelize.addModels([User]);
       })();
 
@@ -112,6 +116,7 @@ describe('model', () => {
         @Table({freezeTableName: false, tableName: 'SuperUser'})
         class User extends Model<User> {
         }
+
         sequelize.addModels([User]);
       })();
       const factorySize2 = sequelize['modelManager'].all.length;
@@ -127,6 +132,7 @@ describe('model', () => {
         @Column
         id: string;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -148,6 +154,7 @@ describe('model', () => {
           @Column
           id2: string;
         }
+
         sequelize.addModels([User]);
       }).to.throw(Error, 'Invalid Instance definition. Only one autoincrement field allowed.');
     });
@@ -185,6 +192,7 @@ describe('model', () => {
 
     it('should allow me to set a default value for createdAt and updatedAt', () => {
       clock.restore();
+
       @Table({timestamps: true})
       class User extends Model<User> {
         @Column
@@ -198,6 +206,7 @@ describe('model', () => {
         @Column
         updatedAt: Date;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -229,6 +238,7 @@ describe('model', () => {
         @Column
         aNumber: number;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -257,6 +267,7 @@ describe('model', () => {
         @DeletedAt
         deletedAtThisTime: Date;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -281,6 +292,7 @@ describe('model', () => {
         @DeletedAt
         deletedAtThisTime: Date;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -319,6 +331,7 @@ describe('model', () => {
         @DeletedAt
         deletedAtThisTime: Date;
       }
+
       sequelize.addModels([Task]);
 
       return Task.sync({force: true}).then(() => {
@@ -336,6 +349,7 @@ describe('model', () => {
         @Column
         aNumber: number;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -371,6 +385,7 @@ describe('model', () => {
         })
         bCol: string;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({
@@ -391,6 +406,7 @@ describe('model', () => {
         })
         username: string;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -419,6 +435,7 @@ describe('model', () => {
         })
         email: string;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -457,6 +474,7 @@ describe('model', () => {
         @Column
         email: string;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true}).then(() => {
@@ -474,6 +492,7 @@ describe('model', () => {
           })
           email: string;
         }
+
         sequelize.addModels([User]);
 
         return Promise.all([
@@ -517,6 +536,7 @@ describe('model', () => {
         @Column
         fieldD: string;
       }
+
       sequelize.addModels([ModelA]);
 
       return sequelize.sync().then(() => {
@@ -543,6 +563,22 @@ describe('model', () => {
 
       });
     });
+  });
+
+  describe('build using new', () => {
+
+    it('should create an instance of defined model', () => {
+      const name = 'test';
+      @Table class User extends Model<User> {
+        @Column name: string;
+      }
+      sequelize.addModels([User]);
+      const user = new User({name});
+
+      expect(user).to.be.an.instanceOf(User);
+      expect(user).to.have.property('name', name);
+    });
+
   });
 
   describe('build', () => {
@@ -576,6 +612,7 @@ describe('model', () => {
         @Column
         flag: boolean;
       }
+
       sequelize.addModels([Task]);
 
       expect(Task.build().title).to.equal('a task!');
@@ -608,6 +645,7 @@ describe('model', () => {
         @Column
         flag: boolean;
       }
+
       sequelize.addModels([Task]);
 
       expect(Task.build().title).to.equal('a task!');
@@ -631,6 +669,7 @@ describe('model', () => {
         })
         price: number;
       }
+
       sequelize.addModels([Product]);
 
       expect(Product.build({price: 42}).price).to.equal('answer = 84');
@@ -666,6 +705,7 @@ describe('model', () => {
 
         price: () => any;
       }
+
       sequelize.addModels([Product]);
 
       expect(Product.build({price: 20}).priceInCents).to.equal(20 * 100);
@@ -701,6 +741,7 @@ describe('model', () => {
         })
         price2: number;
       }
+
       sequelize.addModels([Product]);
 
       const p = Product.build({price1: 1, price2: 2});
@@ -732,6 +773,7 @@ describe('model', () => {
                      // NOTICE: this wouldn't be a problem if each
                      // class is defined in its own file
         }
+
         @Table
         class Tag extends Model<Tag> {
 
@@ -741,6 +783,7 @@ describe('model', () => {
           @ForeignKey(() => Product)
           productId: number;
         }
+
         @Table
         class User extends Model<User> {
 
@@ -798,6 +841,7 @@ describe('model', () => {
           @BelongsToMany(() => User, 'product_followers', 'productId', 'userId')
           followers: User[];
         }
+
         @Table
         class Tag extends Model<Tag> {
 
@@ -807,6 +851,7 @@ describe('model', () => {
           @ForeignKey(() => Product)
           productId: number;
         }
+
         @Table
         class User extends Model<User> {
 
@@ -887,6 +932,7 @@ describe('model', () => {
         @Column
         username: string;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true})
@@ -894,7 +940,7 @@ describe('model', () => {
           return User.create({username: 'A fancy name'});
         })
         .then(() => {
-          return User.findOne({where: <any>[]});
+          return User.findOne({where: []});
         })
         .then((u) => {
           expect(u.username).to.equal('A fancy name');
@@ -908,6 +954,7 @@ describe('model', () => {
         @Column
         username: string;
       }
+
       sequelize.addModels([User]);
 
       return User.sync({force: true})
@@ -928,7 +975,7 @@ describe('model', () => {
         })
         .then((u) => {
           expect(u.username).to.equal('a1');
-        })
+        });
     });
   });
 
@@ -1029,6 +1076,7 @@ describe('model', () => {
         @Column
         username: string;
       }
+
       sequelize.addModels([User]);
 
       return sequelize.sync({force: true}).then(() => {
@@ -1076,6 +1124,7 @@ describe('model', () => {
         @Column
         secretValue: string;
       }
+
       sequelize.addModels([User]);
 
       let test = false;
