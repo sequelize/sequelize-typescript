@@ -3,16 +3,76 @@ import * as Promise from 'bluebird';
 import {IDummyConstructor} from "../interfaces/IDummyConstructor";
 import {capitalize} from '../utils/string';
 import {IAssociationActionOptions} from '../interfaces/IAssociationActionOptions';
-import {INFER_ALIAS_MAP, inferAlias} from '../services/models';
+import {inferAlias} from '../services/models';
 import {IFindOptions} from '../interfaces/IFindOptions';
-import {getAllPropertyNames} from '../utils/object';
 import {ModelNotInitializedError} from './errors/ModelNotInitializedError';
+import {staticModelFunctionProperties} from '../base-model/model.service';
 
 export const _SeqModel: IDummyConstructor = (SeqModel as any);
+/**
+ * Indicates which static methods of Model has to be proxied,
+ * to prepare include option to automatically resolve alias;
+ * The index represents the index of the options of the
+ * corresponding method parameter
+ */
+export const INFER_ALIAS_MAP = {
+  bulkBuild: 1,
+  build: 1,
+  create: 1,
+  aggregate: 2,
+  all: 0,
+  find: 0,
+  findAll: 0,
+  findAndCount: 0,
+  findAndCountAll: 0,
+  findById: 1,
+  findByPrimary: 1,
+  findCreateFind: 0,
+  findOne: 0,
+  findOrBuild: 0,
+  findOrCreate: 0,
+  findOrInitialize: 0,
+  reload: 0,
+};
+
 
 export class Model extends _SeqModel {
 
-  static isInitialized: boolean = false;
+  static isInitialized = false;
+
+  static init(...args: any[]): void {
+    this.isInitialized = true;
+    this.removeThrowNotInitializedProxy();
+    return super.init(...args);
+  }
+
+  static addThrowNotInitializedProxy(): void {
+    staticModelFunctionProperties
+      .forEach(key => {
+        this[key] = function(this: typeof Model): any {
+          throw new ModelNotInitializedError(this as any, {accessedPropertyKey: key});
+        };
+      });
+  }
+
+  static addInferAliasOverrides(): void {
+    Object
+      .keys(INFER_ALIAS_MAP)
+      .forEach(key => {
+        const optionIndex = INFER_ALIAS_MAP[key];
+        const superFn = this[key];
+        this[key] = function(this: typeof Model, ...args: any[]): any {
+          args[optionIndex] = inferAlias(args[optionIndex], this);
+          return superFn.call(this, ...args);
+        };
+      });
+  }
+
+  private static removeThrowNotInitializedProxy(): void {
+    staticModelFunctionProperties
+      .forEach(key => delete this[key]);
+  }
+
 
   constructor(values?: any, options?: any) {
     super(values, inferAlias(options, new.target));
@@ -87,76 +147,4 @@ export class Model extends _SeqModel {
 
 }
 
-overrideStaticFunctions(Model);
-
-/**
- * Overrides all static functions with a function, that
- * checks if corresponding model is initialized and
- * prepares given options if necessary
- */
-function overrideStaticFunctions(target: Function): void {
-  const isFunctionMember = key => typeof target[key] !== 'function';
-
-  getAllPropertyNames(target)
-    .filter(key => !canOverrideMember(key))
-    .forEach(key => {
-
-      if (isFunctionMember(key)) return;
-
-      const superFn = target[key];
-
-      target[key] = function(this: typeof Model, ...args: any[]): any {
-
-        checkInitialization(this, key);
-        tryPrepareOptions(this, key, args);
-
-        return superFn.call(this, ...args);
-      };
-    });
-}
-
-/**
- * Checks if member - specified by propertyKey - can be overridden or not
- */
-function canOverrideMember(propertyKey: string): boolean {
-  if (isPrivateMember(propertyKey)) {
-    return true;
-  }
-
-  const FORBIDDEN_KEYS = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
-    'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes'];
-
-  return FORBIDDEN_KEYS.indexOf(propertyKey) !== -1;
-}
-
-/**
- * Checks if member is private or not. Is identified by starting
- * "_" in specified key
- */
-function isPrivateMember(propertyKey: string): boolean {
-  return (propertyKey.charAt(0) === '_');
-}
-
-/**
- * Checks if model is initialized
- * @throw if model is not initialized
- */
-function checkInitialization(model: typeof Model, propertyKey: string): void {
-  if (!model.isInitialized) {
-    throw new ModelNotInitializedError(model as any, {accessedPropertyKey: propertyKey});
-  }
-}
-
-/**
- * Prepares options if necessary:
- *  - infers alias of given options
- */
-function tryPrepareOptions(model: typeof Model, propertyKey: string, args: any[]): void {
-  const optionIndex = INFER_ALIAS_MAP[propertyKey];
-  if (optionIndex !== undefined) {
-    const options = args[optionIndex];
-    if (options) {
-      args[optionIndex] = inferAlias(options, model);
-    }
-  }
-}
+Model.addInferAliasOverrides();

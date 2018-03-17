@@ -17,32 +17,6 @@ export const DEFAULT_DEFINE_OPTIONS: DefineOptions<any> = {
 };
 
 /**
- * Indicates which static methods of Model has to be proxied,
- * to prepare include option to automatically resolve alias;
- * The index represents the index of the options of the
- * corresponding method parameter
- */
-export const INFER_ALIAS_MAP = {
-  bulkBuild: 1,
-  build: 1,
-  create: 1,
-  aggregate: 2,
-  all: 0,
-  find: 0,
-  findAll: 0,
-  findAndCount: 0,
-  findAndCountAll: 0,
-  findById: 1,
-  findByPrimary: 1,
-  findCreateFind: 0,
-  findOne: 0,
-  findOrBuild: 0,
-  findOrCreate: 0,
-  findOrInitialize: 0,
-  reload: 0,
-};
-
-/**
  * Sets model name from class by storing this
  * information through reflect metadata
  */

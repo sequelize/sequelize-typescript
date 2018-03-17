@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import {setModelName, addOptions} from "../services/models";
 import {IDefineOptions} from "../interfaces/IDefineOptions";
+import {Model} from '../models/ModelImpl';
 
 export function Table(options: IDefineOptions): Function;
 export function Table(target: any): void;
@@ -18,7 +19,9 @@ export function Table(arg: any): void|Function {
   }
 }
 
-function annotate(target: any, options: IDefineOptions = {}): void {
+function annotate(target: typeof Model, options: IDefineOptions = {}): void {
+
+  target.addThrowNotInitializedProxy();
 
   if (options.freezeTableName === undefined) options.freezeTableName = true;
 

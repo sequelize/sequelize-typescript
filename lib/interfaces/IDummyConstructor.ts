@@ -1,4 +1,4 @@
-
 export interface IDummyConstructor {
-  new(...args: any[]): Object;
+  new(...args: any[]): any;
+  [key: string]: Function;
 }

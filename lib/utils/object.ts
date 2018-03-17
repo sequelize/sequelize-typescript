@@ -92,19 +92,15 @@ export function cloneRegExp(input: RegExp, injectFlags?: string): RegExp {
 
 export function getAllPropertyNames(obj: any): string[] {
   const names: string[] = [];
+  const exists: { [name: string]: boolean | undefined } = {};
   do {
     names.push.apply(names, Object.getOwnPropertyNames(obj));
     obj = Object.getPrototypeOf(obj);
   } while (obj !== Object.prototype);
 
-  const exists: { [name: string]: boolean | undefined } = {};
-
   return names.filter(name => {
-
     const isValid = !exists[name] && name !== 'constructor';
-
     exists[name] = true;
-
     return isValid;
   });
 }
