@@ -12,7 +12,7 @@ import {ISequelizeUriConfig} from '../interfaces/ISequelizeUriConfig';
 import {ISequelizeValidationOnlyConfig} from '../interfaces/ISequelizeValidationOnlyConfig';
 import {ISequelizeDbNameConfig} from '../interfaces/ISequelizeDbNameConfig';
 
-export class Sequelize extends OriginSequelize {
+export class SequelizeImpl extends OriginSequelize {
 
   throughMap: { [through: string]: any };
   _: { [modelName: string]: typeof Model };
@@ -39,7 +39,7 @@ export class Sequelize extends OriginSequelize {
       return this.getValidationOnlyConfig(config);
     }
 
-    if (Sequelize.isISequelizeDbNameConfig(config)) {
+    if (SequelizeImpl.isISequelizeDbNameConfig(config)) {
       // @TODO: remove deprecated "name" property
       return {...config, database: config.name} as ISequelizeConfig;
     }
@@ -61,10 +61,10 @@ export class Sequelize extends OriginSequelize {
   constructor(config: SequelizeConfig | string) {
     if (typeof config === "string") {
       super(config);
-    } else if (Sequelize.isISequelizeUriConfig(config)) {
+    } else if (SequelizeImpl.isISequelizeUriConfig(config)) {
       super(config.url, config);
     } else {
-      super(Sequelize.prepareConfig(config));
+      super(SequelizeImpl.prepareConfig(config));
     }
 
     this.throughMap = {};

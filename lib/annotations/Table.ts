@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {setModelName, addOptions} from "../services/models";
 import {IDefineOptions} from "../interfaces/IDefineOptions";
-import {Model} from '../models/ModelImpl';
+import {ModelImpl} from '../models/ModelImpl';
 
 export function Table(options: IDefineOptions): Function;
 export function Table(target: any): void;
@@ -19,7 +19,7 @@ export function Table(arg: any): void|Function {
   }
 }
 
-function annotate(target: typeof Model, options: IDefineOptions = {}): void {
+function annotate(target: typeof ModelImpl, options: IDefineOptions = {}): void {
 
   target.addThrowNotInitializedProxy();
 

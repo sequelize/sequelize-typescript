@@ -3,10 +3,9 @@ import * as Promise from 'bluebird';
 import {IDummyConstructor} from "../interfaces/IDummyConstructor";
 import {capitalize} from '../utils/string';
 import {IAssociationActionOptions} from '../interfaces/IAssociationActionOptions';
-import {inferAlias} from '../services/models';
+import {inferAlias, staticModelFunctionProperties} from '../services/models';
 import {IFindOptions} from '../interfaces/IFindOptions';
 import {ModelNotInitializedError} from './errors/ModelNotInitializedError';
-import {staticModelFunctionProperties} from '../base-model/model.service';
 
 export const _SeqModel: IDummyConstructor = (SeqModel as any);
 /**
@@ -36,7 +35,7 @@ export const INFER_ALIAS_MAP = {
 };
 
 
-export class Model extends _SeqModel {
+export class ModelImpl extends _SeqModel {
 
   static isInitialized = false;
 
@@ -49,7 +48,7 @@ export class Model extends _SeqModel {
   static addThrowNotInitializedProxy(): void {
     staticModelFunctionProperties
       .forEach(key => {
-        this[key] = function(this: typeof Model): any {
+        this[key] = function(this: typeof ModelImpl): any {
           throw new ModelNotInitializedError(this as any, {accessedPropertyKey: key});
         };
       });
@@ -61,7 +60,7 @@ export class Model extends _SeqModel {
       .forEach(key => {
         const optionIndex = INFER_ALIAS_MAP[key];
         const superFn = this[key];
-        this[key] = function(this: typeof Model, ...args: any[]): any {
+        this[key] = function(this: typeof ModelImpl, ...args: any[]): any {
           args[optionIndex] = inferAlias(args[optionIndex], this);
           return superFn.call(this, ...args);
         };
@@ -140,11 +139,11 @@ export class Model extends _SeqModel {
    *
    * SEE DETAILS FOR ACTUAL FUNCTIONALITY ON DECLARATION FILE
    */
-  reload(options?: IFindOptions<typeof Model>): Promise<this> {
+  reload(options?: IFindOptions<typeof ModelImpl>): Promise<this> {
 
     return _SeqModel.prototype.reload.call(this, inferAlias(options, this));
   };
 
 }
 
-Model.addInferAliasOverrides();
+ModelImpl.addInferAliasOverrides();

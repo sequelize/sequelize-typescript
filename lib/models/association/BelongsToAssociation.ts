@@ -4,7 +4,7 @@ import {AssociationOptions} from '../../interfaces/AssociationOptions';
 import {ModelClassGetter} from '../../types/ModelClassGetter';
 import {AssociationOptionsBelongsTo} from 'sequelize';
 import {Association} from '../../enums/Association';
-import {Sequelize} from '../SequelizeImpl';
+import {SequelizeImpl} from '../SequelizeImpl';
 
 export class BelongsToAssociation extends BaseAssociation {
 
@@ -18,7 +18,7 @@ export class BelongsToAssociation extends BaseAssociation {
   }
 
   protected getPreparedOptions(model: typeof Model,
-                               sequelize: Sequelize): AssociationOptions {
+                               sequelize: SequelizeImpl): AssociationOptions {
     const options = {...this.options};
     const associatedClass = this.getAssociatedClass();
 

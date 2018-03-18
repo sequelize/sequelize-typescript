@@ -7,7 +7,7 @@ import {IAssociationOptionsBelongsToMany} from '../../interfaces/IAssociationOpt
 import {IPreparedThroughOptions} from '../../interfaces/IPreparedThroughOptions';
 import {IPreparedAssociationOptionsBelongsToMany} from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
 import {ModelNotInitializedError} from '../errors/ModelNotInitializedError';
-import {Sequelize} from '../SequelizeImpl';
+import {SequelizeImpl} from '../SequelizeImpl';
 
 export class BelongsToManyAssociation extends BaseAssociation {
 
@@ -21,7 +21,7 @@ export class BelongsToManyAssociation extends BaseAssociation {
   }
 
   protected getPreparedOptions(modelClass: typeof Model,
-                               sequelize: Sequelize): AssociationOptions {
+                               sequelize: SequelizeImpl): AssociationOptions {
     const options: IPreparedAssociationOptionsBelongsToMany = {...this.options as any};
     const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(modelClass, sequelize);
@@ -34,7 +34,7 @@ export class BelongsToManyAssociation extends BaseAssociation {
   }
 
   private getThroughOptions(modelClass: typeof Model,
-                            sequelize: Sequelize): IPreparedThroughOptions {
+                            sequelize: SequelizeImpl): IPreparedThroughOptions {
     const through = this.options.through;
     const model = typeof through === 'object' ? through.model : through;
     const throughOptions: IPreparedThroughOptions =

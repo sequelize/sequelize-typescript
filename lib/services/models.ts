@@ -8,6 +8,8 @@ import {inferDataType} from "../utils/data-type";
 import {deepAssign} from "../utils/object";
 import {getAssociationsByRelation} from "./association";
 import {uniqueFilter} from "../utils/array";
+import {Model as SeqModel} from 'sequelize';
+import {getAllPropertyNames} from '../utils/object';
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
@@ -238,6 +240,28 @@ export function inferAlias(options: any, source: any): any {
 
   return options;
 }
+
+export const staticModelFunctionProperties = getAllPropertyNames(SeqModel)
+  .filter(key =>
+    !isForbiddenMember(key) &&
+    isFunctionMember(key, SeqModel) &&
+    !isPrivateMember(key)
+  );
+
+function isFunctionMember(propertyKey: string, target: any): boolean {
+  return typeof target[propertyKey] === 'function';
+}
+
+function isForbiddenMember(propertyKey: string): boolean {
+  const FORBIDDEN_KEYS = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
+    'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes'];
+  return FORBIDDEN_KEYS.indexOf(propertyKey) !== -1;
+}
+
+function isPrivateMember(propertyKey: string): boolean {
+  return (propertyKey.charAt(0) === '_');
+}
+
 
 /**
  * Pre conform include, so that alias ("as") value can be inferred from source class
