@@ -202,10 +202,10 @@ const sequelize =  new Sequelize({
         username: 'root',
         password: '',
         storage: ':memory:',
-        modelPaths: [__dirname + '/models']
+        models: [__dirname + '/models']
 });
 ```
-Before you can use your models you have to tell sequelize where they can be found. So either set `modelPaths` in the 
+Before you can use your models you have to tell sequelize where they can be found. So either set `models` in the 
 sequelize config or add the required models later on by calling `sequelize.addModels([Person])` or 
 `sequelize.addModels([__dirname + '/models'])`:
 
@@ -219,7 +219,7 @@ import {Sequelize} from 'sequelize-typescript';
 
 const sequelize =  new Sequelize({
         ...
-        modelPaths: [__dirname + '/**/*.model.ts']
+        models: [__dirname + '/**/*.model.ts']
 });
 // or
 sequelize.addModels([__dirname + '/**/*.model.ts']);

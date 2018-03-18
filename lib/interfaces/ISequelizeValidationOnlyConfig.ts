@@ -1,6 +1,7 @@
 import {Options} from 'sequelize';
+import {Model} from '../models/Model';
 
-export interface ISequelizeValidationOnlyConfig extends Options {
+export interface ISequelizeValidationOnlyOptions extends Options {
 
   /**
    * Makes it possible to use sequelize for validation only
@@ -11,5 +12,5 @@ export interface ISequelizeValidationOnlyConfig extends Options {
   /**
    * Path to models, which should be loaded
    */
-  modelPaths?: string[];
+  models?: string[] | Array<typeof Model>;
 }

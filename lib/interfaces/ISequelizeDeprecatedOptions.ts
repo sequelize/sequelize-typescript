@@ -1,14 +1,25 @@
 import {Options} from 'sequelize';
 
-export interface ISequelizeUriConfig extends Options {
+export interface ISequelizeDeprecatedOptions extends Options {
 
   /**
-   * Uri connection string to database
+   * Name of database
    */
-  url: string;
+  database: string;
+
+  /**
+   * Username of database
+   */
+  username: string;
+
+  /**
+   * Password for database user
+   */
+  password: string;
 
   /**
    * Path to models, which should be loaded
+   * @deprecated
    */
   modelPaths?: string[];
 

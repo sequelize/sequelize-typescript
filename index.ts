@@ -100,10 +100,10 @@ export {IScopeFindOptions} from "./lib/interfaces/IScopeFindOptions";
 export {IScopeIncludeAssociation} from "./lib/interfaces/IScopeIncludeAssociation";
 export {IScopeIncludeOptions} from "./lib/interfaces/IScopeIncludeOptions";
 export {IScopeOptions} from "./lib/interfaces/IScopeOptions";
-export {ISequelizeConfig} from "./lib/interfaces/ISequelizeConfig";
-export {ISequelizeUriConfig} from "./lib/interfaces/ISequelizeUriConfig";
+export {ISequelizeOptions} from "./lib/interfaces/ISequelizeOptions";
+export {ISequelizeUriOptions} from "./lib/interfaces/ISequelizeUriOptions";
 export {ISequelizeForeignKeyConfig} from "./lib/interfaces/ISequelizeForeignKeyConfig";
-export {ISequelizeValidationOnlyConfig} from "./lib/interfaces/ISequelizeValidationOnlyConfig";
+export {ISequelizeValidationOnlyOptions} from "./lib/interfaces/ISequelizeValidationOnlyConfig";
 
 // enums
 export {DataType} from "./lib/enums/DataType";

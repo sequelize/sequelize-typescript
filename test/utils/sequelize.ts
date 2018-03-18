@@ -1,12 +1,12 @@
 import {Sequelize} from "../../lib/models/Sequelize";
 import * as OriginSequelize from "sequelize";
 import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
-import {SequelizeConfig} from '../../lib/types/SequelizeConfig';
+import {SequelizeOptions} from '../../lib/types/SequelizeOptions';
 
-export function createSequelize(partialOptions: Partial<SequelizeConfig>): Sequelize;
+export function createSequelize(partialOptions: Partial<SequelizeOptions>): Sequelize;
 export function createSequelize(useModelsInPath?: boolean,
                                 define?: DefineOptions<any>): Sequelize;
-export function createSequelize(useModelsInPathOrPartialOptions?: boolean | Partial<SequelizeConfig>,
+export function createSequelize(useModelsInPathOrPartialOptions?: boolean | Partial<SequelizeOptions>,
                                 define: DefineOptions<any> = {}): Sequelize {
 
   let useModelsInPath = true;
@@ -35,7 +35,7 @@ export function createSequelizeValidationOnly(useModelsInPath: boolean = true): 
   return new Sequelize({
     validateOnly: true,
     logging: !('SEQ_SILENT' in process.env),
-    modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
+    models: useModelsInPath ? [__dirname + '/../models'] : []
   });
 }
 
