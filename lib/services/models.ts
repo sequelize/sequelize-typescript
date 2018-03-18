@@ -217,7 +217,6 @@ export function resolveModelGetter(options: any): void {
  * Pre conform includes, so that "as" value can be inferred from source
  */
 export function inferAlias(options: any, source: any): any {
-
   options = {...options};
 
   if (!options.include) {
@@ -231,12 +230,8 @@ export function inferAlias(options: any, source: any): any {
     return options;
   }
 
-  // convert all included elements to { model: Model } form
-  options.include = options.include.map((include) => {
-    include = inferAliasForInclude(include, source);
-
-    return include;
-  });
+  options.include = options.include.map((include) =>
+    inferAliasForInclude(include, source));
 
   return options;
 }
