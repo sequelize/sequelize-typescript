@@ -150,7 +150,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *     model will clear the previous scope.
    */
   static scope<T>(this: NonAbstractTypeOfModel<T>, options?: string | string[] | ScopeOptions | WhereOptions<any>): NonAbstractTypeOfModel<T>;
-  static scope<T>(this: NonAbstractTypeOfModel<T>, ...scopes: string[]): NonAbstractTypeOfModel<T>;
+  static scope<T>(this: NonAbstractTypeOfModel<T>, ...scopes: Array<string | ScopeOptions>): NonAbstractTypeOfModel<T>;
 
   /**
    * Search for multiple instances.
