@@ -1,9 +1,9 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {Table} from '../../../lib/annotations/Table';
-import {Model} from '../../../lib/models/Model';
+import {Table} from '../../../lib/model/annotations/Table';
+import {Model} from '../../../lib/model/models/Model';
 import {createSequelize} from '../../utils/sequelize';
-import {HasMany} from '../../../lib/annotations/association/HasMany';
+import {HasMany} from '../../../lib/associations/annotations/HasMany';
 
 use(chaiAsPromised);
 

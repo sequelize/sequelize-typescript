@@ -1,9 +1,9 @@
 import { expect, use } from 'chai';
 import { createSequelize } from "../../utils/sequelize";
-import { Table } from '../../../lib/annotations/Table';
-import { Model } from '../../../lib/models/Model';
-import { Column } from "../../../lib/annotations/Column";
-import { Comment } from "../../../lib/annotations/Comment";
+import { Table } from '../../../lib/model/annotations/Table';
+import { Model } from '../../../lib/model/models/Model';
+import { Column } from "../../../lib/model/annotations/Column";
+import { Comment } from "../../../lib/model/annotations/Comment";
 
 describe("comment", () => {
     const sequelize = createSequelize(false);

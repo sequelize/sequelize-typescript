@@ -8,14 +8,14 @@ import { AfterSave, AfterUpdate, BeforeSave, BeforeUpdate } from "../../index";
 import { BeforeCreate, BeforeValidate, Column, Model, Table } from "../../index";
 import { BeforeFind, BeforeFindAfterExpandIncludeAll } from "../../index";
 import { BeforeBulkDelete, AfterBulkDelete, AfterDelete, BeforeDelete } from "../../index";
-import {AfterBulkSync} from '../../lib/annotations/hooks/AfterBulkSync';
-import {AfterConnect} from '../../lib/annotations/hooks/AfterConnect';
-import {AfterDefine} from '../../lib/annotations/hooks/AfterDefine';
-import {AfterInit} from '../../lib/annotations/hooks/AfterInit';
-import {BeforeBulkSync} from '../../lib/annotations/hooks/BeforeBulkSync';
-import {BeforeConnect} from '../../lib/annotations/hooks/BeforeConnect';
-import {BeforeDefine} from '../../lib/annotations/hooks/BeforeDefine';
-import {BeforeInit} from '../../lib/annotations/hooks/BeforeInit';
+import {AfterBulkSync} from '../../lib/hooks/annotations/AfterBulkSync';
+import {AfterConnect} from '../../lib/hooks/annotations/AfterConnect';
+import {AfterDefine} from '../../lib/hooks/annotations/AfterDefine';
+import {AfterInit} from '../../lib/hooks/annotations/AfterInit';
+import {BeforeBulkSync} from '../../lib/hooks/annotations/BeforeBulkSync';
+import {BeforeConnect} from '../../lib/hooks/annotations/BeforeConnect';
+import {BeforeDefine} from '../../lib/hooks/annotations/BeforeDefine';
+import {BeforeInit} from '../../lib/hooks/annotations/BeforeInit';
 
 /**
  * Model used to test hook decorators. Defined hooks are mocked out for testing.

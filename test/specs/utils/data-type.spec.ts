@@ -1,6 +1,6 @@
 import {expect} from 'chai';
-import {DataType} from "../../../lib/enums/DataType";
-import {isDataType, inferDataType} from "../../../lib/utils/data-type";
+import {DataType} from "../../../lib/sequelize/enums/DataType";
+import {inferDataType, isDataType} from '../../../lib/sequelize/data-type';
 
 /* tslint:disable:max-classes-per-file */
 

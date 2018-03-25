@@ -1,7 +1,7 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsTo, ForeignKey, Length} from "../../index";
 import {Post} from "./Post";
 import {Author} from "./Author";
-import {DataType} from "../../lib/enums/DataType";
+import {DataType} from "../../lib/sequelize/enums/DataType";
 
 @Table
 export class Comment extends Model<Comment> {

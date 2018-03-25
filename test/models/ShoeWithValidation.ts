@@ -6,7 +6,7 @@ import {
   Not, NotContains, NotIn, NotNull, Validate, NotEmpty, IsNumeric,
   IsNull, IsArray
 } from "../../index";
-import {IsCreditCard} from "../../lib/annotations/validation/IsCreditCard";
+import {IsCreditCard} from "../../lib/validation/annotations/IsCreditCard";
 
 export const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 export function hexColor(value: string): void {

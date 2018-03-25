@@ -22,7 +22,7 @@ import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
 import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
 import {UserWithVersion} from "../models/UserWithVersion";
 import chaiDatetime = require('chai-datetime');
-import {IDefineOptions} from "../../lib/interfaces/IDefineOptions";
+import {IDefineOptions} from "../../lib/model/interfaces/IDefineOptions";
 import * as Promise from 'bluebird';
 // import {UserWithSwag} from "../models/UserWithSwag";
 

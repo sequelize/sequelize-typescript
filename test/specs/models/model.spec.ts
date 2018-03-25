@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {Model} from "../../../lib/models/Model";
+import {Model} from "../../../lib/model/models/Model";
 
 describe('model', () => {
 

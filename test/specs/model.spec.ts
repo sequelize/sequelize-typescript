@@ -16,7 +16,7 @@ import {
   BelongsToMany
 } from "../../index";
 import chaiDatetime = require('chai-datetime');
-import {IDefineOptions} from "../../lib/interfaces/IDefineOptions";
+import {IDefineOptions} from "../../lib/model/interfaces/IDefineOptions";
 
 use(sinonChai);
 use(chaiAsPromised);
