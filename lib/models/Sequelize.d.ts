@@ -50,6 +50,7 @@ import {Model} from "./Model";
 import {SequelizeOptions} from "../types/SequelizeOptions";
 import {Namespace} from 'continuation-local-storage';
 import {Hooks} from './Hooks';
+import {IQueryOptions} from '../interfaces/IQueryOptions';
 
 /**
  * Based on "Sequelize" type definitions from:
@@ -480,7 +481,7 @@ export declare class Sequelize extends Hooks {
    * @param sql
    * @param options Query options
    */
-  query(sql: string | { query: string, values: any[] }, options?: QueryOptions): Promise<any>;
+  query(sql: string | { query: string, values: any[] }, options?: IQueryOptions): Promise<any>;
 
   /**
    * Execute a query which would set an environment or user variable. The variables are set per connection,
