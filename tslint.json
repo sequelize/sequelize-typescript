@@ -29,12 +29,7 @@
       "single"
     ],
     "triple-equals": true,
-    "member-ordering": [
-      true,
-      "public-before-private",
-      "static-before-instance",
-      "variables-before-functions"
-    ],
+    "member-ordering": false,
     "variable-name": [
       true,
       "ban-keywords",

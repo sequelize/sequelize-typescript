@@ -110,12 +110,14 @@ describe('sequelize', () => {
         .to.have.property('options')
         .that.has.property('define')
         .that.eqls(DEFINE_OPTIONS)
-        ;
+      ;
     });
 
     it('should set define options for models', () => {
       @Table
-      class User extends Model<User> {}
+      class User extends Model<User> {
+      }
+
       sequelizeWithDefine.addModels([User]);
 
       Object
@@ -125,6 +127,28 @@ describe('sequelize', () => {
             .to.have.property('options')
             .that.have.property(key, DEFINE_OPTIONS[key]);
         });
+    });
+
+  });
+
+  describe(`Pass model references to 'models' option`, () => {
+
+    @Table
+    class Test extends Model<Test> {
+    }
+    @Table
+    class Test1 extends Model<Test1> {
+    }
+
+    const _sequelize = new Sequelize({
+      validateOnly: true,
+      logging: !('SEQ_SILENT' in process.env),
+      models: [Test, Test1],
+    });
+
+    it('should load references models', () => {
+      expect(_sequelize._).to.have.property('Test', Test);
+      expect(_sequelize._).to.have.property('Test1', Test1);
     });
 
   });
@@ -205,7 +229,7 @@ describe('sequelize', () => {
         password: '',
         storage: ':memory:',
         logging: !('SEQ_SILENT' in process.env),
-        modelPaths: [__dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
+        models: [__dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
       });
 
       expect(sequelizeGlob._).to.have.property('PlayerGlob', PlayerGlob);
@@ -223,7 +247,7 @@ describe('sequelize', () => {
         password: '',
         storage: ':memory:',
         logging: !('SEQ_SILENT' in process.env),
-        modelPaths: [__dirname + '/../../models/globs/match-dir-only']
+        models: [__dirname + '/../../models/globs/match-dir-only']
       });
 
       expect(sequelizeFolder._).to.have.property('PlayerDir', PlayerDir);
@@ -241,7 +265,7 @@ describe('sequelize', () => {
         password: '',
         storage: ':memory:',
         logging: !('SEQ_SILENT' in process.env),
-        modelPaths: [__dirname + '/../../models/globs/match-dir-only', __dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
+        models: [__dirname + '/../../models/globs/match-dir-only', __dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
       });
 
       expect(sequelizeGlobFolder._).to.have.property('PlayerDir', PlayerDir);

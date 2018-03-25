@@ -4,14 +4,14 @@ import {SequelizeOptions} from '../types/SequelizeOptions';
 import {DEFAULT_DEFINE_OPTIONS} from './models';
 import {ISequelizeOptions} from '../interfaces/ISequelizeOptions';
 
-export function isISequelizeUriConfig(obj: any): obj is ISequelizeUriOptions {
+export function hasSequelizeUri(obj: any): obj is ISequelizeUriOptions {
   return obj.hasOwnProperty("url");
 }
 
 /**
  * Prepares sequelize config passed to original sequelize constructor
  */
-export function prepareConfig(config: SequelizeOptions | ISequelizeValidationOnlyOptions): SequelizeOptions {
+export function prepareOptions(config: SequelizeOptions | ISequelizeValidationOnlyOptions): SequelizeOptions {
   if (!config.define) {
     config.define = {};
   }

@@ -17,6 +17,7 @@ npm-debug.log
 **/*.d.ts
 
 # src
+!lib/models/Hooks.d.ts
 !lib/models/Model.d.ts
 !lib/models/Model.js
 !lib/models/Sequelize.d.ts

@@ -5,8 +5,8 @@
   "scripts": {
     "build": "tsc",
     "build-tests": "tsc --project test",
-    "test": "npm run build-tests && mocha",
-    "cover": "npm run build-tests && nyc mocha",
+    "test": "npm run build && npm run build-tests && mocha",
+    "cover": "npm run build && npm run build-tests && nyc mocha",
     "lint": "tslint .",
     "prepare": "npm run build"
   },

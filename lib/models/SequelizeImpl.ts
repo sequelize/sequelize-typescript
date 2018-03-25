@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
+import {Sequelize} from './Sequelize';
 import {Model} from "./Model";
 import {SequelizeOptions} from "../types/SequelizeOptions";
 import {getAttributes, getModelName, getModels, getOptions} from "../services/models";
@@ -7,29 +8,32 @@ import {Table} from "../annotations/Table";
 import {installHooks} from '../services/hooks';
 import {getAssociations} from '../services/association';
 import {resolveScopes} from '../services/scopes';
-import {isISequelizeUriConfig, prepareConfig} from '../services/sequelize';
+import {hasSequelizeUri, prepareOptions} from '../services/sequelize';
 import {ISequelizeOptions} from '../interfaces/ISequelizeOptions';
 import {ISequelizeDeprecatedOptions} from '../interfaces/ISequelizeDeprecatedOptions';
 
-export class SequelizeImpl extends OriginSequelize {
+export const _OriginSequelize = OriginSequelize as any as typeof Sequelize;
+
+export class SequelizeImpl extends _OriginSequelize {
 
   throughMap: { [through: string]: any };
+  models: { [modelName: string]: typeof Model };
   _: { [modelName: string]: typeof Model };
 
-  constructor(config: SequelizeOptions | string) {
-    if (typeof config === "string") {
-      super(config);
-    } else if (isISequelizeUriConfig(config)) {
-      super(config.url, config);
+  constructor(options: SequelizeOptions | string) {
+    if (typeof options === "string") {
+      super(options);
+    } else if (hasSequelizeUri(options)) {
+      super(options.url, options);
     } else {
-      super(prepareConfig(config));
+      super(prepareOptions(options));
     }
 
     this.throughMap = {};
-    this._ = {};
+    this._ = this.models = {};
 
-    if (typeof config !== "string") {
-      this.init(config);
+    if (typeof options !== "string") {
+      this.init(options);
     }
   }
 
@@ -47,7 +51,7 @@ export class SequelizeImpl extends OriginSequelize {
     this.associateModels(models);
     resolveScopes(models);
     installHooks(models);
-    models.forEach(model => this._[model.name] = model);
+    models.forEach(model => this.models[model.name] = model);
   }
 
   /**
