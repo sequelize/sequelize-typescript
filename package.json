@@ -36,12 +36,12 @@
   "types": "index.d.ts",
   "dependencies": {
     "@types/bluebird": "3.5.18",
+    "@types/node": "6.0.41",
+    "@types/reflect-metadata": "0.0.4",
     "@types/sequelize": "4.27.5",
     "glob": "7.1.2"
   },
   "devDependencies": {
-    "@types/node": "6.0.41",
-    "@types/reflect-metadata": "0.0.4",
     "@types/chai": "3.4.35",
     "@types/chai-as-promised": "0.0.29",
     "@types/chai-datetime": "0.0.30",
