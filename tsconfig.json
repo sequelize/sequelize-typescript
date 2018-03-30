@@ -9,7 +9,8 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "pretty": true,
-    "lib": ["es2017"]
+    "lib": ["es2017"],
+    "types": ["node", "reflect-metadata"]
   },
   "include": [
     "lib/**/*"
