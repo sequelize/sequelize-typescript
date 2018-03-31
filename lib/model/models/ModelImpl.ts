@@ -2,12 +2,14 @@ import {Model as SeqModel} from 'sequelize';
 import * as Promise from 'bluebird';
 import {IDummyConstructor} from "../../common/interfaces/IDummyConstructor";
 import {capitalize} from '../../common/utils/string';
-import {IAssociationActionOptions} from '../../associations/interfaces/IAssociationActionOptions';
-import {inferAlias, staticModelFunctionProperties} from '../models';
-import {IFindOptions} from '../interfaces/IFindOptions';
+import {inferAlias} from '../models';
 import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
+import {IFindOptions} from '..';
+import {IAssociationActionOptions} from '../../associations/interfaces/IAssociationActionOptions';
+import {getAllPropertyNames} from '../../common/utils/object';
 
 export const _SeqModel: IDummyConstructor = (SeqModel as any);
+
 /**
  * Indicates which static methods of Model has to be proxied,
  * to prepare include option to automatically resolve alias;
@@ -34,6 +36,12 @@ export const INFER_ALIAS_MAP = {
   reload: 0,
 };
 
+const staticModelFunctionProperties = getAllPropertyNames(SeqModel)
+  .filter(key =>
+    !isForbiddenMember(key) &&
+    isFunctionMember(key, SeqModel) &&
+    !isPrivateMember(key)
+  );
 
 export class ModelImpl extends _SeqModel {
 
@@ -41,15 +49,18 @@ export class ModelImpl extends _SeqModel {
 
   static init(...args: any[]): void {
     this.isInitialized = true;
-    this.removeThrowNotInitializedProxy();
     return super.init(...args);
   }
 
   static addThrowNotInitializedProxy(): void {
     staticModelFunctionProperties
       .forEach(key => {
-        this[key] = function(this: typeof ModelImpl): any {
-          throw new ModelNotInitializedError(this as any, {accessedPropertyKey: key});
+        const superFn = this[key];
+        this[key] = function(this: typeof ModelImpl, ...args: any[]): any {
+          if (!this.isInitialized) {
+            throw new ModelNotInitializedError(this as any, {accessedPropertyKey: key});
+          }
+          return superFn.call(this, ...args);
         };
       });
   }
@@ -66,12 +77,6 @@ export class ModelImpl extends _SeqModel {
         };
       });
   }
-
-  private static removeThrowNotInitializedProxy(): void {
-    staticModelFunctionProperties
-      .forEach(key => delete this[key]);
-  }
-
 
   constructor(values?: any, options?: any) {
     super(values, inferAlias(options, new.target));
@@ -146,4 +151,19 @@ export class ModelImpl extends _SeqModel {
 
 }
 
+function isFunctionMember(propertyKey: string, target: any): boolean {
+  return typeof target[propertyKey] === 'function';
+}
+
+function isForbiddenMember(propertyKey: string): boolean {
+  const FORBIDDEN_KEYS = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
+    'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes'];
+  return FORBIDDEN_KEYS.indexOf(propertyKey) !== -1;
+}
+
+function isPrivateMember(propertyKey: string): boolean {
+  return (propertyKey.charAt(0) === '_');
+}
+
+ModelImpl.addThrowNotInitializedProxy();
 ModelImpl.addInferAliasOverrides();

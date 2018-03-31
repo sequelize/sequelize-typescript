@@ -8,21 +8,15 @@ export function Table(target: any): void;
 export function Table(arg: any): void|Function {
 
   if (typeof arg === 'function') {
-
     const target = arg;
     annotate(target);
   } else {
-
     const options: IDefineOptions = Object.assign({}, arg);
-
     return (target: any) => annotate(target, options);
   }
 }
 
 function annotate(target: typeof ModelImpl, options: IDefineOptions = {}): void {
-
-  target.addThrowNotInitializedProxy();
-
   if (options.freezeTableName === undefined) options.freezeTableName = true;
 
   options.instanceMethods = target.prototype;
