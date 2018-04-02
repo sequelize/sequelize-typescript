@@ -306,17 +306,17 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Find the maximum value of field
    */
-  static max(field: string, options?: AggregateOptions): Promise<any>;
+  static max<T extends Model<T>>(this: (new () => T), field: FilteredModelAttributeKeys<T>, options?: AggregateOptions): Promise<any>;
 
   /**
    * Find the minimum value of field
    */
-  static min(field: string, options?: AggregateOptions): Promise<any>;
+  static min<T extends Model<T>>(this: (new () => T), field: FilteredModelAttributeKeys<T>, options?: AggregateOptions): Promise<any>;
 
   /**
    * Find the sum of field
    */
-  static sum(field: string, options?: AggregateOptions): Promise<number>;
+  static sum<T extends Model<T>>(this: (new () => T), field: FilteredModelAttributeKeys<T>, options?: AggregateOptions): Promise<number>;
 
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
@@ -379,9 +379,9 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+  static upsert<T extends Model<T>>(this: (new () => T), values: FilteredModelAttributes<T>, options?: UpsertOptions): Promise<boolean>;
 
-  static insertOrUpdate<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<T extends Model<T>>(this: (new () => T), values: FilteredModelAttributes<T>, options?: UpsertOptions): Promise<boolean>;
 
   /**
    * Create and insert multiple instances in bulk.
