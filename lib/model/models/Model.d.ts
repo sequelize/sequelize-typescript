@@ -50,13 +50,34 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
 
   constructor(values?: FilteredModelAttributes<T>, options?: IBuildOptions);
 
+  /**
+   * List of primary key attribute names
+   */
   static primaryKeyAttributes: string[];
+
+  /**
+   * Primary key attribute name
+   */
   static primaryKeyAttribute: string;
+
+  /**
+   * Hash map providing column options per attribute name
+   */
   static attributes: { [key: string]: IPartialDefineAttributeColumnOptions };
+
+  /**
+   * Hash map providing column options per attribute name
+   */
   static rawAttributes: { [key: string]: IPartialDefineAttributeColumnOptions };
 
+  /**
+   * Returns true if model is initialized
+   */
   static isInitialized: boolean;
 
+  /**
+   * Hash map providing association options per association name
+   */
   static associations?: { [key: string]: any };
 
   /**
