@@ -35,6 +35,7 @@ import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefine
 import {FilteredModelAttributes} from '../types/FilteredModelAttributes';
 import {NonAbstractTypeOfModel} from '../types/NonAbstractTypeOfModel';
 import {Hooks} from '../../hooks/models/Hooks';
+import {FilteredModelAttributeKeys} from '../types/FilteredModelAttributeKeys';
 
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
@@ -254,7 +255,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * @return Returns the aggregate result cast to `options.dataType`, unless `options.plain` is false, in
    *     which case the complete data result is returned.
    */
-  static aggregate(field: string, aggregateFunction: string, options?: AggregateOptions): Promise<Object>;
+  static aggregate<T extends Model<T>>(this: (new () => T), field: FilteredModelAttributeKeys<T> | '*', aggregateFunction: string, options?: AggregateOptions): Promise<Object>;
 
   /**
    * Count the number of records matching the provided where clause.
@@ -321,29 +322,24 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
   static build<T extends Model<T>>(this: (new () => T), record?: FilteredModelAttributes<T>, options?: IBuildOptions): T;
-  static build<T extends Model<T>, A>(this: (new () => T), record?: A, options?: IBuildOptions): T;
 
   /**
    * Undocumented bulkBuild
    */
   static bulkBuild<T extends Model<T>>(this: (new () => T), records: FilteredModelAttributes<T>[], options?: IBuildOptions): T[];
-  static bulkBuild<T extends Model<T>, A>(this: (new () => T), records: A[], options?: IBuildOptions): T[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
   static create<T extends Model<T>>(this: (new () => T), values?: FilteredModelAttributes<T>, options?: ICreateOptions): Promise<T>;
-  static create<T extends Model<T>, A>(this: (new () => T), values?: A, options?: ICreateOptions): Promise<T>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
   static findOrInitialize<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
-  static findOrInitialize<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   static findOrBuild<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
-  static findOrBuild<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -357,14 +353,12 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * will be created instead, and any unique constraint violation will be handled internally.
    */
   static findOrCreate<T extends Model<T>>(this: (new () => T), options: IFindOrInitializeOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
-  static findOrCreate<T extends Model<T>, A>(this: (new () => T), options: IFindOrInitializeOptions<A>): Promise<[T, boolean]>;
 
   /**
    * A more performant findOrCreate that will not work under a transaction (at least not in postgres)
    * Will execute a find call, if empty then attempt to create, if unique constraint then attempt to find again
    */
   static findCreateFind<T extends Model<T>>(this: (new () => T), options: IFindCreateFindOptions<FilteredModelAttributes<T>>): Promise<[T, boolean]>;
-  static findCreateFind<T extends Model<T>, A>(this: (new () => T), options: IFindCreateFindOptions<A>): Promise<[T, boolean]>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -401,7 +395,6 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * @param records List of objects (key/value pairs) to create instances from
    */
   static bulkCreate<T extends Model<T>>(this: (new () => T), records: FilteredModelAttributes<T>[], options?: BulkCreateOptions): Promise<T[]>;
-  static bulkCreate<T extends Model<T>, A>(this: (new () => T), records: A[], options?: BulkCreateOptions): Promise<T[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
@@ -438,7 +431,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *               If an array is provided, the same is true for each column.
    *               If an object is provided, each column is incremented by the value given.
    */
-  static increment<T extends Model<T>>(fields: string | string[] | Object,
+  static increment<T extends Model<T>>(fields: FilteredModelAttributeKeys<T> | FilteredModelAttributeKeys<T>[] | Object,
                                        options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<[Array<T>, number]> | Promise<[number, void]>;
 
   /**
@@ -447,7 +440,6 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * affected rows (only supported in postgres with `options.returning` true.)
    */
   static update<T extends Model<T>>(this: (new () => T), values: FilteredModelAttributes<T>, options: UpdateOptions): Promise<[number, Array<T>]>;
-  static update<T extends Model<T>, A>(this: (new () => T), values: A, options: UpdateOptions): Promise<[number, Array<T>]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
@@ -554,12 +546,12 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Get the value of the underlying data value
    */
-  getDataValue(key: string): any;
+  getDataValue(key: FilteredModelAttributeKeys<this>): any;
 
   /**
    * Update the underlying data value
    */
-  setDataValue(key: string, value: any): void;
+  setDataValue(key: FilteredModelAttributeKeys<this>, value: any): void;
 
   /**
    * If no key is given, returns all values of the instance, also invoking virtual getters.
@@ -569,7 +561,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
-  get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
+  get(key: FilteredModelAttributeKeys<this>, options?: { plain?: boolean, clone?: boolean }): any;
   get(options?: { plain?: boolean, clone?: boolean }): any;
 
 
@@ -597,11 +589,11 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * @param options.raw If set to true, field and virtual setters will be ignored
    * @param options.reset Clear all previously set data values
    */
-  set(key: string, value: any, options?: InstanceSetOptions): this;
-  set(keys: Object, options?: InstanceSetOptions): this;
+  set(key: FilteredModelAttributeKeys<this>, value: any, options?: InstanceSetOptions): this;
+  set(keys: FilteredModelAttributes<this>, options?: InstanceSetOptions): this;
 
-  setAttributes(key: string, value: any, options?: InstanceSetOptions): this;
-  setAttributes(keys: Object, options?: InstanceSetOptions): this;
+  setAttributes(key: FilteredModelAttributeKeys<this>, value: any, options?: InstanceSetOptions): this;
+  setAttributes(keys: FilteredModelAttributes<this>, options?: InstanceSetOptions): this;
 
   /**
    * If changed is called with a string it will return a boolean indicating whether the value of that key in
@@ -611,13 +603,13 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *
    * If changed is called without an argument and no keys have changed, it will return `false`.
    */
-  changed(key: string, value?: any): boolean;
+  changed(key: FilteredModelAttributeKeys<this>, value?: any): boolean;
   changed(): boolean | string[];
 
   /**
    * Returns the previous value for key from `_previousDataValues`.
    */
-  previous(key: string): any;
+  previous(key: FilteredModelAttributeKeys<this>): any;
 
   /**
    * Validate this instance, and if the validation passes, persist it to the database.
@@ -649,11 +641,11 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * This is the same as calling `set` and then calling `save`.
    */
-  update(key: string, value: any, options?: InstanceUpdateOptions): Promise<this>;
-  update(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
+  update(key: FilteredModelAttributeKeys<this>, value: any, options?: InstanceUpdateOptions): Promise<this>;
+  update(keys: FilteredModelAttributes<this>, options?: InstanceUpdateOptions): Promise<this>;
 
-  updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): Promise<this>;
-  updateAttributes(keys: Object, options?: InstanceUpdateOptions): Promise<this>;
+  updateAttributes(key: FilteredModelAttributeKeys<this>, value: any, options?: InstanceUpdateOptions): Promise<this>;
+  updateAttributes(keys: FilteredModelAttributes<this>, options?: InstanceUpdateOptions): Promise<this>;
 
   /**
    * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
@@ -686,7 +678,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *               If an array is provided, the same is true for each column.
    *               If an object is provided, each column is incremented by the value given.
    */
-  increment(fields: string | string[] | Object,
+  increment(fields: FilteredModelAttributeKeys<this> | FilteredModelAttributeKeys<this>[] | {[key: string]: number},
             options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
 
   /**
@@ -709,7 +701,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *               If an array is provided, the same is true for each column.
    *               If an object is provided, each column is decremented by the value given
    */
-  decrement(fields: string | string[] | Object,
+  decrement(fields: FilteredModelAttributeKeys<this> | FilteredModelAttributeKeys<this>[] | {[key: string]: number},
             options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
 
   /**
