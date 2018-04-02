@@ -36,6 +36,8 @@ import {FilteredModelAttributes} from '../types/FilteredModelAttributes';
 import {NonAbstractTypeOfModel} from '../types/NonAbstractTypeOfModel';
 import {Hooks} from '../../hooks/models/Hooks';
 import {FilteredModelAttributeKeys} from '../types/FilteredModelAttributeKeys';
+import {IAssociationGetOptions} from '../interfaces/IAssociationGetOptions';
+import {IAssociationCountOptions} from '../interfaces/IAssociationCountOptions';
 
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
@@ -495,12 +497,12 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Returns related instance (specified by propertyKey) of source instance
    */
-  $get<R extends Model<R>>(propertyKey: string, options?: any): Promise<R | R[]>; // TODO@robin options interface
+  $get<R extends Model<R>>(propertyKey: string, options?: IAssociationGetOptions<R>): Promise<R | R[]>;
 
   /**
    * Counts related instances (specified by propertyKey) of source instance
    */
-  $count(propertyKey: string, options?: any): Promise<number>;
+  $count<R extends Model<R>>(propertyKey: string, options?: IAssociationCountOptions<R>): Promise<number>;
 
   /**
    * Creates instances and relate them to source instance
