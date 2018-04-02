@@ -3,6 +3,11 @@ import {WhereOptions, LoggingOptions, SearchPathOptions, col, and, or, FindOptio
 import {IScopeIncludeOptions} from "./IScopeIncludeOptions";
 import {ModelClassGetter} from "../../model/types/ModelClassGetter";
 
+/**
+ * Based on "FindOptions" type definitions from:
+ * https://github.com/DefinitelyTyped/DefinitelyTyped/blob/6490e738919a47761850caaeb14517b8af60d2a1/types/sequelize/index.d.ts#L3262
+ */
+
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
 

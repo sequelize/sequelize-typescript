@@ -2,6 +2,11 @@ import {AssociationScope} from 'sequelize';
 import {ModelClassGetter} from '../types/ModelClassGetter';
 
 /**
+ * Based on "ThroughOptions" type definitions from:
+ * https://github.com/DefinitelyTyped/DefinitelyTyped/blob/6490e738919a47761850caaeb14517b8af60d2a1/types/sequelize/index.d.ts#L1387
+ */
+
+/**
  * Used for a association table in n:m associations.
  *
  * @see AssociationOptionsBelongsToMany

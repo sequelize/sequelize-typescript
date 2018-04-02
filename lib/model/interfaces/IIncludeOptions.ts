@@ -3,6 +3,11 @@ import {IIncludeAssociation} from "./IIncludeAssociation";
 import {IBaseIncludeOptions} from "./IBaseIncludeOptions";
 
 /**
+ * Based on "IncludeOptions" type definitions from:
+ * https://github.com/DefinitelyTyped/DefinitelyTyped/blob/6490e738919a47761850caaeb14517b8af60d2a1/types/sequelize/index.d.ts#L3198
+ */
+
+/**
  * Complex include options
  */
 export interface IIncludeOptions extends IBaseIncludeOptions {
