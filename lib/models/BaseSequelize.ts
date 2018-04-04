@@ -1,15 +1,16 @@
-import {Model} from "./Model";
-import {DEFAULT_DEFINE_OPTIONS, getModels} from "../services/models";
-import {getAssociations} from "../services/association";
-import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
-import {ISequelizeUriConfig} from "../interfaces/ISequelizeUriConfig";
-import {ISequelizeDbNameConfig} from "../interfaces/ISequelizeDbNameConfig";
-import {SequelizeConfig} from "../types/SequelizeConfig";
-import {resolveScopes} from "../services/scopes";
-import {installHooks} from "../services/hooks";
-import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
-import {extend} from "../utils/object";
-import {BaseAssociation} from './association/BaseAssociation';
+import { Model } from './Model';
+import { DEFAULT_DEFINE_OPTIONS, getModels } from '../services/models';
+import { getAssociations } from '../services/association';
+import { ISequelizeConfig } from '../interfaces/ISequelizeConfig';
+import { ISequelizeUriConfig } from '../interfaces/ISequelizeUriConfig';
+import { ISequelizeDbNameConfig } from '../interfaces/ISequelizeDbNameConfig';
+import { SequelizeConfig } from '../types/SequelizeConfig';
+import { resolveScopes } from '../services/scopes';
+import { installHooks } from '../services/hooks';
+import { ISequelizeValidationOnlyConfig } from '../interfaces/ISequelizeValidationOnlyConfig';
+import { extend } from '../utils/object';
+import { BaseAssociation } from './association/BaseAssociation';
+import { ModelType, Repository } from './v4/repositoryMode/helpers';
 
 /**
  * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
@@ -19,21 +20,25 @@ import {BaseAssociation} from './association/BaseAssociation';
  * "classes" cannot extend ES6 classes
  */
 export abstract class BaseSequelize {
-
   throughMap: { [through: string]: any } = {};
-  _: { [modelName: string]: (typeof Model) } = {};
+  _: { [modelName: string]: typeof Model } = {};
+  _repos: {};
+  repositoryMode: boolean;
 
   static isISequelizeDbNameConfig(obj: any): obj is ISequelizeDbNameConfig {
-    return obj.hasOwnProperty("name") && obj.hasOwnProperty("username");
+    return obj.hasOwnProperty('name') && obj.hasOwnProperty('username');
   }
 
   static isISequelizeUriConfig(obj: any): obj is ISequelizeUriConfig {
-    return obj.hasOwnProperty("url");
+    return obj.hasOwnProperty('url');
   }
 
   static extend(target: any): void {
-
+    const _addModels = target.prototype.addModels;
     extend(target, this);
+    if (_addModels) {
+      target.prototype.addModels = _addModels;
+    }
   }
 
   /**
@@ -43,19 +48,18 @@ export abstract class BaseSequelize {
     if (!config.define) {
       config.define = {};
     }
-    config.define = {...DEFAULT_DEFINE_OPTIONS, ...config.define};
+    config.define = { ...DEFAULT_DEFINE_OPTIONS, ...config.define };
 
     if (config.validateOnly) {
-
       return this.getValidationOnlyConfig(config);
     }
 
     if (BaseSequelize.isISequelizeDbNameConfig(config)) {
       // @TODO: remove deprecated "name" property
-      return {...config, database: config.name} as ISequelizeConfig;
+      return { ...config, database: config.name } as ISequelizeConfig;
     }
 
-    return {...config as SequelizeConfig};
+    return { ...(config as SequelizeConfig) };
   }
 
   static getValidationOnlyConfig(config: SequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
@@ -69,22 +73,25 @@ export abstract class BaseSequelize {
     } as ISequelizeConfig;
   }
 
+  getRepository<T extends Model<T>>(model: ModelType<T>): Repository<T> {
+    return this._repos[model.name];
+  }
+
   addModels(models: Array<typeof Model>): void;
   addModels(modelPaths: string[]): void;
   addModels(arg: Array<typeof Model | string>): void {
-
     const models = getModels(arg);
 
     this.defineModels(models);
-    models.forEach(model => model.isInitialized = true);
+    models.forEach(model => (model.isInitialized = true));
     this.associateModels(models);
     resolveScopes(models);
     installHooks(models);
-    models.forEach(model => this._[model.name] = model);
+    models.forEach(model => (this._[model.name] = model));
   }
 
   init(config: SequelizeConfig): void {
-
+    this.repositoryMode = !!config.repositoryMode;
     if (config.modelPaths) this.addModels(config.modelPaths);
   }
 
@@ -92,9 +99,7 @@ export abstract class BaseSequelize {
    * Processes model associations
    */
   associateModels(models: Array<typeof Model>): void {
-
     models.forEach(model => {
-
       const associations = getAssociations(model.prototype);
 
       if (!associations) return;
@@ -120,5 +125,4 @@ export abstract class BaseSequelize {
   abstract adjustAssociation(model: any, association: BaseAssociation): void;
 
   abstract defineModels(models: Array<typeof Model>): void;
-
 }

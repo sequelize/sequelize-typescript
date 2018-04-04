@@ -1,16 +1,16 @@
 import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
-import {Model} from "../Model";
-import {SequelizeConfig} from "../../types/SequelizeConfig";
-import {getModelName, getAttributes, getOptions} from "../../services/models";
-import {PROPERTY_LINK_TO_ORIG} from "../../services/models";
-import {BaseSequelize} from "../BaseSequelize";
-import {Table} from "../../annotations/Table";
-import {BaseAssociation} from '../association/BaseAssociation';
-import {IPreparedAssociationOptionsBelongsToMany} from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
+import { Model } from '../Model';
+import { SequelizeConfig } from '../../types/SequelizeConfig';
+import { getModelName, getAttributes, getOptions } from '../../services/models';
+import { PROPERTY_LINK_TO_ORIG } from '../../services/models';
+import { BaseSequelize } from '../BaseSequelize';
+import { Table } from '../../annotations/Table';
+import { BaseAssociation } from '../association/BaseAssociation';
+import { IPreparedAssociationOptionsBelongsToMany } from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
+import { ModelType, Repository } from '../v4/repositoryMode/helpers';
 
 export class Sequelize extends SequelizeOrigin implements BaseSequelize {
-
   // to fix "$1" called with something that's not an instance of Sequelize.Model
   Model: any;
 
@@ -18,11 +18,14 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   _: { [modelName: string]: typeof Model };
   init: (config: SequelizeConfig) => void;
   addModels: (models: Array<typeof Model> | string[]) => void;
+  getRepository: <T extends Model<T>>(model: ModelType<T>) => Repository<T>;
   associateModels: (models: Array<typeof Model>) => void;
   connectionManager: any;
+  _repos: {};
+  repositoryMode: boolean;
 
   constructor(config: SequelizeConfig | string) {
-    if (typeof config === "string") {
+    if (typeof config === 'string') {
       super(config);
     } else if (BaseSequelize.isISequelizeUriConfig(config)) {
       super(config.url, config);
@@ -32,19 +35,18 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
     this.throughMap = {};
     this._ = {};
+    this._repos = {};
     this.Model = Function;
 
-    if (typeof config !== "string") {
+    if (typeof config !== 'string') {
       this.init(config);
     }
   }
 
   getThroughModel(through: string): typeof Model {
-
     // tslint:disable:max-classes-per-file
-    @Table({tableName: through, modelName: through})
-    class Through extends Model<Through> {
-    }
+    @Table({ tableName: through, modelName: through })
+    class Through extends Model<Through> {}
 
     return Through;
   }
@@ -54,14 +56,12 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
    * referencing a original sequelize Model instance
    */
   adjustAssociation(model: any, association: BaseAssociation): void {
-
     const options = association.getSequelizeOptions();
     // The associations has to be adjusted
     const internalAssociation = model['associations'][options.as as string];
 
     // String based through's need adjustment
-    if (internalAssociation.oneFromSource &&
-      internalAssociation.oneFromSource.as === 'Through') {
+    if (internalAssociation.oneFromSource && internalAssociation.oneFromSource.as === 'Through') {
       const belongsToManyOptions = options as IPreparedAssociationOptionsBelongsToMany;
       const tableName = belongsToManyOptions.through.model.getTableName();
 
@@ -91,9 +91,7 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
    * in the registry
    */
   defineModels(classes: Array<typeof Model>): void {
-
     classes.forEach(_class => {
-
       const modelName = getModelName(_class.prototype);
       const attributes = getAttributes(_class.prototype);
       const options = getOptions(_class.prototype);

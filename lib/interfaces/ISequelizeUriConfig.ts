@@ -1,7 +1,6 @@
-import {Options} from 'sequelize';
+import { Options } from 'sequelize';
 
 export interface ISequelizeUriConfig extends Options {
-
   /**
    * Uri connection string to database
    */
@@ -18,4 +17,9 @@ export interface ISequelizeUriConfig extends Options {
    * See ISequelizeValidationOnlyConfig interface
    */
   validateOnly?: false;
+
+  /**
+   * Add repository mode support
+   */
+  repositoryMode?: boolean;
 }

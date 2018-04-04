@@ -1,7 +1,6 @@
-import {Options} from 'sequelize';
+import { Options } from 'sequelize';
 
 export interface ISequelizeConfig extends Options {
-
   /**
    * Name of database
    */
@@ -28,4 +27,9 @@ export interface ISequelizeConfig extends Options {
    * See ISequelizeValidationOnlyConfig interface
    */
   validateOnly?: false;
+
+  /**
+   * Add repository mode support
+   */
+  repositoryMode?: boolean;
 }

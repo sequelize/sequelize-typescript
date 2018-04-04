@@ -1,26 +1,25 @@
-import {AssociationOptions} from '../../interfaces/AssociationOptions';
-import {getForeignKeys} from '../../services/association';
-import {Model} from '../Model';
-import {AssociationForeignKeyOptions} from 'sequelize';
-import {BaseSequelize} from '../BaseSequelize';
-import {Association} from '../../enums/Association';
-import {ModelClassGetter} from '../../types/ModelClassGetter';
-import {ModelNotInitializedError} from '../errors/ModelNotInitializedError';
+import { AssociationOptions } from '../../interfaces/AssociationOptions';
+import { getForeignKeys } from '../../services/association';
+import { Model } from '../Model';
+import { AssociationForeignKeyOptions } from 'sequelize';
+import { BaseSequelize } from '../BaseSequelize';
+import { Association } from '../../enums/Association';
+import { ModelClassGetter } from '../../types/ModelClassGetter';
+import { ModelNotInitializedError } from '../errors/ModelNotInitializedError';
 
 export abstract class BaseAssociation {
-
   private _options: AssociationOptions;
+  private sequelize: BaseSequelize;
 
-  constructor(private associatedClassGetter: ModelClassGetter) {
-  }
+  constructor(private associatedClassGetter: ModelClassGetter) {}
 
   abstract getAssociation(): Association;
 
-  protected abstract getPreparedOptions(model: typeof Model,
-                                        sequelize: BaseSequelize): AssociationOptions;
+  protected abstract getPreparedOptions(model: typeof Model, sequelize: BaseSequelize): AssociationOptions;
 
   getAssociatedClass(): typeof Model {
-    const modelClass = this.associatedClassGetter();
+    let modelClass = this.associatedClassGetter();
+    modelClass = this.sequelize.getRepository(modelClass as any) as any;
     if (!modelClass.isInitialized) {
       throw new ModelNotInitializedError(modelClass, {
         cause: 'before association can be resolved.'
@@ -29,8 +28,8 @@ export abstract class BaseAssociation {
     return modelClass;
   }
 
-  init(model: typeof Model,
-       sequelize: BaseSequelize): void {
+  init(model: typeof Model, sequelize: BaseSequelize): void {
+    this.sequelize = sequelize;
     if (!this._options) {
       this._options = this.getPreparedOptions(model, sequelize);
     }
@@ -43,15 +42,17 @@ export abstract class BaseAssociation {
     return this._options;
   }
 
-  protected getForeignKeyOptions(relatedClass: typeof Model,
-                                 classWithForeignKey: typeof Model,
-                                 foreignKey?: string | AssociationForeignKeyOptions): AssociationForeignKeyOptions {
+  protected getForeignKeyOptions(
+    relatedClass: typeof Model,
+    classWithForeignKey: typeof Model,
+    foreignKey?: string | AssociationForeignKeyOptions
+  ): AssociationForeignKeyOptions {
     let foreignKeyOptions: AssociationForeignKeyOptions = {};
 
     if (typeof foreignKey === 'string') {
       foreignKeyOptions.name = foreignKey;
     } else if (foreignKey && typeof foreignKey === 'object') {
-      foreignKeyOptions = {...foreignKey};
+      foreignKeyOptions = { ...foreignKey };
     }
     if (!foreignKeyOptions.name) {
       const foreignKeys = getForeignKeys(classWithForeignKey.prototype) || [];
@@ -62,8 +63,9 @@ export abstract class BaseAssociation {
         }
       }
       if (!foreignKeyOptions.name) {
-        throw new Error(`Foreign key for "${(relatedClass as any).name}" is missing ` +
-          `on "${(classWithForeignKey as any).name}".`);
+        throw new Error(
+          `Foreign key for "${(relatedClass as any).name}" is missing ` + `on "${(classWithForeignKey as any).name}".`
+        );
       }
     }
 
