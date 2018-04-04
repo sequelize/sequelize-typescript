@@ -74,7 +74,10 @@ export abstract class BaseSequelize {
   }
 
   getRepository<T extends Model<T>>(model: ModelType<T>): Repository<T> {
-    return this._repos[model.name];
+    if (this.repositoryMode) {
+      return this._repos[model.name];
+    }
+    return model;
   }
 
   addModels(models: Array<typeof Model>): void;
