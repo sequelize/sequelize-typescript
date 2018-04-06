@@ -11,7 +11,8 @@ export abstract class BaseAssociation {
   private _options: AssociationOptions;
   private sequelize: BaseSequelize;
 
-  constructor(private associatedClassGetter: ModelClassGetter) {}
+  constructor(private associatedClassGetter: ModelClassGetter) {
+  }
 
   abstract getAssociation(): Association;
 
@@ -64,7 +65,7 @@ export abstract class BaseAssociation {
       }
       if (!foreignKeyOptions.name) {
         throw new Error(`Foreign key for "${(relatedClass as any).name}" is missing ` +
-           `on "${(classWithForeignKey as any).name}".`
+          `on "${(classWithForeignKey as any).name}".`
         );
       }
     }

@@ -6,7 +6,7 @@ import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidation
 import {ModelType, Repository} from "./v4/repositoryMode/helpers";
 
 export declare class Sequelize extends SequelizeOrigin {
-  _: { [modelName: string]: (typeof Model) };
+  _: {[modelName: string]: (typeof Model)};
   connectionManager: any;
 
   constructor(config: SequelizeConfig | ISequelizeValidationOnlyConfig);
