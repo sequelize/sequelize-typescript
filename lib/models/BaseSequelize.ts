@@ -1,16 +1,16 @@
-import {Model} from './Model';
-import {DEFAULT_DEFINE_OPTIONS, getModels} from '../services/models';
-import {getAssociations} from '../services/association';
-import {ISequelizeConfig} from '../interfaces/ISequelizeConfig';
-import {ISequelizeUriConfig} from '../interfaces/ISequelizeUriConfig';
-import {ISequelizeDbNameConfig} from '../interfaces/ISequelizeDbNameConfig';
-import {SequelizeConfig} from '../types/SequelizeConfig';
-import {resolveScopes} from '../services/scopes';
-import {installHooks} from '../services/hooks';
-import {ISequelizeValidationOnlyConfig} from '../interfaces/ISequelizeValidationOnlyConfig';
-import {extend} from '../utils/object';
-import {BaseAssociation} from './association/BaseAssociation';
-import {ModelType, Repository} from './v4/repositoryMode/helpers';
+import {Model} from "./Model";
+import {DEFAULT_DEFINE_OPTIONS, getModels} from "../services/models";
+import {getAssociations} from "../services/association";
+import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
+import {ISequelizeUriConfig} from "../interfaces/ISequelizeUriConfig";
+import {ISequelizeDbNameConfig} from "../interfaces/ISequelizeDbNameConfig";
+import {SequelizeConfig} from "../types/SequelizeConfig";
+import {resolveScopes} from "../services/scopes";
+import {installHooks} from "../services/hooks";
+import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
+import {extend} from "../utils/object";
+import {BaseAssociation} from "./association/BaseAssociation";
+import {ModelType, Repository} from "./v4/repositoryMode/helpers";
 
 /**
  * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
@@ -26,11 +26,11 @@ export abstract class BaseSequelize {
   repositoryMode: boolean;
 
   static isISequelizeDbNameConfig(obj: any): obj is ISequelizeDbNameConfig {
-    return obj.hasOwnProperty('name') && obj.hasOwnProperty('username');
+    return obj.hasOwnProperty("name") && obj.hasOwnProperty("username");
   }
 
   static isISequelizeUriConfig(obj: any): obj is ISequelizeUriConfig {
-    return obj.hasOwnProperty('url');
+    return obj.hasOwnProperty("url");
   }
 
   static extend(target: any): void {

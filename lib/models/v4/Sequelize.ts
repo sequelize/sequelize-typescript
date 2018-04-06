@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
-import {Model} from '../Model';
-import {SequelizeConfig} from '../../types/SequelizeConfig';
-import {getModelName, getAttributes, getOptions, getModels} from '../../services/models';
-import {BaseSequelize} from '../BaseSequelize';
-import {Table} from '../../annotations/Table';
-import {BaseAssociation} from '../association/BaseAssociation';
-import {Repository, ModelType} from './repositoryMode/helpers';
-import {resolveScopes} from '../../services/scopes';
-import {installHooks} from '../../services/hooks';
+import {Model} from "../Model";
+import {SequelizeConfig} from "../../types/SequelizeConfig";
+import {getModelName, getAttributes, getOptions, getModels} from "../../services/models";
+import {BaseSequelize} from "../BaseSequelize";
+import {Table} from "../../annotations/Table";
+import {BaseAssociation} from "../association/BaseAssociation";
+import {Repository, ModelType} from "./repositoryMode/helpers";
+import {resolveScopes} from "../../services/scopes";
+import {installHooks} from "../../services/hooks";
 
 export function ModelFactory(model: any): any {
   return class extends model { };
@@ -26,7 +26,7 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
   repositoryMode: boolean;
 
   constructor(config: SequelizeConfig | string) {
-    if (typeof config === 'string') {
+    if (typeof config === "string") {
       super(config);
     } else if (BaseSequelize.isISequelizeUriConfig(config)) {
       super(config.url, config);
@@ -38,7 +38,7 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
     this._ = {};
     this._repos = {};
 
-    if (typeof config !== 'string') {
+    if (typeof config !== "string") {
       this.init(config);
     }
   }

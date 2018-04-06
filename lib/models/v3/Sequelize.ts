@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
-import {Model} from '../Model';
-import {SequelizeConfig} from '../../types/SequelizeConfig';
-import {getModelName, getAttributes, getOptions} from '../../services/models';
-import {PROPERTY_LINK_TO_ORIG} from '../../services/models';
-import {BaseSequelize} from '../BaseSequelize';
-import {Table} from '../../annotations/Table';
-import {BaseAssociation} from '../association/BaseAssociation';
-import {IPreparedAssociationOptionsBelongsToMany} from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
-import {ModelType, Repository} from '../v4/repositoryMode/helpers';
+import {Model} from "../Model";
+import {SequelizeConfig} from "../../types/SequelizeConfig";
+import {getModelName, getAttributes, getOptions} from "../../services/models";
+import {PROPERTY_LINK_TO_ORIG} from "../../services/models";
+import {BaseSequelize} from "../BaseSequelize";
+import {Table} from "../../annotations/Table";
+import {BaseAssociation} from "../association/BaseAssociation";
+import {IPreparedAssociationOptionsBelongsToMany} from "../../interfaces/IPreparedAssociationOptionsBelongsToMany";
+import {ModelType, Repository} from "../v4/repositoryMode/helpers";
 
 export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   // to fix "$1" called with something that's not an instance of Sequelize.Model
@@ -25,7 +25,7 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   repositoryMode: boolean;
 
   constructor(config: SequelizeConfig | string) {
-    if (typeof config === 'string') {
+    if (typeof config === "string") {
       super(config);
     } else if (BaseSequelize.isISequelizeUriConfig(config)) {
       super(config.url, config);
@@ -38,7 +38,7 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
     this._repos = {};
     this.Model = Function;
 
-    if (typeof config !== 'string') {
+    if (typeof config !== "string") {
       this.init(config);
     }
   }
