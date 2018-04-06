@@ -1,4 +1,4 @@
-import { Options } from 'sequelize';
+import {Options} from 'sequelize';
 
 export interface ISequelizeConfig extends Options {
   /**

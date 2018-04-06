@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
-import { Model } from './Model';
-import { SequelizeConfig } from '../types/SequelizeConfig';
-import { ISequelizeValidationOnlyConfig } from '../interfaces/ISequelizeValidationOnlyConfig';
-import { ModelType, Repository } from './v4/repositoryMode/helpers';
+import {Model} from './Model';
+import {SequelizeConfig} from '../types/SequelizeConfig';
+import {ISequelizeValidationOnlyConfig} from '../interfaces/ISequelizeValidationOnlyConfig';
+import {ModelType, Repository} from './v4/repositoryMode/helpers';
 
 export declare class Sequelize extends SequelizeOrigin {
-  _: { [modelName: string]: typeof Model };
+  _: { [modelName: string]: (typeof Model) };
   connectionManager: any;
 
   constructor(config: SequelizeConfig | ISequelizeValidationOnlyConfig);

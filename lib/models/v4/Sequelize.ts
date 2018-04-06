@@ -1,17 +1,17 @@
 import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
-import { Model } from '../Model';
-import { SequelizeConfig } from '../../types/SequelizeConfig';
-import { getModelName, getAttributes, getOptions, getModels } from '../../services/models';
-import { BaseSequelize } from '../BaseSequelize';
-import { Table } from '../../annotations/Table';
-import { BaseAssociation } from '../association/BaseAssociation';
-import { Repository, ModelType } from './repositoryMode/helpers';
-import { resolveScopes } from '../../services/scopes';
-import { installHooks } from '../../services/hooks';
+import {Model} from '../Model';
+import {SequelizeConfig} from '../../types/SequelizeConfig';
+import {getModelName, getAttributes, getOptions, getModels} from '../../services/models';
+import {BaseSequelize} from '../BaseSequelize';
+import {Table} from '../../annotations/Table';
+import {BaseAssociation} from '../association/BaseAssociation';
+import {Repository, ModelType} from './repositoryMode/helpers';
+import {resolveScopes} from '../../services/scopes';
+import {installHooks} from '../../services/hooks';
 
 export function ModelFactory(model: any): any {
-  return class extends model {};
+  return class extends model { };
 }
 
 export class Sequelize extends OriginSequelize implements BaseSequelize {
@@ -47,13 +47,13 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
   addModels(modelPaths: string[]): void;
   addModels(arg: Array<typeof Model | string>): void {
     let models = getModels(arg);
+
     if (this.repositoryMode) {
       models = models.map(model => {
         this._repos[model.name] = ModelFactory(model);
         return this._repos[model.name];
       });
     }
-    //
     this.defineModels(models);
     models.forEach(model => (model.isInitialized = true));
     this.associateModels(models);
@@ -64,13 +64,14 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
 
   getThroughModel(through: string): typeof Model {
     // tslint:disable:max-classes-per-file
-    @Table({ tableName: through, modelName: through })
-    class Through extends Model<Through> {}
+    @Table({tableName: through, modelName: through})
+    class Through extends Model<Through> { }
 
     return Through;
   }
 
-  adjustAssociation(model: any, association: BaseAssociation): void {}
+  adjustAssociation(model: any, association: BaseAssociation): void {
+  }
 
   /**
    * Creates sequelize models and registers these models

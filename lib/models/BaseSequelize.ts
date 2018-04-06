@@ -1,16 +1,16 @@
-import { Model } from './Model';
-import { DEFAULT_DEFINE_OPTIONS, getModels } from '../services/models';
-import { getAssociations } from '../services/association';
-import { ISequelizeConfig } from '../interfaces/ISequelizeConfig';
-import { ISequelizeUriConfig } from '../interfaces/ISequelizeUriConfig';
-import { ISequelizeDbNameConfig } from '../interfaces/ISequelizeDbNameConfig';
-import { SequelizeConfig } from '../types/SequelizeConfig';
-import { resolveScopes } from '../services/scopes';
-import { installHooks } from '../services/hooks';
-import { ISequelizeValidationOnlyConfig } from '../interfaces/ISequelizeValidationOnlyConfig';
-import { extend } from '../utils/object';
-import { BaseAssociation } from './association/BaseAssociation';
-import { ModelType, Repository } from './v4/repositoryMode/helpers';
+import {Model} from './Model';
+import {DEFAULT_DEFINE_OPTIONS, getModels} from '../services/models';
+import {getAssociations} from '../services/association';
+import {ISequelizeConfig} from '../interfaces/ISequelizeConfig';
+import {ISequelizeUriConfig} from '../interfaces/ISequelizeUriConfig';
+import {ISequelizeDbNameConfig} from '../interfaces/ISequelizeDbNameConfig';
+import {SequelizeConfig} from '../types/SequelizeConfig';
+import {resolveScopes} from '../services/scopes';
+import {installHooks} from '../services/hooks';
+import {ISequelizeValidationOnlyConfig} from '../interfaces/ISequelizeValidationOnlyConfig';
+import {extend} from '../utils/object';
+import {BaseAssociation} from './association/BaseAssociation';
+import {ModelType, Repository} from './v4/repositoryMode/helpers';
 
 /**
  * Why does v3/Sequlize and v4/Sequelize does not extend? Because of
@@ -21,7 +21,7 @@ import { ModelType, Repository } from './v4/repositoryMode/helpers';
  */
 export abstract class BaseSequelize {
   throughMap: { [through: string]: any } = {};
-  _: { [modelName: string]: typeof Model } = {};
+  _: { [modelName: string]: (typeof Model) } = {};
   _repos: {};
   repositoryMode: boolean;
 
@@ -48,7 +48,7 @@ export abstract class BaseSequelize {
     if (!config.define) {
       config.define = {};
     }
-    config.define = { ...DEFAULT_DEFINE_OPTIONS, ...config.define };
+    config.define = {...DEFAULT_DEFINE_OPTIONS, ...config.define};
 
     if (config.validateOnly) {
       return this.getValidationOnlyConfig(config);
@@ -56,10 +56,10 @@ export abstract class BaseSequelize {
 
     if (BaseSequelize.isISequelizeDbNameConfig(config)) {
       // @TODO: remove deprecated "name" property
-      return { ...config, database: config.name } as ISequelizeConfig;
+      return {...config, database: config.name} as ISequelizeConfig;
     }
 
-    return { ...(config as SequelizeConfig) };
+    return {...config as SequelizeConfig};
   }
 
   static getValidationOnlyConfig(config: SequelizeConfig | ISequelizeValidationOnlyConfig): ISequelizeConfig {
@@ -86,11 +86,11 @@ export abstract class BaseSequelize {
     const models = getModels(arg);
 
     this.defineModels(models);
-    models.forEach(model => (model.isInitialized = true));
+    models.forEach(model => model.isInitialized = true);
     this.associateModels(models);
     resolveScopes(models);
     installHooks(models);
-    models.forEach(model => (this._[model.name] = model));
+    models.forEach(model => this._[model.name] = model);
   }
 
   init(config: SequelizeConfig): void {

@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import * as SequelizeOrigin from 'sequelize';
-import { Model } from '../Model';
-import { SequelizeConfig } from '../../types/SequelizeConfig';
-import { getModelName, getAttributes, getOptions } from '../../services/models';
-import { PROPERTY_LINK_TO_ORIG } from '../../services/models';
-import { BaseSequelize } from '../BaseSequelize';
-import { Table } from '../../annotations/Table';
-import { BaseAssociation } from '../association/BaseAssociation';
-import { IPreparedAssociationOptionsBelongsToMany } from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
-import { ModelType, Repository } from '../v4/repositoryMode/helpers';
+import {Model} from '../Model';
+import {SequelizeConfig} from '../../types/SequelizeConfig';
+import {getModelName, getAttributes, getOptions} from '../../services/models';
+import {PROPERTY_LINK_TO_ORIG} from '../../services/models';
+import {BaseSequelize} from '../BaseSequelize';
+import {Table} from '../../annotations/Table';
+import {BaseAssociation} from '../association/BaseAssociation';
+import {IPreparedAssociationOptionsBelongsToMany} from '../../interfaces/IPreparedAssociationOptionsBelongsToMany';
+import {ModelType, Repository} from '../v4/repositoryMode/helpers';
 
 export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   // to fix "$1" called with something that's not an instance of Sequelize.Model
@@ -45,7 +45,7 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
   getThroughModel(through: string): typeof Model {
     // tslint:disable:max-classes-per-file
-    @Table({ tableName: through, modelName: through })
+    @Table({tableName: through, modelName: through})
     class Through extends Model<Through> {}
 
     return Through;
@@ -61,7 +61,8 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
     const internalAssociation = model['associations'][options.as as string];
 
     // String based through's need adjustment
-    if (internalAssociation.oneFromSource && internalAssociation.oneFromSource.as === 'Through') {
+    if (internalAssociation.oneFromSource &&
+      internalAssociation.oneFromSource.as === 'Through') {
       const belongsToManyOptions = options as IPreparedAssociationOptionsBelongsToMany;
       const tableName = belongsToManyOptions.through.model.getTableName();
 

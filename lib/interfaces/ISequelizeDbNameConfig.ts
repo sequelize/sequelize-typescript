@@ -1,4 +1,4 @@
-import { Options } from 'sequelize';
+import {Options} from 'sequelize';
 
 /**
  * This class is dedicated for deprecated "name" property.
