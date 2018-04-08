@@ -484,42 +484,6 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   dataValues: FilteredModelAttributes<this>;
 
   /**
-   * Adds relation between specified instances and source instance
-   */
-  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
-
-  /**
-   * Sets relation between specified instances and source instance
-   * (replaces old relations)
-   */
-  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
-
-  /**
-   * Returns related instance (specified by propertyKey) of source instance
-   */
-  $get<R extends Model<R>>(propertyKey: string, options?: IAssociationGetOptions<R>): Promise<R | R[]>;
-
-  /**
-   * Counts related instances (specified by propertyKey) of source instance
-   */
-  $count<R extends Model<R>>(propertyKey: string, options?: IAssociationCountOptions<R>): Promise<number>;
-
-  /**
-   * Creates instances and relate them to source instance
-   */
-  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R | this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
-
-  /**
-   * Checks if specified instances is related to source instance
-   */
-  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
-
-  /**
-   * Removes specified instances from source instance
-   */
-  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
-
-  /**
    * Default id automatically created by sequelize
    */
   id?: number | any;
@@ -560,6 +524,43 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * A reference to the sequelize instance
    */
   sequelize: Sequelize;
+
+  /**
+   * Adds relation between specified instances and source instance
+   */
+  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
+
+  /**
+   * Sets relation between specified instances and source instance
+   * (replaces old relations)
+   */
+  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
+
+  /**
+   * Returns related instance (specified by propertyKey) of source instance
+   */
+  $get<R extends Model<R>>(propertyKey: string, options?: IAssociationGetOptions<R>): Promise<R | R[]>;
+
+  /**
+   * Counts related instances (specified by propertyKey) of source instance
+   */
+  $count<R extends Model<R>>(propertyKey: string, options?: IAssociationCountOptions<R>): Promise<number>;
+
+  /**
+   * Creates instances and relate them to source instance
+   */
+  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R | this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
+
+  /**
+   * Checks if specified instances is related to source instance
+   */
+  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
+
+  /**
+   * Removes specified instances from source instance
+   */
+  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
+
 
   /**
    * Get an object representing the query for this instance, use with `options.where`

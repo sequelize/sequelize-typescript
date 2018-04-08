@@ -36,7 +36,7 @@ class PageModel extends ConcreteModel<BookModel> {
 
 class AuthorModel extends ConcreteModel<AuthorModel> {
   name: string;
-  books: BookWithAuthorModel;
+  books: BookWithAuthorModel[];
 }
 
 class BookWithAuthorModel extends BookModel {
@@ -1300,7 +1300,7 @@ describe('association', () => {
         name: string;
 
         @BelongsToMany(() => Book, () => AuthorBook)
-        books: Book;
+        books: Book[];
       }
 
       manyToManyTestSuites(Book, Author, AuthorBook);
@@ -1339,7 +1339,7 @@ describe('association', () => {
         @BelongsToMany(() => Book4, {
           through: () => AuthorBook4,
         })
-        books: Book4;
+        books: Book4[];
       }
 
       manyToManyTestSuites(Book4, Author4, AuthorBook4);
@@ -1364,7 +1364,7 @@ describe('association', () => {
         name: string;
 
         @BelongsToMany(() => Book2, 'AuthorBook2', 'authorId', 'bookId')
-        books: Book2;
+        books: Book2[];
       }
 
       manyToManyTestSuites(Book2, Author2);
@@ -1397,7 +1397,7 @@ describe('association', () => {
           foreignKey: 'authorId',
           otherKey: 'bookId',
         })
-        books: Book3;
+        books: Book3[];
       }
 
       manyToManyTestSuites(Book3, Author3);
@@ -1442,7 +1442,7 @@ describe('association', () => {
             model: () => AuthorBook66,
           }
         })
-        books: Book66;
+        books: Book66[];
       }
 
       manyToManyTestSuites(Book66, Author66, AuthorBook66);
@@ -1481,7 +1481,7 @@ describe('association', () => {
           foreignKey: 'authorId',
           otherKey: 'bookId',
         })
-        books: Book66;
+        books: Book66[];
       }
 
       manyToManyTestSuites(Book66, Author66);

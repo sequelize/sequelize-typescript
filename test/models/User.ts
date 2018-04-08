@@ -1,4 +1,6 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull, Unique} from "../../index";
+import {IsInt} from '../../lib/validation/annotations/IsInt';
+import {Length} from '../../lib/validation';
 
 @Table
 export class User extends Model<User> {
@@ -19,12 +21,14 @@ export class User extends Model<User> {
   @Column(DataType.UUID)
   uuidv4: string;
 
+  @Length({max: 20})
   @Column
   username: string;
 
   @Column(DataType.STRING(5))
   username2: string;
 
+  @IsInt
   @Column
   aNumber: number;
 

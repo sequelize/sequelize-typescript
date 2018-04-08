@@ -496,8 +496,8 @@ describe('model', () => {
         sequelize.addModels([User]);
 
         return Promise.all([
-          User.create({user_id: 1, email: 'tobi@tobi.me'}),
-          User.create({user_id: 1, email: 'tobi@tobi.me'})]);
+          User.create({userId: 1, email: 'tobi@tobi.me'}),
+          User.create({userId: 1, email: 'tobi@tobi.me'})]);
       }).catch(UniqueConstraintError, (err) => {
         expect(err.message).to.equal('User and email must be unique');
       });
@@ -766,7 +766,8 @@ describe('model', () => {
           userId: number;
 
           @BelongsTo(() => User)
-          user: any; // why any? with User reference it throws,
+          user: {id: number; firstName: string; lastName: string; products: Product[]}; // why {...} instead of User?
+                     // with User reference it throws,
                      // because of order of classes: User reference
                      // does not exist here, when transpiled to es6
                      // see transpiled js file for details
@@ -808,8 +809,8 @@ describe('model', () => {
           ],
           user: {
             id: 1,
-            first_name: 'Mick',
-            last_name: 'Hansen'
+            firstName: 'Mick',
+            lastName: 'Hansen'
           }
         }, {
           include: [

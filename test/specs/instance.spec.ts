@@ -1102,14 +1102,15 @@ describe('instance', () => {
         })
     );
 
+    // TODO Check test
     it('only validates fields in passed array', () =>
       User
         .build({
-          validateTest: 'cake', // invalid, but not saved
-          validateCustom: '1'
+          ['blabla' as any]: 'cake', // invalid, but not saved
+          username: '1'
         })
         .save({
-          fields: ['validateCustom']
+          fields: ['username']
         })
     );
 
@@ -1398,7 +1399,7 @@ describe('instance', () => {
       it("doesn't update the updatedAt column", () =>
         UserWithCustomUpdatedAt
           .sync()
-          .then(() => UserWithCustomUpdatedAt.create({username: 'john doe'}))
+          .then(() => UserWithCustomUpdatedAt.create({name: 'john doe'}))
           .then((johnDoe) => {
             // sqlite and mysql return undefined, whereas postgres returns null
             expect([undefined, null].indexOf(johnDoe.updatedAt)).not.to.be.equal(-1);
@@ -1416,7 +1417,7 @@ describe('instance', () => {
         UserWithCreatedAtButWithoutUpdatedAt
           .sync()
           .then(() => UserWithCreatedAtButWithoutUpdatedAt
-            .create({username: 'john doe'}))
+            .create({name: 'john doe'}))
           .then((johnDoe) => {
             expect(johnDoe).not.to.have.property('updatedAt');
             expect(now).to.be.beforeTime(johnDoe.createdAt);
@@ -1508,53 +1509,53 @@ describe('instance', () => {
 
     it('should fail a validation upon creating', () =>
       User
-        .create({aNumber: 0, validateTest: 'hello'})
+        .create({aNumber: 'hello' as any})
         .catch((err) => {
           expect(err).to.exist;
           expect(err).to.be.instanceof(Object);
-          expect(err.get('validateTest')).to.be.instanceof(Array);
-          expect(err.get('validateTest')[0]).to.exist;
-          expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
+          expect(err.get('aNumber')).to.be.instanceof(Array);
+          expect(err.get('aNumber')[0]).to.exist;
+          expect(err.get('aNumber')[0].message).to.equal('Validation isInt on aNumber failed');
         })
     );
 
     it('should fail a validation upon creating with hooks false', () =>
       User
-        .create({aNumber: 0, validateTest: 'hello'}, {hooks: false} as any)
+        .create({aNumber: 'hello' as any}, {hooks: false} as any)
         .catch((err) => {
           expect(err).to.exist;
           expect(err).to.be.instanceof(Object);
-          expect(err.get('validateTest')).to.be.instanceof(Array);
-          expect(err.get('validateTest')[0]).to.exist;
-          expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
+          expect(err.get('aNumber')).to.be.instanceof(Array);
+          expect(err.get('aNumber')[0]).to.exist;
+          expect(err.get('aNumber')[0].message).to.equal('Validation isInt on aNumber failed');
         })
     );
 
     it('should fail a validation upon building', () =>
       User
-        .build({aNumber: 0, validateCustom: 'aaaaaaaaaaaaaaaaaaaaaaaaaa'})
+        .build({aNumber: 0, username: 'aaaaaaaaaaaaaaaaaaaaaaaaaa'})
         .save()
         .catch((err) => {
           expect(err).to.exist;
           expect(err).to.be.instanceof(Object);
-          expect(err.get('validateCustom')).to.exist;
-          expect(err.get('validateCustom')).to.be.instanceof(Array);
-          expect(err.get('validateCustom')[0]).to.exist;
-          expect(err.get('validateCustom')[0].message).to.equal('Length failed.');
+          expect(err.get('username')).to.exist;
+          expect(err.get('username')).to.be.instanceof(Array);
+          expect(err.get('username')[0]).to.exist;
+          expect(err.get('username')[0].message).to.equal('Validation len on username failed');
         })
     );
 
     it('should fail a validation when updating', () =>
       User
         .create({aNumber: 0})
-        .then((user) => user.updateAttributes({validateTest: 'hello'}))
+        .then((user) => user.updateAttributes({aNumber: 'hello' as any}))
         .catch((err) => {
           expect(err).to.exist;
           expect(err).to.be.instanceof(Object);
-          expect(err.get('validateTest')).to.exist;
-          expect(err.get('validateTest')).to.be.instanceof(Array);
-          expect(err.get('validateTest')[0]).to.exist;
-          expect(err.get('validateTest')[0].message).to.equal('Validation isInt on validateTest failed');
+          expect(err.get('aNumber')).to.exist;
+          expect(err.get('aNumber')).to.be.instanceof(Array);
+          expect(err.get('aNumber')[0]).to.exist;
+          expect(err.get('aNumber')[0].message).to.equal('Validation isInt on aNumber failed');
         })
     );
 

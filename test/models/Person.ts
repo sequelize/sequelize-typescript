@@ -7,4 +7,7 @@ export class Person extends Model<Person> {
   @Default(DataType.UUIDV1)
   @Column(DataType.UUID)
   id: string;
+
+  @Column
+  name: string;
 }
