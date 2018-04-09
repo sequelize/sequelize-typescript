@@ -44,7 +44,7 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
   }
 
   getModelRepository(model: any): any {
-    return model;
+    return class extends model { };
   }
 
   getThroughModel(through: string): typeof Model {
