@@ -34,11 +34,7 @@ export abstract class BaseSequelize {
   }
 
   static extend(target: any): void {
-    const _addModels = target.prototype.addModels;
     extend(target, this);
-    if (_addModels) {
-      target.prototype.addModels = _addModels;
-    }
   }
 
   /**
@@ -80,17 +76,25 @@ export abstract class BaseSequelize {
     return model;
   }
 
+  abstract getModelRepository(model: any): any;
+
   addModels(models: Array<typeof Model>): void;
   addModels(modelPaths: string[]): void;
   addModels(arg: Array<typeof Model | string>): void {
-    const models = getModels(arg);
+    let models = getModels(arg);
 
+    if (this.repositoryMode) {
+      models = models.map(model => {
+        this._repos[model.name] = this.getModelRepository(model);
+        return this._repos[model.name];
+      });
+    }
     this.defineModels(models);
-    models.forEach(model => model.isInitialized = true);
+    models.forEach(model => (model.isInitialized = true));
     this.associateModels(models);
     resolveScopes(models);
     installHooks(models);
-    models.forEach(model => this._[model.name] = model);
+    models.forEach(model => (this._[model.name] = model));
   }
 
   init(config: SequelizeConfig): void {

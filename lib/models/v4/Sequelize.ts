@@ -2,23 +2,17 @@ import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
 import {Model} from "../Model";
 import {SequelizeConfig} from "../../types/SequelizeConfig";
-import {getModelName, getAttributes, getOptions, getModels} from "../../services/models";
+import {getModelName, getAttributes, getOptions} from "../../services/models";
 import {BaseSequelize} from "../BaseSequelize";
 import {Table} from "../../annotations/Table";
 import {BaseAssociation} from "../association/BaseAssociation";
 import {Repository, ModelType} from "./repositoryMode/helpers";
-import {resolveScopes} from "../../services/scopes";
-import {installHooks} from "../../services/hooks";
-
-export function ModelFactory(model: any): any {
-  return class extends model { };
-}
 
 export class Sequelize extends OriginSequelize implements BaseSequelize {
   throughMap: { [through: string]: any };
   _: { [modelName: string]: typeof Model };
   init: (config: SequelizeConfig) => void;
-  // addModels: (models: Array<typeof Model> | string[]) => void;
+  addModels: (models: Array<typeof Model> | string[]) => void;
   getRepository: <T extends Model<T>>(model: ModelType<T>) => Repository<T>;
   associateModels: (models: Array<typeof Model>) => void;
   connectionManager: any;
@@ -43,23 +37,8 @@ export class Sequelize extends OriginSequelize implements BaseSequelize {
     }
   }
 
-  addModels(models: Array<typeof Model>): void;
-  addModels(modelPaths: string[]): void;
-  addModels(arg: Array<typeof Model | string>): void {
-    let models = getModels(arg);
-
-    if (this.repositoryMode) {
-      models = models.map(model => {
-        this._repos[model.name] = ModelFactory(model);
-        return this._repos[model.name];
-      });
-    }
-    this.defineModels(models);
-    models.forEach(model => (model.isInitialized = true));
-    this.associateModels(models);
-    resolveScopes(models);
-    installHooks(models);
-    models.forEach(model => (this._[model.name] = model));
+  getModelRepository(model: any): any {
+    return class extends model { };
   }
 
   getThroughModel(through: string): typeof Model {

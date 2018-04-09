@@ -43,6 +43,10 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
     }
   }
 
+  getModelRepository(model: any): any {
+    return model;
+  }
+
   getThroughModel(through: string): typeof Model {
     // tslint:disable:max-classes-per-file
     @Table({tableName: through, modelName: through})
