@@ -51,6 +51,7 @@ export {NotEmpty} from "./lib/annotations/validation/NotEmpty";
 export {NotIn} from "./lib/annotations/validation/NotIn";
 export {NotNull} from "./lib/annotations/validation/NotNull";
 export {Validate} from "./lib/annotations/validation/Validate";
+export {Validator} from "./lib/annotations/validation/Validator";
 
 // hooks
 export {BeforeValidate} from "./lib/annotations/hooks/BeforeValidate";
