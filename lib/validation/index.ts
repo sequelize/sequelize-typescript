@@ -32,3 +32,4 @@ export {NotEmpty} from './annotations/NotEmpty';
 export {NotIn} from './annotations/NotIn';
 export {NotNull} from './annotations/NotNull';
 export {Validate} from './annotations/Validate';
+export {Validator} from './annotations/Validator';
