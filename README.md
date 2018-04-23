@@ -4,7 +4,7 @@
 [![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
-Decorators and some other extras for sequelize (v3 + v4).
+Decorators and some other features for sequelize (v3 + v4).
 
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
@@ -43,6 +43,18 @@ Your `tsconfig.json` needs the following flags:
 ```json
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true
+```
+
+#### Beta releases
+Use `next` tag for installing beta releases.
+```
+npm install sequelize-typescript@next --save 
+```
+
+#### Upcoming major release 🎉
+Use `canary` tag to install an alpha version of the upcoming `1.0.0`
+```
+npm install sequelize-typescript@canary --save 
 ```
 
 ## Model definition
