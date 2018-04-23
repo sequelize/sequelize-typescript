@@ -58,7 +58,11 @@ export abstract class BaseAssociation {
     if (!foreignKeyOptions.name) {
       const foreignKeys = getForeignKeys(classWithForeignKey.prototype) || [];
       for (const key of foreignKeys) {
-        if (key.relatedClassGetter() === relatedClass) {
+
+        let modelClass = key.relatedClassGetter();
+        modelClass = this.sequelize.getRepository(modelClass as any) as any;
+
+        if (modelClass === relatedClass) {
           foreignKeyOptions.name = key.foreignKey;
           break;
         }
