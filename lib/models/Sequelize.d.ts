@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import * as SequelizeOrigin from 'sequelize';
+import SequelizeOrigin = require('sequelize');
 import {Model} from "./Model";
 import {SequelizeConfig} from "../types/SequelizeConfig";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
