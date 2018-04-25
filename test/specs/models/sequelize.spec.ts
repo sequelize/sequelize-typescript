@@ -106,7 +106,7 @@ describe('sequelize', () => {
 
   describe('global define options', () => {
     describe('when created with uri string', () => {
-      const DEFINE_OPTIONS = {timestamps: false};
+      const DEFINE_OPTIONS = {timestamps: false, freezeTableName: true};
       const sequelizeFromUri = createSequelizeFromUri(false);
 
       it('should have default define options', () => {
@@ -133,7 +133,7 @@ describe('sequelize', () => {
     });
 
     describe('when created with uri object', () => {
-      const DEFINE_OPTIONS = {timestamps: false};
+      const DEFINE_OPTIONS = {timestamps: false, freezeTableName: true};
       const sequelizeFromUriObject = createSequelizeFromUriObject(false);
 
       it('should have define options', () => {
@@ -160,8 +160,15 @@ describe('sequelize', () => {
     });
 
     describe('when created with config object', () => {
-      const DEFINE_OPTIONS = {timestamps: true, underscoredAll: true};
-      const sequelizeFromUriObject = createSequelize(false, DEFINE_OPTIONS);
+      const DEFINE_OPTIONS = {
+        timestamps: true,
+        underscoredAll: true,
+        freezeTableName: true
+      };
+      const sequelizeFromUriObject = createSequelize(false, {
+        timestamps: true,
+        underscoredAll: true
+      });
 
       it('should have define options', () => {
         expect(sequelizeFromUriObject)
