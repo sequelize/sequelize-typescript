@@ -62,7 +62,7 @@
     "chai": "3.5.0",
     "chai-as-promised": "6.0.0",
     "chai-datetime": "1.4.1",
-    "codecov": "2.1.0",
+    "codecov": "3.0.0",
     "has-flag": "2.0.0",
     "lodash": "4.17.4",
     "mocha": "3.2.0",
