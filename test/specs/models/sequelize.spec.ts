@@ -1,7 +1,11 @@
 /* tslint:disable:max-classes-per-file */
 
 import {expect} from 'chai';
-import {createSequelize} from "../../utils/sequelize";
+import {
+  createSequelize,
+  createSequelizeFromUri,
+  createSequelizeFromUriObject
+} from '../../utils/sequelize';
 import {Game} from "../../models/exports/Game";
 import Gamer from "../../models/exports/gamer.model";
 import {Sequelize} from "../../../lib/models/Sequelize";
@@ -101,32 +105,93 @@ describe('sequelize', () => {
   });
 
   describe('global define options', () => {
+    describe('when created with uri string', () => {
+      const DEFINE_OPTIONS = {timestamps: false, freezeTableName: true};
+      const sequelizeFromUri = createSequelizeFromUri(false);
 
-    const DEFINE_OPTIONS = {timestamps: true, underscoredAll: true};
-    const sequelizeWithDefine = createSequelize(false, DEFINE_OPTIONS);
+      it('should have default define options', () => {
+        expect(sequelizeFromUri)
+          .to.have.property('options')
+          .that.has.property('define')
+          .that.eqls(DEFINE_OPTIONS)
+          ;
+      });
 
-    it('should have define options', () => {
-      expect(sequelizeWithDefine)
-        .to.have.property('options')
-        .that.has.property('define')
-        .that.eqls(DEFINE_OPTIONS)
-        ;
+      it('should set define options for models', () => {
+        @Table
+        class User extends Model<User> {}
+        sequelizeFromUri.addModels([User]);
+
+        Object
+          .keys(DEFINE_OPTIONS)
+          .forEach(key => {
+            expect(User)
+              .to.have.property('options')
+              .that.have.property(key, DEFINE_OPTIONS[key]);
+          });
+      });
     });
 
-    it('should set define options for models', () => {
-      @Table
-      class User extends Model<User> {}
-      sequelizeWithDefine.addModels([User]);
+    describe('when created with uri object', () => {
+      const DEFINE_OPTIONS = {timestamps: false, freezeTableName: true};
+      const sequelizeFromUriObject = createSequelizeFromUriObject(false);
 
-      Object
-        .keys(DEFINE_OPTIONS)
-        .forEach(key => {
-          expect(User)
-            .to.have.property('options')
-            .that.have.property(key, DEFINE_OPTIONS[key]);
-        });
+      it('should have define options', () => {
+        expect(sequelizeFromUriObject)
+          .to.have.property('options')
+          .that.has.property('define')
+          .that.eqls(DEFINE_OPTIONS)
+          ;
+      });
+
+      it('should set define options for models', () => {
+        @Table
+        class User extends Model<User> {}
+        sequelizeFromUriObject.addModels([User]);
+
+        Object
+          .keys(DEFINE_OPTIONS)
+          .forEach(key => {
+            expect(User)
+              .to.have.property('options')
+              .that.have.property(key, DEFINE_OPTIONS[key]);
+          });
+      });
     });
 
+    describe('when created with config object', () => {
+      const DEFINE_OPTIONS = {
+        timestamps: true,
+        underscoredAll: true,
+        freezeTableName: true
+      };
+      const sequelizeFromUriObject = createSequelize(false, {
+        timestamps: true,
+        underscoredAll: true
+      });
+
+      it('should have define options', () => {
+        expect(sequelizeFromUriObject)
+          .to.have.property('options')
+          .that.has.property('define')
+          .that.eqls(DEFINE_OPTIONS)
+          ;
+      });
+
+      it('should set define options for models', () => {
+        @Table
+        class User extends Model<User> {}
+        sequelizeFromUriObject.addModels([User]);
+
+        Object
+          .keys(DEFINE_OPTIONS)
+          .forEach(key => {
+            expect(User)
+              .to.have.property('options')
+              .that.have.property(key, DEFINE_OPTIONS[key]);
+          });
+      });
+    });
   });
 
   describe('addModels', () => {

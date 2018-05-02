@@ -39,6 +39,20 @@ export function createSequelizeValidationOnly(useModelsInPath: boolean = true): 
   });
 }
 
+export function createSequelizeFromUri(useModelsInPath: boolean = true): Sequelize {
+  const sequelize = new Sequelize('sqlite://');
+  sequelize.addModels(useModelsInPath ? [__dirname + '/../models'] : []);
+
+  return sequelize;
+}
+
+export function createSequelizeFromUriObject(useModelsInPath: boolean = true): Sequelize {
+  return new Sequelize({
+    url: 'sqlite://',
+    modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
+  });
+}
+
 export function createOriginSequelize(): SequelizeType {
 
   return new OriginSequelize('___', 'root', '', {
