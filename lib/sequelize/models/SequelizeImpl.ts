@@ -18,7 +18,6 @@ export class SequelizeImpl extends _OriginSequelize {
 
   throughMap: { [through: string]: any };
   models: { [modelName: string]: typeof Model };
-  _: { [modelName: string]: typeof Model };
 
   constructor(options: SequelizeOptions | string) {
     if (typeof options === "string") {
@@ -30,7 +29,7 @@ export class SequelizeImpl extends _OriginSequelize {
     }
 
     this.throughMap = {};
-    this._ = this.models = {};
+    this.models = {};
 
     if (typeof options !== "string") {
       this.init(options);
