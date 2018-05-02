@@ -1,18 +1,18 @@
 /* tslint:disable:max-classes-per-file */
 
 import {expect} from 'chai';
-import {createSequelize} from "../../utils/sequelize";
+import {createSequelize, createSequelizeFromUri, createSequelizeFromUriObject} from "../../utils/sequelize";
 import {Game} from "../../models/exports/Game";
 import Gamer from "../../models/exports/gamer.model";
-import {Sequelize} from "../../../lib/sequelize/models/Sequelize";
-import {Model} from '../../../lib/model/models/Model';
-import {Table} from '../../../lib/model/annotations/Table';
 import PlayerGlob from "../../models/globs/match-sub-dir-files/players/player.model";
 import ShoeGlob from "../../models/globs/match-sub-dir-files/shoes/shoe.model";
 import TeamGlob from "../../models/globs/match-sub-dir-files/teams/team.model";
 import PlayerDir from "../../models/globs/match-dir-only/PlayerDir";
 import TeamDir from "../../models/globs/match-dir-only/TeamDir";
 import ShoeDir from "../../models/globs/match-dir-only/ShoeDir";
+import {Sequelize} from '../../../lib/sequelize';
+import {Table} from '../../../lib/model/annotations/Table';
+import {Model} from '../../../lib/model';
 
 describe('sequelize', () => {
 
@@ -43,7 +43,7 @@ describe('sequelize', () => {
       username: 'root',
       password: '',
       storage: ':memory:',
-      logging: !('SEQ_SILENT' in process.env)
+      logging: !('SEQ_SILENT' in process.env),
     });
 
     it('should equal Sequelize class', () => {
@@ -65,7 +65,7 @@ describe('sequelize', () => {
       url: connectionUri,
       storage: ':memory:',
       logging: !('SEQ_SILENT' in process.env),
-      pool: {max: 8, min: 0}
+      pool: {max: 8, min: 0},
     });
 
     it('should equal Sequelize class', () => {
@@ -101,180 +101,247 @@ describe('sequelize', () => {
   });
 
   describe('global define options', () => {
+    describe('when created with uri string', () => {
+      const DEFINE_OPTIONS = {timestamps: false, freezeTableName: true};
+      const sequelizeFromUri = createSequelizeFromUri(false);
 
-    const DEFINE_OPTIONS = {timestamps: true, underscoredAll: true};
-    const sequelizeWithDefine = createSequelize(false, DEFINE_OPTIONS);
+      it('should have default define options', () => {
+        expect(sequelizeFromUri)
+          .to.have.property('options')
+          .that.has.property('define')
+          .that.eqls(DEFINE_OPTIONS)
+        ;
+      });
 
-    it('should have define options', () => {
-      expect(sequelizeWithDefine)
-        .to.have.property('options')
-        .that.has.property('define')
-        .that.eqls(DEFINE_OPTIONS)
-      ;
+      it('should set define options for models', () => {
+        @Table
+        class User extends Model<User> {
+        }
+
+        sequelizeFromUri.addModels([User]);
+
+        Object
+          .keys(DEFINE_OPTIONS)
+          .forEach(key => {
+            expect(User)
+              .to.have.property('options')
+              .that.have.property(key, DEFINE_OPTIONS[key]);
+          });
+      });
     });
 
-    it('should set define options for models', () => {
+    describe('when created with uri object', () => {
+      const DEFINE_OPTIONS = {timestamps: false, freezeTableName: true};
+      const sequelizeFromUriObject = createSequelizeFromUriObject(false);
+
+      it('should have define options', () => {
+        expect(sequelizeFromUriObject)
+          .to.have.property('options')
+          .that.has.property('define')
+          .that.eqls(DEFINE_OPTIONS)
+        ;
+      });
+
+      it('should set define options for models', () => {
+        @Table
+        class User extends Model<User> {
+        }
+
+        sequelizeFromUriObject.addModels([User]);
+
+        Object
+          .keys(DEFINE_OPTIONS)
+          .forEach(key => {
+            expect(User)
+              .to.have.property('options')
+              .that.have.property(key, DEFINE_OPTIONS[key]);
+          });
+      });
+    });
+
+    describe('when created with config object', () => {
+      const DEFINE_OPTIONS = {
+        timestamps: true,
+        underscoredAll: true,
+        freezeTableName: true,
+      };
+      const sequelizeFromUriObject = createSequelize(false, {
+        timestamps: true,
+        underscoredAll: true,
+      });
+
+      it('should have define options', () => {
+        expect(sequelizeFromUriObject)
+          .to.have.property('options')
+          .that.has.property('define')
+          .that.eqls(DEFINE_OPTIONS)
+        ;
+      });
+
+      it('should set define options for models', () => {
+        @Table
+        class User extends Model<User> {
+        }
+
+        sequelizeFromUriObject.addModels([User]);
+
+        Object
+          .keys(DEFINE_OPTIONS)
+          .forEach(key => {
+            expect(User)
+              .to.have.property('options')
+              .that.have.property(key, DEFINE_OPTIONS[key]);
+          });
+      });
+
+    });
+
+    describe(`Pass model references to 'models' option`, () => {
+
       @Table
-      class User extends Model<User> {
+      class Test extends Model<Test> {
       }
 
-      sequelizeWithDefine.addModels([User]);
+      @Table
+      class Test1 extends Model<Test1> {
+      }
 
-      Object
-        .keys(DEFINE_OPTIONS)
-        .forEach(key => {
-          expect(User)
-            .to.have.property('options')
-            .that.have.property(key, DEFINE_OPTIONS[key]);
+      const _sequelize = new Sequelize({
+        validateOnly: true,
+        logging: !('SEQ_SILENT' in process.env),
+        models: [Test, Test1],
+      });
+
+      it('should load references models', () => {
+        expect(_sequelize.models).to.have.property('Test', Test);
+        expect(_sequelize.models).to.have.property('Test1', Test1);
+      });
+
+    });
+
+    describe('addModels', () => {
+
+      it('should not throw', () => {
+
+        expect(() => sequelize.addModels([__dirname + '/../../models/exports/'])).not.to.throw();
+      });
+
+      it('should throw', () => {
+
+        expect(() => sequelize.addModels([__dirname + '/../../models/exports/throws'])).to.throw();
+      });
+
+      describe('default exported models', () => {
+
+        it('should work as expected', () => {
+
+          sequelize.addModels([__dirname + '/../../models/exports/']);
+
+          expect(() => Gamer.build({})).not.to.throw;
+
+          const gamer = Gamer.build({nickname: 'the_gamer'});
+
+          expect(gamer.nickname).to.equal('the_gamer');
         });
+
+      });
+
+      describe('named exported models', () => {
+
+        it('should work as expected', () => {
+
+          sequelize.addModels([__dirname + '/../../models/exports/']);
+
+          expect(() => Game.build({})).not.to.throw;
+
+          const game = Game.build({title: 'Commander Keen'});
+
+          expect(game.title).to.equal('Commander Keen');
+        });
+
+      });
+
+      describe('definition files', () => {
+        it('should not load in definition files', () => {
+          sequelize.addModels([__dirname + '/../../models/exports/']);
+
+          expect(() => Game.build({})).not.to.throw;
+
+          expect(Object.keys(sequelize.models).length).to.equal(2);
+        });
+      });
+
     });
 
-  });
+    describe('model', () => {
 
-  describe(`Pass model references to 'models' option`, () => {
-
-    @Table
-    class Test extends Model<Test> {
-    }
-    @Table
-    class Test1 extends Model<Test1> {
-    }
-
-    const _sequelize = new Sequelize({
-      validateOnly: true,
-      logging: !('SEQ_SILENT' in process.env),
-      models: [Test, Test1],
-    });
-
-    it('should load references models', () => {
-      expect(_sequelize._).to.have.property('Test', Test);
-      expect(_sequelize._).to.have.property('Test1', Test1);
-    });
-
-  });
-
-  describe('addModels', () => {
-
-    it('should not throw', () => {
-
-      expect(() => sequelize.addModels([__dirname + '/../../models/exports/'])).not.to.throw();
-    });
-
-    it('should throw', () => {
-
-      expect(() => sequelize.addModels([__dirname + '/../../models/exports/throws'])).to.throw();
-    });
-
-    describe('default exported models', () => {
-
-      it('should work as expected', () => {
+      it('should make class references of loaded models available', () => {
 
         sequelize.addModels([__dirname + '/../../models/exports/']);
 
-        expect(() => Gamer.build({})).not.to.throw;
-
-        const gamer = Gamer.build({nickname: 'the_gamer'});
-
-        expect(gamer.nickname).to.equal('the_gamer');
+        expect(sequelize.models).to.have.property('Game', Game);
+        expect(sequelize.models).to.have.property('Gamer', Gamer);
       });
 
     });
 
-    describe('named exported models', () => {
+    describe('Add models as glob and dir', () => {
+      it('should load classes from subfolders matching glob criteria', () => {
+        const db = '__';
+        const sequelizeGlob = new Sequelize({
+          database: db,
+          dialect: 'sqlite',
+          username: 'root',
+          password: '',
+          storage: ':memory:',
+          logging: !('SEQ_SILENT' in process.env),
+          models: [__dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts'],
+        });
 
-      it('should work as expected', () => {
+        expect(sequelizeGlob.models).to.have.property('PlayerGlob', PlayerGlob);
+        expect(sequelizeGlob.models).to.have.property('TeamGlob', TeamGlob);
+        expect(sequelizeGlob.models).to.have.property('ShoeGlob', ShoeGlob);
 
-        sequelize.addModels([__dirname + '/../../models/exports/']);
-
-        expect(() => Game.build({})).not.to.throw;
-
-        const game = Game.build({title: 'Commander Keen'});
-
-        expect(game.title).to.equal('Commander Keen');
       });
 
-    });
+      it('should load classes from folders', () => {
+        const db = '__';
+        const sequelizeFolder = new Sequelize({
+          database: db,
+          dialect: 'sqlite',
+          username: 'root',
+          password: '',
+          storage: ':memory:',
+          logging: !('SEQ_SILENT' in process.env),
+          models: [__dirname + '/../../models/globs/match-dir-only'],
+        });
 
-    describe('definition files', () => {
-      it('should not load in definition files', () => {
-        sequelize.addModels([__dirname + '/../../models/exports/']);
+        expect(sequelizeFolder.models).to.have.property('PlayerDir', PlayerDir);
+        expect(sequelizeFolder.models).to.have.property('TeamDir', TeamDir);
+        expect(sequelizeFolder.models).to.have.property('ShoeDir', ShoeDir);
 
-        expect(() => Game.build({})).not.to.throw;
-
-        expect(Object.keys(sequelize.models).length).to.equal(2);
-      });
-    });
-
-  });
-
-  describe('model', () => {
-
-    it('should make class references of loaded models available', () => {
-
-      sequelize.addModels([__dirname + '/../../models/exports/']);
-
-      expect(sequelize._).to.have.property('Game', Game);
-      expect(sequelize._).to.have.property('Gamer', Gamer);
-    });
-
-  });
-
-  describe('Add models as glob and dir', () => {
-    it('should load classes from subfolders matching glob criteria', () => {
-      const db = '__';
-      const sequelizeGlob = new Sequelize({
-        database: db,
-        dialect: 'sqlite',
-        username: 'root',
-        password: '',
-        storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
-        models: [__dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
       });
 
-      expect(sequelizeGlob._).to.have.property('PlayerGlob', PlayerGlob);
-      expect(sequelizeGlob._).to.have.property('TeamGlob', TeamGlob);
-      expect(sequelizeGlob._).to.have.property('ShoeGlob', ShoeGlob);
+      it('should load classes from folders and from glob', () => {
+        const db = '__';
+        const sequelizeGlobFolder = new Sequelize({
+          database: db,
+          dialect: 'sqlite',
+          username: 'root',
+          password: '',
+          storage: ':memory:',
+          logging: !('SEQ_SILENT' in process.env),
+          models: [__dirname + '/../../models/globs/match-dir-only', __dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts'],
+        });
 
-    });
+        expect(sequelizeGlobFolder.models).to.have.property('PlayerDir', PlayerDir);
+        expect(sequelizeGlobFolder.models).to.have.property('TeamDir', TeamDir);
+        expect(sequelizeGlobFolder.models).to.have.property('ShoeDir', ShoeDir);
+        expect(sequelizeGlobFolder.models).to.have.property('PlayerGlob', PlayerGlob);
+        expect(sequelizeGlobFolder.models).to.have.property('TeamGlob', TeamGlob);
+        expect(sequelizeGlobFolder.models).to.have.property('ShoeGlob', ShoeGlob);
 
-    it('should load classes from folders', () => {
-      const db = '__';
-      const sequelizeFolder = new Sequelize({
-        database: db,
-        dialect: 'sqlite',
-        username: 'root',
-        password: '',
-        storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
-        models: [__dirname + '/../../models/globs/match-dir-only']
       });
-
-      expect(sequelizeFolder._).to.have.property('PlayerDir', PlayerDir);
-      expect(sequelizeFolder._).to.have.property('TeamDir', TeamDir);
-      expect(sequelizeFolder._).to.have.property('ShoeDir', ShoeDir);
-
-    });
-
-    it('should load classes from folders and from glob', () => {
-      const db = '__';
-      const sequelizeGlobFolder = new Sequelize({
-        database: db,
-        dialect: 'sqlite',
-        username: 'root',
-        password: '',
-        storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
-        models: [__dirname + '/../../models/globs/match-dir-only', __dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
-      });
-
-      expect(sequelizeGlobFolder._).to.have.property('PlayerDir', PlayerDir);
-      expect(sequelizeGlobFolder._).to.have.property('TeamDir', TeamDir);
-      expect(sequelizeGlobFolder._).to.have.property('ShoeDir', ShoeDir);
-      expect(sequelizeGlobFolder._).to.have.property('PlayerGlob', PlayerGlob);
-      expect(sequelizeGlobFolder._).to.have.property('TeamGlob', TeamGlob);
-      expect(sequelizeGlobFolder._).to.have.property('ShoeGlob', ShoeGlob);
-
     });
   });
 });

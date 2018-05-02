@@ -230,7 +230,6 @@ export declare class Sequelize extends Hooks {
    * Defined models.
    */
   models: { [name: string]: typeof Model };
-  _: { [modelName: string]: (typeof Model) };
 
   /**
    * Defined options.

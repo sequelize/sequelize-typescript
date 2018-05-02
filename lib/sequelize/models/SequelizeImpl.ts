@@ -21,9 +21,9 @@ export class SequelizeImpl extends _OriginSequelize {
 
   constructor(options: SequelizeOptions | string) {
     if (typeof options === "string") {
-      super(options);
+      super(options, prepareOptions({url: options}));
     } else if (hasSequelizeUri(options)) {
-      super(options.url, options);
+      super(options.url, prepareOptions(options));
     } else {
       super(prepareOptions(options));
     }
