@@ -1,9 +1,10 @@
 import {
-  WhereOptions, LoggingOptions, SearchPathOptions, col, FindOptionsAttributesArray,
+  WhereOptions, LoggingOptions, SearchPathOptions, col,
   literal, fn, and, or, where
 } from 'sequelize';
 import {Model} from "../models/Model";
 import {IIncludeOptions} from "./IIncludeOptions";
+import {IFindOptionsAttributesArray} from '../../shared/IFindOptionsAttributesArray';
 
 /**
  * Based on "FindOptions" type definitions from:
@@ -26,7 +27,7 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
    * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
    * have in the returned instance
    */
-  attributes?: FindOptionsAttributesArray | { include?: FindOptionsAttributesArray, exclude?: Array<string> };
+  attributes?: IFindOptionsAttributesArray<keyof T> | { include?: IFindOptionsAttributesArray<keyof T>, exclude?: Array<keyof T> };
 
   /**
    * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will

@@ -54,7 +54,7 @@ function resolveScope(scopeName: string, model: typeof Model, options: IScopeFin
   } else {
     options = inferAlias(options, model);
   }
-  model.addScope(scopeName, options as IFindOptions<typeof Model>, {override: true});
+  model.addScope(scopeName, options as IFindOptions<any>, {override: true});
 }
 
 /**
