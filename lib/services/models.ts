@@ -13,7 +13,8 @@ const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
 const OPTIONS_KEY = 'sequelize:options';
 export const DEFAULT_DEFINE_OPTIONS: DefineOptions<any> = {
-  timestamps: false
+  timestamps: false,
+  freezeTableName: true
 };
 export const PROPERTY_LINK_TO_ORIG = '__origClass';
 

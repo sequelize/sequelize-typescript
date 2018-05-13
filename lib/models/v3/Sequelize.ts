@@ -23,9 +23,9 @@ export class Sequelize extends SequelizeOrigin implements BaseSequelize {
 
   constructor(config: SequelizeConfig | string) {
     if (typeof config === "string") {
-      super(config);
+      super(config, BaseSequelize.prepareConfig({url: config}));
     } else if (BaseSequelize.isISequelizeUriConfig(config)) {
-      super(config.url, config);
+      super(config.url, BaseSequelize.prepareConfig(config));
     } else {
       super(BaseSequelize.prepareConfig(config));
     }
