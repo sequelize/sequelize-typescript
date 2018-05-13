@@ -19,8 +19,10 @@ npm-debug.log
 # src
 !lib/models/Model.d.ts
 !lib/models/Model.js
+!lib/models/v5/Model.js
 !lib/models/Sequelize.d.ts
 !lib/models/Sequelize.js
+!lib/models/v5/Sequelize.js
 
 # testing
 coverage
