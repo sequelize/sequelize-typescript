@@ -13,7 +13,7 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions<T> | where | fn | or | Array<col | and | or | string>;
+  where?: WhereOptions<T> | where | fn | literal | or | Array<col | literal | and | or | string>;
 
   /**
    * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
