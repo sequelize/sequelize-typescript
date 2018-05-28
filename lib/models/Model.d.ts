@@ -374,9 +374,11 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+  static upsert<A>(values: Partial<A>, options?: { returning?: false } & UpsertOptions): Promise<boolean>;
+  static upsert<A>(values: Partial<A>, options?: { returning: true } & UpsertOptions): Promise<[A, boolean]>;
 
-  static insertOrUpdate<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<A>(values: Partial<A>, options?: { returning?: false } & UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<A>(values: Partial<A>, options?: { returning: true } & UpsertOptions): Promise<[A, boolean]>;
 
   /**
    * Create and insert multiple instances in bulk.
