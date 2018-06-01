@@ -54,7 +54,7 @@
     "@types/chai": "3.4.35",
     "@types/chai-as-promised": "0.0.29",
     "@types/chai-datetime": "0.0.30",
-    "@types/lodash": "4.14.54",
+    "@types/lodash": "4.14.109",
     "@types/mocha": "2.2.39",
     "@types/prettyjson": "0.0.28",
     "@types/sinon": "1.16.35",
@@ -78,7 +78,7 @@
     "sqlite3": "4.0.0",
     "ts-node": "3.0.4",
     "tslint": "4.3.1",
-    "typescript": "2.6.1",
+    "typescript": "2.9.1",
     "uuid-validate": "0.0.2"
   },
   "engines": {
