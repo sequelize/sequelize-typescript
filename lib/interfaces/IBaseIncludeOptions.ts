@@ -43,5 +43,5 @@ export interface IBaseIncludeOptions {
    *   '$table1.typeId$': {$col: 'table2.typeId'}
    * }
    */
-  on: any;
+  on?: any;
 }
