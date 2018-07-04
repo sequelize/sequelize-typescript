@@ -41,7 +41,8 @@ export class BelongsToManyAssociation extends BaseAssociation {
       typeof through === 'object' ? {...through} : {} as any;
 
     if (typeof model === 'function') {
-      const throughModelClass = model();
+      let throughModelClass = model();
+      throughModelClass = this.sequelize.getRepository(throughModelClass as any) as any;
       if (!throughModelClass.isInitialized) {
         throw new ModelNotInitializedError(throughModelClass, {
           cause: 'before association can be resolved.'

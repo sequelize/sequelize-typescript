@@ -8,8 +8,8 @@ import {ModelClassGetter} from '../../types/ModelClassGetter';
 import {ModelNotInitializedError} from '../errors/ModelNotInitializedError';
 
 export abstract class BaseAssociation {
+  protected sequelize: BaseSequelize;
   private _options: AssociationOptions;
-  private sequelize: BaseSequelize;
 
   constructor(private associatedClassGetter: ModelClassGetter) {
   }
