@@ -192,7 +192,7 @@ export function getModels(arg: Array<typeof Model | string>): Array<typeof Model
         .map(fullPath => {
           
           const module = require(fullPath);
-          const fileName = getFilenameWithoutExtension(fullPath);
+          const fileName = path.basename(fullPath);
 
           if (!module[fileName] && !module.default) {
             throw new Error(`No default export defined for file "${fileName}" or ` +
@@ -308,13 +308,6 @@ function inferAliasForInclude(include: any, source: any): any {
 function isImportable(file: string): boolean {
   const filePart = file.slice(-3);
   return filePart === '.js' || (filePart === '.ts' && file.slice(-5) !== '.d.ts');
-}
-
-/**
- * Removes extension of specified filename and returns this value
- */
-function getFilenameWithoutExtension(file: string): string {
-  return path.parse(file).name;
 }
 
 /**
