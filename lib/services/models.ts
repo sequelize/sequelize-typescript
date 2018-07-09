@@ -4,6 +4,7 @@ import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {Model} from "../models/Model";
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
+import {ModelMatch} from '../types/SequelizeConfig';
 import {inferDataType} from "../utils/data-type";
 import {deepAssign} from "../utils/object";
 import {getAssociationsByRelation} from "./association";
@@ -177,7 +178,10 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
 /**
  * Determines models from value
  */
-export function getModels(arg: Array<typeof Model | string>): Array<typeof Model> {
+export function getModels(
+  arg: Array<typeof Model | string>,
+  modelMatch: ModelMatch,
+): Array<typeof Model> {
 
   if (arg && typeof arg[0] === 'string') {
 
@@ -190,15 +194,18 @@ export function getModels(arg: Array<typeof Model | string>): Array<typeof Model
         .map(getFullfilepathWithoutExtension)
         .filter(uniqueFilter)
         .map(fullPath => {
-          
+
           const module = require(fullPath);
           const fileName = path.basename(fullPath);
 
-          if (!module[fileName] && !module.default) {
+          const matchedMemberKey = Object.keys(module).find(m => modelMatch(fileName, m));
+          const matchedMember = matchedMemberKey ? module[matchedMemberKey] : undefined;
+
+          if (!matchedMember && !module.default) {
             throw new Error(`No default export defined for file "${fileName}" or ` +
               `export does not satisfy filename.`);
           }
-          return module[fileName] || module.default;
+          return matchedMember || module.default;
         });
 
       models.push(..._models);

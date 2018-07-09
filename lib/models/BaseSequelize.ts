@@ -20,6 +20,7 @@ import {BaseAssociation} from './association/BaseAssociation';
  */
 export abstract class BaseSequelize {
 
+  options: any;
   throughMap: { [through: string]: any } = {};
   _: { [modelName: string]: (typeof Model) } = {};
 
@@ -73,7 +74,10 @@ export abstract class BaseSequelize {
   addModels(modelPaths: string[]): void;
   addModels(arg: Array<typeof Model | string>): void {
 
-    const models = getModels(arg);
+    const defaultModelMatch = (filename, member) => {
+      return filename === member;
+    };
+    const models = getModels(arg, this.options.modelMatch || defaultModelMatch);
 
     this.defineModels(models);
     models.forEach(model => model.isInitialized = true);
