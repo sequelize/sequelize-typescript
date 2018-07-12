@@ -29,6 +29,11 @@ export interface IBaseIncludeOptions {
   required?: boolean;
 
   /**
+   * Avoid cartesian product with assocations
+   */
+  duplicating?: boolean;
+
+  /**
    * Through Options
    */
   through?: IncludeThroughOptions;
