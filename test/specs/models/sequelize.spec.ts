@@ -21,7 +21,16 @@ import ShoeDir from "../../models/globs/match-dir-only/ShoeDir";
 
 describe('sequelize', () => {
 
-  const sequelize = createSequelize(false);
+  let sequelize: Sequelize;
+
+  beforeEach(() => {
+    sequelize = createSequelize(false);
+  });
+
+  afterEach(() => {
+    sequelize.close();
+  });
+
   const connectionUri = "sqlite://root@localhost/__";
 
   function testOptionsProp(instance: Sequelize): void {
