@@ -6,6 +6,7 @@ import {
   createSequelizeFromUri,
   createSequelizeFromUriObject
 } from '../../utils/sequelize';
+import {Match} from '../../models/exports/custom-match/match.model';
 import {Game} from "../../models/exports/Game";
 import Gamer from "../../models/exports/gamer.model";
 import {Sequelize} from "../../../lib/models/Sequelize";
@@ -258,6 +259,20 @@ describe('sequelize', () => {
       expect(sequelize._).to.have.property('Gamer', Gamer);
     });
 
+  });
+
+  describe('modelMatch', () => {
+    it('should load classes using custom model matching', () => {
+      const sequelizeModelMatch = createSequelize({
+        modelPaths: [__dirname + '/../../models/exports/custom-match'],
+        modelMatch: (filename, member) => {
+          const modelStripped = filename.substring(0, filename.indexOf('.model'));
+          return modelStripped === member.toLowerCase();
+        },
+      });
+
+      expect(sequelizeModelMatch._).to.have.property('Match', Match);
+    });
   });
 
   describe('Add models as glob and dir', () => {
