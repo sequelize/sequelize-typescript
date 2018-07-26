@@ -4,7 +4,7 @@ import {getAssociations} from "../services/association";
 import {ISequelizeConfig} from "../interfaces/ISequelizeConfig";
 import {ISequelizeUriConfig} from "../interfaces/ISequelizeUriConfig";
 import {ISequelizeDbNameConfig} from "../interfaces/ISequelizeDbNameConfig";
-import {SequelizeConfig} from "../types/SequelizeConfig";
+import {ModelMatch, SequelizeConfig} from '../types/SequelizeConfig';
 import {resolveScopes} from "../services/scopes";
 import {installHooks} from "../services/hooks";
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
@@ -71,13 +71,16 @@ export abstract class BaseSequelize {
   }
 
   addModels(models: Array<typeof Model>): void;
-  addModels(modelPaths: string[]): void;
-  addModels(arg: Array<typeof Model | string>): void {
+  addModels(modelPaths: string[], modelMatch?: ModelMatch): void;
+  addModels(arg: Array<typeof Model | string>, modelMatch?: ModelMatch): void {
 
     const defaultModelMatch = (filename, member) => {
       return filename === member;
     };
-    const models = getModels(arg, this.options.modelMatch || defaultModelMatch);
+    const models = getModels(
+      arg,
+      modelMatch || this.options.modelMatch || defaultModelMatch,
+    );
 
     this.defineModels(models);
     models.forEach(model => model.isInitialized = true);

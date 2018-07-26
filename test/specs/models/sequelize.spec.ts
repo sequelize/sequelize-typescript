@@ -246,6 +246,26 @@ describe('sequelize', () => {
 
     });
 
+    describe('custom model-path matching', () => {
+
+      it('should work as expected', () => {
+
+        sequelize.addModels(
+          [__dirname + '/../../models/exports/custom-match'],
+          (filename, member) => {
+            const modelStripped = filename.substring(0, filename.indexOf('.model'));
+            return modelStripped === member.toLowerCase();
+          },
+        );
+
+        expect(() => Match.build({})).not.to.throw;
+
+        const custom = Match.build({title: 'Commander Keen'});
+
+        expect(custom.title).to.equal('Commander Keen');
+      });
+    });
+
     describe('definition files', () => {
       it('should not load in definition files', () => {
         sequelize.addModels([__dirname + '/../../models/exports/']);
