@@ -6,6 +6,7 @@ import {
   createSequelizeFromUri,
   createSequelizeFromUriObject
 } from '../../utils/sequelize';
+import {Match} from '../../models/exports/custom-match/match.model';
 import {Game} from "../../models/exports/Game";
 import Gamer from "../../models/exports/gamer.model";
 import {Sequelize} from "../../../lib/models/Sequelize";
@@ -20,7 +21,16 @@ import ShoeDir from "../../models/globs/match-dir-only/ShoeDir";
 
 describe('sequelize', () => {
 
-  const sequelize = createSequelize(false);
+  let sequelize: Sequelize;
+
+  beforeEach(() => {
+    sequelize = createSequelize(false);
+  });
+
+  afterEach(() => {
+    sequelize.close();
+  });
+
   const connectionUri = "sqlite://root@localhost/__";
 
   function testOptionsProp(instance: Sequelize): void {
@@ -236,6 +246,26 @@ describe('sequelize', () => {
 
     });
 
+    describe('custom model-path matching', () => {
+
+      it('should work as expected', () => {
+
+        sequelize.addModels(
+          [__dirname + '/../../models/exports/custom-match'],
+          (filename, member) => {
+            const modelStripped = filename.substring(0, filename.indexOf('.model'));
+            return modelStripped === member.toLowerCase();
+          },
+        );
+
+        expect(() => Match.build({})).not.to.throw;
+
+        const custom = Match.build({title: 'Commander Keen'});
+
+        expect(custom.title).to.equal('Commander Keen');
+      });
+    });
+
     describe('definition files', () => {
       it('should not load in definition files', () => {
         sequelize.addModels([__dirname + '/../../models/exports/']);
@@ -258,6 +288,20 @@ describe('sequelize', () => {
       expect(sequelize._).to.have.property('Gamer', Gamer);
     });
 
+  });
+
+  describe('modelMatch', () => {
+    it('should load classes using custom model matching', () => {
+      const sequelizeModelMatch = createSequelize({
+        modelPaths: [__dirname + '/../../models/exports/custom-match'],
+        modelMatch: (filename, member) => {
+          const modelStripped = filename.substring(0, filename.indexOf('.model'));
+          return modelStripped === member.toLowerCase();
+        },
+      });
+
+      expect(sequelizeModelMatch._).to.have.property('Match', Match);
+    });
   });
 
   describe('Add models as glob and dir', () => {

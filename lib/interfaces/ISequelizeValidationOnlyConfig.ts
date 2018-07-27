@@ -1,4 +1,5 @@
 import {Options} from 'sequelize';
+import {ModelMatch} from '../types/SequelizeConfig';
 
 export interface ISequelizeValidationOnlyConfig extends Options {
 
@@ -12,4 +13,10 @@ export interface ISequelizeValidationOnlyConfig extends Options {
    * Path to models, which should be loaded
    */
   modelPaths?: string[];
+
+  /**
+   * Matches models by filename using a custom function.
+   * @default (filename, member) => filename === member
+   */
+  modelMatch?: ModelMatch;
 }
