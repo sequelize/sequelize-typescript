@@ -45,7 +45,6 @@
   "dependencies": {
     "@types/bluebird": "3.5.18",
     "@types/node": "6.0.41",
-    "@types/reflect-metadata": "0.0.4",
     "@types/sequelize": "4.27.20",
     "es6-shim": "0.35.3",
     "glob": "7.1.2"
@@ -80,6 +79,9 @@
     "tslint": "4.3.1",
     "typescript": "2.9.1",
     "uuid-validate": "0.0.2"
+  },
+  "peerDependencies": {
+    "reflect-metadata": ">=0.1.9"
   },
   "engines": {
     "node": ">=0.8.15"
