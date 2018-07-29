@@ -127,7 +127,7 @@ Decorator          | Description
 
 ### `@Column`
 The `@Column` annotation can be used without passing any parameters. But therefore it is necessary that
-the js type can be inferred automatically (see [Type inference](#type-inference) for details).
+the javascript type can be inferred automatically (see [Type inference](#type-inference) for details).
 ```typescript
   @Column
   name: string;
@@ -160,7 +160,7 @@ Decorator                             | Description
 
 #### *Shortcuts*
 If you're in love with decorators: *sequelize-typescript* provides some more of them. The following decorators can be 
-used together with the @Column annotation to make some attribute options easier available:
+used together with the `@Column` annotation to make some attribute options easier available:
 
 Decorator                             | Description
 --------------------------------------|---------------------
@@ -659,7 +659,7 @@ export class Person extends Model<Person> {
 ## Why `() => Model`?
 `@ForeignKey(Model)` is much easier to read, so why is `@ForeignKey(() => Model)` so important? When it
 comes to circular-dependencies (which are in general solved by node for you) `Model` can be `undefined`
-when it gets passed to @ForeignKey. With the usage of a function, which returns the actual model, we prevent
+when it gets passed to `@ForeignKey`. With the usage of a function, which returns the actual model, we prevent
 this issue.
 
 ## Recommendations and limitations 
