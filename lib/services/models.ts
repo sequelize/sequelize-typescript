@@ -259,7 +259,7 @@ export function inferAlias(options: any, source: any): any {
   // if include is not an array, wrap in an array
   if (!Array.isArray(options.include)) {
     options.include = [options.include];
-  } else if (!options.include.length) {
+  } else if (!options.include) {
     delete options.include;
     return options;
   }
