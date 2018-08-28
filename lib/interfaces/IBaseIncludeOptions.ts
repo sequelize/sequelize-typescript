@@ -34,4 +34,9 @@ export interface IBaseIncludeOptions {
   through?: IncludeThroughOptions;
 
   all?: boolean | string;
+
+  /**
+   * limit the returned array option
+   */
+  limit?: number;
 }
