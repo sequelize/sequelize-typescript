@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import * as SequelizeOrigin from 'sequelize';
+import SequelizeOrigin = require('sequelize');
 import {Model} from "./Model";
-import {SequelizeConfig} from "../types/SequelizeConfig";
+import {ModelMatch, SequelizeConfig} from '../types/SequelizeConfig';
 import {ISequelizeValidationOnlyConfig} from "../interfaces/ISequelizeValidationOnlyConfig";
 
 export declare class Sequelize extends SequelizeOrigin {
@@ -13,5 +13,5 @@ export declare class Sequelize extends SequelizeOrigin {
   constructor(uri: string);
 
   addModels(models: Array<typeof Model>): void;
-  addModels(modelPaths: string[]): void;
+  addModels(modelPaths: string[], modelMatch?: ModelMatch): void;
 }

@@ -16,6 +16,7 @@ export {CreatedAt} from "./lib/annotations/CreatedAt";
 export {DeletedAt} from "./lib/annotations/DeletedAt";
 export {UpdatedAt} from "./lib/annotations/UpdatedAt";
 export {Unique} from "./lib/annotations/Unique";
+export {Comment} from "./lib/annotations/Comment";
 
 export {Contains} from "./lib/annotations/validation/Contains";
 export {Equals} from "./lib/annotations/validation/Equals";
@@ -50,6 +51,7 @@ export {NotEmpty} from "./lib/annotations/validation/NotEmpty";
 export {NotIn} from "./lib/annotations/validation/NotIn";
 export {NotNull} from "./lib/annotations/validation/NotNull";
 export {Validate} from "./lib/annotations/validation/Validate";
+export {Validator} from "./lib/annotations/validation/Validator";
 
 // hooks
 export {BeforeValidate} from "./lib/annotations/hooks/BeforeValidate";

@@ -4,7 +4,7 @@
 [![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
-Decorators and some other extras for sequelize (v3 + v4).
+Decorators and some other features for sequelize (v3, v4, v5).
 
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
@@ -43,6 +43,18 @@ Your `tsconfig.json` needs the following flags:
 ```json
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true
+```
+
+#### Beta releases
+Use `next` tag for installing beta releases.
+```
+npm install sequelize-typescript@next --save 
+```
+
+#### Upcoming major release 🎉
+Use `canary` tag to install an alpha version of the upcoming `1.0.0`
+```
+npm install sequelize-typescript@canary --save 
 ```
 
 ## Model definition
@@ -157,6 +169,7 @@ Decorator                             | Description
  `@Unique`                            | sets `attribute.unique=true`
  `@Default(value: any)`               | sets `attribute.defaultValue` to specified value
  `@PrimaryKey`                        | sets `attribute.primaryKey=true`
+ `@Comment(value: string)`            | sets `attribute.comment` to specified string
  Validate annotations                 | see [Model validation](#model-validation)
 
 ### Type inference
@@ -225,14 +238,61 @@ sequelize.addModels([__dirname + '/**/*.model.ts']);
 ```
 
 #### Model-path resolving
-When using a path to resolve the required models, either the class has to be exported as default or if not exported
-as default, the file should have the same name as the corresponding class:
+A model is matched to a file by its filename. E.g.
 ```typescript
-export default class User extends Model<User> {}
-
-// User.ts
+// File User.ts matches the following exported model.
 export class User extends Model<User> {}
 ```
+This is done by comparison of the filename against all exported members. The
+matching can be customized by specifying the `modelMatch` function in the
+configuration object.
+
+For example, if your models are named `user.model.ts`, and your class is called
+`User`, you can match these two by using the following function:
+
+```typescript
+import {Sequelize} from 'sequelize-typescript';
+
+const sequelize =  new Sequelize({
+  modelPaths: [__dirname + '/models/**/*.model.ts']
+  modelMatch: (filename, member) => {
+    return filename.substring(0, filename.indexOf('.model')) === member.toLowerCase();
+  },
+});
+```
+
+For each file that matches the `*.model.ts` pattern, the `modelMatch` function
+will be called with its exported members. E.g. for the following file
+
+```TypeScript
+//user.model.ts
+import {Table, Column, Model} from 'sequelize-typescript';
+
+export const UserN = 'Not a model';
+export const NUser = 'Not a model';
+
+@Table
+export class User extends Model<User> {
+
+  @Column
+  nickname: string;
+}
+```
+
+The `modelMatch` function will be called three times with the following arguments.
+```
+user.model UserN -> false
+user.model NUser -> false
+user.model User  -> true (User will be added as model)
+```
+
+Another way to match model to file is to make your model the default export.
+
+```TypeScript
+export default class User extends Model<User> {}
+```
+
+
 ### Build and create
 Instantiation and inserts can be achieved in the good old sequelize way
 ```typescript

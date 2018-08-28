@@ -16,6 +16,7 @@ import {ICreateOptions} from "../interfaces/ICreateOptions";
 import {IFindOrInitializeOptions} from "../interfaces/IFindOrInitializeOptions";
 import {IFindCreateFindOptions} from "../interfaces/IFindCreateFindOptions";
 import {ICountOptions} from '../interfaces/ICountOptions';
+import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {NonAbstract, Omit, RecursivePartial} from '../utils/types';
 
 /* tslint:disable:member-ordering */
@@ -36,6 +37,11 @@ export type FilteredModelAttributes<T extends Model<T>> =
 export declare abstract class Model<T extends Model<T>> extends Hooks {
 
   constructor(values?: FilteredModelAttributes<T>, options?: IBuildOptions);
+
+  static primaryKeyAttributes: string[];
+  static primaryKeyAttribute: string;
+  static attributes: { [key: string]: IPartialDefineAttributeColumnOptions };
+  static rawAttributes: { [key: string]: IPartialDefineAttributeColumnOptions };
 
   static isInitialized: boolean;
 
@@ -144,7 +150,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *     model will clear the previous scope.
    */
   static scope<T>(this: NonAbstractTypeOfModel<T>, options?: string | string[] | ScopeOptions | WhereOptions<any>): NonAbstractTypeOfModel<T>;
-  static scope<T>(this: NonAbstractTypeOfModel<T>, ...scopes: string[]): NonAbstractTypeOfModel<T>;
+  static scope<T>(this: NonAbstractTypeOfModel<T>, ...scopes: (string | ScopeOptions | WhereOptions<any>)[]): NonAbstractTypeOfModel<T>;
 
   /**
    * Search for multiple instances.
@@ -368,9 +374,11 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+  static upsert<A>(values: Partial<A>, options?: { returning?: false } & UpsertOptions): Promise<boolean>;
+  static upsert<A>(values: Partial<A>, options?: { returning: true } & UpsertOptions): Promise<[A, boolean]>;
 
-  static insertOrUpdate<A>(values: A, options?: UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<A>(values: Partial<A>, options?: { returning?: false } & UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<A>(values: Partial<A>, options?: { returning: true } & UpsertOptions): Promise<[A, boolean]>;
 
   /**
    * Create and insert multiple instances in bulk.
@@ -402,6 +410,27 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * Restore multiple instances if `paranoid` is enabled.
    */
   static restore(options?: RestoreOptions): Promise<void>;
+
+  /**
+   * Increment the value of one or more columns. This is done in the database, which means it does not use the values currently stored on the Instance. The increment is done using a
+   * ```sql
+   * SET column = column + X WHERE foo = 'bar'
+   * ```
+   * query. To get the correct value after an increment into the Instance you should do a reload.
+   *
+   *```js
+  * Model.increment('number', { where: { foo: 'bar' }) // increment number by 1
+  * Model.increment(['number', 'count'], { by: 2, where: { foo: 'bar' } }) // increment number and count by 2
+  * Model.increment({ answer: 42, tries: -1}, { by: 2, where: { foo: 'bar' } }) // increment answer by 42, and decrement tries by 1.
+  *                                                        // `by` is ignored, since each column has its own value
+  * ```
+  *
+   * @param fields If a string is provided, that column is incremented by the value of `by` given in options.
+   *               If an array is provided, the same is true for each column.
+   *               If an object is provided, each column is incremented by the value given.
+  */
+  static increment<T extends Model<T>>(fields: string | string[] | Object,
+    options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<[Array<T>, number]> | Promise<[number, void]>;
 
   /**
    * Update multiple instances that match the where options. The promise returns an array with one or two
@@ -646,7 +675,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *
    * @param fields If a string is provided, that column is incremented by the value of `by` given in options.
    *               If an array is provided, the same is true for each column.
-   *               If and object is provided, each column is incremented by the value given.
+   *               If an object is provided, each column is incremented by the value given.
    */
   increment(fields: string | string[] | Object,
             options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
@@ -669,7 +698,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *
    * @param fields If a string is provided, that column is decremented by the value of `by` given in options.
    *               If an array is provided, the same is true for each column.
-   *               If and object is provided, each column is decremented by the value given
+   *               If an object is provided, each column is decremented by the value given
    */
   decrement(fields: string | string[] | Object,
             options?: InstanceIncrementDecrementOptions & { silent?: boolean }): Promise<this>;
