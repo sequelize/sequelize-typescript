@@ -39,7 +39,7 @@ export interface IBaseIncludeOptions {
   through?: IncludeThroughOptions;
 
   all?: boolean | string;
-
+  
   /**
    * Enables ON clauses as per https://github.com/sequelize/sequelize/issues/5551#issuecomment-193890421
    * @example
@@ -49,4 +49,9 @@ export interface IBaseIncludeOptions {
    * }
    */
   on?: any;
+
+  /**
+   * limit the returned array option
+   */
+  limit?: number;
 }
