@@ -62,8 +62,8 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
    * transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model locks with joins.
    * See [transaction.LOCK for an example](transaction#lock)
    * 
-   * See [sequelize docs](https://github.com/sequelize/sequelize/blob/master/docs/transactions.md) for an
-   * example of boolean usage [https://github.com/sequelize/sequelize/blob/master/docs/transactions.md
+   * See [sequelize docs](https://github.com/sequelize/sequelize/blob/master/docs/transactions.md#after-commit-hook) for an
+   * example of boolean usage.
    */
   lock?: boolean | string | { level: string, of: typeof Model };
 
