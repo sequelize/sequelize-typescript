@@ -57,7 +57,7 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   offset?: number;
 
   /**
-   * Lock the selected rows. A true boolean value will lock the request with a ' FOR UPDATE' lock. Possible 
+   * Lock the selected rows. A true boolean value will lock the request with a 'FOR UPDATE' lock. Possible 
    * additional options are transaction.LOCK.UPDATE and transaction.LOCK.SHARE. Postgres also supports
    * transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model locks with joins.
    * See [transaction.LOCK for an example](transaction#lock)
