@@ -57,11 +57,15 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   offset?: number;
 
   /**
-   * Lock the selected rows. Possible options are transaction.LOCK.UPDATE and transaction.LOCK.SHARE.
-   * Postgres also supports transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model
-   * locks with joins. See [transaction.LOCK for an example](transaction#lock)
+   * Lock the selected rows. A true boolean value will lock the request with a 'FOR UPDATE' lock. Possible 
+   * additional options are transaction.LOCK.UPDATE and transaction.LOCK.SHARE. Postgres also supports
+   * transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model locks with joins.
+   * See [transaction.LOCK for an example](transaction#lock)
+   * 
+   * See [sequelize docs](https://github.com/sequelize/sequelize/blob/master/docs/transactions.md#after-commit-hook) for an
+   * example of boolean usage.
    */
-  lock?: string | { level: string, of: typeof Model };
+  lock?: boolean | string | { level: string, of: typeof Model };
 
   /**
    * Return raw result. See sequelize.query for more information.

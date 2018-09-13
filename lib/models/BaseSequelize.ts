@@ -82,8 +82,8 @@ export abstract class BaseSequelize {
       modelMatch || this.options.modelMatch || defaultModelMatch,
     );
 
-    this.defineModels(models);
     models.forEach(model => model.isInitialized = true);
+    this.defineModels(models);
     this.associateModels(models);
     resolveScopes(models);
     installHooks(models);

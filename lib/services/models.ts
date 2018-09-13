@@ -260,7 +260,6 @@ export function inferAlias(options: any, source: any): any {
   if (!Array.isArray(options.include)) {
     options.include = [options.include];
   } else if (!options.include.length) {
-    delete options.include;
     return options;
   }
 
