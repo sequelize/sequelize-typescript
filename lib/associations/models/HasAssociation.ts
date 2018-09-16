@@ -9,17 +9,17 @@ import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
 export class HasAssociation extends BaseAssociation {
 
   constructor(associatedClassGetter: ModelClassGetter,
-              private options: AssociationOptionsHasMany | AssociationOptionsHasOne,
+              protected options: AssociationOptionsHasMany | AssociationOptionsHasOne,
               private association: Association) {
-    super(associatedClassGetter);
+    super(associatedClassGetter, options);
   }
 
   getAssociation(): Association {
     return this.association;
   }
 
-  protected getPreparedOptions(model: typeof Model,
-                               sequelize: SequelizeImpl): AssociationOptions {
+  getSequelizeOptions(model: typeof Model,
+                      sequelize: SequelizeImpl): AssociationOptions {
     const options = {...this.options};
     const associatedClass = this.getAssociatedClass();
 

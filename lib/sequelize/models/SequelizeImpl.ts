@@ -71,10 +71,9 @@ export class SequelizeImpl extends _OriginSequelize {
       if (!associations) return;
 
       associations.forEach(association => {
-        association.init(model, this);
+        const options = association.getSequelizeOptions(model, this);
         const associatedClass = association.getAssociatedClass();
         const relation = association.getAssociation();
-        const options = association.getSequelizeOptions();
         model[relation](associatedClass, options);
       });
     });

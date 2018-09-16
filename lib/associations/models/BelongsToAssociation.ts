@@ -9,16 +9,16 @@ import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
 export class BelongsToAssociation extends BaseAssociation {
 
   constructor(associatedClassGetter: ModelClassGetter,
-              private options: AssociationOptionsBelongsTo) {
-    super(associatedClassGetter);
+              protected options: AssociationOptionsBelongsTo) {
+    super(associatedClassGetter, options);
   }
 
   getAssociation(): Association {
     return Association.BelongsTo;
   }
 
-  protected getPreparedOptions(model: typeof Model,
-                               sequelize: SequelizeImpl): AssociationOptions {
+  getSequelizeOptions(model: typeof Model,
+                      sequelize: SequelizeImpl): AssociationOptions {
     const options = {...this.options};
     const associatedClass = this.getAssociatedClass();
 

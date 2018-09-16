@@ -9,15 +9,13 @@ import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
 
 export abstract class BaseAssociation {
 
-  private _options: AssociationOptions;
-
-  constructor(private associatedClassGetter: ModelClassGetter) {
+  constructor(private associatedClassGetter: ModelClassGetter,
+              protected options: AssociationOptions) {
   }
 
   abstract getAssociation(): Association;
-
-  protected abstract getPreparedOptions(model: typeof Model,
-                                        sequelize: SequelizeImpl): AssociationOptions;
+  abstract getSequelizeOptions(model: typeof Model,
+                               sequelize: SequelizeImpl): AssociationOptions;
 
   getAssociatedClass(): typeof Model {
     const modelClass = this.associatedClassGetter();
@@ -29,18 +27,8 @@ export abstract class BaseAssociation {
     return modelClass;
   }
 
-  init(model: typeof Model,
-       sequelize: SequelizeImpl): void {
-    if (!this._options) {
-      this._options = this.getPreparedOptions(model, sequelize);
-    }
-  }
-
-  getSequelizeOptions(): AssociationOptions {
-    if (!this._options) {
-      throw new Error(`Association need to be initialized with a sequelize instance`);
-    }
-    return this._options;
+  getAs() {
+    return this.options.as;
   }
 
   protected getForeignKeyOptions(relatedClass: typeof Model,

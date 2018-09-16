@@ -21,7 +21,6 @@
     "only-arrow-functions": false,
     "typedef": [
       true,
-      "call-signature",
       "parameter"
     ],
     "no-var-requires": false,

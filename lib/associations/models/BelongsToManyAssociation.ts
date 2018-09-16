@@ -12,16 +12,16 @@ import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
 export class BelongsToManyAssociation extends BaseAssociation {
 
   constructor(associatedClassGetter: ModelClassGetter,
-              private options: IAssociationOptionsBelongsToMany) {
-    super(associatedClassGetter);
+              protected options: IAssociationOptionsBelongsToMany) {
+    super(associatedClassGetter, options);
   }
 
   getAssociation(): Association {
     return Association.BelongsToMany;
   }
 
-  protected getPreparedOptions(modelClass: typeof Model,
-                               sequelize: SequelizeImpl): AssociationOptions {
+  getSequelizeOptions(modelClass: typeof Model,
+                      sequelize: SequelizeImpl): AssociationOptions {
     const options: IPreparedAssociationOptionsBelongsToMany = {...this.options as any};
     const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(modelClass, sequelize);
@@ -44,11 +44,12 @@ export class BelongsToManyAssociation extends BaseAssociation {
       const throughModelClass = model();
       if (!throughModelClass.isInitialized) {
         throw new ModelNotInitializedError(throughModelClass, {
-          cause: 'before association can be resolved.'
+          cause: 'before association can be resolved.',
         });
       }
       throughOptions.model = throughModelClass;
     } else if (typeof model === 'string') {
+      // TODO@robin: Keep using strings instead of generating a through model?
       if (!sequelize.throughMap[model]) {
         const throughModel = sequelize.getThroughModel(model);
         sequelize.addModels([throughModel]);
