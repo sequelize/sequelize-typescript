@@ -1,5 +1,5 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull, Unique} from "../../index";
-import {IsInt} from '../../lib/validation/annotations/IsInt';
+import {IsInt} from '../../lib/validation/is-int';
 import {Length} from '../../lib/validation';
 
 @Table
