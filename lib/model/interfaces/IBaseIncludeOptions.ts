@@ -34,9 +34,29 @@ export interface IBaseIncludeOptions {
   required?: boolean;
 
   /**
+   * Avoid cartesian product with assocations
+   */
+  duplicating?: boolean;
+
+  /**
    * Through Options
    */
   through?: IncludeThroughOptions;
 
   all?: boolean | string;
+  
+  /**
+   * Enables ON clauses as per https://github.com/sequelize/sequelize/issues/5551#issuecomment-193890421
+   * @example
+   * on: {
+   *   '$table1.itemId$': {$col: 'table2.itemId'},
+   *   '$table1.typeId$': {$col: 'table2.typeId'}
+   * }
+   */
+  on?: any;
+
+  /**
+   * limit the returned array option
+   */
+  limit?: number;
 }

@@ -1,4 +1,5 @@
 import {Options} from 'sequelize';
+import {ModelMatch} from '../types/SequelizeOptions';
 
 export interface ISequelizeDeprecatedOptions extends Options {
 
@@ -22,6 +23,12 @@ export interface ISequelizeDeprecatedOptions extends Options {
    * @deprecated
    */
   modelPaths?: string[];
+
+  /**
+   * Matches models by filename using a custom function.
+   * @default (filename, member) => filename === member
+   */
+  modelMatch?: ModelMatch;
 
   /**
    * Makes it possible to use sequelize for validation only

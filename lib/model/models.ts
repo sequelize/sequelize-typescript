@@ -2,12 +2,13 @@ import 'reflect-metadata';
 import * as glob from 'glob';
 import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
-import {Model} from "./models/Model";
-import {IPartialDefineAttributeColumnOptions} from "./interfaces/IPartialDefineAttributeColumnOptions";
-import {deepAssign} from "../common/utils/object";
-import {getAssociationsByRelation} from "../associations/association";
-import {uniqueFilter} from "../common/utils/array";
+import {IPartialDefineAttributeColumnOptions} from './interfaces/IPartialDefineAttributeColumnOptions';
+import {deepAssign} from '../common/utils/object';
 import {inferDataType} from '../sequelize/data-type';
+import {getAssociationsByRelation} from '../associations/association';
+import {uniqueFilter} from '../common/utils/array';
+import {Model} from './models/Model';
+import {ModelMatch} from '../sequelize/types/SequelizeOptions';
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
@@ -15,6 +16,33 @@ const OPTIONS_KEY = 'sequelize:options';
 export const DEFAULT_DEFINE_OPTIONS: DefineOptions<any> = {
   timestamps: false,
   freezeTableName: true
+};
+export const PROPERTY_LINK_TO_ORIG = '__origClass';
+
+/**
+ * Indicates which static methods of Model has to be proxied,
+ * to prepare include option to automatically resolve alias;
+ * The index represents the index of the options of the
+ * corresponding method parameter
+ */
+export const INFER_ALIAS_MAP = {
+  bulkBuild: 1,
+  build: 1,
+  create: 1,
+  aggregate: 2,
+  all: 0,
+  find: 0,
+  findAll: 0,
+  findAndCount: 0,
+  findAndCountAll: 0,
+  findById: 1,
+  findByPrimary: 1,
+  findCreateFind: 0,
+  findOne: 0,
+  findOrBuild: 0,
+  findOrCreate: 0,
+  findOrInitialize: 0,
+  reload: 0,
 };
 
 /**
@@ -123,14 +151,10 @@ export function addOptions(target: any, options: DefineOptions<any>): void {
   if (!_options) {
     _options = {};
   }
-  setOptions(target, {
-    ..._options,
-    ...options,
-    validate: {
-      ...(_options.validate || {}),
-      ...(options.validate || {}),
-    },
-  });
+  setOptions(target, {..._options, ...options, validate: {
+    ...(_options.validate || {}),
+    ...(options.validate || {}),
+  }});
 }
 
 /**
@@ -154,7 +178,10 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
 /**
  * Determines models from value
  */
-export function getModels(arg: Array<typeof Model | string>): Array<typeof Model> {
+export function getModels(
+  arg: Array<typeof Model | string>,
+  modelMatch: ModelMatch,
+): Array<typeof Model> {
 
   if (arg && typeof arg[0] === 'string') {
 
@@ -169,13 +196,16 @@ export function getModels(arg: Array<typeof Model | string>): Array<typeof Model
         .map(fullPath => {
 
           const module = require(fullPath);
-          const fileName = getFilenameWithoutExtension(fullPath);
+          const fileName = path.basename(fullPath);
 
-          if (!module[fileName] && !module.default) {
+          const matchedMemberKey = Object.keys(module).find(m => modelMatch(fileName, m));
+          const matchedMember = matchedMemberKey ? module[matchedMemberKey] : undefined;
+
+          if (!matchedMember && !module.default) {
             throw new Error(`No default export defined for file "${fileName}" or ` +
               `export does not satisfy filename.`);
           }
-          return module[fileName] || module.default;
+          return matchedMember || module.default;
         });
 
       models.push(..._models);
@@ -220,6 +250,7 @@ export function resolveModelGetter(options: any): void {
  * Pre conform includes, so that "as" value can be inferred from source
  */
 export function inferAlias(options: any, source: any): any {
+
   options = {...options};
 
   if (!options.include) {
@@ -233,8 +264,12 @@ export function inferAlias(options: any, source: any): any {
     return options;
   }
 
-  options.include = options.include.map((include) =>
-    inferAliasForInclude(include, source));
+  // convert all included elements to { model: Model } form
+  options.include = options.include.map((include) => {
+    include = inferAliasForInclude(include, source);
+
+    return include;
+  });
 
   return options;
 }
@@ -253,7 +288,7 @@ function inferAliasForInclude(include: any, source: any): any {
       include = {model: include};
     }
 
-    const targetPrototype = source.prototype || source;
+    const targetPrototype = (source[PROPERTY_LINK_TO_ORIG] || source).prototype || source;
     const relatedClass = include.model;
     const associations = getAssociationsByRelation(targetPrototype, relatedClass);
 
@@ -280,13 +315,6 @@ function inferAliasForInclude(include: any, source: any): any {
 function isImportable(file: string): boolean {
   const filePart = file.slice(-3);
   return filePart === '.js' || (filePart === '.ts' && file.slice(-5) !== '.d.ts');
-}
-
-/**
- * Removes extension of specified filename and returns this value
- */
-function getFilenameWithoutExtension(file: string): string {
-  return path.parse(file).name;
 }
 
 /**

@@ -660,10 +660,10 @@ describe('model', () => {
       class Product extends Model<Product> {
 
         @Column({
-          get(): string {
+          get(this: Product): string {
             return 'answer = ' + this.getDataValue('price');
           },
-          set(value: number): any {
+          set(this: Product, value: number): any {
             return this.setDataValue('price', value + 42);
           }
         })
@@ -728,14 +728,14 @@ describe('model', () => {
       class Product extends Model<Product> {
 
         @Column({
-          set(value: number): void {
+          set(this: Product, value: number): void {
             this.setDataValue('price1', value * 10);
           }
         })
         price1: number;
 
         @Column({
-          get(): any {
+          get(this: Product): any {
             return this.getDataValue('price2') * 10;
           }
         })
@@ -777,6 +777,8 @@ describe('model', () => {
 
         @Table
         class Tag extends Model<Tag> {
+
+          id: number;
 
           @Column
           name: string;
@@ -846,6 +848,8 @@ describe('model', () => {
         @Table
         class Tag extends Model<Tag> {
 
+          id: number;
+
           @Column
           name: string;
 
@@ -855,6 +859,8 @@ describe('model', () => {
 
         @Table
         class User extends Model<User> {
+
+          id: number;
 
           @Column
           firstName: string;
@@ -880,13 +886,13 @@ describe('model', () => {
           followers: [
             {
               id: 1,
-              first_name: 'Mick',
-              last_name: 'Hansen'
+              firstName: 'Mick',
+              lastName: 'Hansen'
             },
             {
               id: 2,
-              first_name: 'Jan',
-              last_name: 'Meier'
+              firstName: 'Jan',
+              lastName: 'Meier'
             }
           ]
         }, {

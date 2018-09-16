@@ -20,6 +20,11 @@ export interface ICountOptions<T> extends LoggingOptions, SearchPathOptions {
   include?: Array<typeof Model | IIncludeOptions>;
 
   /**
+   * Apply column on which COUNT() should be applied
+   */
+  col?: string;
+
+  /**
    * Apply COUNT(DISTINCT(col))
    */
   distinct?: boolean;

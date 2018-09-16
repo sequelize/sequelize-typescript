@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
 import {Sequelize} from './Sequelize';
 import {Model} from "../../model/models/Model";
-import {SequelizeOptions} from "../types/SequelizeOptions";
+import {ModelMatch, SequelizeOptions} from "../types/SequelizeOptions";
 import {getAttributes, getModelName, getModels, getOptions} from "../../model/models";
 import {Table} from "../../model/annotations/Table";
 import {installHooks} from '../../hooks/hooks';
@@ -18,6 +18,7 @@ export class SequelizeImpl extends _OriginSequelize {
 
   throughMap: { [through: string]: any };
   models: { [modelName: string]: typeof Model };
+  options: SequelizeOptions;
 
   constructor(options: SequelizeOptions | string) {
     if (typeof options === "string") {
@@ -43,8 +44,14 @@ export class SequelizeImpl extends _OriginSequelize {
     if (deprecatedOptions.modelPaths) this.addModels(deprecatedOptions.modelPaths);
   }
 
-  addModels(arg: string[] | Array<typeof Model>): void {
-    const models = getModels(arg);
+
+  addModels(models: Array<typeof Model>): void;
+  addModels(modelPaths: string[]): void;
+  addModels(modelPaths: string[], modelMatch?: ModelMatch): void;
+  addModels(arg: Array<typeof Model | string>): void
+  addModels(arg: Array<typeof Model | string>, modelMatch?: ModelMatch): void {
+    const defaultModelMatch = (filename, member) => filename === member;
+    const models = getModels(arg, modelMatch || this.options.modelMatch || defaultModelMatch);
 
     this.defineModels(models);
     this.associateModels(models);

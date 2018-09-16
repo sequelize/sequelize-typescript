@@ -47,7 +47,7 @@ import {
   where
 } from 'sequelize';
 import {Model} from "../../model/models/Model";
-import {SequelizeOptions} from "../types/SequelizeOptions";
+import {ModelMatch, SequelizeOptions} from "../types/SequelizeOptions";
 import {Namespace} from 'continuation-local-storage';
 import {Hooks} from '../../hooks/models/Hooks';
 import {IQueryOptions} from '../interfaces/IQueryOptions';
@@ -650,4 +650,7 @@ export declare class Sequelize extends Hooks {
 
   addModels(models: Array<typeof Model>): void;
   addModels(modelPaths: string[]): void;
+  addModels(modelPaths: string[], modelMatch?: ModelMatch): void;
+  addModels(arg: Array<typeof Model | string>): void
+  addModels(arg: Array<typeof Model | string>, modelMatch?: ModelMatch): void
 }

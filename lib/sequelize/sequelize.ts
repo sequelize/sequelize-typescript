@@ -10,21 +10,21 @@ export function hasSequelizeUri(obj: any): obj is ISequelizeUriOptions {
 /**
  * Prepares sequelize config passed to original sequelize constructor
  */
-export function prepareOptions(config: SequelizeOptions): SequelizeOptions {
-  if (!config.define) {
-    config.define = {};
+export function prepareOptions(options: SequelizeOptions): SequelizeOptions {
+  if (!options.define) {
+    options.define = {};
   }
-  config.define = {...DEFAULT_DEFINE_OPTIONS, ...config.define};
+  options.define = {...DEFAULT_DEFINE_OPTIONS, ...options.define};
 
-  if (config.validateOnly) {
-    return getValidationOnlyConfig(config);
+  if (options.validateOnly) {
+    return getValidationOnlyOptions(options);
   }
-  return {...config as SequelizeOptions};
+  return {...options as SequelizeOptions};
 }
 
-function getValidationOnlyConfig(config: SequelizeOptions): ISequelizeOptions {
+function getValidationOnlyOptions(options: SequelizeOptions): ISequelizeOptions {
   return {
-    ...config,
+    ...options,
     database: '_name_',
     username: '_username_',
     password: '_password_',
