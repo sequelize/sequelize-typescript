@@ -34,7 +34,7 @@ import {ICountOptions} from '../interfaces/ICountOptions';
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {FilteredModelAttributes} from '../types/FilteredModelAttributes';
 import {NonAbstractTypeOfModel} from '../types/NonAbstractTypeOfModel';
-import {Hooks} from '../../hooks/models/Hooks';
+import {Hooks} from '../../hooks/shared/hooks';
 import {FilteredModelAttributeKeys} from '../types/FilteredModelAttributeKeys';
 import {IAssociationGetOptions} from '../interfaces/IAssociationGetOptions';
 import {IAssociationCountOptions} from '../interfaces/IAssociationCountOptions';

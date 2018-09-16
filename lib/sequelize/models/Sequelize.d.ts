@@ -49,7 +49,7 @@ import {
 import {Model} from "../../model/models/Model";
 import {ModelMatch, SequelizeOptions} from "../types/SequelizeOptions";
 import {Namespace} from 'continuation-local-storage';
-import {Hooks} from '../../hooks/models/Hooks';
+import {Hooks} from '../../hooks/shared/hooks';
 import {IQueryOptions} from '../interfaces/IQueryOptions';
 
 /**

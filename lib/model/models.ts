@@ -5,7 +5,6 @@ import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {IPartialDefineAttributeColumnOptions} from './interfaces/IPartialDefineAttributeColumnOptions';
 import {deepAssign} from '../common/utils/object';
 import {inferDataType} from '../sequelize/data-type';
-import {getAssociationsByRelation} from '../associations/shared/association-service';
 import {uniqueFilter} from '../common/utils/array';
 import {Model} from './models/Model';
 import {ModelMatch} from '../sequelize/types/SequelizeOptions';
@@ -16,33 +15,6 @@ const OPTIONS_KEY = 'sequelize:options';
 export const DEFAULT_DEFINE_OPTIONS: DefineOptions<any> = {
   timestamps: false,
   freezeTableName: true
-};
-export const PROPERTY_LINK_TO_ORIG = '__origClass';
-
-/**
- * Indicates which static methods of Model has to be proxied,
- * to prepare include option to automatically resolve alias;
- * The index represents the index of the options of the
- * corresponding method parameter
- */
-export const INFER_ALIAS_MAP = {
-  bulkBuild: 1,
-  build: 1,
-  create: 1,
-  aggregate: 2,
-  all: 0,
-  find: 0,
-  findAll: 0,
-  findAndCount: 0,
-  findAndCountAll: 0,
-  findById: 1,
-  findByPrimary: 1,
-  findCreateFind: 0,
-  findOne: 0,
-  findOrBuild: 0,
-  findOrCreate: 0,
-  findOrInitialize: 0,
-  reload: 0,
 };
 
 /**
@@ -244,68 +216,6 @@ export function resolveModelGetter(options: any): void {
         resolveModelGetter(value);
       }
     });
-}
-
-/**
- * Pre conform includes, so that "as" value can be inferred from source
- */
-export function inferAlias(options: any, source: any): any {
-
-  options = {...options};
-
-  if (!options.include) {
-    return options;
-  }
-  // if include is not an array, wrap in an array
-  if (!Array.isArray(options.include)) {
-    options.include = [options.include];
-  } else if (!options.include.length) {
-    delete options.include;
-    return options;
-  }
-
-  // convert all included elements to { model: Model } form
-  options.include = options.include.map((include) => {
-    include = inferAliasForInclude(include, source);
-
-    return include;
-  });
-
-  return options;
-}
-
-/**
- * Pre conform include, so that alias ("as") value can be inferred from source class
- */
-function inferAliasForInclude(include: any, source: any): any {
-  const hasModelOptionWithoutAsOption = !!(include.model && !include.as);
-  const hasIncludeOptions = !!include.include;
-  const isConstructorFn = include instanceof Function;
-
-  if (isConstructorFn || hasModelOptionWithoutAsOption) {
-
-    if (isConstructorFn) {
-      include = {model: include};
-    }
-
-    const targetPrototype = (source[PROPERTY_LINK_TO_ORIG] || source).prototype || source;
-    const relatedClass = include.model;
-    const associations = getAssociationsByRelation(targetPrototype, relatedClass);
-
-    if (associations.length > 0) {
-      if (associations.length > 1) {
-        throw new Error(`Alias cannot be inferred: "${source.name}" has multiple ` +
-          `relations with "${include.model.name}"`);
-      }
-      include.as = associations[0].getAs();
-    }
-  }
-
-  if (!isConstructorFn && hasIncludeOptions) {
-    include = inferAlias(include, include.model);
-  }
-
-  return include;
 }
 
 /**

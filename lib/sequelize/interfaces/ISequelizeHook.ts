@@ -1,7 +1,7 @@
-import {IHookOptions} from "../../hooks/interfaces/IHookOptions";
+import {HookOptions} from "../../hooks/shared/hook-options";
 
 export interface ISequelizeHook {
   hookType: string;
   methodName: string;
-  options?: IHookOptions;
+  options?: HookOptions;
 }

@@ -2,7 +2,7 @@ import {Model as SeqModel} from 'sequelize';
 import * as Promise from 'bluebird';
 import {IDummyConstructor} from "../../common/interfaces/IDummyConstructor";
 import {capitalize} from '../../common/utils/string';
-import {inferAlias} from '../models';
+import {inferAlias} from '../../associations/alias-inference/alias-inference-service';
 import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
 import {IFindOptions} from '..';
 import {AssociationActionOptions} from '../../associations/shared/association-action-options';

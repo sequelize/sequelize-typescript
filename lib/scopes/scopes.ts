@@ -4,7 +4,8 @@ import {deepAssign} from "../common/utils/object";
 import {IScopeOptions} from "./interfaces/IScopeOptions";
 import {IFindOptions} from "../model/interfaces/IFindOptions";
 import {IScopeFindOptions} from "./interfaces/IScopeFindOptions";
-import {inferAlias, resolveModelGetter} from '../model/models';
+import {resolveModelGetter} from '../model/models';
+import {inferAlias} from '../associations/alias-inference/alias-inference-service';
 
 const SCOPES_KEY = 'sequelize:scopes';
 
