@@ -1,16 +1,15 @@
 import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
-import {Sequelize} from './Sequelize';
-import {Model} from "../../model";
-import {ModelMatch, SequelizeOptions} from "../types/SequelizeOptions";
+import {Sequelize} from './sequelize';
+import {Model} from "../../model/index";
+import {ModelMatch, SequelizeOptions} from "../sequelize-options/sequelize-options";
 import {getModelName, getModels, getOptions} from "../../model/shared/model-service";
-import {installHooks} from '../../hooks';
-import {getAssociations} from '../../associations';
-import {resolveScopes} from '../../scopes/scope/scope-service';
-import {hasSequelizeUri, prepareOptions} from '../sequelize';
-import {ISequelizeOptions} from '..';
-import {ISequelizeDeprecatedOptions} from '../interfaces/ISequelizeDeprecatedOptions';
+import {installHooks} from '../../hooks/index';
+import {getAssociations} from '../../associations/index';
+import {resolveScopes} from '../../scopes/shared/scope-service';
+import {hasSequelizeUri, prepareOptions} from './sequelize-service';
 import {getAttributes} from '../../model/column/attribute-service';
+import {SequelizeNonUriOptions} from '../sequelize-options/sequelize-non-uri-options';
 
 export const _OriginSequelize = OriginSequelize as any as typeof Sequelize;
 
@@ -38,10 +37,9 @@ export class SequelizeImpl extends _OriginSequelize {
   }
 
   init(options: SequelizeOptions): void {
-    const sequelizeOptions = options as ISequelizeOptions;
-    const deprecatedOptions = options as ISequelizeDeprecatedOptions;
+    const sequelizeOptions = options as SequelizeNonUriOptions;
     if (sequelizeOptions.models) this.addModels(sequelizeOptions.models);
-    if (deprecatedOptions.modelPaths) this.addModels(deprecatedOptions.modelPaths);
+    if (sequelizeOptions.modelPaths) this.addModels(sequelizeOptions.modelPaths);
   }
 
 

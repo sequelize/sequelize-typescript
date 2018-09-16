@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import {addScopeOptions} from "./scope/scope-service";
-import {ScopeTableOptions} from "./scope/scope-table-options";
+import {addScopeOptions} from "./shared/scope-service";
+import {ScopeTableOptions} from "./shared/scope-table-options";
 
 /**
  * Sets scopes for annotated class

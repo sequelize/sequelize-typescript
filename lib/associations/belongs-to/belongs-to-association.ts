@@ -4,7 +4,7 @@ import {AssociationOptions} from '../shared/association-options';
 import {ModelClassGetter} from '../../model/shared/model-class-getter';
 import {AssociationOptionsBelongsTo} from 'sequelize';
 import {Association} from '../shared/association';
-import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
+import {SequelizeImpl} from '../../sequelize/shared/sequelize-impl';
 
 export class BelongsToAssociation extends BaseAssociation {
 

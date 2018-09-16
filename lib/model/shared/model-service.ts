@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import * as glob from 'glob';
 import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
-import {inferDataType} from '../../sequelize/data-type';
+import {inferDataType} from '../../sequelize/data-type/data-type-service';
 import {uniqueFilter} from '../../common/utils/array';
 import {Model} from '../model/model';
-import {ModelMatch} from '../../sequelize/types/SequelizeOptions';
+import {ModelMatch} from '../../sequelize/sequelize-options/sequelize-options';
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const OPTIONS_KEY = 'sequelize:options';

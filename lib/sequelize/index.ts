@@ -1,11 +1,12 @@
-// enums
-export {DataType} from './enums/DataType';
-
-// interfaces
-export {ISequelizeOptions} from './interfaces/ISequelizeOptions';
-export {ISequelizeUriOptions} from './interfaces/ISequelizeUriOptions';
-export {ISequelizeForeignKeyConfig} from './interfaces/ISequelizeForeignKeyConfig';
-export {ISequelizeValidationOnlyOptions} from './interfaces/ISequelizeValidationOnlyConfig';
-
-// models
-export {Sequelize} from './models/Sequelize';
+export * from './data-type/data-type';
+export * from './data-type/data-type-service';
+export * from './sequelize-options/base-sequelize-options';
+export * from './sequelize-options/query-options';
+export * from './sequelize-options/sequelize-options';
+export * from './sequelize-options/sequelize-non-uri-options';
+export * from './sequelize-options/sequelize-uri-options';
+export * from './validation-only/db-dialect-dummy';
+export * from './validation-only/sequelize-validation-only-options';
+export * from './shared/sequelize';
+export * from './shared/sequelize-impl';
+export * from './shared/sequelize-service';

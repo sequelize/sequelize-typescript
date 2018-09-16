@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {Model} from "../../model/";
-import {ISequelizeHook} from "../../sequelize/interfaces/ISequelizeHook";
+import {HookMeta} from "./hook-meta";
 import {HookOptions} from "./hook-options";
 
 const HOOKS_KEY = 'sequelize:hooks';
@@ -73,7 +73,7 @@ export function addHook(target: any, hookType: string, methodName: string, optio
 /**
  * Install a hook
  */
-function installHook(model: typeof Model, hook: ISequelizeHook): void {
+function installHook(model: typeof Model, hook: HookMeta): void {
   if (hook.options && hook.options.name) {
     model.addHook(hook.hookType, hook.options.name, model[hook.methodName]);
     return;
@@ -85,7 +85,7 @@ function installHook(model: typeof Model, hook: ISequelizeHook): void {
 /**
  * Returns hooks meta data from specified class
  */
-export function getHooks(target: any): ISequelizeHook[] | undefined {
+export function getHooks(target: any): HookMeta[] | undefined {
   const hooks = Reflect.getMetadata(HOOKS_KEY, target);
   if (hooks) {
     return [...hooks];
@@ -95,6 +95,6 @@ export function getHooks(target: any): ISequelizeHook[] | undefined {
 /**
  * Saves hooks meta data for the specified class
  */
-export function setHooks(target: any, hooks: ISequelizeHook[]): void {
+export function setHooks(target: any, hooks: HookMeta[]): void {
   Reflect.defineMetadata(HOOKS_KEY, hooks, target);
 }

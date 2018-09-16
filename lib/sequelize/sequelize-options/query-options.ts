@@ -6,7 +6,7 @@ import {Model} from '../../model/model/model';
  * https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/sequelize/index.d.ts
  */
 
-export interface IQueryOptions extends SearchPathOptions, ReturningOptions {
+export interface QueryOptions extends SearchPathOptions, ReturningOptions {
 
   /**
    * If true, sequelize will not try to format the results of the query, or build an instance of a model from

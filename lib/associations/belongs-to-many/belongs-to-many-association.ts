@@ -3,7 +3,7 @@ import {AssociationOptions, Association, getThroughModel, PreparedThroughOptions
 import {BelongsToManyAssociationOptions} from './belongs-to-many-association-options';
 import {PreparedBelongsToManyAssociationOptions} from './prepared-belongs-to-many-association-options';
 import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
-import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
+import {SequelizeImpl} from '../../sequelize/shared/sequelize-impl';
 import {BaseAssociation} from '../shared/base-association';
 
 export class BelongsToManyAssociation extends BaseAssociation {

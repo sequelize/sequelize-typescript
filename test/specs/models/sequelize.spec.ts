@@ -312,7 +312,7 @@ describe('sequelize', () => {
     it('should load classes from subfolders matching glob criteria', () => {
       const db = '__';
       const sequelizeGlob = new Sequelize({
-        name: db,
+        database: db,
         dialect: 'sqlite',
         username: 'root',
         password: '',
@@ -330,7 +330,7 @@ describe('sequelize', () => {
     it('should load classes from folders', () => {
       const db = '__';
       const sequelizeFolder = new Sequelize({
-        name: db,
+        database: db,
         dialect: 'sqlite',
         username: 'root',
         password: '',
@@ -348,7 +348,7 @@ describe('sequelize', () => {
     it('should load classes from folders and from glob', () => {
       const db = '__';
       const sequelizeGlobFolder = new Sequelize({
-        name: db,
+        database: db,
         dialect: 'sqlite',
         username: 'root',
         password: '',

@@ -3,7 +3,7 @@ import * as chaiAsPromised from 'chai-as-promised';
 import {useFakeTimers} from 'sinon';
 import {Op} from 'sequelize';
 import {createSequelize} from "../utils/sequelize";
-import {getScopeOptions} from "../../lib/scopes/scope/scope-service";
+import {getScopeOptions} from "../../lib/scopes/shared/scope-service";
 import {ShoeWithScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithScopes";
 import {Manufacturer} from "../models/Manufacturer";
 import {Person} from "../models/Person";

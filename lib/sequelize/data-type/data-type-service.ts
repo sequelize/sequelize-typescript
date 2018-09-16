@@ -1,5 +1,5 @@
 import {DataTypeAbstract} from 'sequelize';
-import {DataType} from './enums/DataType';
+import {DataType} from './data-type';
 
 /*
  * Checks if specified value is a sequelize data type (ABSTRACT, STRING...)

@@ -1,5 +1,5 @@
 import {ModelClassGetter} from '../../model';
-import {ISequelizeForeignKeyConfig} from '../../sequelize';
+import {ForeignKeyMeta} from './foreign-key-meta';
 
 const FOREIGN_KEYS_KEY = 'sequelize:foreignKeys';
 
@@ -23,7 +23,7 @@ export function addForeignKey(target: any,
 /**
  * Returns foreign key meta data from specified class
  */
-export function getForeignKeys(target: any): ISequelizeForeignKeyConfig[] | undefined {
+export function getForeignKeys(target: any): ForeignKeyMeta[] | undefined {
   const foreignKeys = Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
   if (foreignKeys) {
     return [...foreignKeys];

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {DataTypeAbstract} from 'sequelize';
 import {getSequelizeTypeByDesignType} from "../shared/model-service";
 import {ColumnOptions} from "./column-options/column-options";
-import {isDataType} from '../../sequelize/data-type';
+import {isDataType} from '../../sequelize/data-type/data-type-service';
 import {addAttribute} from './attribute-service';
 
 export function Column(dataType: DataTypeAbstract): Function;
