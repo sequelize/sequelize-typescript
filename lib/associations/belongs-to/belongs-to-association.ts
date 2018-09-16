@@ -1,9 +1,9 @@
-import {BaseAssociation} from './BaseAssociation';
+import {BaseAssociation} from '../shared/base-association';
 import {Model} from '../../model/models/Model';
-import {AssociationOptions} from '../interfaces/AssociationOptions';
+import {AssociationOptions} from '../shared/association-options';
 import {ModelClassGetter} from '../../model/types/ModelClassGetter';
 import {AssociationOptionsBelongsTo} from 'sequelize';
-import {Association} from '../enums/Association';
+import {Association} from '../shared/association';
 import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
 
 export class BelongsToAssociation extends BaseAssociation {

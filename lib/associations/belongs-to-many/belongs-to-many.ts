@@ -1,21 +1,21 @@
-import {addAssociation} from "../association";
+import {addAssociation} from "../shared/association-service";
 import {ModelClassGetter} from "../../model/types/ModelClassGetter";
-import {IAssociationOptionsBelongsToMany} from "../interfaces/IAssociationOptionsBelongsToMany";
-import {BelongsToManyAssociation} from '../../associations/models/BelongsToManyAssociation';
+import {BelongsToManyAssociationOptions} from "./belongs-to-many-association-options";
+import {BelongsToManyAssociation} from './belongs-to-many-association';
 
 export function BelongsToMany(associatedClassGetter: ModelClassGetter,
                               through: ModelClassGetter | string,
                               foreignKey?: string,
                               otherKey?: string): Function;
 export function BelongsToMany(associatedClassGetter: ModelClassGetter,
-                              options: IAssociationOptionsBelongsToMany): Function;
+                              options: BelongsToManyAssociationOptions): Function;
 export function BelongsToMany(associatedClassGetter: ModelClassGetter,
-                              throughOrOptions: ModelClassGetter | string | IAssociationOptionsBelongsToMany,
+                              throughOrOptions: ModelClassGetter | string | BelongsToManyAssociationOptions,
                               foreignKey?: string,
                               otherKey?: string): Function {
 
   return (target: any, propertyName: string) => {
-    let options: Partial<IAssociationOptionsBelongsToMany> = {foreignKey, otherKey};
+    let options: Partial<BelongsToManyAssociationOptions> = {foreignKey, otherKey};
 
     if (typeof throughOrOptions === 'string' ||
       typeof throughOrOptions === 'function') {
@@ -28,7 +28,7 @@ export function BelongsToMany(associatedClassGetter: ModelClassGetter,
 
     addAssociation(target, new BelongsToManyAssociation(
       associatedClassGetter,
-      options as IAssociationOptionsBelongsToMany,
+      options as BelongsToManyAssociationOptions,
       )
     );
   };

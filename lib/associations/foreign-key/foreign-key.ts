@@ -1,4 +1,4 @@
-import {addForeignKey} from "../association";
+import {addForeignKey} from "./foreign-key-service";
 import {ModelClassGetter} from "../../model/types/ModelClassGetter";
 
 export function ForeignKey(relatedClassGetter: ModelClassGetter): Function {

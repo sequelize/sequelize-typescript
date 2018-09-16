@@ -6,7 +6,7 @@ import {IPreparedThroughOptions} from '../../model/interfaces/IPreparedThroughOp
  * https://github.com/DefinitelyTyped/DefinitelyTyped/blob/6490e738919a47761850caaeb14517b8af60d2a1/types/sequelize/index.d.ts#L1352
  */
 
-export interface IPreparedAssociationOptionsBelongsToMany extends AssociationOptionsManyToMany {
+export interface PreparedBelongsToManyAssociationOptions extends AssociationOptionsManyToMany {
   through: IPreparedThroughOptions;
   otherKey?: string | AssociationForeignKeyOptions;
 }

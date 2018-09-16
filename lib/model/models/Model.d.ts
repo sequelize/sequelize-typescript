@@ -25,7 +25,7 @@ import {
   ValidationError,
   WhereOptions
 } from 'sequelize';
-import {IAssociationActionOptions} from "../../associations/interfaces/IAssociationActionOptions";
+import {AssociationActionOptions} from "../../associations/shared/association-action-options";
 import {IBuildOptions} from "../interfaces/IBuildOptions";
 import {ICreateOptions} from "../interfaces/ICreateOptions";
 import {IFindOrInitializeOptions} from "../interfaces/IFindOrInitializeOptions";
@@ -528,13 +528,13 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Adds relation between specified instances and source instance
    */
-  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
+  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<this>;
 
   /**
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
+  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<this>;
 
   /**
    * Returns related instance (specified by propertyKey) of source instance
@@ -549,7 +549,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Creates instances and relate them to source instance
    */
-  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R | this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
+  $create<R extends Model<R>>(propertyKey: string, values: any, options?: AssociationActionOptions): Promise<R | this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
 
   /**
    * Checks if specified instances is related to source instance

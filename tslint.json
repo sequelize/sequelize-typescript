@@ -7,7 +7,7 @@
     "unified-signatures": false,
     "no-trailing-whitespace": false,
     "object-literal-sort-keys": false,
-    "interface-name": true,
+    "interface-name": false,
     "no-consecutive-blank-lines": false,
     "trailing-comma": false,
     "ordered-imports": false,

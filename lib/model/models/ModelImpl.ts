@@ -5,7 +5,7 @@ import {capitalize} from '../../common/utils/string';
 import {inferAlias} from '../models';
 import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
 import {IFindOptions} from '..';
-import {IAssociationActionOptions} from '../../associations/interfaces/IAssociationActionOptions';
+import {AssociationActionOptions} from '../../associations/shared/association-action-options';
 import {getAllPropertyNames} from '../../common/utils/object';
 
 export const _SeqModel: IDummyConstructor = (SeqModel as any);
@@ -85,7 +85,7 @@ export class ModelImpl extends _SeqModel {
   /**
    * Adds relation between specified instances and source instance
    */
-  $add(propertyKey: string, instances: any, options?: IAssociationActionOptions): Promise<this> {
+  $add(propertyKey: string, instances: any, options?: AssociationActionOptions): Promise<this> {
 
     return this['add' + capitalize(propertyKey)](instances, options);
   };

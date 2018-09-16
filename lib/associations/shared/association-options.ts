@@ -2,11 +2,11 @@ import {
   AssociationOptionsBelongsTo, AssociationOptionsHasMany,
   AssociationOptionsHasOne, AssociationOptionsManyToMany
 } from 'sequelize';
-import {IPreparedAssociationOptionsBelongsToMany} from './IPreparedAssociationOptionsBelongsToMany';
+import {PreparedBelongsToManyAssociationOptions} from '../belongs-to-many/prepared-belongs-to-many-association-options';
 
 export type AssociationOptions =
   AssociationOptionsBelongsTo |
-  IPreparedAssociationOptionsBelongsToMany |
+  PreparedBelongsToManyAssociationOptions |
   AssociationOptionsHasMany |
   AssociationOptionsHasOne |
   AssociationOptionsManyToMany;

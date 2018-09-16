@@ -5,7 +5,7 @@ import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {IPartialDefineAttributeColumnOptions} from './interfaces/IPartialDefineAttributeColumnOptions';
 import {deepAssign} from '../common/utils/object';
 import {inferDataType} from '../sequelize/data-type';
-import {getAssociationsByRelation} from '../associations/association';
+import {getAssociationsByRelation} from '../associations/shared/association-service';
 import {uniqueFilter} from '../common/utils/array';
 import {Model} from './models/Model';
 import {ModelMatch} from '../sequelize/types/SequelizeOptions';

@@ -1,8 +1,8 @@
 import {AssociationOptionsHasOne} from 'sequelize';
-import {Association} from "../enums/Association";
+import {Association} from "../shared/association";
 import {ModelClassGetter} from "../../model/types/ModelClassGetter";
-import {addAssociation, getPreparedAssociationOptions} from '../association';
-import {HasAssociation} from '../models/HasAssociation';
+import {addAssociation, getPreparedAssociationOptions} from '../shared/association-service';
+import {HasAssociation} from './has-association';
 
 export function HasOne(associatedClassGetter: ModelClassGetter,
                        foreignKey?: string): Function;

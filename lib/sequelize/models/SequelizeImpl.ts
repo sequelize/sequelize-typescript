@@ -6,7 +6,7 @@ import {ModelMatch, SequelizeOptions} from "../types/SequelizeOptions";
 import {getAttributes, getModelName, getModels, getOptions} from "../../model/models";
 import {Table} from "../../model/annotations/Table";
 import {installHooks} from '../../hooks/hooks';
-import {getAssociations} from '../../associations/association';
+import {getAssociations} from '../../associations/shared/association-service';
 import {resolveScopes} from '../../scopes/scopes';
 import {hasSequelizeUri, prepareOptions} from '../sequelize';
 import {ISequelizeOptions} from '../interfaces/ISequelizeOptions';

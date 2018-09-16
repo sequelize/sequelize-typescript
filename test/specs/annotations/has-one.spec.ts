@@ -3,7 +3,7 @@ import * as chaiAsPromised from 'chai-as-promised';
 import {Table} from '../../../lib/model/annotations/Table';
 import {Model} from '../../../lib/model/models/Model';
 import {createSequelize} from '../../utils/sequelize';
-import {HasOne} from '../../../lib/associations/annotations/HasOne';
+import {HasOne} from '../../../lib/associations/has/has-one';
 
 use(chaiAsPromised);
 

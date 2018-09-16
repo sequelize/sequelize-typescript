@@ -1,12 +1,15 @@
-// annotations
-export {BelongsTo} from './annotations/BelongsTo';
-export {BelongsToMany} from './annotations/BelongsToMany';
-export {ForeignKey} from './annotations/ForeignKey';
-export {HasMany} from './annotations/HasMany';
-export {HasOne} from './annotations/HasOne';
-
-// enums
-export {Association} from './enums/Association';
-
-// interfaces
-export {IAssociationActionOptions} from './interfaces/IAssociationActionOptions';
+export * from './belongs-to/belongs-to';
+export * from './belongs-to/belongs-to-association';
+export * from './belongs-to-many/belongs-to-many';
+export * from './belongs-to-many/belongs-to-many-association';
+export * from './belongs-to-many/belongs-to-many-association-options';
+export * from './belongs-to-many/prepared-belongs-to-many-association-options';
+export * from './foreign-key/foreign-key';
+export * from './has/has-association';
+export * from './has/has-one';
+export * from './has/has-many';
+export * from './shared/association';
+export * from './shared/base-association';
+export * from './shared/association-action-options';
+export * from './shared/association-options';
+export * from './shared/association-service';

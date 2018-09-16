@@ -1,18 +1,18 @@
 import {ModelClassGetter} from '../../model/types/ModelClassGetter';
-import {BaseAssociation} from './BaseAssociation';
-import {AssociationOptions} from '../interfaces/AssociationOptions';
+import {BaseAssociation} from '../shared/base-association';
+import {AssociationOptions} from '../shared/association-options';
 import {Model} from '../../model/models/Model';
-import {Association} from '../enums/Association';
-import {IAssociationOptionsBelongsToMany} from '../interfaces/IAssociationOptionsBelongsToMany';
+import {Association} from '../shared/association';
+import {BelongsToManyAssociationOptions} from './belongs-to-many-association-options';
 import {IPreparedThroughOptions} from '../../model/interfaces/IPreparedThroughOptions';
-import {IPreparedAssociationOptionsBelongsToMany} from '../interfaces/IPreparedAssociationOptionsBelongsToMany';
+import {PreparedBelongsToManyAssociationOptions} from './prepared-belongs-to-many-association-options';
 import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
 import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
 
 export class BelongsToManyAssociation extends BaseAssociation {
 
   constructor(associatedClassGetter: ModelClassGetter,
-              protected options: IAssociationOptionsBelongsToMany) {
+              protected options: BelongsToManyAssociationOptions) {
     super(associatedClassGetter, options);
   }
 
@@ -22,7 +22,7 @@ export class BelongsToManyAssociation extends BaseAssociation {
 
   getSequelizeOptions(modelClass: typeof Model,
                       sequelize: SequelizeImpl): AssociationOptions {
-    const options: IPreparedAssociationOptionsBelongsToMany = {...this.options as any};
+    const options: PreparedBelongsToManyAssociationOptions = {...this.options as any};
     const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(modelClass, sequelize);
 
