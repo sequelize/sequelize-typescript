@@ -1,4 +1,4 @@
-import {ModelClassGetter} from '../../model/shared/model-class-getter';
+import {ModelClassGetter} from '../../../model/shared/model-class-getter';
 
 /**
  * Based on "IncludeAssociation" type definitions from:
@@ -8,7 +8,7 @@ import {ModelClassGetter} from '../../model/shared/model-class-getter';
 /**
  * Association Object for Include Options
  */
-export interface IScopeIncludeAssociation {
+export interface ScopeIncludeAssociationOptions {
   source: ModelClassGetter;
   target: ModelClassGetter;
   identifier: string;

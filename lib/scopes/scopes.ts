@@ -1,67 +1,14 @@
 import 'reflect-metadata';
-import {Model} from "../model/model/model";
-import {deepAssign} from "../common/utils/object";
-import {IScopeOptions} from "./interfaces/IScopeOptions";
-import {FindOptions} from "../model/model/build-count-create-find/find-options";
-import {IScopeFindOptions} from "./interfaces/IScopeFindOptions";
-import {resolveModelGetter} from '../model/shared/model-service';
-import {inferAlias} from '../associations/alias-inference/alias-inference-service';
-
-const SCOPES_KEY = 'sequelize:scopes';
+import {addScopeOptions} from "./scope/scope-service";
+import {ScopeTableOptions} from "./scope/scope-table-options";
 
 /**
- * Resolves scopes and adds them to the specified models
+ * Sets scopes for annotated class
  */
-export function resolveScopes(models: Array<typeof Model>): void {
-  models.forEach(model => {
-    const options = getScopeOptions(model.prototype);
+export function Scopes(scopes: ScopeTableOptions): Function {
 
-    if (options) {
-      Object
-        .keys(options)
-        .forEach(key => resolveScope(key, model, options[key]));
-    }
-  });
-}
+  return (target: any) => {
 
-/**
- * Adds scope option meta data for specified prototype
- */
-export function addScopeOptions(target: any, options: IScopeOptions): void {
-  const _options = getScopeOptions(target) || {};
-
-  setScopeOptions(target, deepAssign({}, _options, options));
-}
-
-/**
- * Returns scope option meta data from specified target
- */
-export function getScopeOptions(target: any): IScopeOptions | undefined {
-  const options = Reflect.getMetadata(SCOPES_KEY, target);
-
-  if (options) {
-    return deepAssign({}, options);
-  }
-}
-
-/**
- * Resolves scope
- */
-function resolveScope(scopeName: string, model: typeof Model, options: IScopeFindOptions | Function | undefined): void {
-  resolveModelGetter(options);
-  if (typeof options === 'function') {
-    const fn: Function = options;
-    options = (...args: any[]) => inferAlias(fn(...args), model);
-  } else {
-    options = inferAlias(options, model);
-  }
-  model.addScope(scopeName, options as FindOptions<any>, {override: true});
-}
-
-/**
- * Set scope option meta data for specified prototype
- */
-function setScopeOptions(target: any, options: IScopeOptions): void {
-
-  Reflect.defineMetadata(SCOPES_KEY, options, target);
+    addScopeOptions(target.prototype, scopes);
+  };
 }

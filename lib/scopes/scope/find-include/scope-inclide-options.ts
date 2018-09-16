@@ -1,6 +1,6 @@
-import {IScopeIncludeAssociation} from "./IScopeIncludeAssociation";
-import {ModelClassGetter} from "../../model/shared/model-class-getter";
-import {BaseIncludeOptions} from "../../model/model/include/base-include-options";
+import {ScopeIncludeAssociationOptions} from "./scope-include-association-options";
+import {ModelClassGetter} from "../../../model/shared/model-class-getter";
+import {BaseIncludeOptions} from "../../../model/model/include/base-include-options";
 
 /**
  * Based on "IncludeOptions" type definitions from:
@@ -10,7 +10,7 @@ import {BaseIncludeOptions} from "../../model/model/include/base-include-options
 /**
  * Complex include options
  */
-export interface IScopeIncludeOptions extends BaseIncludeOptions {
+export interface ScopeInclideOptions extends BaseIncludeOptions {
 
   /**
    * The model you want to eagerly load
@@ -20,11 +20,11 @@ export interface IScopeIncludeOptions extends BaseIncludeOptions {
   /**
    * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
    */
-  association?: IScopeIncludeAssociation;
+  association?: ScopeIncludeAssociationOptions;
 
   /**
    * Load further nested related models
    */
-  include?: Array<ModelClassGetter | IScopeIncludeOptions>;
+  include?: Array<ModelClassGetter | ScopeInclideOptions>;
 
 }

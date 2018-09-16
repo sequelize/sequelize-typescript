@@ -1,7 +1,7 @@
 import {WhereOptions, LoggingOptions, SearchPathOptions, col, and, or, literal} from 'sequelize';
-import {IScopeIncludeOptions} from "./IScopeIncludeOptions";
-import {ModelClassGetter} from "../../model/shared/model-class-getter";
-import {FindOptionsAttributesArray} from '../../model/model/build-count-create-find/find-options-attributes-array';
+import {ScopeInclideOptions} from "./scope-inclide-options";
+import {ModelClassGetter} from "../../../model/shared/model-class-getter";
+import {FindOptionsAttributesArray} from '../../../model/model/build-count-create-find/find-options-attributes-array';
 
 /**
  * Based on "FindOptions" type definitions from:
@@ -11,7 +11,7 @@ import {FindOptionsAttributesArray} from '../../model/model/build-count-create-f
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
 
-export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
+export interface ScopeFindOptions extends LoggingOptions, SearchPathOptions {
 
   /**
    * A hash of attributes to describe your search. See above for examples.
@@ -38,7 +38,7 @@ export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
    * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
    * the as attribute when eager loading Y).
    */
-  include?: Array<ModelClassGetter | IScopeIncludeOptions>;
+  include?: Array<ModelClassGetter | ScopeInclideOptions>;
 
   /**
    * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
