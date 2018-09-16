@@ -1,4 +1,4 @@
-import {deepAssign} from '../../common/utils/object';
+import {deepAssign} from '../../shared/object';
 import {ColumnOptions} from './column-options/column-options';
 
 const ATTRIBUTES_KEY = 'sequelize:attributes';

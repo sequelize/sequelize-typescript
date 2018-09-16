@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {capitalize} from '../../lib/common/utils/string';
+import {capitalize} from '../../lib/shared/string';
 
 /**
  * Checks auto generated functions on targets prototype

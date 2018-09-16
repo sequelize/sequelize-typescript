@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {Model} from "../../model/model/model";
-import {deepAssign} from "../../common/utils/object";
+import {deepAssign} from "../../shared/object";
 import {ScopeOptions} from "./scope-options";
 import {FindOptions} from "../../model/model/build-count-create-find/find-options";
 import {ScopeFindOptions} from "./find-include/scope-find-options";

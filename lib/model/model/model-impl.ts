@@ -1,14 +1,14 @@
 import {Model as SeqModel} from 'sequelize';
 import * as Promise from 'bluebird';
-import {IDummyConstructor} from "../../common/interfaces/IDummyConstructor";
-import {capitalize} from '../../common/utils/string';
+import {DummyConstructor} from "../shared/dummy-constructor";
+import {capitalize} from '../../shared/string';
 import {inferAlias} from '../../associations/alias-inference/alias-inference-service';
-import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
+import {ModelNotInitializedError} from '../shared/model-not-initialized-error';
 import {FindOptions} from '../index';
 import {AssociationActionOptions} from '../../associations/shared/association-action-options';
-import {getAllPropertyNames} from '../../common/utils/object';
+import {getAllPropertyNames} from '../../shared/object';
 
-export const _SeqModel: IDummyConstructor = (SeqModel as any);
+export const _SeqModel: DummyConstructor = (SeqModel as any);
 
 /**
  * Indicates which static methods of Model has to be proxied,

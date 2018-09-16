@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {deepAssign} from '../../../lib/common/utils/object';
+import {deepAssign} from '../../../lib/shared/object';
 
 /* tslint:disable:max-classes-per-file */
 

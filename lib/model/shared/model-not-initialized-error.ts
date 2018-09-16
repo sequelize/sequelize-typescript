@@ -1,4 +1,4 @@
-import {Model} from '../../model/model/model';
+import {Model} from '../model/model';
 
 export type ModelNotInitializedErrorOptions = { cause: string } | { accessedPropertyKey: string };
 

@@ -3,7 +3,7 @@ import * as glob from 'glob';
 import * as path from 'path';
 import {DataTypeAbstract, DefineOptions} from 'sequelize';
 import {inferDataType} from '../../sequelize/data-type/data-type-service';
-import {uniqueFilter} from '../../common/utils/array';
+import {uniqueFilter} from '../../shared/array';
 import {Model} from '../model/model';
 import {ModelMatch} from '../../sequelize/sequelize-options/sequelize-options';
 

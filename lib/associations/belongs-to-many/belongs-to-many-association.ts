@@ -2,7 +2,7 @@ import {ModelClassGetter, Model} from '../../model';
 import {AssociationOptions, Association, getThroughModel, PreparedThroughOptions} from '..';
 import {BelongsToManyAssociationOptions} from './belongs-to-many-association-options';
 import {PreparedBelongsToManyAssociationOptions} from './prepared-belongs-to-many-association-options';
-import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
+import {ModelNotInitializedError} from '../../model/shared/model-not-initialized-error';
 import {SequelizeImpl} from '../../sequelize/shared/sequelize-impl';
 import {BaseAssociation} from '../shared/base-association';
 

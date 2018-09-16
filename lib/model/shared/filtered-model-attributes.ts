@@ -1,5 +1,5 @@
 import {Model} from '../model/model';
-import {Omit, RecursivePartial} from '../../common/utils/types';
+import {Omit, RecursivePartial} from '../../shared/types';
 
 export type FilteredModelAttributes<T extends Model<T>> =
   RecursivePartial<Omit<T, keyof Model<any>>> & {

@@ -4,7 +4,7 @@ import {Model} from '../../model/model/model';
 import {AssociationForeignKeyOptions} from 'sequelize';
 import {Association} from './association';
 import {ModelClassGetter} from '../../model/shared/model-class-getter';
-import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
+import {ModelNotInitializedError} from '../../model/shared/model-not-initialized-error';
 import {SequelizeImpl} from '../../sequelize/shared/sequelize-impl';
 
 export abstract class BaseAssociation {
