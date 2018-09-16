@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {addAttributeOptions} from "../../model/models";
+import {addAttributeOptions} from "../../model/column/attribute-service";
 
 /**
  * Only allow values with length between min and max

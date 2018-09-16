@@ -1,13 +1,10 @@
-import {ModelClassGetter} from '../../model/types/ModelClassGetter';
-import {BaseAssociation} from '../shared/base-association';
-import {AssociationOptions} from '../shared/association-options';
-import {Model} from '../../model/models/Model';
-import {Association} from '../shared/association';
+import {ModelClassGetter, Model} from '../../model';
+import {AssociationOptions, Association, getThroughModel, PreparedThroughOptions} from '..';
 import {BelongsToManyAssociationOptions} from './belongs-to-many-association-options';
-import {IPreparedThroughOptions} from '../../model/interfaces/IPreparedThroughOptions';
 import {PreparedBelongsToManyAssociationOptions} from './prepared-belongs-to-many-association-options';
 import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
 import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
+import {BaseAssociation} from '../shared/base-association';
 
 export class BelongsToManyAssociation extends BaseAssociation {
 
@@ -34,10 +31,10 @@ export class BelongsToManyAssociation extends BaseAssociation {
   }
 
   private getThroughOptions(modelClass: typeof Model,
-                            sequelize: SequelizeImpl): IPreparedThroughOptions {
+                            sequelize: SequelizeImpl): PreparedThroughOptions {
     const through = this.options.through;
     const model = typeof through === 'object' ? through.model : through;
-    const throughOptions: IPreparedThroughOptions =
+    const throughOptions: PreparedThroughOptions =
       typeof through === 'object' ? {...through} : {} as any;
 
     if (typeof model === 'function') {
@@ -49,9 +46,10 @@ export class BelongsToManyAssociation extends BaseAssociation {
       }
       throughOptions.model = throughModelClass;
     } else if (typeof model === 'string') {
-      // TODO@robin: Keep using strings instead of generating a through model?
+      // TODO@robin: Keep using strings instead of generating a through model
+      // TODO:       in order to prevent manipulating parameter "sequelize"
       if (!sequelize.throughMap[model]) {
-        const throughModel = sequelize.getThroughModel(model);
+        const throughModel = getThroughModel(model);
         sequelize.addModels([throughModel]);
         sequelize.throughMap[model] = throughModel;
       }

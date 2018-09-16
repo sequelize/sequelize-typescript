@@ -1,5 +1,5 @@
 import {addAssociation} from "../shared/association-service";
-import {ModelClassGetter} from "../../model/types/ModelClassGetter";
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
 import {BelongsToManyAssociationOptions} from "./belongs-to-many-association-options";
 import {BelongsToManyAssociation} from './belongs-to-many-association';
 

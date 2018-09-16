@@ -46,7 +46,7 @@ import {
   Validator,
   where
 } from 'sequelize';
-import {Model} from "../../model/models/Model";
+import {Model} from "../../model/model/model";
 import {ModelMatch, SequelizeOptions} from "../types/SequelizeOptions";
 import {Namespace} from 'continuation-local-storage';
 import {Hooks} from '../../hooks/shared/hooks';

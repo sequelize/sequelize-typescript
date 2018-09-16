@@ -1,6 +1,6 @@
 import {ISequelizeUriOptions} from './interfaces/ISequelizeUriOptions';
 import {SequelizeOptions} from './types/SequelizeOptions';
-import {DEFAULT_DEFINE_OPTIONS} from '../model/models';
+import {DEFAULT_DEFINE_OPTIONS} from '../model/shared/model-service';
 import {ISequelizeOptions} from './interfaces/ISequelizeOptions';
 
 export function hasSequelizeUri(obj: any): obj is ISequelizeUriOptions {

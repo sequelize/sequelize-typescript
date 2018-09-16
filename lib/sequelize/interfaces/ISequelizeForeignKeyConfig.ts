@@ -1,4 +1,4 @@
-import {ModelClassGetter} from '../../model/types/ModelClassGetter';
+import {ModelClassGetter} from '../../model/shared/model-class-getter';
 
 export interface ISequelizeForeignKeyConfig {
 

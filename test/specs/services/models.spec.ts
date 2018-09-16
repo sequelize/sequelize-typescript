@@ -1,10 +1,9 @@
 import {expect} from 'chai';
 import {
-  addAttribute, addAttributeOptions, getAttributes,
-  resolveModelGetter, setAttributes
-} from '../../../lib/model/models';
+  resolveModelGetter} from '../../../lib/model/shared/model-service';
 import {Book} from "../../models/Book";
 import {DataType} from "../../../lib/sequelize/enums/DataType";
+import {addAttribute, addAttributeOptions, getAttributes, setAttributes} from '../../../lib/model/column/attribute-service';
 
 /* tslint:disable:max-classes-per-file */
 

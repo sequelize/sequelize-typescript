@@ -1,6 +1,6 @@
 import {AssociationOptionsBelongsTo} from 'sequelize';
 import {addAssociation, getPreparedAssociationOptions} from "../shared/association-service";
-import {ModelClassGetter} from "../../model/types/ModelClassGetter";
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
 import {BelongsToAssociation} from './belongs-to-association';
 
 export function BelongsTo(associatedClassGetter: ModelClassGetter,

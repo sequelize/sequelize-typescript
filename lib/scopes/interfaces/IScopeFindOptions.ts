@@ -1,7 +1,7 @@
 import {WhereOptions, LoggingOptions, SearchPathOptions, col, and, or, literal} from 'sequelize';
 import {IScopeIncludeOptions} from "./IScopeIncludeOptions";
-import {ModelClassGetter} from "../../model/types/ModelClassGetter";
-import {IFindOptionsAttributesArray} from '../../shared/IFindOptionsAttributesArray';
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
+import {FindOptionsAttributesArray} from '../../model/model/build-count-create-find/find-options-attributes-array';
 
 /**
  * Based on "FindOptions" type definitions from:
@@ -24,7 +24,7 @@ export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
    * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
    * have in the returned instance
    */
-  attributes?: IFindOptionsAttributesArray | { include?: IFindOptionsAttributesArray, exclude?: Array<string> };
+  attributes?: FindOptionsAttributesArray | { include?: FindOptionsAttributesArray, exclude?: Array<string> };
 
   /**
    * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will

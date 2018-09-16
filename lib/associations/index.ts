@@ -13,3 +13,6 @@ export * from './shared/base-association';
 export * from './shared/association-action-options';
 export * from './shared/association-options';
 export * from './shared/association-service';
+export * from './through/through-options';
+export * from './through/prepared-through-options';
+export * from './through/through-service';

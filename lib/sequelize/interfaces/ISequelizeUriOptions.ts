@@ -1,5 +1,5 @@
 import {Options} from 'sequelize';
-import {Model} from '../../model/models/Model';
+import {Model} from '../../model/model/model';
 import {ModelMatch} from '../types/SequelizeOptions';
 
 export interface ISequelizeUriOptions extends Options {

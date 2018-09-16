@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {addAttributeOptions} from "../../model/models";
+import {addAttributeOptions} from "../../model/column/attribute-service";
 
 /**
  * Will not allow values, that match the string regex or real regex

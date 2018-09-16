@@ -1,5 +1,5 @@
 import {RetryOptions, ReturningOptions, SearchPathOptions} from 'sequelize';
-import {Model} from '../../model/models/Model';
+import {Model} from '../../model/model/model';
 
 /**
  * Based on "QueryOptions" type definitions from:

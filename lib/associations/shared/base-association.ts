@@ -1,9 +1,9 @@
 import {AssociationOptions} from './association-options';
 import {getForeignKeys} from '../foreign-key/foreign-key-service';
-import {Model} from '../../model/models/Model';
+import {Model} from '../../model/model/model';
 import {AssociationForeignKeyOptions} from 'sequelize';
 import {Association} from './association';
-import {ModelClassGetter} from '../../model/types/ModelClassGetter';
+import {ModelClassGetter} from '../../model/shared/model-class-getter';
 import {ModelNotInitializedError} from '../../common/errors/ModelNotInitializedError';
 import {SequelizeImpl} from '../../sequelize/models/SequelizeImpl';
 

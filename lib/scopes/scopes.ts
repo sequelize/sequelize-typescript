@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import {Model} from "../model/models/Model";
+import {Model} from "../model/model/model";
 import {deepAssign} from "../common/utils/object";
 import {IScopeOptions} from "./interfaces/IScopeOptions";
-import {IFindOptions} from "../model/interfaces/IFindOptions";
+import {FindOptions} from "../model/model/build-count-create-find/find-options";
 import {IScopeFindOptions} from "./interfaces/IScopeFindOptions";
-import {resolveModelGetter} from '../model/models';
+import {resolveModelGetter} from '../model/shared/model-service';
 import {inferAlias} from '../associations/alias-inference/alias-inference-service';
 
 const SCOPES_KEY = 'sequelize:scopes';
@@ -55,7 +55,7 @@ function resolveScope(scopeName: string, model: typeof Model, options: IScopeFin
   } else {
     options = inferAlias(options, model);
   }
-  model.addScope(scopeName, options as IFindOptions<any>, {override: true});
+  model.addScope(scopeName, options as FindOptions<any>, {override: true});
 }
 
 /**

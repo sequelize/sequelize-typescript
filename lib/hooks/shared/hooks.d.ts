@@ -1,5 +1,5 @@
 import {DefineAttributes, SyncOptions} from 'sequelize';
-import {Model} from '../../model/models/Model';
+import {Model} from '../../model/model/model';
 import {Sequelize} from '../../sequelize/models/Sequelize';
 
 export declare class Hooks {

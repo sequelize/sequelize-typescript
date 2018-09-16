@@ -1,5 +1,5 @@
 import {AssociationForeignKeyOptions, AssociationOptionsManyToMany} from "sequelize";
-import {IPreparedThroughOptions} from '../../model/interfaces/IPreparedThroughOptions';
+import {PreparedThroughOptions} from '../through/prepared-through-options';
 
 /**
  * Based on "AssociationOptionsBelongsToMany" type definitions from:
@@ -7,6 +7,6 @@ import {IPreparedThroughOptions} from '../../model/interfaces/IPreparedThroughOp
  */
 
 export interface PreparedBelongsToManyAssociationOptions extends AssociationOptionsManyToMany {
-  through: IPreparedThroughOptions;
+  through: PreparedThroughOptions;
   otherKey?: string | AssociationForeignKeyOptions;
 }

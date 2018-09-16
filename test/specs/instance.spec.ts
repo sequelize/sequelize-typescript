@@ -22,7 +22,7 @@ import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
 import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
 import {UserWithVersion} from "../models/UserWithVersion";
 import chaiDatetime = require('chai-datetime');
-import {IDefineOptions} from "../../lib/model/interfaces/IDefineOptions";
+import {TableOptions} from "../../lib/model/table/table-options";
 import * as Promise from 'bluebird';
 // import {UserWithSwag} from "../models/UserWithSwag";
 
@@ -2129,7 +2129,7 @@ describe('instance', () => {
 
     it('returns null for null, undefined, and unset boolean values', () => {
 
-      @Table({logging: true} as IDefineOptions)
+      @Table({logging: true} as TableOptions)
       class Setting extends Model<Setting> {
 
         @Column
@@ -2238,7 +2238,7 @@ describe('instance', () => {
 
     it('returns all values', () => {
 
-      @Table({logging: false} as IDefineOptions)
+      @Table({logging: false} as TableOptions)
       class UserHelper extends Model<UserHelper> {
 
         @Column

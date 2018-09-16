@@ -9,9 +9,9 @@ import {
   hexColor, HEX_REGEX, PRODUCED_AT_IS_AFTER, PRODUCED_AT_IS_BEFORE, UUID_VERSION, MAX, MIN, NOT, IS_IN, NOT_CONTAINS
 } from "../models/ShoeWithValidation";
 import {Is} from "../../lib/validation/annotations/Is";
-import {Model} from "../../lib/model/models/Model";
-import {Table} from "../../lib/model/annotations/Table";
-import {Column} from "../../lib/model/annotations/Column";
+import {Model} from "../../lib/model/model/model";
+import {Table} from "../../lib/model/table/table";
+import {Column} from "../../lib/model/column/column";
 import {Length} from "../../lib/validation/annotations/Length";
 import {NotEmpty} from "../../lib/validation/annotations/NotEmpty";
 import {Validator} from '../../lib/validation/annotations/Validator';

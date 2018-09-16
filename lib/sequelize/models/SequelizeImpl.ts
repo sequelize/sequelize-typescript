@@ -1,16 +1,16 @@
 import 'reflect-metadata';
 import * as OriginSequelize from 'sequelize';
 import {Sequelize} from './Sequelize';
-import {Model} from "../../model/models/Model";
+import {Model} from "../../model";
 import {ModelMatch, SequelizeOptions} from "../types/SequelizeOptions";
-import {getAttributes, getModelName, getModels, getOptions} from "../../model/models";
-import {Table} from "../../model/annotations/Table";
-import {installHooks} from '../../hooks/shared/hooks-service';
-import {getAssociations} from '../../associations/shared/association-service';
+import {getModelName, getModels, getOptions} from "../../model/shared/model-service";
+import {installHooks} from '../../hooks';
+import {getAssociations} from '../../associations';
 import {resolveScopes} from '../../scopes/scopes';
 import {hasSequelizeUri, prepareOptions} from '../sequelize';
-import {ISequelizeOptions} from '../interfaces/ISequelizeOptions';
+import {ISequelizeOptions} from '..';
 import {ISequelizeDeprecatedOptions} from '../interfaces/ISequelizeDeprecatedOptions';
+import {getAttributes} from '../../model/column/attribute-service';
 
 export const _OriginSequelize = OriginSequelize as any as typeof Sequelize;
 
@@ -77,14 +77,6 @@ export class SequelizeImpl extends _OriginSequelize {
         model[relation](associatedClass, options);
       });
     });
-  }
-
-  getThroughModel(through: string): typeof Model {
-    // tslint:disable:max-classes-per-file
-    @Table({tableName: through, modelName: through})
-    class Through extends Model<Through> {
-    }
-    return Through;
   }
 
   /**

@@ -1,6 +1,6 @@
 import {AssociationOptionsHasOne} from 'sequelize';
 import {Association} from "../shared/association";
-import {ModelClassGetter} from "../../model/types/ModelClassGetter";
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
 import {addAssociation, getPreparedAssociationOptions} from '../shared/association-service';
 import {HasAssociation} from './has-association';
 

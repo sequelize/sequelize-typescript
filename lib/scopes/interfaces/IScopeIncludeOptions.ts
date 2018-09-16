@@ -1,6 +1,6 @@
 import {IScopeIncludeAssociation} from "./IScopeIncludeAssociation";
-import {ModelClassGetter} from "../../model/types/ModelClassGetter";
-import {IBaseIncludeOptions} from "../../model/interfaces/IBaseIncludeOptions";
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
+import {BaseIncludeOptions} from "../../model/model/include/base-include-options";
 
 /**
  * Based on "IncludeOptions" type definitions from:
@@ -10,7 +10,7 @@ import {IBaseIncludeOptions} from "../../model/interfaces/IBaseIncludeOptions";
 /**
  * Complex include options
  */
-export interface IScopeIncludeOptions extends IBaseIncludeOptions {
+export interface IScopeIncludeOptions extends BaseIncludeOptions {
 
   /**
    * The model you want to eagerly load

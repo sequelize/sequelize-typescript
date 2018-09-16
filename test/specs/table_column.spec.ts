@@ -4,9 +4,10 @@ import {DefineAttributes} from 'sequelize';
 import {Model, Table, Column, DataType} from "../../index";
 import {createSequelize} from "../utils/sequelize";
 import {User} from "../models/User";
-import {getOptions, getAttributes} from "../../lib/model/models";
+import {getOptions} from "../../lib/model/shared/model-service";
 import {Shoe, SHOE_TABLE_NAME} from "../models/Shoe";
 import * as _ from 'lodash';
+import {getAttributes} from '../../lib/model/column/attribute-service';
 
 use(chaiAsPromised);
 

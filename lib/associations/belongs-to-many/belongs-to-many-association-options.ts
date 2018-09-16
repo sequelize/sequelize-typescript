@@ -1,6 +1,6 @@
 import {AssociationForeignKeyOptions, AssociationOptionsManyToMany} from "sequelize";
-import {ModelClassGetter} from '../../model/types/ModelClassGetter';
-import {IThroughOptions} from '../../model/interfaces/IThroughOptions';
+import {ModelClassGetter} from '../../model/shared/model-class-getter';
+import {ThroughOptions} from '../through/through-options';
 
 /**
  * Based on "AssociationOptionsBelongsToMany" type definitions from:
@@ -8,6 +8,6 @@ import {IThroughOptions} from '../../model/interfaces/IThroughOptions';
  */
 
 export interface BelongsToManyAssociationOptions extends AssociationOptionsManyToMany {
-  through: ModelClassGetter | string | IThroughOptions;
+  through: ModelClassGetter | string | ThroughOptions;
   otherKey?: string | AssociationForeignKeyOptions;
 }

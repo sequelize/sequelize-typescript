@@ -7,11 +7,11 @@ import {getScopeOptions} from "../../lib/scopes/scopes";
 import {ShoeWithScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithScopes";
 import {Manufacturer} from "../models/Manufacturer";
 import {Person} from "../models/Person";
-import {Model} from '../../lib/model/models/Model';
-import {Table} from '../../lib/model/annotations/Table';
+import {Model} from '../../lib/model/model/model';
+import {Table} from '../../lib/model/table/table';
 import {Scopes} from '../../lib/scopes/annotations/Scopes';
-import {Column} from '../../lib/model/annotations/Column';
-import {UpdatedAt} from '../../lib/model/annotations/UpdatedAt';
+import {Column} from '../../lib/model/column/column';
+import {UpdatedAt} from '../../lib/model/column/timestamps/updated-at';
 import chaiDatetime = require('chai-datetime');
 
 use(chaiAsPromised);

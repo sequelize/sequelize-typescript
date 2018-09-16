@@ -16,7 +16,7 @@ import {
   BelongsToMany
 } from "../../index";
 import chaiDatetime = require('chai-datetime');
-import {IDefineOptions} from "../../lib/model/interfaces/IDefineOptions";
+import {TableOptions} from "../../lib/model/table/table-options";
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -525,7 +525,7 @@ describe('model', () => {
           fields: ['fieldD']
         }],
         engine: 'MyISAM'
-      } as IDefineOptions)
+      } as TableOptions)
       class ModelA extends Model<ModelA> {
         @Column
         fieldA: string;
