@@ -224,6 +224,8 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    */
   static findById<T extends Model<T>>(this: (new () => T), identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
 
+  static findByPk<T extends Model<T>>(this: (new () => T), identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
+
   static findByPrimary<T extends Model<T>>(this: (new () => T), identifier?: number | string, options?: IFindOptions<T>): Promise<T | null>;
 
   /**
