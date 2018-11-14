@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import * as Promise from 'bluebird';
 import {
   AccessDeniedError,
   and, BaseError,
