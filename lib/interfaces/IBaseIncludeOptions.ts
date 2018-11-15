@@ -1,4 +1,5 @@
-import {WhereOptions, IncludeThroughOptions, FindOptionsAttributesArray, where} from 'sequelize';
+import {FindOptionsAttributesArray, IncludeThroughOptions, where} from 'sequelize';
+import {IWhereOptions} from "./IWhereOptions";
 
 /**
  * Complex include options
@@ -15,7 +16,7 @@ export interface IBaseIncludeOptions {
    * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
    * unless you explicitly set `required: false`
    */
-  where?: WhereOptions<any> | where;
+  where?: IWhereOptions<any> | where;
 
   /**
    * A list of attributes to select from the child model
@@ -39,7 +40,7 @@ export interface IBaseIncludeOptions {
   through?: IncludeThroughOptions;
 
   all?: boolean | string;
-  
+
   /**
    * Enables ON clauses as per https://github.com/sequelize/sequelize/issues/5551#issuecomment-193890421
    * @example
