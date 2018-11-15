@@ -1,9 +1,7 @@
-import {
-  WhereOptions, LoggingOptions, SearchPathOptions, col, FindOptionsAttributesArray,
-  literal, fn, and, or, where
-} from 'sequelize';
+import {and, col, FindOptionsAttributesArray, fn, literal, LoggingOptions, or, SearchPathOptions, where, WhereOptions} from 'sequelize';
 import {Model} from "../models/Model";
 import {IIncludeOptions} from "./IIncludeOptions";
+import {IWhereOptions} from "./IWhereOptions";
 
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
@@ -13,7 +11,7 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions<T> | where | fn | literal | or | Array<col | literal | and | or | string>;
+  where?: IWhereOptions<T> | where | fn | literal | or | Array<col | literal | and | or | string>;
 
   /**
    * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
@@ -57,11 +55,11 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   offset?: number;
 
   /**
-   * Lock the selected rows. A true boolean value will lock the request with a 'FOR UPDATE' lock. Possible 
+   * Lock the selected rows. A true boolean value will lock the request with a 'FOR UPDATE' lock. Possible
    * additional options are transaction.LOCK.UPDATE and transaction.LOCK.SHARE. Postgres also supports
    * transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model locks with joins.
    * See [transaction.LOCK for an example](transaction#lock)
-   * 
+   *
    * See [sequelize docs](https://github.com/sequelize/sequelize/blob/master/docs/transactions.md#after-commit-hook) for an
    * example of boolean usage.
    */

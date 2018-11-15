@@ -1,7 +1,7 @@
-import {WhereOptions, LoggingOptions, SearchPathOptions, col, and, or, FindOptionsAttributesArray,
-  literal} from 'sequelize';
+import {and, col, FindOptionsAttributesArray, literal, LoggingOptions, or, SearchPathOptions, WhereOptions} from 'sequelize';
 import {IScopeIncludeOptions} from "./IScopeIncludeOptions";
 import {ModelClassGetter} from "../types/ModelClassGetter";
+import {IWhereOptions} from "./IWhereOptions";
 
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
@@ -11,7 +11,7 @@ export interface IScopeFindOptions extends LoggingOptions, SearchPathOptions {
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions<any> | Array<col | and | or | string> | col | and | or | string;
+  where?: IWhereOptions<any> | Array<col | and | or | string> | col | and | or | string;
 
   /**
    * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with

@@ -1,13 +1,14 @@
-import {LoggingOptions, SearchPathOptions, WhereOptions} from 'sequelize';
+import {LoggingOptions, SearchPathOptions} from 'sequelize';
 import {IIncludeOptions} from './IIncludeOptions';
 import {Model} from '../models/Model';
+import {IWhereOptions} from "./IWhereOptions";
 
 export interface ICountOptions<T> extends LoggingOptions, SearchPathOptions {
 
   /**
    * A hash of search attributes.
    */
-  where?: WhereOptions<T> | string[];
+  where?: IWhereOptions<T> | string[];
 
   /**
    * Include options. See `find` for details
