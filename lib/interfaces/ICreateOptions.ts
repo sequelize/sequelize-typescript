@@ -10,4 +10,11 @@ export interface ICreateOptions extends IBuildOptions, InstanceSaveOptions {
    * On Duplicate
    */
   onDuplicate?: string;
+
+  /**
+   * Enable or disable hooks being triggered from this call
+   * @default false
+   */
+  hooks?: boolean;
+
 }
