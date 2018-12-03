@@ -13,7 +13,7 @@ export interface ICreateOptions extends IBuildOptions, InstanceSaveOptions {
 
   /**
    * Enable or disable hooks being triggered from this call
-   * @default false
+   * @default true
    */
   hooks?: boolean;
 
