@@ -71,6 +71,11 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
   raw?: boolean;
 
   /**
+   * Nest raw results. See sequelize.query for more information.
+   */                  
+  nest?: boolean;
+
+  /**
    * having ?!?
    */
   having?: WhereOptions<any>;
