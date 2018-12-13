@@ -470,7 +470,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
+  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
 
   /**
    * Returns related instance (specified by propertyKey) of source instance
