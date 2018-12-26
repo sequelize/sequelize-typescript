@@ -4,7 +4,7 @@ import {AssociationOptions} from '../shared/association-options';
 import {ModelClassGetter} from '../../model/shared/model-class-getter';
 import {AssociationOptionsBelongsTo} from 'sequelize';
 import {Association} from '../shared/association';
-import {SequelizeImpl} from '../../sequelize/shared/sequelize-impl';
+import {getForeignKeyOptions} from "../foreign-key/foreign-key-service";
 
 export class BelongsToAssociation extends BaseAssociation {
 
@@ -17,12 +17,11 @@ export class BelongsToAssociation extends BaseAssociation {
     return Association.BelongsTo;
   }
 
-  getSequelizeOptions(model: typeof Model,
-                      sequelize: SequelizeImpl): AssociationOptions {
+  getSequelizeOptions(model: typeof Model): AssociationOptions {
     const options = {...this.options};
     const associatedClass = this.getAssociatedClass();
 
-    options.foreignKey = this.getForeignKeyOptions(associatedClass, model, options.foreignKey);
+    options.foreignKey = getForeignKeyOptions(associatedClass, model, options.foreignKey);
 
     return options;
   }

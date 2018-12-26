@@ -7,6 +7,6 @@ import {PreparedThroughOptions} from '../through/prepared-through-options';
  */
 
 export interface PreparedBelongsToManyAssociationOptions extends AssociationOptionsManyToMany {
-  through: PreparedThroughOptions;
+  through: PreparedThroughOptions | string;
   otherKey?: string | AssociationForeignKeyOptions;
 }

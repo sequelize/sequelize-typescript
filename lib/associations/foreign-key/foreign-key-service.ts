@@ -1,5 +1,6 @@
-import {ModelClassGetter} from '../../model';
+import {Model, ModelClassGetter} from '../../model';
 import {ForeignKeyMeta} from './foreign-key-meta';
+import {AssociationForeignKeyOptions} from "sequelize";
 
 const FOREIGN_KEYS_KEY = 'sequelize:foreignKeys';
 
@@ -28,6 +29,33 @@ export function getForeignKeys(target: any): ForeignKeyMeta[] | undefined {
   if (foreignKeys) {
     return [...foreignKeys];
   }
+}
+
+export function getForeignKeyOptions(relatedClass: typeof Model,
+                                     classWithForeignKey?: typeof Model,
+                                     foreignKey?: string | AssociationForeignKeyOptions): AssociationForeignKeyOptions {
+  let foreignKeyOptions: AssociationForeignKeyOptions = {};
+
+  if (typeof foreignKey === 'string') {
+    foreignKeyOptions.name = foreignKey;
+  } else if (foreignKey && typeof foreignKey === 'object') {
+    foreignKeyOptions = {...foreignKey};
+  }
+  if (!foreignKeyOptions.name && classWithForeignKey) {
+    const foreignKeys = getForeignKeys(classWithForeignKey.prototype) || [];
+    for (const key of foreignKeys) {
+      if (key.relatedClassGetter() === relatedClass) {
+        foreignKeyOptions.name = key.foreignKey;
+        break;
+      }
+    }
+  }
+  if (!foreignKeyOptions.name) {
+    throw new Error(`Foreign key for "${(relatedClass as any).name}" is missing ` +
+      `on "${(classWithForeignKey as any).name}".`);
+  }
+
+  return foreignKeyOptions;
 }
 
 /**

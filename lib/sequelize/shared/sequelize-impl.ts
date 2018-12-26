@@ -15,7 +15,6 @@ export const _OriginSequelize = OriginSequelize as any as typeof Sequelize;
 
 export class SequelizeImpl extends _OriginSequelize {
 
-  throughMap: { [through: string]: any };
   models: { [modelName: string]: typeof Model };
   options: SequelizeOptions;
 
@@ -28,7 +27,6 @@ export class SequelizeImpl extends _OriginSequelize {
       super(prepareOptions(options));
     }
 
-    this.throughMap = {};
     this.models = {};
 
     if (typeof options !== "string") {
@@ -69,7 +67,7 @@ export class SequelizeImpl extends _OriginSequelize {
       if (!associations) return;
 
       associations.forEach(association => {
-        const options = association.getSequelizeOptions(model, this);
+        const options = association.getSequelizeOptions(model);
         const associatedClass = association.getAssociatedClass();
         const relation = association.getAssociation();
         model[relation](associatedClass, options);
