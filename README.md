@@ -29,7 +29,7 @@ Decorators and some other features for sequelize (v3, v4, v5).
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
 ```
-npm install sequelize --save // v4
+npm install sequelize@4.42.0 --save // v4
 npm install sequelize@3.30.4 --save // or v3
 ```
 and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
