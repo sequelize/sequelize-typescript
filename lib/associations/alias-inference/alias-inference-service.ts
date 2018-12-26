@@ -1,7 +1,5 @@
 import {getAssociationsByRelation} from '..';
 
-export const PROPERTY_LINK_TO_ORIG = '__origClass';
-
 /**
  * Pre conform includes, so that "as" value can be inferred from source
  */
@@ -44,7 +42,7 @@ function inferAliasForInclude(include: any, source: any): any {
       include = {model: include};
     }
 
-    const targetPrototype = (source[PROPERTY_LINK_TO_ORIG] || source).prototype || source;
+    const targetPrototype = source.prototype || source;
     const relatedClass = include.model;
     const associations = getAssociationsByRelation(targetPrototype, relatedClass);
 
