@@ -1,8 +1,8 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {Table} from '../../../lib/model/table/table';
-import {BelongsTo} from '../../../lib/associations/belongs-to/belongs-to';
-import {Model} from '../../../lib/model/model/model';
+import {Table} from '../../../src/model/table/table';
+import {BelongsTo} from '../../../src/associations/belongs-to/belongs-to';
+import {Model} from '../../../src/model/model/model';
 import {createSequelize} from '../../utils/sequelize';
 
 use(chaiAsPromised);

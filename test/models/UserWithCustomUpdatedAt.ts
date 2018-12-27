@@ -1,4 +1,4 @@
-import {Table, Model, Column} from "../../index";
+import {Table, Model, Column} from "../../src";
 
 @Table
 export class UserWithCustomUpdatedAt extends Model<UserWithCustomUpdatedAt> {

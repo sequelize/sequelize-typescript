@@ -1,7 +1,7 @@
-import {Sequelize} from "../../lib/sequelize/shared/sequelize";
+import {Sequelize} from "../../src/sequelize/shared/sequelize";
 import * as OriginSequelize from "sequelize";
 import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
-import {SequelizeOptions} from '../../lib/sequelize/sequelize-options/sequelize-options';
+import {SequelizeOptions} from '../../src/sequelize/sequelize-options/sequelize-options';
 
 export function createSequelize(partialOptions: Partial<SequelizeOptions>): Sequelize;
 export function createSequelize(useModelsInPath?: boolean,

@@ -1,4 +1,4 @@
-import {Column, Model, Table} from "../../index";
+import {Column, Model, Table} from "../../src";
 
 @Table({version: true})
 export class UserWithVersion extends Model<UserWithVersion> {

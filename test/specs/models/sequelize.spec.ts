@@ -14,9 +14,9 @@ import TeamGlob from "../../models/globs/match-sub-dir-files/teams/team.model";
 import PlayerDir from "../../models/globs/match-dir-only/PlayerDir";
 import TeamDir from "../../models/globs/match-dir-only/TeamDir";
 import ShoeDir from "../../models/globs/match-dir-only/ShoeDir";
-import {Sequelize} from '../../../lib/sequelize';
-import {Table} from '../../../lib/model/table/table';
-import {Model} from '../../../lib/model';
+import {Sequelize} from '../../../src/sequelize';
+import {Table} from '../../../src/model/table/table';
+import {Model} from '../../../src/model';
 import {Match} from '../../models/exports/custom-match/match.model';
 
 describe('sequelize', () => {

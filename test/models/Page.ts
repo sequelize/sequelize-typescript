@@ -1,4 +1,4 @@
-import {Table, Model, ForeignKey, Column, BelongsTo, DataType} from "../../index";
+import {Table, Model, ForeignKey, Column, BelongsTo, DataType} from "../../src";
 import {Book} from "./Book";
 
 @Table

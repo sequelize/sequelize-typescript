@@ -4,18 +4,19 @@
     "target": "es6",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "sourceMap": true,
     "strictNullChecks": false,
     "noUnusedLocals": false,
     "pretty": true,
     "lib": ["es2017"]
   },
   "include": [
-    "./**/*"
+    "models",
+    "specs",
+    "utils"
   ],
   "exclude": [
     "../node_modules",
-    "../lib",
-    "../index.ts"
+    "../src",
+    "../src/index.ts"
   ]
 }

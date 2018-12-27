@@ -1,13 +1,13 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {DefineAttributes} from 'sequelize';
-import {Model, Table, Column, DataType} from "../../index";
+import {Model, Table, Column, DataType} from "../../src";
 import {createSequelize} from "../utils/sequelize";
 import {User} from "../models/User";
-import {getOptions} from "../../lib/model/shared/model-service";
+import {getOptions} from "../../src/model/shared/model-service";
 import {Shoe, SHOE_TABLE_NAME} from "../models/Shoe";
 import * as _ from 'lodash';
-import {getAttributes} from '../../lib/model/column/attribute-service';
+import {getAttributes} from '../../src/model/column/attribute-service';
 
 use(chaiAsPromised);
 

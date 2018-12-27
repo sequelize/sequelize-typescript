@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, AutoIncrement, Column} from "../../index";
+import {Table, Model, PrimaryKey, AutoIncrement, Column} from "../../src";
 
 @Table({
   timestamps: true

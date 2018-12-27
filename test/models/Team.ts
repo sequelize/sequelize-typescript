@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, AutoIncrement, Column, HasMany} from "../../index";
+import {Table, Model, PrimaryKey, AutoIncrement, Column, HasMany} from "../../src";
 import {Player} from "./Player";
 
 @Table

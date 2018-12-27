@@ -1,6 +1,6 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull, Unique} from "../../index";
-import {IsInt} from '../../lib/validation/is-int';
-import {Length} from '../../lib/validation';
+import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull, Unique} from "../../src";
+import {IsInt} from '../../src/validation/is-int';
+import {Length} from '../../src/validation';
 
 @Table
 export class User extends Model<User> {

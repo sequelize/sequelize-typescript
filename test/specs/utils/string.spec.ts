@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {capitalize} from '../../../lib/shared/string';
+import {capitalize} from '../../../src/shared/string';
 
 /* tslint:disable:max-classes-per-file */
 

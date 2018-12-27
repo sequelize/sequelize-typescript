@@ -9,13 +9,11 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "pretty": true,
+    "outDir": "dist",
     "lib": ["es2017"]
   },
   "include": [
-    "lib/**/*"
-  ],
-  "files": [
-    "index.ts"
+    "src"
   ],
   "exclude": [
     "node_modules",

@@ -1,4 +1,4 @@
-import {Model, Table, Column, BelongsToMany, Scopes, DataType} from '../../index';
+import {Model, Table, Column, BelongsToMany, Scopes, DataType} from '../../src';
 import {Author} from "./Author";
 
 @Scopes({

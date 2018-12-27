@@ -1,8 +1,8 @@
 /* tslint:disable:max-classes-per-file */
 import {expect} from 'chai';
-import {addForeignKey} from "../../../lib/associations/foreign-key/foreign-key-service";
-import {Model} from "../../../lib/model/model/model";
-import {getForeignKeys} from '../../../lib/associations/foreign-key/foreign-key-service';
+import {addForeignKey} from "../../../src/associations/foreign-key/foreign-key-service";
+import {Model} from "../../../src/model/model/model";
+import {getForeignKeys} from '../../../src/associations/foreign-key/foreign-key-service';
 
 describe('service.association', () => {
 

@@ -6,7 +6,7 @@ import {createSequelize} from "../utils/sequelize";
 import {
   Sequelize, Model, Table, Column, AllowNull, PrimaryKey,
   ForeignKey, HasMany, BelongsTo, HasOne, DataType, Default
-} from "../../index";
+} from "../../src";
 import {User} from "../models/User";
 import {TimeStampsUser} from "../models/TimeStampsUser";
 import {Book} from "../models/Book";
@@ -22,7 +22,7 @@ import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
 import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
 import {UserWithVersion} from "../models/UserWithVersion";
 import chaiDatetime = require('chai-datetime');
-import {TableOptions} from "../../lib/model/table/table-options";
+import {TableOptions} from "../../src/model/table/table-options";
 import * as Promise from 'bluebird';
 // import {UserWithSwag} from "../models/UserWithSwag";
 

@@ -1,4 +1,4 @@
-import {Table, Model, Column, HasMany, Scopes} from "../../index";
+import {Table, Model, Column, HasMany, Scopes} from "../../src";
 import {ShoeWithScopes} from "./ShoeWithScopes";
 
 @Scopes({

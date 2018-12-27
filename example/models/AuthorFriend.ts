@@ -1,4 +1,4 @@
-import {Model, Table, PrimaryKey, Column, ForeignKey} from "../../index";
+import {Model, Table, PrimaryKey, Column, ForeignKey} from "../../src";
 import {Author} from "./Author";
 
 @Table

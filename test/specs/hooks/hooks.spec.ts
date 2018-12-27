@@ -3,8 +3,8 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 
-import { BeforeCreate, Sequelize } from "../../../index";
-import { Column, Model, Table } from "../../../index";
+import { BeforeCreate, Sequelize } from "../../../src";
+import { Column, Model, Table } from "../../../src";
 
 import { Hook } from "../../models/Hook";
 import { createSequelize } from "../../utils/sequelize";

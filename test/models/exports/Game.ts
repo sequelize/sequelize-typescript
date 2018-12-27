@@ -1,4 +1,4 @@
-import {Table, Column, Model} from '../../../index';
+import {Table, Column, Model} from '../../../src';
 
 @Table
 export class Game extends Model<Game> {

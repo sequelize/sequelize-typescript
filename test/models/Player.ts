@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, ForeignKey, Column, AutoIncrement, HasOne, BelongsTo} from "../../index";
+import {Table, Model, PrimaryKey, ForeignKey, Column, AutoIncrement, HasOne, BelongsTo} from "../../src";
 import {Team} from "./Team";
 import {Shoe} from "./Shoe";
 

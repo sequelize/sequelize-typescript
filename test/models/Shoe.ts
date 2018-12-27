@@ -1,4 +1,4 @@
-import {Table, Model, ForeignKey, Column, BelongsTo} from "../../index";
+import {Table, Model, ForeignKey, Column, BelongsTo} from "../../src";
 import {Player} from "./Player";
 
 export const SHOE_TABLE_NAME = 'Glove';

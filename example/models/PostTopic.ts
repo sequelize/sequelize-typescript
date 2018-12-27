@@ -1,4 +1,4 @@
-import {Model, Table, PrimaryKey, Column, ForeignKey} from "../../index";
+import {Model, Table, PrimaryKey, Column, ForeignKey} from "../../src";
 import {Post} from "./Post";
 import {Topic} from "./Topic";
 

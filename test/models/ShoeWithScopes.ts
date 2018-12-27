@@ -1,5 +1,5 @@
 import {Table, Model, Column, ForeignKey, BelongsTo,
-  DefaultScope, Scopes} from "../../index";
+  DefaultScope, Scopes} from "../../src";
 import {Manufacturer} from "./Manufacturer";
 import {Person} from "./Person";
 

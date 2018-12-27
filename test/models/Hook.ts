@@ -1,21 +1,21 @@
-import { AfterBulkCreate, AfterUpsert, BeforeBulkCreate, BeforeUpsert } from "../../index";
-import { AfterBulkDestroy, BeforeBulkDestroy, BeforeBulkRestore } from "../../index";
-import { AfterBulkRestore, AfterBulkUpdate, BeforeBulkUpdate } from "../../index";
-import { AfterCreate, AfterValidate, ValidationFailed } from "../../index";
-import { AfterDestroy, AfterRestore, BeforeDestroy, BeforeRestore } from "../../index";
-import { AfterFind, BeforeCount, BeforeFindAfterOptions } from "../../index";
-import { AfterSave, AfterUpdate, BeforeSave, BeforeUpdate } from "../../index";
-import { BeforeCreate, BeforeValidate, Column, Model, Table } from "../../index";
-import { BeforeFind, BeforeFindAfterExpandIncludeAll } from "../../index";
-import { BeforeBulkDelete, AfterBulkDelete, AfterDelete, BeforeDelete } from "../../index";
-import {AfterBulkSync} from '../../lib/hooks/bulk/after/after-bulk-sync';
-import {AfterConnect} from '../../lib/hooks/single/after/after-connect';
-import {AfterDefine} from '../../lib/hooks/single/after/after-define';
-import {AfterInit} from '../../lib/hooks/single/after/after-init';
-import {BeforeBulkSync} from '../../lib/hooks/bulk/before/before-bulk-sync';
-import {BeforeConnect} from '../../lib/hooks/single/before/before-connect';
-import {BeforeDefine} from '../../lib/hooks/single/before/before-define';
-import {BeforeInit} from '../../lib/hooks/single/before/before-init';
+import { AfterBulkCreate, AfterUpsert, BeforeBulkCreate, BeforeUpsert } from "../../src";
+import { AfterBulkDestroy, BeforeBulkDestroy, BeforeBulkRestore } from "../../src";
+import { AfterBulkRestore, AfterBulkUpdate, BeforeBulkUpdate } from "../../src";
+import { AfterCreate, AfterValidate, ValidationFailed } from "../../src";
+import { AfterDestroy, AfterRestore, BeforeDestroy, BeforeRestore } from "../../src";
+import { AfterFind, BeforeCount, BeforeFindAfterOptions } from "../../src";
+import { AfterSave, AfterUpdate, BeforeSave, BeforeUpdate } from "../../src";
+import { BeforeCreate, BeforeValidate, Column, Model, Table } from "../../src";
+import { BeforeFind, BeforeFindAfterExpandIncludeAll } from "../../src";
+import { BeforeBulkDelete, AfterBulkDelete, AfterDelete, BeforeDelete } from "../../src";
+import {AfterBulkSync} from '../../src/hooks/bulk/after/after-bulk-sync';
+import {AfterConnect} from '../../src/hooks/single/after/after-connect';
+import {AfterDefine} from '../../src/hooks/single/after/after-define';
+import {AfterInit} from '../../src/hooks/single/after/after-init';
+import {BeforeBulkSync} from '../../src/hooks/bulk/before/before-bulk-sync';
+import {BeforeConnect} from '../../src/hooks/single/before/before-connect';
+import {BeforeDefine} from '../../src/hooks/single/before/before-define';
+import {BeforeInit} from '../../src/hooks/single/before/before-init';
 
 /**
  * Model used to test hook decorators. Defined hooks are mocked out for testing.

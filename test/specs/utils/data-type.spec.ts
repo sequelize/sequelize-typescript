@@ -1,6 +1,6 @@
 import {expect} from 'chai';
-import {DataType} from "../../../lib/sequelize/data-type/data-type";
-import {inferDataType, isDataType} from '../../../lib/sequelize/data-type/data-type-service';
+import {DataType} from "../../../src/sequelize/data-type/data-type";
+import {inferDataType, isDataType} from '../../../src/sequelize/data-type/data-type-service';
 
 /* tslint:disable:max-classes-per-file */
 

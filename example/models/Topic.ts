@@ -1,4 +1,4 @@
-import {Table, Model, PrimaryKey, AutoIncrement, Column, BelongsToMany} from "../../index";
+import {Table, Model, PrimaryKey, AutoIncrement, Column, BelongsToMany} from "../../src";
 import {Post} from "./Post";
 import {PostTopic} from "./PostTopic";
 

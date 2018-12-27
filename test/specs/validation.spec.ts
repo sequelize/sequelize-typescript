@@ -8,13 +8,13 @@ import {
   ShoeWithValidation, KEY_VALUE, PARTIAL_SPECIAL_VALUE, BRAND_LENGTH,
   hexColor, HEX_REGEX, PRODUCED_AT_IS_AFTER, PRODUCED_AT_IS_BEFORE, UUID_VERSION, MAX, MIN, NOT, IS_IN, NOT_CONTAINS
 } from "../models/ShoeWithValidation";
-import {Is} from "../../lib/validation/is";
-import {Model} from "../../lib/model/model/model";
-import {Table} from "../../lib/model/table/table";
-import {Column} from "../../lib/model/column/column";
-import {Length} from "../../lib/validation/length";
-import {NotEmpty} from "../../lib/validation/not-empty";
-import {Validator} from '../../lib/validation/validator';
+import {Is} from "../../src/validation/is";
+import {Model} from "../../src/model/model/model";
+import {Table} from "../../src/model/table/table";
+import {Column} from "../../src/model/column/column";
+import {Length} from "../../src/validation/length";
+import {NotEmpty} from "../../src/validation/not-empty";
+import {Validator} from '../../src/validation/validator';
 
 use(chaiAsPromised);
 

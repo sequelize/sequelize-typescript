@@ -14,9 +14,9 @@ import {
   ForeignKey, HasMany, BelongsTo, DataType, Default,
   AutoIncrement, CreatedAt, DeletedAt, UpdatedAt,
   BelongsToMany
-} from "../../index";
+} from "../../src";
 import chaiDatetime = require('chai-datetime');
-import {TableOptions} from "../../lib/model/table/table-options";
+import {TableOptions} from "../../src/model/table/table-options";
 
 use(sinonChai);
 use(chaiAsPromised);

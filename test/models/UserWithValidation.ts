@@ -1,4 +1,4 @@
-import {Table, Model, Column, DataType} from "../../index";
+import {Table, Model, Column, DataType} from "../../src";
 
 @Table
 export class UserWithValidation extends Model<UserWithValidation> {

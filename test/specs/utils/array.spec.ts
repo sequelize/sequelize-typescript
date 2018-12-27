@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {unique} from '../../../lib/shared/array';
+import {unique} from '../../../src/shared/array';
 
 /* tslint:disable:max-classes-per-file */
 

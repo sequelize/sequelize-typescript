@@ -1,4 +1,4 @@
-import {Table, Model, Column, HasMany} from "../../index";
+import {Table, Model, Column, HasMany} from "../../src";
 import {Page} from "./Page";
 
 @Table

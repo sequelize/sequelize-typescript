@@ -11,6 +11,8 @@
     "no-consecutive-blank-lines": false,
     "trailing-comma": false,
     "ordered-imports": false,
+    "max-classes-per-file": false,
+    "space-before-function-paren": false,
     "max-line-length": [
       true,
       140

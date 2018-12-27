@@ -1,4 +1,4 @@
-import {Table, Model, Column} from "../../index";
+import {Table, Model, Column} from "../../src";
 
 @Table({
   timestamps: true,

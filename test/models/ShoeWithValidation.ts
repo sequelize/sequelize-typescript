@@ -5,8 +5,8 @@ import {
   IsIn, IsIP, IsIPv4, IsIPv6, IsLowercase, IsUppercase, Max, Min,
   Not, NotContains, NotIn, NotNull, Validate, NotEmpty, IsNumeric,
   IsNull, IsArray
-} from "../../index";
-import {IsCreditCard} from "../../lib/validation/is-credit-card";
+} from "../../src";
+import {IsCreditCard} from "../../src/validation/is-credit-card";
 
 export const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 export function hexColor(value: string): void {

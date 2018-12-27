@@ -1,4 +1,4 @@
-import {Table, Model, Column, PrimaryKey, DataType, Default} from "../../index";
+import {Table, Model, Column, PrimaryKey, DataType, Default} from "../../src";
 
 @Table
 export class Person extends Model<Person> {
