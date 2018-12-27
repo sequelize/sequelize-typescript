@@ -17,11 +17,11 @@ npm-debug.log
 **/*.d.ts
 
 # src
-!lib/hooks/shared/hooks.d.ts
-!lib/model/model/model.d.ts
-!lib/model/model/model.js
-!lib/sequelize/shared/sequelize.d.ts
-!lib/sequelize/shared/sequelize.js
+!src/hooks/shared/hooks.d.ts
+!src/model/model/model.d.ts
+!src/model/model/model.js
+!src/sequelize/shared/sequelize.d.ts
+!src/sequelize/shared/sequelize.js
 
 # testing
 coverage
