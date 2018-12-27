@@ -94,7 +94,7 @@
       "lcov",
       "text-summary"
     ],
-    "cache": false,
+    "cache": true,
     "all": true,
     "check-coverage": true,
     "report-dir": "./coverage"
