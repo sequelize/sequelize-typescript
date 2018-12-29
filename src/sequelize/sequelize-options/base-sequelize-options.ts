@@ -22,5 +22,8 @@ export interface BaseSequelizeOptions extends Options {
    */
   modelMatch?: ModelMatch;
 
+  /**
+   * Enables repository mode when true
+   */
   repositoryMode?: boolean;
 }
