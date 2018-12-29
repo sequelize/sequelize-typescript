@@ -20,6 +20,11 @@ Decorators and some other features for sequelize (v3 + v4).
    - [`@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API](#foreignkey-belongsto-hasmany-hasone-belongstomany-api)
    - [Generated getter and setter](#type-safe-usage-of-auto-generated-functions)
    - [Multiple relations of same models](#multiple-relations-of-same-models)
+ - [Repository mode](#repository-mode)
+   - [How to enable repository mode?](#how-to-enable-repository-mode)
+   - [How to use repository mode?](#how-to-use-repository-mode)
+   - [How to use associations with repository mode?](#how-to-use-associations-with-repository-mode)
+   - [Limitations of repository mode](#limitations-of-repository-mode)
  - [Model validation](#model-validation)
  - [Scopes](#scopes)
  - [Hooks](#hooks)
@@ -501,6 +506,55 @@ modelA.$remove('bs', /* instance */ ).then( /* ... */);
 modelA.$create('bs', /* value */ ).then( /* ... */);
 ```
 
+## Repository mode
+The repository mode makes it possible to separate static operations like `find`, `create`, ... from model definitions. 
+It also empowers models so that they can be used with multiple sequelize instances.
+
+### How to enable repository mode?
+Enable repository mode by setting `repositoryMode` flag:
+```typescript
+const sequelize = new Sequelize({
+  repositoryMode: true,
+  ...,
+});
+```
+### How to use repository mode?
+Retrieve repository to create instances or perform search operations:
+```typescript
+const userRepository = sequelize.getRepository(User);
+
+const luke = await userRepository.create({name: 'Luke Skywalker'});
+const luke = await userRepository.findOne({where: {name: 'luke'}});
+```
+### How to use associations with repository mode?
+For now one need to use the repositories within the include options in order to retrieve or create related data:
+```typescript
+const userRepository = sequelize.getRepository(User);
+const addressRepository = sequelize.getRepository(Address);
+
+userRepository.find({include: [addressRepository]});
+userRepository.create({name: 'Bear'}, {include: [addressRepository]});
+```
+> ⚠️ This will change in the future: One will be able to refer the model classes instead of the repositories.
+
+### Limitations of repository mode
+Nested scopes and includes in general won't work when using `@Scope` annotation together with repository mode like:
+```typescript
+@Scopes({
+  // includes
+  withAddress: {
+    include: [() => Address],
+  },
+  // nested scopes
+  withAddressIncludingLatLng: {
+    include: [() => Address.scope('withLatLng')],
+  }
+})
+@Table
+class User extends Model<User> {}
+```
+> ⚠️ This will change in the future: Simple includes will be implemented.
+
 ## Model validation
 Validation options can be set through the `@Column` annotation, but if you prefer to use separate decorators for 
 validation instead, you can do so by simply adding the validate options *as* decorators:
@@ -651,15 +705,18 @@ when it gets passed to @ForeignKey. With the usage of a function, which returns 
 this issue.
 
 ## Recommendations and limitations 
-### One Sequelize instance per model 
-You cannot add one and the same model to multiple Sequelize instances with
-differently configured connections. So that one model will only work for one connection.
+
+### One Sequelize instance per model (without repository mode)
+Unless you are using the [repository mode](#repository-mode), you won't be able to add one and the same model to multiple 
+Sequelize instances with differently configured connections. So that one model will only work for one connection.
+
 ### One model class per file
 This is not only good practice regarding design, but also matters for the order
 of execution. Since Typescript creates a `__metadata("design:type", SomeModel)` call due to `emitDecoratorMetadata` 
 compile option, in some cases `SomeModel` is probably not defined(not undefined!) and would throw a `ReferenceError`.
 When putting `SomeModel` in a separate file, it would look like `__metadata("design:type", SomeModel_1.SomeModel)`,
 which does not throw an error.
+
 ### Minification
 If you need to minify your code, you need to set `tableName` and `modelName` 
 in the `DefineOptions` for `@Table` annotation. sequelize-typescript
