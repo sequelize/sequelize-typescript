@@ -1,7 +1,8 @@
-import {WhereOptions, LoggingOptions, SearchPathOptions, col, and, or, literal} from 'sequelize';
+import {LoggingOptions, SearchPathOptions, col, and, or, literal} from 'sequelize';
 import {ScopeInclideOptions} from "./scope-inclide-options";
 import {ModelClassGetter} from "../../../model/shared/model-class-getter";
 import {FindOptionsAttributesArray} from '../../../model/model/build-count-create-find/find-options-attributes-array';
+import {WhereOptions} from "../../../model/model/build-count-create-find/where-options";
 
 /**
  * Based on "FindOptions" type definitions from:

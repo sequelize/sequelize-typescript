@@ -15,4 +15,11 @@ export interface CreateOptions extends BuildOptions, InstanceSaveOptions {
    * On Duplicate
    */
   onDuplicate?: string;
+
+
+  /**
+   * Enable or disable hooks being triggered from this call
+   * @default true
+   */
+  hooks?: boolean;
 }

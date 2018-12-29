@@ -22,8 +22,7 @@ import {
   TruncateOptions,
   UpdateOptions,
   UpsertOptions,
-  ValidationError,
-  WhereOptions
+  ValidationError
 } from 'sequelize';
 import {AssociationActionOptions} from "../../associations/shared/association-action-options";
 import {BuildOptions} from "./build-count-create-find/build-options";
@@ -38,6 +37,7 @@ import {Hooks} from '../../hooks/shared/hooks';
 import {FilteredModelAttributeKeys} from '../shared/filtered-model-attribute-keys';
 import {AssociationGetOptions} from './association/association-get-options';
 import {AssociationCountOptions} from './association/association-count-options';
+import {WhereOptions} from "./build-count-create-find/where-options";
 
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
@@ -258,6 +258,8 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * always be called with a single instance.
    */
   static findById<T extends Model<T>>(this: ModelType<T>, identifier?: number | string, options?: FindOptions<T>): Promise<T | null>;
+
+  static findByPk<T extends Model<T>>(this: ModelType<T>, identifier?: number | string, options?: FindOptions<T>): Promise<T | null>;
 
   static findByPrimary<T extends Model<T>>(this: ModelType<T>, identifier?: number | string, options?: FindOptions<T>): Promise<T | null>;
 

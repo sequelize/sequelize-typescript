@@ -20,8 +20,8 @@ npm-debug.log
 !src/hooks/shared/hooks.d.ts
 !src/model/model/model.d.ts
 !src/model/model/model.js
-!src/sequelize/shared/sequelize.d.ts
-!src/sequelize/shared/sequelize.js
+!src/sequelize/sequelize/sequelize.d.ts
+!src/sequelize/sequelize/sequelize.js
 
 # testing
 coverage

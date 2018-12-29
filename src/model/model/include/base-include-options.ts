@@ -1,4 +1,5 @@
-import {WhereOptions, IncludeThroughOptions, FindOptionsAttributesArray, where} from 'sequelize';
+import {FindOptionsAttributesArray, IncludeThroughOptions, where} from 'sequelize';
+import {WhereOptions} from "../build-count-create-find/where-options";
 
 /**
  * Based on "IncludeOptions" type definitions from:

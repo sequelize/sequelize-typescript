@@ -1,7 +1,8 @@
-import {and, col, fn, literal, LoggingOptions, or, SearchPathOptions, where, WhereOptions} from 'sequelize';
+import {and, col, fn, literal, LoggingOptions, or, SearchPathOptions, where} from 'sequelize';
 import {IncludeOptions} from "../include/include-options";
 import {FindOptionsAttributesArray} from './find-options-attributes-array';
 import {ModelType} from "../model-type";
+import {WhereOptions} from "./where-options";
 
 /**
  * Based on "FindOptions" type definitions from:

@@ -1,6 +1,7 @@
-import {LoggingOptions, SearchPathOptions, WhereOptions} from 'sequelize';
+import {LoggingOptions, SearchPathOptions} from 'sequelize';
 import {IncludeOptions} from '../include/include-options';
 import {Model} from '../model';
+import {WhereOptions} from "./where-options";
 
 /**
  * Based on "CountOptions" type definitions from:
@@ -40,4 +41,10 @@ export interface CountOptions<T> extends LoggingOptions, SearchPathOptions {
    * TODO: Check?
    */
   group?: Object;
+
+  /**
+   * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
+   * be returned. Only applies if `options.paranoid` is true for the model.
+   */
+  paranoid?: boolean;
 }
