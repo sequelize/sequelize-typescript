@@ -48,12 +48,11 @@ export function getScopeOptions(target: any): ScopeOptions | undefined {
  * Resolves scope
  */
 function resolveScope(scopeName: string, model: typeof Model, options: ScopeFindOptions | Function | undefined): void {
-  resolveModelGetter(options);
   if (typeof options === 'function') {
     const fn: Function = options;
     options = (...args: any[]) => inferAlias(fn(...args), model);
   } else {
-    options = inferAlias(options, model);
+    options = inferAlias(resolveModelGetter(options), model);
   }
   model.addScope(scopeName, options as FindOptions<any>, {override: true});
 }

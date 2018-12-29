@@ -20,13 +20,15 @@ use(chaiAsPromised);
 
 describe('validation', () => {
 
-  const sequelize = createSequelize();
+  let sequelize;
+
+  before(() => sequelize = createSequelize());
 
   beforeEach(() => sequelize.sync({force: true}));
 
   describe(`rawAttributes of ${ShoeWithValidation.name}`, () => {
 
-    const rawAttributes = ShoeWithValidation['rawAttributes'];
+    let rawAttributes;
     const shoeAttributes: { [key: string]: DefineValidateOptions } = {
       id: {
         isUUID: UUID_VERSION
@@ -80,6 +82,8 @@ describe('validation', () => {
         isArray: true,
       }
     };
+
+    before(() => rawAttributes = ShoeWithValidation['rawAttributes']);
 
     it(`should have properties with defined validations`, () => {
       Object
@@ -152,28 +156,30 @@ describe('validation', () => {
     const validPromises: Array<Promise<any>> = [];
     const invalidPromises: Array<Promise<any>> = [];
 
-    Object
-      .keys(data)
-      .forEach(key => {
+    before(() => {
+      Object
+        .keys(data)
+        .forEach(key => {
 
-        const valid = data[key].valid;
-        const invalid = data[key].invalid;
+          const valid = data[key].valid;
+          const invalid = data[key].invalid;
 
-        validPromises.push(Promise.all(valid.map(value => {
+          validPromises.push(Promise.all(valid.map(value => {
 
-          const shoe = new ShoeWithValidation({[key]: value});
+            const shoe = new ShoeWithValidation({[key]: value});
 
-          return expect(shoe.validate()).to.be.fulfilled;
-        })));
+            return expect(shoe.validate()).to.be.fulfilled;
+          })));
 
-        invalidPromises.push(Promise.all(invalid.map(value => {
+          invalidPromises.push(Promise.all(invalid.map(value => {
 
-          const shoe = new ShoeWithValidation({[key]: value});
+            const shoe = new ShoeWithValidation({[key]: value});
 
-          return expect(shoe.validate()).to.be.rejected;
-        })));
+            return expect(shoe.validate()).to.be.rejected;
+          })));
 
-      });
+        })
+    });
 
     it(`should not throw due to valid values`, () => Promise.all(validPromises));
     it(`should throw due to invalid values`, () => Promise.all(invalidPromises));
@@ -346,7 +352,7 @@ describe('validation', () => {
 
         const VALID_NAME = 'bob';
         const ERROR_MESSAGE = `Invalid name: Only '${VALID_NAME}' is valid`;
-        const _sequelize = createSequelize({modelPaths: []});
+        let _sequelize;
 
         @Table
         class User extends Model<User> {
@@ -359,7 +365,10 @@ describe('validation', () => {
           }
         }
 
-        _sequelize.addModels([User]);
+        before(() => {
+          _sequelize = createSequelize({modelPaths: []});
+          _sequelize.addModels([User]);
+        });
 
         it('should throw', () => {
           const user = new User({name: 'will'});
@@ -381,7 +390,7 @@ describe('validation', () => {
         const NAME_ERROR_MESSAGE = `Invalid name: Only '${VALID_NAME}' is valid`;
         const VALID_AGE = 99;
         const AGE_ERROR_MESSAGE = `Invalid age: Only '${VALID_AGE}' is valid`;
-        const _sequelize = createSequelize({modelPaths: []});
+        let _sequelize;
 
         @Table
         class User extends Model<User> {
@@ -401,7 +410,10 @@ describe('validation', () => {
           }
         }
 
-        _sequelize.addModels([User]);
+        before(() => {
+          _sequelize = createSequelize({modelPaths: []});
+          _sequelize.addModels([User]);
+        });
 
         it('should have metadata for multiple validators', () => {
           const {validate} = Reflect.getMetadata('sequelize:options', User.prototype);

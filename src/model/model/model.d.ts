@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {Sequelize} from '../../sequelize/shared/sequelize';
+import {Sequelize} from '../../sequelize/sequelize/sequelize';
 import {FindOptions} from './build-count-create-find/find-options';
 import * as Promise from 'bluebird';
 import {

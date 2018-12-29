@@ -5,7 +5,7 @@ import {createSequelize} from "../utils/sequelize";
 
 describe('instance-methods', () => {
 
-  const sequelize = createSequelize();
+  let sequelize;
 
   @Table
   class User extends Model<User> {
@@ -30,7 +30,10 @@ describe('instance-methods', () => {
     }
   }
 
-  sequelize.addModels([User]);
+  before(() => {
+    sequelize = createSequelize();
+    sequelize.addModels([User]);
+  });
 
   beforeEach(() => sequelize.sync({force: true}));
 

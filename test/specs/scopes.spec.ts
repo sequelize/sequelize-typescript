@@ -19,7 +19,9 @@ use(chaiDatetime);
 
 describe('scopes', () => {
 
-  const sequelize = createSequelize();
+  let sequelize;
+
+  before(() => sequelize = createSequelize());
 
   beforeEach(() => sequelize.sync({force: true}));
 
@@ -80,7 +82,7 @@ describe('scopes', () => {
 
           expect(yellowShoes).to.be.empty;
         })
-        .then(() => (ShoeWithScopes.scope('noImg')  as typeof ShoeWithScopes).findAll())
+        .then(() => (ShoeWithScopes.scope('noImg') as typeof ShoeWithScopes).findAll())
         .then(noImgShoes => {
 
           expect(noImgShoes).to.be.not.empty;
@@ -229,7 +231,7 @@ describe('scopes', () => {
     });
 
     describe('with symbols', () => {
-      const _sequelize = createSequelize(false);
+      let _sequelize;
 
       @Scopes({
         bob: {where: {name: {[Op.like]: '%bob%'}}},
@@ -245,7 +247,10 @@ describe('scopes', () => {
         updated: Date;
       }
 
-      _sequelize.addModels([Person]);
+      before(() => {
+        _sequelize = createSequelize(false);
+        _sequelize.addModels([Person]);
+      });
 
       beforeEach(() => _sequelize.sync({force: true}));
 

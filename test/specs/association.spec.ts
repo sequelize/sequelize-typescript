@@ -46,7 +46,7 @@ class BookWithAuthorModel extends BookModel {
 
 describe('association', () => {
 
-  const sequelize: Sequelize = createSequelize(false);
+  let sequelize: Sequelize;
 
   const jsForDummiesBook = {
     title: 'JS for dummies'
@@ -60,6 +60,10 @@ describe('association', () => {
   const robin = {name: 'robin'};
   const nelly = {name: 'nelly'};
   const brom = {name: 'brom'};
+
+  before(() => {
+    sequelize = createSequelize(false);
+  });
 
   describe('One-to-many', () => {
     function oneToManyTestSuites(Book: typeof BookModel, Page: typeof PageModel): void {
@@ -92,9 +96,9 @@ describe('association', () => {
         content: 'js4'
       };
 
-      beforeEach(() => {
-        sequelize.addModels([Page, Book]);
+      before(() => sequelize.addModels([Page, Book]));
 
+      beforeEach(() => {
         return sequelize.sync({force: true});
       });
 
@@ -631,9 +635,9 @@ describe('association', () => {
     function oneToManyWithOptionsTestSuites(Book: typeof BookModel, Page: typeof PageModel, alternateName: boolean = false): void {
       const foreignKey = alternateName ? 'book_id' : 'bookId';
 
-      beforeEach(() => {
-        sequelize.addModels([Page, Book]);
+      before(() => sequelize.addModels([Page, Book]));
 
+      beforeEach(() => {
         return sequelize.sync({force: true});
       });
 
@@ -815,8 +819,7 @@ describe('association', () => {
 
       expect(() =>
         _sequelize.addModels([User])
-      ).to.throw(new RegExp('Model not initialized: "Friend" needs to be added to a ' +
-        'Sequelize instance before association can be resolved'));
+      ).to.throw(new RegExp('Friend has not been defined'));
     });
   });
 
@@ -829,8 +832,6 @@ describe('association', () => {
       if (AuthorBook) {
         models.push(AuthorBook);
       }
-
-      sequelize.addModels(models);
 
       const sherlockHolmesBook = {
         title: 'Sherlock Holmes',
@@ -846,6 +847,8 @@ describe('association', () => {
           {title: 'Twenty Thousand Leagues Under the Sea'},
         ]
       };
+
+      before(() => sequelize.addModels(models));
 
       beforeEach(() => sequelize.sync({force: true}));
 
@@ -1526,7 +1529,7 @@ describe('association', () => {
         targetType: string;
       }
 
-      sequelize.addModels([User77, Subscription]);
+      before(() => sequelize.addModels([User77, Subscription]));
 
       it('should set scope in pure sequelize association options', () => {
         expect(User77['associations'].usersSubscribedTo.through)
@@ -1556,8 +1559,7 @@ describe('association', () => {
 
       expect(() =>
         _sequelize.addModels([User, Friend])
-      ).to.throw(new RegExp('Model not initialized: "UserFriend" needs to be added to a ' +
-        'Sequelize instance before association can be resolved'));
+      ).to.throw(new RegExp('UserFriend has not been defined'));
     });
 
   });
@@ -1600,7 +1602,7 @@ describe('association', () => {
 
     function oneToOneTestSuites(User: typeof ConcreteModel, Address: typeof ConcreteModel): void {
 
-      sequelize.addModels([User, Address]);
+      before(() => sequelize.addModels([User, Address]));
 
       beforeEach(() => sequelize.sync({force: true}));
 
@@ -1917,9 +1919,10 @@ describe('association', () => {
                                            alternateName: boolean = false,
                                            onDeleteAction: string = 'CASCADE'): void {
       const foreignKey = alternateName ? 'user_id' : 'userId';
-      beforeEach(() => {
-        sequelize.addModels([User, Address]);
 
+      before(() => sequelize.addModels([User, Address]));
+
+      beforeEach(() => {
         return sequelize.sync({force: true});
       });
 

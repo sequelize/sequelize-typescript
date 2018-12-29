@@ -44,7 +44,8 @@ export function getForeignKeyOptions(relatedClass: ModelType<any>,
   if (!foreignKeyOptions.name && classWithForeignKey) {
     const foreignKeys = getForeignKeys(classWithForeignKey.prototype) || [];
     for (const key of foreignKeys) {
-      if (key.relatedClassGetter() === relatedClass) {
+      if (key.relatedClassGetter() === relatedClass ||
+        relatedClass.prototype instanceof key.relatedClassGetter()) {
         foreignKeyOptions.name = key.foreignKey;
         break;
       }

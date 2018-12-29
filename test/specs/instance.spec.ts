@@ -37,7 +37,9 @@ use(chaiDatetime);
 
 describe('instance', () => {
 
-  const sequelize = createSequelize();
+  let sequelize;
+
+  before(() => sequelize = createSequelize());
 
   beforeEach(() => sequelize.sync({force: true}));
 
@@ -194,9 +196,10 @@ describe('instance', () => {
     //   );
     // }
 
-    if (sequelize['dialect']['supports']['returnValues']) {
 
-      it('supports returning', () =>
+    it('supports returning', () => {
+
+      if (sequelize['dialect']['supports']['returnValues']) {
         User
           .findById(1)
           .then((user1) => {
@@ -208,9 +211,9 @@ describe('instance', () => {
                   expect(user1.aNumber).to.be.equal(2);
                 });
             }
-          })
-      );
-    }
+          });
+      }
+    });
 
     it('supports where conditions', () =>
       User
@@ -1488,10 +1491,10 @@ describe('instance', () => {
     describe('with version option', () => {
 
       it("version column is updated by sequelize", () => {
-        let version = undefined;
+          let version = undefined;
           UserWithCustomUpdatedAt
             .sync()
-            .then(() => UserWithVersion.create({ name: 'john doe' }))
+            .then(() => UserWithVersion.create({name: 'john doe'}))
             .then((johnDoe: UserWithVersion) => {
               expect(johnDoe.version).not.to.be.undefined;
               version = johnDoe.version;
@@ -1501,9 +1504,9 @@ describe('instance', () => {
               expect(johnDoe.name).not.equals('doe john');
               expect(johnDoe.version).not.equals(version);
               return johnDoe.update({});
-            })
+            });
         }
-      )
+      );
     });
 
 
@@ -1625,7 +1628,7 @@ describe('instance', () => {
         poobah: UserEager;
       }
 
-      sequelize.addModels([UserEager, ProjectEager]);
+      before(() => sequelize.addModels([UserEager, ProjectEager]));
 
       beforeEach(() => UserEager.sync({force: true}).then(() => ProjectEager.sync({force: true})));
 
@@ -1666,7 +1669,7 @@ describe('instance', () => {
             exam1: ProjectEager.create({title: 'exam1', overdueDays: 0}),
             exam2: ProjectEager.create({title: 'exam2', overdueDays: 0})
           })
-          .then(({ bart, lisa, detention1, detention2, exam1, exam2 }) =>
+          .then(({bart, lisa, detention1, detention2, exam1, exam2}) =>
             Promise
               .all([
                 bart.$set('projects', [detention1, detention2]),
@@ -1790,7 +1793,7 @@ describe('instance', () => {
       user: NiceUser;
     }
 
-    sequelize.addModels([NiceUser, NiceProject]);
+    before(() => sequelize.addModels([NiceUser, NiceProject]));
 
     beforeEach(() => NiceUser.sync({force: true}).then(() => NiceProject.sync({force: true})));
 
@@ -1915,7 +1918,7 @@ describe('instance', () => {
       paranoidUser: ParanoidUser;
     }
 
-    sequelize.addModels([ParanoidUser]);
+    before(() => sequelize.addModels([ParanoidUser]));
 
     beforeEach(() => ParanoidUser.sync({force: true}));
 
@@ -1939,7 +1942,7 @@ describe('instance', () => {
         .then(() =>
           ParanoidUser.findAll({
             where: {
-              [sequelize['Op'] ? sequelize['Op'].and : '$and']: { username: 'cuss' }
+              [sequelize['Op'] ? sequelize['Op'].and : '$and']: {username: 'cuss'}
             }
           })
         )
@@ -1950,7 +1953,7 @@ describe('instance', () => {
         .then(() =>
           ParanoidUser.findAll({
             where: {
-              [sequelize['Op'] ? sequelize['Op'].and : '$and']: { username: 'cuss' }
+              [sequelize['Op'] ? sequelize['Op'].and : '$and']: {username: 'cuss'}
             }
           })
         )
@@ -1965,7 +1968,7 @@ describe('instance', () => {
         .then(() =>
           ParanoidUser.findAll({
             where: {
-              [sequelize['Op'] ? sequelize['Op'].or : '$or']: { username: 'cuss' }
+              [sequelize['Op'] ? sequelize['Op'].or : '$or']: {username: 'cuss'}
             }
           })
         )
@@ -1976,7 +1979,7 @@ describe('instance', () => {
         .then(() =>
           ParanoidUser.findAll({
             where: {
-              [sequelize['Op'] ? sequelize['Op'].or : '$or']: { username: 'cuss' }
+              [sequelize['Op'] ? sequelize['Op'].or : '$or']: {username: 'cuss'}
             }
           })
         )

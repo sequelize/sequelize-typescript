@@ -13,7 +13,11 @@ const expect = chai.expect;
 chai.use(sinonChai);
 
 describe('hook', () => {
-  const sequelize: Sequelize = createSequelize(false);
+  let sequelize: Sequelize;
+
+  before(() => {
+    sequelize = createSequelize(false);
+  });
 
   beforeEach(() => {
 

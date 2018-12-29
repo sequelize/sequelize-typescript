@@ -131,26 +131,28 @@ export function getModels(
  * So that {model: () => Person} will be converted to
  * {model: Person}
  */
-export function resolveModelGetter(options: any): void {
+export function resolveModelGetter(options: any) {
   const maybeModelGetter = value => typeof value === 'function' && value.length === 0;
   const isModel = value => value && value.prototype && value.prototype instanceof Model;
-  const isOptionObject = value => value && typeof value === 'object';
+  const isOptionObjectOrArray = value => value && typeof value === 'object';
 
-  Object
+  return Object
     .keys(options)
-    .forEach(key => {
+    .reduce((acc, key) => {
       const value = options[key];
 
       if (maybeModelGetter(value)) {
         const maybeModel = value();
 
         if (isModel(maybeModel)) {
-          options[key] = maybeModel;
+          acc[key] = maybeModel;
         }
-      } else if (isOptionObject(value)) {
-        resolveModelGetter(value);
+      } else if (isOptionObjectOrArray(value)) {
+        acc[key] = resolveModelGetter(value);
       }
-    });
+
+      return acc;
+    }, Array.isArray(options) ? [...options] : {...options});
 }
 
 /**

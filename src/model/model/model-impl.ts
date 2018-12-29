@@ -78,6 +78,10 @@ export class ModelImpl extends _SeqModel {
       });
   }
 
+  static addInferRepositoryOverrides() {
+
+  }
+
   constructor(values?: any, options?: any) {
     super(values, inferAlias(options, new.target));
   }
@@ -157,7 +161,7 @@ function isFunctionMember(propertyKey: string, target: any): boolean {
 
 function isForbiddenMember(propertyKey: string): boolean {
   const FORBIDDEN_KEYS = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
-    'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes'];
+    'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes', 'inspect'];
   return FORBIDDEN_KEYS.indexOf(propertyKey) !== -1;
 }
 

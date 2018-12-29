@@ -1,4 +1,4 @@
-import {Sequelize} from "../../src/sequelize/shared/sequelize";
+import {Sequelize} from "../../src/sequelize/sequelize/sequelize";
 import * as OriginSequelize from "sequelize";
 import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
 import {SequelizeOptions} from '../../src/sequelize/sequelize-options/sequelize-options';

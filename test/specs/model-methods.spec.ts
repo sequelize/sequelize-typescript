@@ -5,7 +5,7 @@ import {createSequelize} from "../utils/sequelize";
 
 describe('model-methods', () => {
 
-  const sequelize = createSequelize();
+  let sequelize;
 
   @Table
   class User extends Model<User> {
@@ -27,7 +27,11 @@ describe('model-methods', () => {
     }
   }
 
-  sequelize.addModels([User]);
+
+  before(() => {
+    sequelize = createSequelize();
+    sequelize.addModels([User]);
+  });
 
   beforeEach(() => sequelize.sync({force: true}));
 
@@ -41,7 +45,7 @@ describe('model-methods', () => {
       .save()
       .then(() => User.findDemoUser())
       .then(_user => expect(_user.equals(user)).to.be.true)
-    ;
+      ;
   });
 
 });

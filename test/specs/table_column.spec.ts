@@ -15,7 +15,7 @@ use(chaiAsPromised);
 
 describe('table_column', () => {
 
-  const sequelize = createSequelize();
+  let sequelize;
 
   const expectedUserAttributes: DefineAttributes = {
     id: {
@@ -73,6 +73,8 @@ describe('table_column', () => {
       type: DataType.STRING
     }
   };
+
+  before(() => sequelize = createSequelize());
 
   beforeEach(() => sequelize.sync({force: true}));
 
@@ -169,7 +171,9 @@ describe('table_column', () => {
 
   describe('rawAttributes', () => {
 
-    const rawAttributes = User['rawAttributes'];
+    let rawAttributes;
+
+    before(() => rawAttributes = User['rawAttributes']);
 
     it('should have annotated attributes', () => {
 
@@ -255,7 +259,7 @@ describe('table_column', () => {
         }
       }
 
-      sequelize.addModels([User]);
+      before(() => sequelize.addModels([User]));
 
       it('should consider getter', () => {
 
@@ -297,7 +301,7 @@ describe('table_column', () => {
         }
       }
 
-      sequelize.addModels([User]);
+      before(() => sequelize.addModels([User]));
 
       it('should consider setter', () => {
 

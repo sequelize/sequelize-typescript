@@ -51,8 +51,6 @@ describe('model', () => {
   }
 
   before(() => {
-
-
     clock = useFakeTimers();
   });
 

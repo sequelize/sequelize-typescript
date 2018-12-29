@@ -17,21 +17,27 @@ describe('services.models', () => {
       c: {
         c1: () => Book,
         c2: () => null
-      }
+      },
+      include: [
+        () => Book,
+        () => null,
+      ]
     };
 
-    resolveModelGetter(options);
+    const resolvedOptions = resolveModelGetter(options);
 
     it('should resolve getter', () => {
 
-      expect(options.a).to.be.equal(Book);
-      expect(options.c.c1).to.be.equal(Book);
+      expect(resolvedOptions.a).to.be.equal(Book);
+      expect(resolvedOptions.c.c1).to.be.equal(Book);
+      expect(resolvedOptions.include[0]).to.be.equal(Book);
     });
 
     it('should not resolve other functions', () => {
 
-      expect(options.b).to.be.a('function');
-      expect(options.c.c2).to.be.a('function');
+      expect(resolvedOptions.b).to.be.a('function');
+      expect(resolvedOptions.c.c2).to.be.a('function');
+      expect(resolvedOptions.include[1]).to.be.a('function');
     });
   });
 

@@ -8,15 +8,12 @@ import {getAssociations} from '../../associations';
 import {resolveScopes} from '../../scopes';
 import {hasSequelizeUri, prepareOptions} from './sequelize-service';
 import {Repository} from "../repository/repository";
+import {ModelNotInitializedError} from "../../model/shared/model-not-initialized-error";
 
-export const _OriginSequelize = OriginSequelize as any as typeof Sequelize;
+export class SequelizeImpl extends (OriginSequelize as any as typeof Sequelize) {
 
-export class SequelizeImpl extends _OriginSequelize {
-
-  models: { [modelName: string]: typeof Model };
   options: SequelizeOptions;
   repositoryMode: boolean;
-  repositories: Map<any, any>;
 
   constructor(options: SequelizeOptions | string) {
     if (typeof options === "string") {
@@ -29,6 +26,13 @@ export class SequelizeImpl extends _OriginSequelize {
     this.init(options);
   }
 
+  model(model: string | ModelType<any>) {
+    if (typeof model !== 'string') {
+      return OriginSequelize.prototype.model.call(this, getModelName(model.prototype));
+    }
+    return OriginSequelize.prototype.model.call(this, model);
+  }
+
   addModels(models: Array<typeof Model>): void;
   addModels(modelPaths: string[]): void;
   addModels(modelPaths: string[], modelMatch?: ModelMatch): void;
@@ -37,21 +41,18 @@ export class SequelizeImpl extends _OriginSequelize {
     const defaultModelMatch = (filename, member) => filename === member;
     const models = getModels(arg, modelMatch || this.options.modelMatch || defaultModelMatch);
 
-    const targetModels = this.initModels(models);
-    targetModels.forEach(model => this.models[model.name] = model);
-    this.associateModels(targetModels);
-    resolveScopes(targetModels);
-    installHooks(targetModels);
+    const definedModels = this.defineModels(models);
+    this.associateModels(definedModels);
+    resolveScopes(definedModels);
+    installHooks(definedModels);
   }
 
   getRepository<T extends Model<T>>(modelClass: ModelType<T>): Repository<T> {
-    return this.repositories.get(modelClass);
+    return this.model(modelClass) as any as Repository<T>;
   }
 
   private init(options: SequelizeOptions | string): void {
-    this.models = {};
     this.repositoryMode = false;
-    this.repositories = new Map();
 
     if (typeof options !== "string") {
       this.repositoryMode = !!options.repositoryMode;
@@ -70,15 +71,21 @@ export class SequelizeImpl extends _OriginSequelize {
       if (!associations) return;
 
       associations.forEach(association => {
-        const options = association.getSequelizeOptions(model as any as ModelType<any>);
-        const associatedClass = association.getAssociatedClass();
-        const relation = association.getAssociation();
-        model[relation](associatedClass, options);
+        const options = association.getSequelizeOptions(model as any as ModelType<any>, this);
+        const associatedClass = this.model(association.getAssociatedClass());
+
+        if (!associatedClass.isInitialized) {
+          throw new ModelNotInitializedError(associatedClass, {
+            cause: 'before association can be resolved.'
+          });
+        }
+
+        model[association.getAssociation()](associatedClass, options);
       });
     });
   }
 
-  private initModels(models: Array<typeof Model>): Array<typeof Model> {
+  private defineModels(models: Array<typeof Model>): Array<typeof Model> {
 
     return models.map(model => {
       const modelName = getModelName(model.prototype);
@@ -90,39 +97,19 @@ export class SequelizeImpl extends _OriginSequelize {
       options['modelName'] = modelName;
       options['sequelize'] = this;
 
-      const targetModel = this.repositoryMode
+      const definedModel = this.repositoryMode
         ? this.createRepositoryModel(model)
         : model;
 
-      targetModel['init'](attributes, options);
+      definedModel['init'](attributes, options);
 
-      return targetModel;
+      return definedModel;
     });
   }
 
-  private createRepositoryModel<T extends Model<T>>(modelClass: typeof Model): typeof Model {
-    const repositoryModel = class extends modelClass<T> {
-    } as any as Repository<T>;
-
-    // TODO@robin throw if already exists!
-    this.repositories.set(modelClass, repositoryModel as any);
-
-    return repositoryModel as any;
+  private createRepositoryModel(modelClass: typeof Model): typeof Model {
+    return class extends modelClass<any> {
+    } as any;
   }
 
 }
-//
-// class User extends Model<User> {
-//   bla: string;
-// }
-//
-// const repository = new SequelizeImpl('').getRepositoryModel(User);
-//
-// (async() => {
-//
-//   const user = await repository.findOne();
-//   if (user) {
-//
-//   }
-// })();
-//
