@@ -3,7 +3,8 @@
   "version": "1.0.0-alpha.4",
   "description": "Decorators and some other features for sequelize",
   "scripts": {
-    "build": "tsc",
+    "copyJsAndDeclarationFiles": "copyfiles -u 1 src/**/*.js src/**/*.d.ts dist",
+    "build": "tsc && npm run copyJsAndDeclarationFiles",
     "test": "mocha",
     "cover": "nyc mocha",
     "lint": "tslint .",
@@ -52,6 +53,7 @@
     "chai-as-promised": "6.0.0",
     "chai-datetime": "1.4.1",
     "codecov": "3.1.0",
+    "copyfiles": "2.1.0",
     "has-flag": "2.0.0",
     "lodash": "4.17.11",
     "mocha": "5.2.0",

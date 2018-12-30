@@ -13,7 +13,11 @@
     "lib": ["es2017"]
   },
   "include": [
-    "src"
+    "src",
+    "src/sequelize/sequelize/sequelize.d.ts",
+    "src/sequelize/sequelize/sequelize.js",
+    "src/model/model/model.d.ts",
+    "src/model/model/model.js"
   ],
   "exclude": [
     "node_modules",

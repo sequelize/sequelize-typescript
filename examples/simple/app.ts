@@ -1,4 +1,4 @@
-import {Sequelize} from "../src";
+import {Sequelize} from "../../src";
 
 /* tslint:disable:no-unused-new */
 

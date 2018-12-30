@@ -12,10 +12,8 @@
     "lib": ["es2015"]
   },
   "include": [
-    "./**/*"
-  ],
-  "files": [
-    "app.ts"
+    "repository-mode",
+    "simple"
   ],
   "exclude": [
     "../node_modules",

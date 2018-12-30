@@ -10,3 +10,4 @@ export * from './validation-only/sequelize-validation-only-options';
 export * from './sequelize/sequelize';
 export * from './sequelize/sequelize-impl';
 export * from './sequelize/sequelize-service';
+export * from './repository/repository';

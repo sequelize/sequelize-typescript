@@ -1,5 +1,5 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany,
-DefaultScope, Scopes} from "../../src";
+DefaultScope, Scopes} from "../../../src";
 import {AuthorFriend} from "./AuthorFriend";
 import Book from "./Book";
 

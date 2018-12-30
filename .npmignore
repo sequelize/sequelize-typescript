@@ -6,7 +6,7 @@ tsconfig.json
 test
 coverage
 .nyc_output
-example
+examples
 .DS_Store
 .idea
 *.ts

@@ -1,4 +1,4 @@
-import {Table, Model, DataType, Column, Length} from "../../../src";
+import {Table, Model, DataType, Column, Length} from "../../../../src";
 
 @Table
 export class Person extends Model<Person> {

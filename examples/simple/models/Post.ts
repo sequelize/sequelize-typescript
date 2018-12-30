@@ -1,7 +1,7 @@
 import {
   Table, Model, PrimaryKey, Column, AutoIncrement, BelongsToMany,
   ForeignKey, BelongsTo, HasMany, Scopes
-} from "../../src";
+} from "../../../src";
 import {Comment} from "./Comment";
 import {PostTopic} from "./PostTopic";
 import {Topic} from "./Topic";
