@@ -12,3 +12,4 @@ examples
 *.ts
 *.js.map
 !*.d.ts
+src

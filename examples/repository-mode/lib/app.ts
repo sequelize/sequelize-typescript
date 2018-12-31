@@ -10,6 +10,11 @@ import {postRouterFactory} from "./posts/postRouterFactory";
 const userRepository = sequelize.getRepository(User);
 const postRepository = sequelize.getRepository(Post);
 
+(async () => {
+  const user = await userRepository.create();
+  user.
+})();
+
 export const app = express();
 
 app.use(json());
