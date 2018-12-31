@@ -1,6 +1,6 @@
 {
   "name": "sequelize-typescript",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.6",
   "description": "Decorators and some other features for sequelize",
   "scripts": {
     "copyJsAndDeclarationFiles": "copyfiles -u 1 src/**/*.js src/**/*.d.ts dist",
