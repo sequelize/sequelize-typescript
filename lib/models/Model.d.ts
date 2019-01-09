@@ -76,7 +76,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    * @param schema The name of the schema
    * @param options
    */
-  static schema<T extends Model<T>>(this: (new () => T), schema: string, options?: SchemaOptions): Model<T>;
+  static schema<T>(this: NonAbstractTypeOfModel<T>, schema: string, options?: SchemaOptions): NonAbstractTypeOfModel<T>;
 
   /**
    * Get the tablename of the model, taking schema into account. The method will return The name as a string
