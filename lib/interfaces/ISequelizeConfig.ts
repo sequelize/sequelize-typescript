@@ -11,12 +11,12 @@ export interface ISequelizeConfig extends Options {
   /**
    * Username of database
    */
-  username: string;
+  username?: string;
 
   /**
    * Password for database user
    */
-  password: string;
+  password?: string;
 
   /**
    * Path to models, which should be loaded
