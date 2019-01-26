@@ -477,6 +477,22 @@ explicitly:
   @HasMany(() => Book, 'proofreaderId')
   proofedBooks: Book[];
 ```
+When including a model that has multiple relations you will need to use as property:
+```typescript
+  // In the class "books":
+  @DefaultScopes({
+    include: [
+      {
+        // note as with the @BelongsTo Column name
+        as: "author",
+        model: () => Person,
+      },
+    ]
+  })
+  
+  // In a controller or outside of the model
+  Book.findAll({ include: [ as: "author", model: Person ] })  
+```
 
 ### Type safe usage of auto generated functions
 With the creation of a relation, sequelize generates some method on the corresponding
