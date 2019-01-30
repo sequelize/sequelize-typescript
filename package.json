@@ -92,10 +92,13 @@
     "functions": 85,
     "branches": 85,
     "include": [
-      "lib/**/*.js"
+      "lib"
     ],
     "exclude": [
-      "test/**/*.js"
+      "test"
+    ],
+    "extension": [
+      ".js"
     ],
     "reporter": [
       "lcov",
