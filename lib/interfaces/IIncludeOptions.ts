@@ -15,7 +15,7 @@ export interface IIncludeOptions extends IBaseIncludeOptions {
   /**
    * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
    */
-  association?: IIncludeAssociation;
+  association?: IIncludeAssociation | string;
 
   /**
    * Load further nested related models
