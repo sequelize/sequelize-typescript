@@ -23,7 +23,7 @@ import {NonAbstract, Omit, RecursivePartial} from '../utils/types';
 /* tslint:disable:array-type */
 /* tslint:disable:max-line-length */
 /* tslint:disable:max-classes-per-file */
-type NonAbstractTypeOfModel<T> = (new () => T) & NonAbstract<typeof Model>;
+export type NonAbstractTypeOfModel<T> = (new () => T) & NonAbstract<typeof Model>;
 
 export type FilteredModelAttributes<T extends Model<T>> =
   RecursivePartial<Omit<T, keyof Model<any>>> & {
