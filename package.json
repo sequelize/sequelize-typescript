@@ -1,7 +1,7 @@
 {
   "name": "sequelize-typescript",
   "version": "0.6.8-beta.0",
-  "description": "Decorators and some other extras for sequelize (v3 + v4)",
+  "description": "Decorators and some other features for sequelize (v3, v4, v5)",
   "scripts": {
     "build": "tsc --project lib/models/v4 && tsc",
     "build-tests-es5": "tsc --project test --target es5",
