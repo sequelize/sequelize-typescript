@@ -69,7 +69,6 @@ export * from './model/column/column';
 export * from './model/model/association/association-count-options';
 export * from './model/model/association/association-get-options';
 export * from './model/model/model';
-export * from './model/model/model-type';
 export * from './model/shared/model-class-getter';
 export * from './model/shared/model-service';
 export * from './model/table/table';
