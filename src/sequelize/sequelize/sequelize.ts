@@ -8,6 +8,7 @@ import {resolveScopes} from "../../scopes/shared/scope-service";
 import {installHooks} from "../../hooks/shared/hooks-service";
 import {getAssociations} from "../../associations/shared/association-service";
 import {getAttributes} from "../../model/column/attribute-service";
+import {Repository} from "../..";
 
 export class Sequelize extends OriginSequelize {
 
@@ -52,7 +53,7 @@ export class Sequelize extends OriginSequelize {
     installHooks(definedModels);
   }
 
-  getRepository<M extends { new (): Model }>(modelClass: M): M {
+  getRepository<M extends { new (): Model }>(modelClass: M): Repository<M> {
     return this.model(modelClass as any) as any as M;
   }
 

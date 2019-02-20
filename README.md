@@ -95,10 +95,6 @@ A primary key (`id`) will be inherited from base class `Model`. This primary key
 `autoIncrement=true` (This behaviour is a native sequelize thing). The id can easily be overridden by marking another 
 attribute as primary key. So either set `@Column({primaryKey: true})` or use `@PrimaryKey` together with `@Column`.
 
-#### `timestamps=false`
-Please notice that the `timestamps` option is `false` by default. When setting `paranoid: true`,
-remember to also reactivate the timestamps.
-
 #### `@CreatedAt`, `@UpdatedAt`, `@DeletedAt`
 Annotations to define custom and type safe `createdAt`, `updatedAt` and `deletedAt` attributes:
 ```typescript
