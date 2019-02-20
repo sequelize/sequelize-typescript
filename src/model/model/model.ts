@@ -1,5 +1,4 @@
-import {InitOptions, Model as OriginModel, ModelAttributes, FindOptions, BuildOptions} from 'sequelize';
-import * as Promise from 'bluebird';
+import {InitOptions, Model as OriginModel, ModelAttributes, FindOptions, BuildOptions, Promise} from 'sequelize';
 import {capitalize} from '../../shared/string';
 import {inferAlias} from '../../associations/alias-inference/alias-inference-service';
 import {ModelNotInitializedError} from '../shared/model-not-initialized-error';
@@ -11,7 +10,7 @@ import {AssociationActionOptions} from "../../associations/shared/association-ac
 export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
 
   // TODO Consider moving the following props to OriginModel
-  id?:number | any;
+  id?: number | any;
   createdAt?: Date | any;
   updatedAt?: Date | any;
   deletedAt?: Date | any;

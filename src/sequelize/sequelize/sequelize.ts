@@ -2,7 +2,6 @@ import {InitOptions, Sequelize as OriginSequelize} from 'sequelize';
 import {ModelNotInitializedError} from "../../model/shared/model-not-initialized-error";
 import {ModelMatch, SequelizeOptions} from "./sequelize-options";
 import {getModels, prepareArgs} from "./sequelize-service";
-import {Repository} from "../repository/repository";
 import {Model} from "../../model/model/model";
 import {getModelName, getOptions} from "../../model/shared/model-service";
 import {resolveScopes} from "../../scopes/shared/scope-service";
