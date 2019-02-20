@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {addOptions} from '../../shared/model-service';
 
 export function DeletedAt(target: any, propertyName: string): void {

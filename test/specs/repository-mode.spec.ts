@@ -1,13 +1,20 @@
 import {expect} from 'chai';
-import {Sequelize} from "../../src/sequelize";
-import {Column, Model, Table} from "../../src/model";
-import {BelongsTo, ForeignKey, HasOne} from "../../src/associations";
+import {Op} from 'sequelize';
+
 import {BelongsToMany} from "../../src/associations/belongs-to-many/belongs-to-many";
+import {Table} from "../../src/model/table/table";
+import {Sequelize} from "../../src/sequelize/sequelize/sequelize";
+import {Column} from "../../src/model/column/column";
+import {Model} from "../../src/model/model/model";
 import {HasMany} from "../../src/associations/has/has-many";
+import {HasOne} from "../../src/associations/has/has-one";
+import {ForeignKey} from "../../src/associations/foreign-key/foreign-key";
+import {BelongsTo} from "../../src/associations/belongs-to/belongs-to";
+import { SequelizeOptions } from '../../src';
 
 describe('repository-mode', () => {
 
-  const defaultOptions = {
+  const defaultOptions: Partial<SequelizeOptions> = {
     dialect: 'sqlite',
     username: 'root',
     password: '',
@@ -28,11 +35,13 @@ describe('repository-mode', () => {
 
     before(async () => {
       sequelizeA = new Sequelize({
+        operatorsAliases: Op,
         ...defaultOptions,
         database: 'a',
         models: [User],
       });
       sequelizeB = new Sequelize({
+        operatorsAliases: Op,
         ...defaultOptions,
         database: 'b',
         models: [User],
@@ -67,7 +76,7 @@ describe('repository-mode', () => {
 
     it('should not affect sequelize instance B if an instance is stored via sequelize instance A', async () => {
       const userA = await sequelizeA.getRepository(User).create({name: 'Han Solo'});
-      const userB = await sequelizeB.getRepository(User).findById(userA.id);
+      const userB = await sequelizeB.getRepository(User).findByPk(userA.id);
 
       expect(userB).to.be.null;
     });
@@ -99,6 +108,7 @@ describe('repository-mode', () => {
 
       before(async () => {
         sequelize = new Sequelize({
+          operatorsAliases: Op,
           ...defaultOptions,
           database: 'a',
           models: [User, Address],
@@ -154,6 +164,7 @@ describe('repository-mode', () => {
 
       before(async () => {
         sequelizeA = new Sequelize({
+          operatorsAliases: Op,
           ...defaultOptions,
           database: 'a',
           repositoryMode: true,
@@ -161,6 +172,7 @@ describe('repository-mode', () => {
           models: [User, Comment],
         });
         sequelizeB = new Sequelize({
+          operatorsAliases: Op,
           ...defaultOptions,
           database: 'b',
           repositoryMode: true,
@@ -230,6 +242,7 @@ describe('repository-mode', () => {
 
       before(async () => {
         sequelizeA = new Sequelize({
+          operatorsAliases: Op,
           ...defaultOptions,
           database: 'a',
           repositoryMode: true,
@@ -237,6 +250,7 @@ describe('repository-mode', () => {
           models: [User, Event, UserEvent],
         });
         sequelizeB = new Sequelize({
+          operatorsAliases: Op,
           ...defaultOptions,
           database: 'b',
           repositoryMode: true,

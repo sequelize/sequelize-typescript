@@ -1,20 +1,20 @@
-import {AssociationOptions} from './association-options';
+import {UnionAssociationOptions} from './union-association-options';
 import {Association} from './association';
-import {ModelClassGetter} from '../../model/shared/model-class-getter';
-import {ModelType} from "../../model";
-import {SequelizeImpl} from "../../sequelize";
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
+import {Model} from "../../model/model/model";
+import {Sequelize} from "../../sequelize/sequelize/sequelize";
 
 export abstract class BaseAssociation {
 
   constructor(private associatedClassGetter: ModelClassGetter,
-              protected options: AssociationOptions) {
+              protected options: UnionAssociationOptions) {
   }
 
   abstract getAssociation(): Association;
-  abstract getSequelizeOptions(model: ModelType<any>,
-                               sequelize: SequelizeImpl): AssociationOptions;
+  abstract getSequelizeOptions(model: typeof Model,
+                               sequelize: Sequelize): UnionAssociationOptions;
 
-  getAssociatedClass(): ModelType<any> {
+  getAssociatedClass(): typeof Model {
     return this.associatedClassGetter();
   }
 

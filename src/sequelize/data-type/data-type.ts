@@ -1,4 +1,3 @@
-import Sequelize = require("sequelize");
-import {DataTypes} from "sequelize";
+import * as Sequelize from "sequelize";
 
-export const DataType: DataTypes = (Sequelize as any);
+export const DataType: typeof Sequelize = Sequelize;

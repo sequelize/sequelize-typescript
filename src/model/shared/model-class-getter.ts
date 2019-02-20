@@ -1,3 +1,3 @@
-import {ModelType} from "..";
+import {Model} from "../model/model";
 
-export type ModelClassGetter = () => ModelType<any>;
+export type ModelClassGetter = () => typeof Model;

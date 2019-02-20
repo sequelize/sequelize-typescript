@@ -1,6 +1,5 @@
-import 'reflect-metadata';
 import {addScopeOptions} from "./scope-service";
-import {ScopeFindOptions} from "./find-include/scope-find-options";
+import {ScopeFindOptions} from "./scope-find-options";
 
 /**
  * Sets default scope for annotated class

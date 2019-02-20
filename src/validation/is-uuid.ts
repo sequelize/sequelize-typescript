@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {addAttributeOptions} from "../model/column/attribute-service";
 
 /*
@@ -11,7 +10,7 @@ export function IsUUID(version: 3|4|5|"3"|"4"|"5"|"all"): Function {
   return (target: any, propertyName: string) =>
     addAttributeOptions(target, propertyName, {
       validate: {
-        isUUID: version
+        isUUID: version as any
       }
     });
 }

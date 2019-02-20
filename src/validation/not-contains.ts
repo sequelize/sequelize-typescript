@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {addAttributeOptions} from "../model/column/attribute-service";
 
 /**

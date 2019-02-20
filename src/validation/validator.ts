@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {addOptions} from "../model/shared/model-service";
 
 export const Validator: MethodDecorator = (target: Object,

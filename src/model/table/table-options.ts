@@ -1,6 +1,6 @@
-import {DefineOptions} from "sequelize";
+import {ModelOptions} from "sequelize";
 
-export interface TableOptions extends DefineOptions<any> {
+export interface TableOptions extends ModelOptions {
   modelName?: string;
 
   /**

@@ -1,5 +1,5 @@
-import 'reflect-metadata';
-import {DefineValidateOptions} from 'sequelize';
+import {ModelValidateOptions} from 'sequelize';
+
 import {addAttributeOptions} from "../model/column/attribute-service";
 
 /**
@@ -19,7 +19,7 @@ export function Is(validator: (value: any) => any): Function;
 export function Is(arg: string | Array<string | RegExp> | RegExp | {msg: string, args: string | Array<string | RegExp> | RegExp}): Function;
 export function Is(...args: any[]): Function {
 
-  const options: DefineValidateOptions = {};
+  const options: ModelValidateOptions = {};
   const argIsFunction = typeof args[0] === 'function';
 
   if (argIsFunction || (typeof args[0] === 'string' && typeof args[1] === 'function')) {

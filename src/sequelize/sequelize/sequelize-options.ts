@@ -1,8 +1,9 @@
-import {Options} from 'sequelize';
-import {ModelMatch} from './sequelize-options';
-import {Model} from '../../model/index';
+import {Options} from "sequelize";
+import {Model} from "../../model/model/model";
 
-export interface BaseSequelizeOptions extends Options {
+export type ModelMatch = (filename: string, member: string) => boolean;
+
+export interface SequelizeOptions extends Options {
 
   /**
    * Path to models or actual models,
@@ -23,7 +24,13 @@ export interface BaseSequelizeOptions extends Options {
   modelMatch?: ModelMatch;
 
   /**
-   * Enables repository mode when true
+   * If true enables repository mode when true
    */
   repositoryMode?: boolean;
+
+
+  /**
+   * If true enables validate only mode
+   */
+  validateOnly?: boolean;
 }

@@ -1,7 +1,8 @@
 import 'reflect-metadata';
-import {Model} from "../../model/";
 import {HookMeta} from "./hook-meta";
 import {HookOptions} from "./hook-options";
+import {SequelizeHooks} from "sequelize/types/lib/hooks";
+import {Model} from "../../model/model/model";
 
 const HOOKS_KEY = 'sequelize:hooks';
 
@@ -26,7 +27,7 @@ export function installHooks(models: Array<typeof Model>): void {
  * factory function. When called with multiple arguments, they add the hook
  * to the model’s metadata.
  */
-export function implementHookDecorator(hookType: string, args: any[]): Function | void {
+export function implementHookDecorator(hookType: keyof SequelizeHooks, args: any[]): Function | void {
   if (args.length === 1) {
 
       const options: HookOptions = args[0];
@@ -47,7 +48,7 @@ export function implementHookDecorator(hookType: string, args: any[]): Function 
  * @throws if applied to a non-static method
  * @throws if the hook method name is reserved
  */
-export function addHook(target: any, hookType: string, methodName: string, options: HookOptions = {}): void {
+export function addHook(target: any, hookType: keyof SequelizeHooks, methodName: string, options: HookOptions = {}): void {
   if (typeof target !== 'function') {
     throw new Error(`Hook method '${methodName}' is not a static method. ` +
       `Only static methods can be used for hooks`);

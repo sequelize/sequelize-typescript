@@ -1,8 +1,7 @@
-import {Model} from '../../index';
-import {FilteredModelAttributes} from '../../shared/filtered-model-attributes';
-import {WhereOptions} from "../build-count-create-find/where-options";
+import {Model} from '../model';
+import {WhereOptions} from "sequelize";
 
 export interface AssociationCountOptions<T extends Model<T>> {
-  where: WhereOptions<FilteredModelAttributes<T>>;
+  where: WhereOptions;
   scope: string | boolean;
 }

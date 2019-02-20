@@ -6,7 +6,7 @@ import * as sinonChai from 'sinon-chai';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import * as Promise from 'bluebird';
-import {UniqueConstraintError} from 'sequelize';
+import {Op, UniqueConstraintError} from 'sequelize';
 import * as chaiAsPromised from 'chai-as-promised';
 import {createSequelize} from "../utils/sequelize";
 import {
@@ -71,7 +71,7 @@ describe('model', () => {
       class Test extends Model<Test> {
       }
 
-      expect(() => Test.beforeCreate(test => test)).to.throw(/^Model not initialized/);
+      expect(() => Test.beforeCreate(test => {test})).to.throw(/^Model not initialized/);
     });
 
   });
@@ -214,7 +214,7 @@ describe('model', () => {
             {aNumber: 10},
             {aNumber: 12}
           ]).then(() => {
-            return User.findAll({where: {aNumber: {$gte: 10}}}).then((users) => {
+            return User.findAll({where: {aNumber: {[Op.gte]: 10}}}).then((users) => {
               expect(moment(user.createdAt).format('YYYY-MM-DD')).to.equal('2012-01-01');
               expect(moment(user.updatedAt).format('YYYY-MM-DD')).to.equal('2012-01-02');
               users.forEach((u) => {
@@ -556,7 +556,7 @@ describe('model', () => {
         expect(idx1.unique).to.be.ok;
 
 
-        expect(idx2.name).to.equal('model_a_field_c');
+        expect(idx2.name).to.equal('model_as_field_c');
         expect(idx2.unique).not.to.be.ok;
 
       });
@@ -679,73 +679,28 @@ describe('model', () => {
       expect(p.price).to.equal('answer = 42');
     });
 
-    it('attaches getter and setter methods from options', () => {
-      @Table({
-        setterMethods: {
-          price(value: any): void {
-            this.dataValues.priceInCents = value * 100;
-          }
-        },
-        getterMethods: {
-          price(): any {
-            return '$' + (this.getDataValue('priceInCents') / 100);
-          },
-
-          priceInCents(): any {
-            return this.dataValues.priceInCents;
-          }
-        }
-      })
+    it('uses get/set accessors', () => {
+      @Table
       class Product extends Model<Product> {
 
-        @Column
-        priceInCents: number;
+        @Column(DataType.INTEGER)
+        get priceInCents() {
+          return this.getDataValue('priceInCents');
+        }
 
-        price: () => any;
+        @Column(DataType.VIRTUAL)
+        set price(value: any) {
+          this.setDataValue('priceInCents', value * 100);
+        }
+        get price() {
+          return '$' + (this.getDataValue('priceInCents') / 100);
+        }
       }
 
       sequelize.addModels([Product]);
 
       expect(Product.build({price: 20}).priceInCents).to.equal(20 * 100);
       expect(Product.build({priceInCents: 30 * 100}).price).to.equal('$' + 30);
-    });
-
-    it('attaches getter and setter methods from options only if not defined in attribute', () => {
-      @Table({
-        setterMethods: {
-          price1(v: any): void {
-            this.setDataValue('price1', v * 100);
-          }
-        },
-        getterMethods: {
-          price2(): any {
-            return '$' + this.getDataValue('price2');
-          }
-        }
-      })
-      class Product extends Model<Product> {
-
-        @Column({
-          set(this: Product, value: number): void {
-            this.setDataValue('price1', value * 10);
-          }
-        })
-        price1: number;
-
-        @Column({
-          get(this: Product): any {
-            return this.getDataValue('price2') * 10;
-          }
-        })
-        price2: number;
-      }
-
-      sequelize.addModels([Product]);
-
-      const p = Product.build({price1: 1, price2: 2});
-
-      expect(p.price1).to.equal(10);
-      expect(p.price2).to.equal(20);
     });
 
     describe('include', () => {
@@ -945,7 +900,7 @@ describe('model', () => {
           return User.create({username: 'A fancy name'});
         })
         .then(() => {
-          return User.findOne({where: []});
+          return User.findOne({where: {}});
         })
         .then((u) => {
           expect(u.username).to.equal('A fancy name');
@@ -1024,7 +979,7 @@ describe('model', () => {
       it('with a single find field', () => {
 
         return MainUser.create({username: 'Username'}).then((user) => {
-          return MainUser.findOrInitialize({
+          return MainUser.findOrBuild({
             where: {username: user.username}
           }).then(([_user, initialized]) => {
             expect(_user.id).to.equal(user.id);
@@ -1037,7 +992,7 @@ describe('model', () => {
       it('with multiple find fields', () => {
 
         return MainUser.create({username: 'Username', data: 'data'}).then((user) => {
-          return MainUser.findOrInitialize({
+          return MainUser.findOrBuild({
             where: {
               username: user.username,
               data: user.data
@@ -1059,7 +1014,7 @@ describe('model', () => {
           data: 'ThisIsData'
         };
 
-        return MainUser.findOrInitialize({
+        return MainUser.findOrBuild({
           where: data,
           defaults: defaultValues
         }).then(([user, initialized]) => {
@@ -1135,11 +1090,11 @@ describe('model', () => {
       let test = false;
       return User.sync({force: true}).then(() => {
         return User.create({username: 'Peter', secretValue: '42'}).then((user) => {
-          return user.updateAttributes({secretValue: '43'}, {
+          return user.update({secretValue: '43'}, {
             fields: ['secretValue'], logging: (sql) => {
               test = true;
               // tslint:disable:max-line-length
-              expect(sql).to.match(/UPDATE\s+[`"]+User[`"]+\s+SET\s+[`"]+secretValue[`"]='43',[`"]+updatedAt[`"]+='[^`",]+'\s+WHERE [`"]+id[`"]+\s=\s1/);
+              expect(sql).to.match(/UPDATE\s+[`"]+Users[`"]+\s+SET\s+[`"]+secretValue[`"]=(\$1|\?),[`"]+updatedAt[`"]+=(\$2|\?)\s+WHERE [`"]+id[`"]+\s=\s(\$3|\?)/);
             }
           });
         });

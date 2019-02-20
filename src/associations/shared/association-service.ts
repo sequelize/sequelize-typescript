@@ -1,17 +1,17 @@
 import 'reflect-metadata';
-import {AssociationOptionsBelongsTo, AssociationOptionsHasMany, AssociationOptionsHasOne, AssociationOptionsManyToMany} from 'sequelize';
+import {BelongsToOptions, HasOneOptions, HasManyOptions, ManyToManyOptions} from 'sequelize';
 import {BaseAssociation} from './base-association';
 
 const ASSOCIATIONS_KEY = 'sequelize:associations';
 
 export type NonBelongsToManyAssociationOptions =
-  AssociationOptionsBelongsTo |
-  AssociationOptionsHasMany |
-  AssociationOptionsHasOne |
-  AssociationOptionsManyToMany;
+  BelongsToOptions |
+  HasManyOptions |
+  HasOneOptions |
+  ManyToManyOptions;
 
 // tslint:disable:max-line-length
-export function getPreparedAssociationOptions(optionsOrForeignKey?: string | NonBelongsToManyAssociationOptions): NonBelongsToManyAssociationOptions {
+export function getPreparedAssociationOptions(optionsOrForeignKey?: string | NonBelongsToManyAssociationOptions) {
   let options: NonBelongsToManyAssociationOptions = {};
 
   if (optionsOrForeignKey) {
@@ -28,7 +28,7 @@ export function getPreparedAssociationOptions(optionsOrForeignKey?: string | Non
  * Stores association meta data for specified class
  */
 export function addAssociation(target: any,
-                               association: BaseAssociation): void {
+                               association: BaseAssociation) {
 
   let associations = getAssociations(target);
 
@@ -49,7 +49,7 @@ export function getAssociations(target: any): BaseAssociation[] | undefined {
   }
 }
 
-export function setAssociations(target: any, associations: BaseAssociation[]): void {
+export function setAssociations(target: any, associations: BaseAssociation[]) {
   Reflect.defineMetadata(ASSOCIATIONS_KEY, associations, target);
 }
 

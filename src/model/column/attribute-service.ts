@@ -1,5 +1,5 @@
 import {deepAssign} from '../../shared/object';
-import {ColumnOptions} from './column-options/column-options';
+import {ModelAttributeColumnOptions} from "sequelize";
 
 const ATTRIBUTES_KEY = 'sequelize:attributes';
 
@@ -52,7 +52,7 @@ export function addAttribute(target: any,
  */
 export function addAttributeOptions(target: any,
                                     propertyName: string,
-                                    options: ColumnOptions): void {
+                                    options: Partial<ModelAttributeColumnOptions>): void {
   const attributes = getAttributes(target);
 
   if (!attributes || !attributes[propertyName]) {

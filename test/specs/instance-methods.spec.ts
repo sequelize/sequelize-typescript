@@ -89,7 +89,7 @@ describe('instance-methods', () => {
 
           return user
             .save()
-            .then(() => User.findById(user.id))
+            .then(() => User.findByPk(user.id))
             .then(_user => {
 
               expect(_user.firstName).to.equal(firstName);

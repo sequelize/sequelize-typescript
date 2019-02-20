@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {addScopeOptions} from "./shared/scope-service";
 import {ScopeTableOptions} from "./shared/scope-table-options";
 

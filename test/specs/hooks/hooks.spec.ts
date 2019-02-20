@@ -94,12 +94,6 @@ describe('hook', () => {
     const beforeInitHookStub = sinon.stub(Hook, 'beforeInitHook');
     const afterInitHookStub = sinon.stub(Hook, 'afterInitHook');
 
-    // these hooks are aliases for the equivalent “destroy” hooks
-    const beforeDeleteHookStub = sinon.stub(Hook, 'beforeDeleteHook');
-    const afterDeleteHookStub = sinon.stub(Hook, 'afterDeleteHook');
-    const beforeBulkDeleteHookStub = sinon.stub(Hook, 'beforeBulkDeleteHook');
-    const afterBulkDeleteHookStub = sinon.stub(Hook, 'afterBulkDeleteHook');
-
     // some hooks are only available in Sequelize v4
     let beforeSaveHookStub: sinon.SinonStub;
     let afterSaveHookStub: sinon.SinonStub;
@@ -136,12 +130,6 @@ describe('hook', () => {
     const beforeFindAfterOptionsHookWithNameStub = sinon.stub(Hook, 'beforeFindAfterOptionsHookWithName');
     const afterFindHookWithNameStub = sinon.stub(Hook, 'afterFindHookWithName');
     const beforeCountHookWithNameStub = sinon.stub(Hook, 'beforeCountHookWithName');
-
-    // these hooks are aliases for the equivalent “destroy” hooks
-    const beforeDeleteHookWithNameStub = sinon.stub(Hook, 'beforeDeleteHookWithName');
-    const afterDeleteHookWithNameStub = sinon.stub(Hook, 'afterDeleteHookWithName');
-    const beforeBulkDeleteHookWithNameStub = sinon.stub(Hook, 'beforeBulkDeleteHookWithName');
-    const afterBulkDeleteHookWithNameStub = sinon.stub(Hook, 'afterBulkDeleteHookWithName');
 
     // some hooks are only available in Sequelize v4
     let beforeSaveHookWithNameStub: sinon.SinonStub;
@@ -197,11 +185,6 @@ describe('hook', () => {
     expect(Hook['options'].hooks['afterDefine']).to.include(afterDefineHookStub);
     expect(Hook['options'].hooks['beforeInit']).to.include(beforeInitHookStub);
     expect(Hook['options'].hooks['afterInit']).to.include(afterInitHookStub);
-
-    expect(Hook['options'].hooks['beforeDestroy']).to.include(beforeDeleteHookStub);
-    expect(Hook['options'].hooks['afterDestroy']).to.include(afterDeleteHookStub);
-    expect(Hook['options'].hooks['beforeBulkDestroy']).to.include(beforeBulkDeleteHookStub);
-    expect(Hook['options'].hooks['afterBulkDestroy']).to.include(afterBulkDeleteHookStub);
 
     if (OriginSequelize['version'].split('.')[0] === '4') {
       expect(Hook['options'].hooks['beforeSave']).to.include(beforeSaveHookStub);
@@ -260,15 +243,6 @@ describe('hook', () => {
       .to.include({ name: 'myAfterFindHook', fn: afterFindHookWithNameStub });
     expect(Hook['options'].hooks['beforeCount'])
       .to.include({ name: 'myBeforeCountHook', fn: beforeCountHookWithNameStub });
-
-    expect(Hook['options'].hooks['beforeDestroy'])
-      .to.include({ name: 'myBeforeDeleteHook', fn: beforeDeleteHookWithNameStub });
-    expect(Hook['options'].hooks['afterDestroy'])
-      .to.include({ name: 'myAfterDeleteHook', fn: afterDeleteHookWithNameStub });
-    expect(Hook['options'].hooks['beforeBulkDestroy'])
-      .to.include({ name: 'myBeforeBulkDeleteHook', fn: beforeBulkDeleteHookWithNameStub });
-    expect(Hook['options'].hooks['afterBulkDestroy'])
-      .to.include({ name: 'myAfterBulkDeleteHook', fn: afterBulkDeleteHookWithNameStub });
 
     if (OriginSequelize['version'].split('.')[0] === '4') {
       expect(Hook['options'].hooks['beforeSave'])
