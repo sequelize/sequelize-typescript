@@ -1,6 +1,6 @@
 import {Table, Model, Column} from "../../src";
 
-@Table
+@Table({timestamps: false})
 export class UserWithCustomUpdatedAt extends Model<UserWithCustomUpdatedAt> {
 
   @Column

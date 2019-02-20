@@ -19,6 +19,6 @@ describe("comment", () => {
     sequelize.addModels([Book]);
 
     it("should set comment property on model options", () => {
-        expect(Book.attributes.title.comment).to.be.eq(BookTitleCommentString);
+        expect(Book['tableAttributes'].title.comment).to.be.eq(BookTitleCommentString);
     });
 });

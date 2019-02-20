@@ -1,29 +1,28 @@
-import {expect, use} from 'chai';
-import {useFakeTimers} from 'sinon';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as validateUUID from 'uuid-validate';
-import {createSequelize} from "../utils/sequelize";
-import {
-  Sequelize, Model, Table, Column, AllowNull, PrimaryKey,
-  ForeignKey, HasMany, BelongsTo, HasOne, DataType, Default
-} from "../../src";
-import {User} from "../models/User";
-import {TimeStampsUser} from "../models/TimeStampsUser";
-import {Book} from "../models/Book";
-import {Page} from "../models/Page";
-import {Team} from "../models/Team";
-import {Player} from "../models/Player";
-import {Shoe} from "../models/Shoe";
-import {Person} from "../models/Person";
-import {Box} from "../models/Box";
-import {UserWithValidation} from "../models/UserWithValidation";
-import {UserWithNoAutoIncrementation} from "../models/UserWithNoAutoIncrementation";
-import {UserWithCustomUpdatedAt} from "../models/UserWithCustomUpdatedAt";
-import {UserWithCreatedAtButWithoutUpdatedAt} from "../models/UserWithCreatedAtButWithoutUpdatedAt";
-import {UserWithVersion} from "../models/UserWithVersion";
-import chaiDatetime = require('chai-datetime');
-import {TableOptions} from "../../src/model/table/table-options";
 import * as Promise from 'bluebird';
+import { expect, use } from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
+import { useFakeTimers } from 'sinon';
+import { ValidationError } from 'sequelize';
+import * as validateUUID from 'uuid-validate';
+import chaiDatetime = require('chai-datetime');
+
+import { AllowNull, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Sequelize, Table } from "../../src";
+import { TableOptions } from "../../src/model/table/table-options";
+import { Book } from "../models/Book";
+import { Box } from "../models/Box";
+import { Page } from "../models/Page";
+import { Person } from "../models/Person";
+import { Player } from "../models/Player";
+import { Shoe } from "../models/Shoe";
+import { Team } from "../models/Team";
+import { TimeStampsUser } from "../models/TimeStampsUser";
+import { User } from "../models/User";
+import { UserWithCreatedAtButWithoutUpdatedAt } from "../models/UserWithCreatedAtButWithoutUpdatedAt";
+import { UserWithCustomUpdatedAt } from "../models/UserWithCustomUpdatedAt";
+import { UserWithNoAutoIncrementation } from "../models/UserWithNoAutoIncrementation";
+import { UserWithValidation } from "../models/UserWithValidation";
+import { UserWithVersion } from "../models/UserWithVersion";
+import { createSequelize } from "../utils/sequelize";
 // import {UserWithSwag} from "../models/UserWithSwag";
 
 // TODO@robin create belongs to many with through options "add" test
@@ -37,7 +36,7 @@ use(chaiDatetime);
 
 describe('instance', () => {
 
-  let sequelize;
+  let sequelize: Sequelize;
 
   before(() => sequelize = createSequelize());
 
@@ -128,7 +127,7 @@ describe('instance', () => {
             .create({username: 'user'})
             .then((user) =>
               User
-                .findById(user.id)
+                .findByPk(user.id)
                 .then((_user) => {
                   expect(_user).to.not.be.null;
                   expect(_user && _user.isNewRecord).to.not.be.ok;
@@ -201,7 +200,7 @@ describe('instance', () => {
 
       if (sequelize['dialect']['supports']['returnValues']) {
         User
-          .findById(1)
+          .findByPk(1)
           .then((user1) => {
 
             if (user1) {
@@ -217,7 +216,7 @@ describe('instance', () => {
 
     it('supports where conditions', () =>
       User
-        .findById(1)
+        .findByPk(1)
         .then((user1) => {
 
             if (user1) {
@@ -225,7 +224,7 @@ describe('instance', () => {
               return user1.increment(['aNumber'], {by: 2, where: {bNumber: 1}})
                 .then(() =>
                   User
-                    .findById(1)
+                    .findByPk(1)
                     .then((user3) => {
                       expect(user3.aNumber).to.be.equal(0);
                     })
@@ -237,12 +236,12 @@ describe('instance', () => {
 
     it('with array', () =>
       User
-        .findById(1)
+        .findByPk(1)
         .then((user1) =>
           user1.increment(['aNumber'], {by: 2})
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user3) => {
                   expect(user3.aNumber).to.be.equal(2);
                 })
@@ -252,13 +251,13 @@ describe('instance', () => {
 
     it('with single field', () =>
       User
-        .findById(1)
+        .findByPk(1)
         .then((user1) =>
           user1
             .increment('aNumber', {by: 2})
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user3) => {
                   expect(user3.aNumber).to.be.equal(2);
                 })
@@ -268,12 +267,12 @@ describe('instance', () => {
 
     it('with single field and no value', () =>
       User
-        .findById(1)
+        .findByPk(1)
         .then((user1) =>
           user1.increment('aNumber')
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user2) => {
                   expect(user2.aNumber).to.be.equal(1);
                 })
@@ -283,14 +282,14 @@ describe('instance', () => {
 
     it('should still work right with other concurrent updates', () =>
       User
-        .findById(1)
+        .findByPk(1)
         .then((user1) =>
           // Select the user again (simulating a concurrent query)
           User
-            .findById(1)
+            .findByPk(1)
             .then((user2) =>
               user2
-                .updateAttributes({
+                .update({
                   aNumber: user2.aNumber + 1
                 })
                 .then(() =>
@@ -298,7 +297,7 @@ describe('instance', () => {
                     .increment(['aNumber'], {by: 2})
                     .then(() =>
                       User
-                        .findById(1)
+                        .findByPk(1)
                         .then((user5) => {
                           expect(user5.aNumber).to.be.equal(3);
                         })
@@ -310,16 +309,16 @@ describe('instance', () => {
 
     it('should still work right with other concurrent increments', () =>
       User
-        .findById(1)
+        .findByPk(1)
         .then((user1) =>
-          sequelize.Promise.all([
+          Promise.all([
             user1.increment(['aNumber'], {by: 2}),
             user1.increment(['aNumber'], {by: 2}),
             user1.increment(['aNumber'], {by: 2})
           ])
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user2) => {
                   expect(user2.aNumber).to.equal(6);
                 })
@@ -329,13 +328,13 @@ describe('instance', () => {
 
     it('with key value pair', () =>
       User
-        .findById(1)
+        .findByPk(1)
         .then((user1) =>
           user1
             .increment({aNumber: 1, bNumber: 2})
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user3) => {
                   expect(user3.aNumber).to.be.equal(1);
                   expect(user3.bNumber).to.be.equal(2);
@@ -360,7 +359,7 @@ describe('instance', () => {
 
           return user.increment('aNumber', {by: 1});
         })
-        .then(() => TimeStampsUser.findById(1))
+        .then(() => TimeStampsUser.findByPk(1))
         .then(user => {
           expect(user).to.have.property('updatedAt');
           expect(user.updatedAt).to.be.greaterThan(oldDate);
@@ -380,7 +379,7 @@ describe('instance', () => {
 
           return user.increment('aNumber', {by: 1, silent: true});
         })
-        .then(() => TimeStampsUser.findById(1))
+        .then(() => TimeStampsUser.findByPk(1))
         .then(user => {
           expect(user).to.have.property('updatedAt');
           expect(user.updatedAt).to.eqls(oldDate);
@@ -423,13 +422,13 @@ describe('instance', () => {
     it('with array', () =>
       User
         .create({aNumber: 0})
-        .then(() => User.findById(1))
+        .then(() => User.findByPk(1))
         .then((user1) =>
           user1
             .decrement(['aNumber'], {by: 2})
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user3) => {
                   expect(user3.aNumber).to.be.equal(-2);
                 })
@@ -440,13 +439,13 @@ describe('instance', () => {
     it('with single field', () =>
       User
         .create({aNumber: 0})
-        .then(() => User.findById(1))
+        .then(() => User.findByPk(1))
         .then((user1) =>
           user1
             .decrement('aNumber', {by: 2})
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user3) => {
                   expect(user3.aNumber).to.be.equal(-2);
                 })
@@ -457,13 +456,13 @@ describe('instance', () => {
     it('with single field and no value', () =>
       User
         .create({aNumber: 0})
-        .then(() => User.findById(1))
+        .then(() => User.findByPk(1))
         .then((user1) =>
           user1
             .decrement('aNumber')
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user2) => {
                   expect(user2.aNumber).to.be.equal(-1);
                 })
@@ -474,14 +473,14 @@ describe('instance', () => {
     it('should still work right with other concurrent updates', () =>
       User
         .create({aNumber: 0})
-        .then(() => User.findById(1))
+        .then(() => User.findByPk(1))
         .then((user1) =>
           // Select the user again (simulating a concurrent query)
           User
-            .findById(1)
+            .findByPk(1)
             .then((user2) =>
               user2
-                .updateAttributes({
+                .update({
                   aNumber: user2.aNumber + 1
                 })
                 .then(() =>
@@ -489,7 +488,7 @@ describe('instance', () => {
                     .decrement(['aNumber'], {by: 2})
                     .then(() =>
                       User
-                        .findById(1)
+                        .findByPk(1)
                         .then((user5) => {
                           expect(user5.aNumber).to.be.equal(-1);
                         })
@@ -502,16 +501,16 @@ describe('instance', () => {
     it('should still work right with other concurrent increments', () =>
       User
         .create({aNumber: 0})
-        .then(() => User.findById(1))
+        .then(() => User.findByPk(1))
         .then((user1) =>
-          sequelize.Promise.all([
+          Promise.all([
             user1.decrement(['aNumber'], {by: 2}),
             user1.decrement(['aNumber'], {by: 2}),
             user1.decrement(['aNumber'], {by: 2})
           ])
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user2) => {
                   expect(user2.aNumber).to.equal(-6);
                 })
@@ -522,13 +521,13 @@ describe('instance', () => {
     it('with key value pair', () =>
       User
         .create({aNumber: 0, bNumber: 0})
-        .then(() => User.findById(1))
+        .then(() => User.findByPk(1))
         .then((user1) =>
           user1
             .decrement({aNumber: 1, bNumber: 2})
             .then(() =>
               User
-                .findById(1)
+                .findByPk(1)
                 .then((user3) => {
                   expect(user3.aNumber).to.be.equal(-1);
                   expect(user3.bNumber).to.be.equal(-2);
@@ -552,7 +551,7 @@ describe('instance', () => {
 
           return user.decrement('aNumber', {by: 1});
         })
-        .then(() => TimeStampsUser.findById(1))
+        .then(() => TimeStampsUser.findByPk(1))
         .then(user => {
           expect(user).to.have.property('updatedAt');
           expect(user.updatedAt).to.be.greaterThan(oldDate);
@@ -570,7 +569,7 @@ describe('instance', () => {
           oldDate = user.updatedAt;
           return user.decrement('aNumber', {by: 1, silent: true});
         })
-        .then(() => TimeStampsUser.findById(1))
+        .then(() => TimeStampsUser.findByPk(1))
         .then(user => {
           expect(user).to.have.property('updatedAt');
           expect(user.updatedAt).to.eqls(oldDate);
@@ -620,7 +619,7 @@ describe('instance', () => {
         .create({username: 'John Doe'})
         .then((originalUser) =>
           originalUser
-            .updateAttributes({username: 'Doe John'})
+            .update({username: 'Doe John'})
             .then(() =>
               originalUser
                 .reload()
@@ -636,12 +635,12 @@ describe('instance', () => {
         .create({username: 'John Doe'})
         .then((originalUser) =>
           User
-            .findById(originalUser.id)
+            .findByPk(originalUser.id)
             .then((updater) =>
               updater
-                .updateAttributes({username: 'Doe John'})
+                .update({username: 'Doe John'})
                 .then(() => {
-                  // We used a different reference when calling updateAttributes, so originalUser is now out of sync
+                  // We used a different reference when calling update, so originalUser is now out of sync
                   expect(originalUser.username).to.equal('John Doe');
                   return originalUser.reload().then((updatedUser) => {
                     expect(originalUser.username).to.equal('Doe John');
@@ -674,9 +673,9 @@ describe('instance', () => {
           originallyUpdatedAt = originalUser.updatedAt;
           _originalUser = originalUser;
 
-          return TimeStampsUser.findById(originalUser.id);
+          return TimeStampsUser.findByPk(originalUser.id);
         })
-        .then((updater) => updater.updateAttributes({username: 'Doe John'}))
+        .then((updater) => updater.update({username: 'Doe John'}))
         .then((updatedUser) => {
           _updatedUser = updatedUser;
           _originalUser.reload();
@@ -701,7 +700,7 @@ describe('instance', () => {
                 .then(() => Book.findOne({where: {id: book.id}, include: [Page]}))
                 .then((leBook: Book) =>
                   page
-                    .updateAttributes({content: 'something totally different'})
+                    .update({content: 'something totally different'})
                     .then((_page: Page) => {
                       expect(leBook.pages.length).to.equal(1);
                       expect(leBook.pages[0].content).to.equal('om nom nom');
@@ -737,7 +736,7 @@ describe('instance', () => {
                       return leBook.reload({include: [Page]})
                         .then((_leBook: Book) => {
                           expect(_leBook.pages.length).to.equal(1);
-                          expect(_leBook.get({plain: true}).pages.length).to.equal(1);
+                          expect(_leBook.get({plain: true})['pages'].length).to.equal(1);
                         });
                     })
                 )
@@ -1021,7 +1020,7 @@ describe('instance', () => {
 
     it('gets triggered if an error occurs', () =>
       User
-        .findOne({where: <any>['asdasdasd']})
+        .findOne({where: ['asdasdasd'] as any})
         .catch((err) => {
           expect(err).to.exist;
           expect(err.message).to.exist;
@@ -1080,7 +1079,7 @@ describe('instance', () => {
           return user
             .save({fields: ['username']})
             // re-select user
-            .then(() => User.findById(user.id))
+            .then(() => User.findByPk(user.id))
             .then((user2) => {
               // name should have changed
               expect(user2.username).to.equal('fizz');
@@ -1170,7 +1169,7 @@ describe('instance', () => {
           .then((user) =>
             expect(user.set({
               name: 'B'
-            }).save()).to.be.rejectedWith(Sequelize.ValidationError)
+            }).save()).to.be.rejectedWith(ValidationError)
           )
           .then(() => UserWithValidation.findOne({}))
           .then((user) => {
@@ -1195,7 +1194,7 @@ describe('instance', () => {
             expect(user.set({
               name: 'B',
               email: 'still.valid.email@gmail.com'
-            }).save()).to.be.rejectedWith(Sequelize.ValidationError)
+            }).save()).to.be.rejectedWith(ValidationError)
           )
           .then(() => UserWithValidation.findOne({}))
           .then((user) => {
@@ -1240,14 +1239,14 @@ describe('instance', () => {
           expect(user.id).to.equal(0);
           expect(user.username).to.equal(username);
         })
-        .then(() => UserWithNoAutoIncrementation.findById(0))
+        .then(() => UserWithNoAutoIncrementation.findByPk(0))
         .then((user) => {
 
           expect(user).to.be.ok;
           expect(user.id).to.equal(0);
           expect(user.username).to.equal(username);
 
-          return user.updateAttributes({username: newUsername});
+          return user.update({username: newUsername});
         })
         .then((user) => {
 
@@ -1319,7 +1318,11 @@ describe('instance', () => {
           return TimeStampsUser
             .update(
               {aNumber: 1},
-              {where: {}, silent: true}
+              {
+                where: {}, 
+                // TODO silent options missing in UpdateOptions
+                ['silent' as any]: true
+              }
             );
         })
         .then(() => TimeStampsUser.findAll())
@@ -1384,12 +1387,12 @@ describe('instance', () => {
         })
         .then((user) => {
 
-          user.bNumber = sequelize.col('aNumber') as any;
-          user.username = sequelize.fn('upper', 'sequelize') as any;
+          user.bNumber = Sequelize.col('aNumber') as any;
+          user.username = Sequelize.fn('upper', 'sequelize') as any;
 
           return user
             .save()
-            .then(() => User.findById(user.id))
+            .then(() => User.findByPk(user.id))
             .then((user2) => {
               expect(user2.username).to.equal('SEQUELIZE');
               expect(user2.bNumber).to.equal(42);
@@ -1551,7 +1554,7 @@ describe('instance', () => {
     it('should fail a validation when updating', () =>
       User
         .create({aNumber: 0})
-        .then((user) => user.updateAttributes({aNumber: 'hello' as any}))
+        .then((user) => user.update({aNumber: 'hello' as any}))
         .catch((err) => {
           expect(err).to.exist;
           expect(err).to.be.instanceof(Object);
@@ -1590,7 +1593,7 @@ describe('instance', () => {
       return HistoryLog
         .sync()
         .then(() => HistoryLog.create({someText: 'Some random text', aNumber: 3, aRandomId: 5}))
-        .then((log) => log.updateAttributes({aNumber: 5}))
+        .then((log) => log.update({aNumber: 5}))
         .then((newLog) => {
           expect(newLog.aNumber).to.equal(5);
         });
@@ -1812,7 +1815,7 @@ describe('instance', () => {
           })
         )
         .then((project) => {
-          const json = project.toJSON();
+          const json = project.toJSON() as NiceProject;
           expect(json.user).to.be.equal(null);
         })
     );
@@ -1941,9 +1944,7 @@ describe('instance', () => {
       ParanoidUser.create({username: 'cuss'})
         .then(() =>
           ParanoidUser.findAll({
-            where: {
-              [sequelize['Op'] ? sequelize['Op'].and : '$and']: {username: 'cuss'}
-            }
+            where: Sequelize.and({username: 'cuss'})
           })
         )
         .then((users) => {
@@ -1952,9 +1953,7 @@ describe('instance', () => {
         })
         .then(() =>
           ParanoidUser.findAll({
-            where: {
-              [sequelize['Op'] ? sequelize['Op'].and : '$and']: {username: 'cuss'}
-            }
+            where: Sequelize.and({username: 'cuss'})
           })
         )
         .then((users) => {
@@ -1967,9 +1966,7 @@ describe('instance', () => {
       ParanoidUser.create({username: 'cuss'})
         .then(() =>
           ParanoidUser.findAll({
-            where: {
-              [sequelize['Op'] ? sequelize['Op'].or : '$or']: {username: 'cuss'}
-            }
+            where: Sequelize.or({username: 'cuss'})
           })
         )
         .then((users) => {
@@ -1978,9 +1975,7 @@ describe('instance', () => {
         })
         .then(() =>
           ParanoidUser.findAll({
-            where: {
-              [sequelize['Op'] ? sequelize['Op'].or : '$or']: {username: 'cuss'}
-            }
+            where: Sequelize.or({username: 'cuss'})
           })
         )
         .then((users) => {
@@ -2077,11 +2072,11 @@ describe('instance', () => {
       })
     );
 
-    it('keeps the deletedAt-attribute with value null, when running updateAttributes', () =>
+    it('keeps the deletedAt-attribute with value null, when running update', () =>
 
       ParanoidUser.create({username: 'fnord'}).then(() => {
         return ParanoidUser.findAll().then((users) => {
-          return users[0].updateAttributes({username: 'newFnord'}).then((user) => {
+          return users[0].update({username: 'newFnord'}).then((user) => {
             expect(user.deletedAt).not.to.exist;
           });
         });

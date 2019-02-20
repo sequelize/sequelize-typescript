@@ -8,16 +8,13 @@
     "declaration": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
+    "skipLibCheck": true,
     "pretty": true,
     "outDir": "dist",
     "lib": ["es2017"]
   },
   "include": [
-    "src",
-    "src/sequelize/sequelize/sequelize.d.ts",
-    "src/sequelize/sequelize/sequelize.js",
-    "src/model/model/model.d.ts",
-    "src/model/model/model.js"
+    "src"
   ],
   "exclude": [
     "node_modules",

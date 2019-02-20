@@ -1,14 +1,13 @@
-import 'reflect-metadata';
-import {DataTypeAbstract} from 'sequelize';
-import {getSequelizeTypeByDesignType} from "../shared/model-service";
-import {ColumnOptions} from "./column-options/column-options";
-import {isDataType} from '../../sequelize/data-type/data-type-service';
+import {ModelAttributeColumnOptions, DataTypeAbstract} from 'sequelize';
+
 import {addAttribute} from './attribute-service';
+import {isDataType} from "../../sequelize/data-type/data-type-service";
+import {getSequelizeTypeByDesignType} from "../shared/model-service";
 
 export function Column(dataType: DataTypeAbstract): Function;
-export function Column(options: ColumnOptions): Function;
+export function Column(options: Partial<ModelAttributeColumnOptions>): Function;
 export function Column(target: any, propertyName: string, propertyDescriptor?: PropertyDescriptor): void;
-export function Column(...args: any[]): Function|void {
+export function Column(...args: any[]): Function | void {
 
   // In case of no specified options, we infer the
   // sequelize data type by the type of the property
@@ -30,9 +29,9 @@ export function Column(...args: any[]): Function|void {
 function annotate(target: any,
                   propertyName: string,
                   propertyDescriptor?: PropertyDescriptor,
-                  optionsOrDataType: ColumnOptions|DataTypeAbstract = {}): void {
+                  optionsOrDataType: Partial<ModelAttributeColumnOptions> | DataTypeAbstract = {}): void {
 
-  let options: ColumnOptions;
+  let options: Partial<ModelAttributeColumnOptions>;
 
   if (isDataType(optionsOrDataType)) {
 
@@ -41,7 +40,7 @@ function annotate(target: any,
     };
   } else {
 
-    options = Object.assign({}, optionsOrDataType as ColumnOptions);
+    options = Object.assign({}, optionsOrDataType as ModelAttributeColumnOptions);
 
     if (!options.type) {
       options.type = getSequelizeTypeByDesignType(target, propertyName);

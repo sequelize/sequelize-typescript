@@ -81,7 +81,6 @@ export class ShoeWithValidation extends Model<ShoeWithValidation> {
   @IsIPv6
   @IsLowercase
   @IsUppercase
-  @NotNull
   @NotEmpty
   @IsArray
   @IsNull

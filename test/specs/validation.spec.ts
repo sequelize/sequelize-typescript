@@ -2,7 +2,7 @@
 
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {DefineValidateOptions} from "sequelize";
+import {ModelValidateOptions} from "sequelize";
 import {createSequelize, createSequelizeValidationOnly} from "../utils/sequelize";
 import {
   ShoeWithValidation, KEY_VALUE, PARTIAL_SPECIAL_VALUE, BRAND_LENGTH,
@@ -29,7 +29,7 @@ describe('validation', () => {
   describe(`rawAttributes of ${ShoeWithValidation.name}`, () => {
 
     let rawAttributes;
-    const shoeAttributes: { [key: string]: DefineValidateOptions } = {
+    const shoeAttributes: { [key: string]: ModelValidateOptions } = {
       id: {
         isUUID: UUID_VERSION
       },
@@ -72,7 +72,6 @@ describe('validation', () => {
         isIPv6: true,
         isLowercase: true,
         isUppercase: true,
-        notNull: true,
         max: MAX,
         min: MIN,
         not: NOT,
@@ -150,7 +149,7 @@ describe('validation', () => {
       producedAt: {
         valid: [new Date(2010, 1, 1), null, undefined],
         invalid: ['', 'ad', '1234567891234567', 2, new Date(1980, 1, 1)],
-      }
+      },
     };
 
     const validPromises: Array<Promise<any>> = [];
@@ -178,7 +177,7 @@ describe('validation', () => {
             return expect(shoe.validate()).to.be.rejected;
           })));
 
-        })
+        });
     });
 
     it(`should not throw due to valid values`, () => Promise.all(validPromises));

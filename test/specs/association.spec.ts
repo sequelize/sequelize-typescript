@@ -164,19 +164,19 @@ describe('association', () => {
         );
       });
 
-      describe('findById()', () => {
+      describe('findByPk()', () => {
 
         it('should find instances with related instances', () =>
 
           Promise.all([
             Book.create(sherlockHolmesBook, {include: [Page]})
-              .then(book => Book.findById(book.id, {include: [Page]}))
+              .then(book => Book.findByPk(book.id, {include: [Page]}))
               .then(book => {
 
                 assertInstance(book, sherlockHolmesBook);
               }),
             Page.create(page1, {include: [Book]})
-              .then(page => Page.findById(page.id, {include: [Book]}))
+              .then(page => Page.findByPk(page.id, {include: [Book]}))
               .then(page => {
 
                 assertInstance(page, page1);
@@ -232,7 +232,7 @@ describe('association', () => {
         it('should get related instances of source instance', () =>
 
           Book.create(sherlockHolmesBook, {include: [Page]})
-            .then(book => Book.findById(book.id))
+            .then(book => Book.findByPk(book.id))
             .then(book =>
               book
                 .$get('pages')
@@ -246,7 +246,7 @@ describe('association', () => {
         it('should get related instance of source instance', () =>
 
           Page.create(page1, {include: [Book]})
-            .then(page => Page.findById(page.id))
+            .then(page => Page.findByPk(page.id))
             .then(page =>
               page
                 .$get('book')
@@ -271,7 +271,7 @@ describe('association', () => {
             .then(([book, ...pages]) =>
               book
                 .$set('pages', pages)
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({pages: [page2, page3]}, jsForDummiesBook));
@@ -292,14 +292,14 @@ describe('association', () => {
             .then(([book, pageA, pageB, pageC, pageD]) =>
               book
                 .$set('pages', [pageA, pageB])
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({pages: [page2, page3]}, jsForDummiesBook));
                 })
                 // override previous pages
                 .then(() => book.$set('pages', [pageC, pageD]))
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   // and check, if there are overridden
@@ -318,7 +318,7 @@ describe('association', () => {
             .then(([page, book]) =>
               page
                 .$set('book', book)
-                .then(() => Page.findById(page.id, {include: [Book]}))
+                .then(() => Page.findByPk(page.id, {include: [Book]}))
                 .then(_page => {
 
                   assertInstance(_page, Object.assign({book: jsForDummiesBook}, page2));
@@ -337,13 +337,13 @@ describe('association', () => {
             .then(([page, bookA, bookB]) =>
               page
                 .$set('book', bookA)
-                .then(() => Page.findById(page.id, {include: [Book]}))
+                .then(() => Page.findByPk(page.id, {include: [Book]}))
                 .then(_page => {
 
                   assertInstance(_page, Object.assign({book: jsForDummiesBook}, page2));
                 })
                 .then(() => page.$set('book', bookB))
-                .then(() => Page.findById(page.id, {include: [Book]}))
+                .then(() => Page.findByPk(page.id, {include: [Book]}))
                 .then(_page => {
 
                   assertInstance(_page, Object.assign({book: crimeAndPunishmentBook}, page2));
@@ -364,7 +364,7 @@ describe('association', () => {
             .then(([book, page]) =>
               book
                 .$add('page', page)
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({pages: [page2]}, jsForDummiesBook));
@@ -383,7 +383,7 @@ describe('association', () => {
             .then(([book, ...pages]) =>
               book
                 .$add('pages', pages)
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({pages: [page2, page3]}, jsForDummiesBook));
@@ -402,14 +402,14 @@ describe('association', () => {
             .then(([book, pageA, pageB]) =>
               book
                 .$add('page', pageA)
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({pages: [page2]}, jsForDummiesBook));
                 })
                 // now we add another page
                 .then(() => book.$add('page', pageB))
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   // ... and check, if both pages exist
@@ -431,7 +431,7 @@ describe('association', () => {
 
                   assertInstance(page, page2);
                 })
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({pages: [page2]}, jsForDummiesBook));
@@ -445,7 +445,7 @@ describe('association', () => {
             .then((page) =>
               page
                 .$create('book', jsForDummiesBook)
-                .then(() => Page.findById(page.id, {include: [Book]}))
+                .then(() => Page.findByPk(page.id, {include: [Book]}))
                 .then(_page => {
 
                   assertInstance(_page, Object.assign({book: jsForDummiesBook}, page3));
@@ -462,7 +462,7 @@ describe('association', () => {
           Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
-                .findById(book.id)
+                .findByPk(book.id)
                 .then(_book => _book.$has('pages', book.pages))
                 .then(result => {
 
@@ -480,7 +480,7 @@ describe('association', () => {
             ])
             .then(([book, page]) =>
               Book
-                .findById(book.id)
+                .findByPk(book.id)
                 .then(_book => _book.$has('pages', page))
                 .then(result => {
 
@@ -498,7 +498,7 @@ describe('association', () => {
           Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
-                .findById(book.id)
+                .findByPk(book.id)
                 .then(_book => _book.$count('pages'))
                 .then(result => {
 
@@ -512,7 +512,7 @@ describe('association', () => {
           Book.create(sherlockHolmesBook)
             .then((book) =>
               Book
-                .findById(book.id)
+                .findByPk(book.id)
                 .then(_book => _book.$count('pages'))
                 .then(result => {
 
@@ -531,14 +531,14 @@ describe('association', () => {
           Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
-                .findById(book.id, {include: [Page]})
+                .findByPk(book.id, {include: [Page]})
                 .then(_book => {
 
                   assertInstance(_book, sherlockHolmesBook);
 
                   return _book.$remove('page', _book.pages[0]);
                 })
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, {
@@ -554,14 +554,14 @@ describe('association', () => {
           Book.create(sherlockHolmesBook, {include: [Page]})
             .then((book) =>
               Book
-                .findById(book.id, {include: [Page]})
+                .findByPk(book.id, {include: [Page]})
                 .then(_book => {
 
                   assertInstance(_book, sherlockHolmesBook);
 
                   return _book.$remove('pages', _book.pages);
                 })
-                .then(() => Book.findById(book.id, {include: [Page]}))
+                .then(() => Book.findByPk(book.id, {include: [Page]}))
                 .then(_book => {
 
                   assertInstance(_book, {
@@ -902,19 +902,19 @@ describe('association', () => {
         );
       });
 
-      describe('findById()', () => {
+      describe('findByPk()', () => {
 
         it('should find instances with related instances', () =>
 
           Promise.all([
             Book.create(sherlockHolmesBook, {include: [Author]})
-              .then(book => Book.findById(book.id, {include: [Author]}))
+              .then(book => Book.findByPk(book.id, {include: [Author]}))
               .then(book => {
 
                 assertInstance(book, sherlockHolmesBook);
               }),
             Author.create(julesVerne, {include: [Book]})
-              .then(author => Author.findById(author.id, {include: [Book]}))
+              .then(author => Author.findByPk(author.id, {include: [Book]}))
               .then(author => {
 
                 assertInstance(author, julesVerne);
@@ -972,7 +972,7 @@ describe('association', () => {
           Promise
             .all([
               Book.create(sherlockHolmesBook, {include: [Author]})
-                .then(book => Book.findById(book.id))
+                .then(book => Book.findByPk(book.id))
                 .then(book =>
                   book
                     .$get('authors')
@@ -982,7 +982,7 @@ describe('association', () => {
                     })
                 ),
               Author.create(julesVerne, {include: [Book]})
-                .then(author => Author.findById(author.id))
+                .then(author => Author.findByPk(author.id))
                 .then(author =>
                   author
                     .$get('books')
@@ -1009,7 +1009,7 @@ describe('association', () => {
             .then(([book, ...authors]) =>
               book
                 .$set('authors', authors)
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({authors: [elisa, robin]}, jsForDummiesBook));
@@ -1030,14 +1030,14 @@ describe('association', () => {
             .then(([book, _elisa, _nelly, _brom, _robin]) =>
               book
                 .$set('authors', [_elisa, _nelly])
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({authors: [elisa, nelly]}, jsForDummiesBook));
                 })
                 // override previous authors
                 .then(() => book.$set('authors', [_brom, _robin]))
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   // and check, if there are overridden
@@ -1060,7 +1060,7 @@ describe('association', () => {
             .then(([book, _elisa]) =>
               book
                 .$add('author', _elisa)
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({authors: [elisa]}, jsForDummiesBook));
@@ -1079,7 +1079,7 @@ describe('association', () => {
             .then(([book, ...authors]) =>
               book
                 .$add('authors', authors)
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({authors: [elisa, brom]}, jsForDummiesBook));
@@ -1098,14 +1098,14 @@ describe('association', () => {
             .then(([book, _elisa, _brom]) =>
               book
                 .$add('author', _elisa)
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({authors: [elisa]}, jsForDummiesBook));
                 })
                 // now we add another author
                 .then(() => book.$add('author', _brom))
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   // ... and check, if both authors exist
@@ -1127,7 +1127,7 @@ describe('association', () => {
 
                   assertInstance(author, elisa);
                 })
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, Object.assign({authors: [elisa]}, jsForDummiesBook));
@@ -1145,7 +1145,7 @@ describe('association', () => {
 
                   assertInstance(book, jsForDummiesBook);
                 })
-                .then(() => Author.findById(author.id, {include: [Book]}))
+                .then(() => Author.findByPk(author.id, {include: [Book]}))
                 .then(_author => {
 
                   assertInstance(_author, Object.assign({books: [jsForDummiesBook]}, elisa));
@@ -1162,7 +1162,7 @@ describe('association', () => {
           Book.create(sherlockHolmesBook, {include: [Author]})
             .then((book) =>
               Book
-                .findById(book.id)
+                .findByPk(book.id)
                 .then(_book => _book.$has('authors', book.authors))
                 .then(result => {
 
@@ -1180,7 +1180,7 @@ describe('association', () => {
             ])
             .then(([book, author]) =>
               Book
-                .findById(book.id)
+                .findByPk(book.id)
                 .then(_book => _book.$has('authors', author))
                 .then(result => {
 
@@ -1198,7 +1198,7 @@ describe('association', () => {
           Book.create(sherlockHolmesBook, {include: [Author]})
             .then((book) =>
               Book
-                .findById(book.id)
+                .findByPk(book.id)
                 .then(_book => _book.$count('authors'))
                 .then(result => {
 
@@ -1212,7 +1212,7 @@ describe('association', () => {
           Author.create(elisa)
             .then((author) =>
               Author
-                .findById(author.id)
+                .findByPk(author.id)
                 .then(_author => _author.$count('books'))
                 .then(result => {
 
@@ -1231,14 +1231,14 @@ describe('association', () => {
           Book.create(sherlockHolmesBook, {include: [Author]})
             .then((book) =>
               Book
-                .findById(book.id, {include: [Author]})
+                .findByPk(book.id, {include: [Author]})
                 .then(_book => {
 
                   assertInstance(_book, sherlockHolmesBook);
 
                   return _book.$remove('author', _book.authors[0]);
                 })
-                .then(() => Book.findById(book.id, {include: [Author]}))
+                .then(() => Book.findByPk(book.id, {include: [Author]}))
                 .then(_book => {
 
                   assertInstance(_book, {
@@ -1254,14 +1254,14 @@ describe('association', () => {
           Author.create(julesVerne, {include: [Book]})
             .then((author) =>
               Author
-                .findById(author.id, {include: [Book]})
+                .findByPk(author.id, {include: [Book]})
                 .then(_author => {
 
                   assertInstance(_author, julesVerne);
 
                   return _author.$remove('books', _author.books);
                 })
-                .then(() => Author.findById(author.id, {include: [Book]}))
+                .then(() => Author.findByPk(author.id, {include: [Book]}))
                 .then(_author => {
 
                   assertInstance(_author, {
@@ -1662,19 +1662,19 @@ describe('association', () => {
         );
       });
 
-      describe('findById()', () => {
+      describe('findByPk()', () => {
 
         it('should find instances with related instances', () =>
 
           Promise.all([
             User.create(userWithAddress, {include: [Address]})
-              .then(user => User.findById(user.id, {include: [Address]}))
+              .then(user => User.findByPk(user.id, {include: [Address]}))
               .then(user => {
 
                 assertInstance(user, userWithAddress);
               }),
             Address.create(emancipatedAddress, {include: [User]})
-              .then(address => Address.findById(address.id, {include: [User]}))
+              .then(address => Address.findByPk(address.id, {include: [User]}))
               .then(address => {
 
                 assertInstance(address, emancipatedAddress);
@@ -1732,7 +1732,7 @@ describe('association', () => {
           Promise
             .all([
               User.create(userWithAddress, {include: [Address]})
-                .then(user => User.findById(user.id))
+                .then(user => User.findByPk(user.id))
                 .then(user =>
                   user
                     .$get('address')
@@ -1742,7 +1742,7 @@ describe('association', () => {
                     })
                 ),
               Address.create(emancipatedAddress, {include: [User]})
-                .then(author => Address.findById(author.id))
+                .then(author => Address.findByPk(author.id))
                 .then(author =>
                   author
                     .$get('user')
@@ -1768,7 +1768,7 @@ describe('association', () => {
             .then(([user, address]) =>
               user
                 .$set('address', address)
-                .then(() => User.findById(user.id, {include: [Address]}))
+                .then(() => User.findByPk(user.id, {include: [Address]}))
                 .then(_user => {
 
                   assertInstance(_user, Object.assign({address: petersAddress}, elisa));
@@ -1787,14 +1787,14 @@ describe('association', () => {
             .then(([user, address1, address2]) =>
               user
                 .$set('address', address1)
-                .then(() => User.findById(user.id, {include: [Address]}))
+                .then(() => User.findByPk(user.id, {include: [Address]}))
                 .then(_user => {
 
                   assertInstance(_user, Object.assign({address: petersAddress}, elisa));
                 })
                 // override previous authors
                 .then(() => user.$set('address', address2))
-                .then(() => User.findById(user.id, {include: [Address]}))
+                .then(() => User.findByPk(user.id, {include: [Address]}))
                 .then(_user => {
 
                   // and check, if there are overridden
@@ -1817,7 +1817,7 @@ describe('association', () => {
 
                   assertInstance(address, petersAddress);
                 })
-                .then(() => User.findById(user.id, {include: [Address]}))
+                .then(() => User.findByPk(user.id, {include: [Address]}))
                 .then(_user => {
 
                   assertInstance(_user, Object.assign({address: petersAddress}, elisa));
@@ -1831,7 +1831,7 @@ describe('association', () => {
             .then((address) =>
               address
                 .$create('user', Object.assign({}, elisa))
-                .then(() => Address.findById(address.id, {include: [User]}))
+                .then(() => Address.findByPk(address.id, {include: [User]}))
                 .then(_address => {
 
                   assertInstance(_address, Object.assign({user: elisa}, petersAddress));

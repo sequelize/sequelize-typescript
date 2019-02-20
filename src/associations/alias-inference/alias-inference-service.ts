@@ -1,4 +1,4 @@
-import {getAssociationsByRelation} from '..';
+import {getAssociationsByRelation} from "../shared/association-service";
 
 /**
  * Pre conform includes, so that "as" value can be inferred from source

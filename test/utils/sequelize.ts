@@ -1,13 +1,12 @@
 import {Sequelize} from "../../src/sequelize/sequelize/sequelize";
-import * as OriginSequelize from "sequelize";
-import {DefineOptions, Sequelize as SequelizeType} from "sequelize";
-import {SequelizeOptions} from '../../src/sequelize/sequelize-options/sequelize-options';
+import {ModelOptions, Op} from "sequelize";
+import {SequelizeOptions} from '../../src/sequelize/sequelize/sequelize-options';
 
 export function createSequelize(partialOptions: Partial<SequelizeOptions>): Sequelize;
 export function createSequelize(useModelsInPath?: boolean,
-                                define?: DefineOptions<any>): Sequelize;
+                                define?: ModelOptions<any>): Sequelize;
 export function createSequelize(useModelsInPathOrPartialOptions?: boolean | Partial<SequelizeOptions>,
-                                define: DefineOptions<any> = {}): Sequelize {
+                                define: ModelOptions<any> = {}): Sequelize {
 
   let useModelsInPath = true;
   let partialOptions = {};
@@ -18,8 +17,9 @@ export function createSequelize(useModelsInPathOrPartialOptions?: boolean | Part
   }
 
   return new Sequelize({
+    operatorsAliases: Op,
     database: '__',
-    dialect: 'sqlite',
+    dialect: 'sqlite' as 'sqlite',
     username: 'root',
     password: '',
     define,
@@ -33,6 +33,7 @@ export function createSequelize(useModelsInPathOrPartialOptions?: boolean | Part
 export function createSequelizeValidationOnly(useModelsInPath: boolean = true): Sequelize {
 
   return new Sequelize({
+    operatorsAliases: Op,
     validateOnly: true,
     logging: !('SEQ_SILENT' in process.env),
     models: useModelsInPath ? [__dirname + '/../models'] : []
@@ -47,17 +48,8 @@ export function createSequelizeFromUri(useModelsInPath: boolean = true): Sequeli
 }
 
 export function createSequelizeFromUriObject(useModelsInPath: boolean = true): Sequelize {
-  return new Sequelize({
-    url: 'sqlite://',
+  return new Sequelize('sqlite://', {
+    operatorsAliases: Op,
     modelPaths: useModelsInPath ? [__dirname + '/../models'] : []
-  });
-}
-
-export function createOriginSequelize(): SequelizeType {
-
-  return new OriginSequelize('___', 'root', '', {
-    dialect: 'sqlite',
-    storage: ':memory:',
-    logging: !('SEQ_SILENT' in process.env)
   });
 }

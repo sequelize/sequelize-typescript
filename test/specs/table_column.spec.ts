@@ -1,6 +1,6 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {DefineAttributes} from 'sequelize';
+import {ModelAttributes} from 'sequelize';
 import {Model, Table, Column, DataType} from "../../src";
 import {createSequelize} from "../utils/sequelize";
 import {User} from "../models/User";
@@ -17,7 +17,7 @@ describe('table_column', () => {
 
   let sequelize;
 
-  const expectedUserAttributes: DefineAttributes = {
+  const expectedUserAttributes: ModelAttributes = {
     id: {
       primaryKey: true,
       autoIncrement: true,
@@ -110,21 +110,6 @@ describe('table_column', () => {
       expect(shoeDefineOptions).to.have.property('tableName', SHOE_TABLE_NAME);
     });
 
-    it('should have class methods', () => {
-      const userDefineOptions = getOptions(User.prototype);
-      expect(userDefineOptions).to.have.property('classMethods', User);
-
-      const shoeDefineOptions = getOptions(Shoe.prototype);
-      expect(shoeDefineOptions).to.have.property('classMethods', Shoe);
-    });
-
-    it('should have instance methods', () => {
-      const userDefineOptions = getOptions(User.prototype);
-      expect(userDefineOptions).to.have.property('instanceMethods', User.prototype);
-
-      const shoeDefineOptions = getOptions(Shoe.prototype);
-      expect(shoeDefineOptions).to.have.property('instanceMethods', Shoe.prototype);
-    });
   });
 
   describe('attribute options', () => {
@@ -216,7 +201,7 @@ describe('table_column', () => {
 
       const seq = createSequelize(false);
 
-      @Table
+      @Table({timestamps: false})
       class Bottle extends Model<Bottle> {
 
         @Column(DataType.STRING(5))
@@ -225,7 +210,8 @@ describe('table_column', () => {
         @Column(DataType.CHAR(2))
         key: string;
 
-        @Column(DataType.INTEGER(100))
+        // TODO check typings
+        @Column(DataType.INTEGER(100 as any))
         num: number;
       }
 
@@ -235,7 +221,7 @@ describe('table_column', () => {
         force: true, logging: _.after(2, _.once((sql) => {
 
           // tslint:disable:max-line-length
-          expect(sql).to.match(/CREATE TABLE IF NOT EXISTS `Bottle` \(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `brand` VARCHAR\(5\), `key` CHAR\(2\), `num` INTEGER\(100\)\)/);
+          expect(sql).to.match(/CREATE TABLE IF NOT EXISTS `Bottles` \(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `brand` VARCHAR\(5\), `key` CHAR\(2\), `num` INTEGER\(100\)\)/);
         }))
       });
     });
@@ -277,7 +263,7 @@ describe('table_column', () => {
 
         return user
           .save()
-          .then(() => User.findById(user.id))
+          .then(() => User.findByPk(user.id))
           .then(_user => {
 
             expect(_user.getDataValue('name')).to.equal('elli');
@@ -322,7 +308,7 @@ describe('table_column', () => {
 
         return user
           .save()
-          .then(() => User.findById(user.id))
+          .then(() => User.findByPk(user.id))
           .then(_user => {
 
             expect(_user.getDataValue('name')).to.equal(name.toUpperCase());

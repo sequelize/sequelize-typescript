@@ -1,16 +1,18 @@
-import {ModelClassGetter, ModelType} from '../../model';
-import {Association, AssociationOptions, PreparedThroughOptions} from '..';
-import {BelongsToManyAssociationOptions} from './belongs-to-many-association-options';
-import {PreparedBelongsToManyAssociationOptions} from './prepared-belongs-to-many-association-options';
-import {ModelNotInitializedError} from '../../model/shared/model-not-initialized-error';
+import {BelongsToManyOptions as OriginBelongsToManyOptions, Model, ThroughOptions} from "sequelize";
+
 import {BaseAssociation} from '../shared/base-association';
+import {BelongsToManyOptions} from './belongs-to-many-options';
+import {ModelNotInitializedError} from '../../model/shared/model-not-initialized-error';
 import {getForeignKeyOptions} from "../foreign-key/foreign-key-service";
-import {SequelizeImpl} from "../../sequelize";
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
+import {Association} from "../shared/association";
+import {Sequelize} from "../../sequelize/sequelize/sequelize";
+import {UnionAssociationOptions} from "../shared/union-association-options";
 
 export class BelongsToManyAssociation extends BaseAssociation {
 
   constructor(associatedClassGetter: ModelClassGetter,
-              protected options: BelongsToManyAssociationOptions) {
+              protected options: BelongsToManyOptions) {
     super(associatedClassGetter, options);
   }
 
@@ -18,9 +20,9 @@ export class BelongsToManyAssociation extends BaseAssociation {
     return Association.BelongsToMany;
   }
 
-  getSequelizeOptions(model: ModelType<any>,
-                      sequelize: SequelizeImpl): AssociationOptions {
-    const options: PreparedBelongsToManyAssociationOptions = {...this.options as any};
+  getSequelizeOptions(model: typeof Model,
+                      sequelize: Sequelize): UnionAssociationOptions {
+    const options: OriginBelongsToManyOptions = {...this.options as any};
     const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(sequelize);
 
@@ -32,10 +34,10 @@ export class BelongsToManyAssociation extends BaseAssociation {
     return options;
   }
 
-  private getThroughOptions(sequelize: SequelizeImpl): PreparedThroughOptions | string {
+  private getThroughOptions(sequelize: Sequelize): ThroughOptions | string {
     const through = this.options.through;
     const throughModel = typeof through === 'object' ? through.model : through;
-    const throughOptions: PreparedThroughOptions =
+    const throughOptions: ThroughOptions =
       typeof through === 'object' ? {...through} : {} as any;
 
     if (typeof throughModel === 'function') {

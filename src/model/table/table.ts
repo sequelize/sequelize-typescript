@@ -1,10 +1,9 @@
-import 'reflect-metadata';
-import {addOptions, setModelName} from '../shared/model-service';
 import {TableOptions} from "./table-options";
-import {ModelImpl} from '../model/model-impl';
+import {Model} from "../model/model";
+import {setModelName, addOptions} from "../shared/model-service";
 
 export function Table(options: TableOptions): Function;
-export function Table(target: any): void;
+export function Table(target: Object): void;
 export function Table(arg: any): void|Function {
 
   if (typeof arg === 'function') {
@@ -15,10 +14,7 @@ export function Table(arg: any): void|Function {
   }
 }
 
-function annotate(target: typeof ModelImpl, options: TableOptions = {}): void {
-  options.instanceMethods = target.prototype;
-  options.classMethods = target;
-
+function annotate(target: typeof Model, options: TableOptions = {}): void {
   setModelName(target.prototype, options.modelName || target.name);
   addOptions(target.prototype, options);
 }

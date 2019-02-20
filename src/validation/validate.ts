@@ -1,11 +1,11 @@
-import 'reflect-metadata';
-import {DefineValidateOptions} from 'sequelize';
+import {ModelValidateOptions} from 'sequelize';
+
 import {addAttributeOptions} from "../model/column/attribute-service";
 
 /**
  * Sets validation options for annotated field
  */
-export function Validate(options: DefineValidateOptions): Function {
+export function Validate(options: ModelValidateOptions): Function {
 
   options = Object.assign({}, options);
 

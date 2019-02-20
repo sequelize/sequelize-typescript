@@ -1,15 +1,15 @@
+import {HasManyOptions, HasOneOptions, Model} from 'sequelize';
+
 import {BaseAssociation} from '../shared/base-association';
-import {AssociationOptions} from '../shared/association-options';
-import {ModelClassGetter} from '../../model/shared/model-class-getter';
-import {AssociationOptionsHasMany, AssociationOptionsHasOne} from 'sequelize';
-import {Association} from '../shared/association';
 import {getForeignKeyOptions} from "../foreign-key/foreign-key-service";
-import {ModelType} from "../../model";
+import {ModelClassGetter} from "../../model/shared/model-class-getter";
+import {Association} from "../shared/association";
+import {UnionAssociationOptions} from "../shared/union-association-options";
 
 export class HasAssociation extends BaseAssociation {
 
   constructor(associatedClassGetter: ModelClassGetter,
-              protected options: AssociationOptionsHasMany | AssociationOptionsHasOne,
+              protected options: HasManyOptions | HasOneOptions,
               private association: Association) {
     super(associatedClassGetter, options);
   }
@@ -18,7 +18,7 @@ export class HasAssociation extends BaseAssociation {
     return this.association;
   }
 
-  getSequelizeOptions(model: ModelType<any>): AssociationOptions {
+  getSequelizeOptions(model: typeof Model): UnionAssociationOptions {
     const options = {...this.options};
     const associatedClass = this.getAssociatedClass();
 

@@ -1,4 +1,5 @@
-import {HookOptions, implementHookDecorator} from "../../";
+import {HookOptions} from "../../shared/hook-options";
+import {implementHookDecorator} from "../../shared/hooks-service";
 
 export function BeforeInit(target: any, propertyName: string): void;
 export function BeforeInit(options: HookOptions): Function;
