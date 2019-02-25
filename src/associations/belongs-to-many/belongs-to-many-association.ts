@@ -43,9 +43,7 @@ export class BelongsToManyAssociation extends BaseAssociation {
     if (typeof throughModel === 'function') {
       const throughModelClass = sequelize.model(throughModel());
       if (!throughModelClass.isInitialized) {
-        throw new ModelNotInitializedError(throughModelClass, {
-          cause: 'before association can be resolved.',
-        });
+        throw new ModelNotInitializedError(throughModelClass, 'Association cannot be resolved.');
       }
       throughOptions.model = throughModelClass;
     } else {

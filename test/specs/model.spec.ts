@@ -64,6 +64,18 @@ describe('model', () => {
     return MainUser.sync({force: true});
   });
 
+  describe('instantiation when not initialized', () => {
+
+    it('should throw an error', () => {
+      @Table
+      class Test extends Model<Test> {
+      }
+
+      expect(() => new Test()).to.throw(/^Model not initialized/);
+    });
+
+  });
+
   describe('static functions when not initialized', () => {
 
     it('should throw an error', () => {
@@ -71,7 +83,7 @@ describe('model', () => {
       class Test extends Model<Test> {
       }
 
-      expect(() => Test.beforeCreate(test => {test})).to.throw(/^Model not initialized/);
+      expect(() => Test.beforeCreate(() => {})).to.throw(/^Model not initialized/);
     });
 
   });

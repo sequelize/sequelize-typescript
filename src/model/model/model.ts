@@ -24,6 +24,12 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
   }
 
   constructor(values?: object, options?: BuildOptions) {
+    if (!new.target.isInitialized) {
+      throw new ModelNotInitializedError(
+        new.target,
+        `${new.target.name} cannot be instantiated.`
+      );
+    }
     super(values, inferAlias(options, new.target));
   }
 
@@ -136,7 +142,7 @@ function addThrowNotInitializedProxy(): void {
     const superFn = Model[key];
     Model[key] = function(this: typeof Model, ...args: any[]): any {
       if (!this.isInitialized) {
-        throw new ModelNotInitializedError(this as any, {accessedPropertyKey: key});
+        throw new ModelNotInitializedError(this, `Member "${key}" cannot be called.`);
       }
       return superFn.call(this, ...args);
     };

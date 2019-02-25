@@ -69,9 +69,10 @@ export class Sequelize extends OriginSequelize {
         const associatedClass = this.model(association.getAssociatedClass());
 
         if (!associatedClass.isInitialized) {
-          throw new ModelNotInitializedError(associatedClass, {
-            cause: 'before association can be resolved.'
-          });
+          throw new ModelNotInitializedError(
+            associatedClass,
+            `Association between ${associatedClass.name} and ${model.name} cannot be resolved.`
+          );
         }
         model[association.getAssociation()](associatedClass, options as any);
       });
