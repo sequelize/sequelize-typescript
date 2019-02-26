@@ -3,6 +3,7 @@ import * as glob from "glob";
 import {uniqueFilter} from "../../shared/array";
 import {ModelMatch, SequelizeOptions} from "./sequelize-options";
 import {Model} from "../../model/model/model";
+import {extname} from "path";
 
 /**
  * Prepares sequelize config passed to original sequelize constructor
@@ -43,12 +44,13 @@ export function getModels(
   arg: Array<typeof Model | string>,
   modelMatch: ModelMatch,
 ): Array<typeof Model> {
+  const hasSupportedExtension = path => ['.ts', '.js'].indexOf(extname(path)) !== -1;
 
   if (arg && typeof arg[0] === 'string') {
 
     return arg.reduce((models: any[], dir) => {
 
-      if (!glob.hasMagic(dir)) dir = path.join(dir, '/*');
+      if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = path.join(dir, '/*');
       const _models = glob
         .sync(dir as string)
         .filter(isImportable)
