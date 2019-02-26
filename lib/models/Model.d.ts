@@ -464,13 +464,13 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Adds relation between specified instances and source instance
    */
-  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
+  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<any>;
 
   /**
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<this>;
+  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: IAssociationActionOptions): Promise<any>;
 
   /**
    * Returns related instance (specified by propertyKey) of source instance
@@ -485,17 +485,17 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   /**
    * Creates instances and relate them to source instance
    */
-  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R | this>; // TODO@robin seems to be an seq issue; shouldn't be R OR this, but only one of them
+  $create<R extends Model<R>>(propertyKey: string, values: any, options?: IAssociationActionOptions): Promise<R>;
 
   /**
    * Checks if specified instances is related to source instance
    */
-  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
+  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<boolean>;
 
   /**
    * Removes specified instances from source instance
    */
-  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this>;
+  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<any>;
 
   /**
    * Default id automatically created by sequelize
