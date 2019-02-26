@@ -2088,7 +2088,7 @@ describe('instance', () => {
       ParanoidUser.create({username: 'fnord'}).then(() => {
         return ParanoidUser.findAll().then((users) => {
           return ParanoidUser.create({username: 'linkedFnord'}).then((linkedUser) => {
-            return users[0].$set('paranoidUser', linkedUser).then((user) => {
+            return users[0].$set('paranoidUser', linkedUser).then((user: ParanoidUser) => {
               expect(user.deletedAt).not.to.exist;
             });
           });
