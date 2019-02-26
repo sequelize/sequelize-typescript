@@ -4,7 +4,7 @@
 [![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
-Decorators and some other features for sequelize (v3, v4, v5).
+Decorators and some other features for sequelize (v3, v4, v5-beta.15).
 
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
@@ -28,9 +28,10 @@ Decorators and some other features for sequelize (v3, v4, v5).
 
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
-```
-npm install sequelize --save // v4
-npm install sequelize@3.30.4 --save // or v3
+```sh
+npm install sequelize@5.0.0-beta.15 --save # v5 - note that beta.16 and above are not supported yet
+npm install sequelize --save # v4
+npm install sequelize@3.30.4 --save # or v3
 ```
 and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
@@ -127,7 +128,7 @@ Decorator          | Description
 
 ### `@Column`
 The `@Column` annotation can be used without passing any parameters. But therefore it is necessary that
-the js type can be inferred automatically (see [Type inference](#type-inference) for details).
+the javascript type can be inferred automatically (see [Type inference](#type-inference) for details).
 ```typescript
   @Column
   name: string;
@@ -160,7 +161,7 @@ Decorator                             | Description
 
 #### *Shortcuts*
 If you're in love with decorators: *sequelize-typescript* provides some more of them. The following decorators can be 
-used together with the @Column annotation to make some attribute options easier available:
+used together with the `@Column` annotation to make some attribute options easier available:
 
 Decorator                             | Description
 --------------------------------------|---------------------
@@ -675,7 +676,7 @@ export class Person extends Model<Person> {
 ## Why `() => Model`?
 `@ForeignKey(Model)` is much easier to read, so why is `@ForeignKey(() => Model)` so important? When it
 comes to circular-dependencies (which are in general solved by node for you) `Model` can be `undefined`
-when it gets passed to @ForeignKey. With the usage of a function, which returns the actual model, we prevent
+when it gets passed to `@ForeignKey`. With the usage of a function, which returns the actual model, we prevent
 this issue.
 
 ## Recommendations and limitations 
