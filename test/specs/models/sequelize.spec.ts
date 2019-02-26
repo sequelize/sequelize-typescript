@@ -18,6 +18,9 @@ import TeamGlob from "../../models/globs/match-sub-dir-files/teams/team.model";
 import PlayerDir from "../../models/globs/match-dir-only/PlayerDir";
 import TeamDir from "../../models/globs/match-dir-only/TeamDir";
 import ShoeDir from "../../models/globs/match-dir-only/ShoeDir";
+import {join} from "path";
+import {AddressDir} from '../../models/globs/match-files/AddressDir';
+import {UserDir} from '../../models/globs/match-files/UserDir';
 
 describe('sequelize', () => {
 
@@ -338,6 +341,24 @@ describe('sequelize', () => {
       expect(sequelizeFolder._).to.have.property('PlayerDir', PlayerDir);
       expect(sequelizeFolder._).to.have.property('TeamDir', TeamDir);
       expect(sequelizeFolder._).to.have.property('ShoeDir', ShoeDir);
+
+    });
+
+
+    it('should load exact files', () => {
+      const db = '__';
+      const sequelizeFolder = new Sequelize({
+        database: db,
+        dialect: 'sqlite',
+        username: 'root',
+        password: '',
+        storage: ':memory:',
+        logging: !('SEQ_SILENT' in process.env),
+        modelPaths: ['AddressDir.ts', 'UserDir.ts'].map(file => join(__dirname, '/../../models/globs/match-files', file))
+      });
+
+      expect(sequelizeFolder['models']).to.have.property('AddressDir', AddressDir);
+      expect(sequelizeFolder['models']).to.have.property('UserDir', UserDir);
 
     });
 

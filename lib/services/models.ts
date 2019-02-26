@@ -9,6 +9,7 @@ import {inferDataType} from "../utils/data-type";
 import {deepAssign} from "../utils/object";
 import {getAssociationsByRelation} from "./association";
 import {uniqueFilter} from "../utils/array";
+import {extname} from "path";
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const ATTRIBUTES_KEY = 'sequelize:attributes';
@@ -182,12 +183,13 @@ export function getModels(
   arg: Array<typeof Model | string>,
   modelMatch: ModelMatch,
 ): Array<typeof Model> {
+  const hasSupportedExtension = path => ['.ts', '.js'].indexOf(extname(path)) !== -1;
 
   if (arg && typeof arg[0] === 'string') {
 
     return arg.reduce((models: any[], dir) => {
 
-      if (!glob.hasMagic(dir)) dir = path.join(dir, '/*');
+      if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = path.join(dir, '/*');
       const _models = glob
         .sync(dir as string)
         .filter(isImportable)
