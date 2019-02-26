@@ -354,11 +354,11 @@ describe('sequelize', () => {
         password: '',
         storage: ':memory:',
         logging: !('SEQ_SILENT' in process.env),
-        modelPaths: ['AddressDir.ts', 'UserDir.ts'].map(file => join(__dirname, '/../../models/globs/match-files', file))
+        modelPaths: ['AddressDir.js', 'UserDir.js'].map(file => join(__dirname, '/../../models/globs/match-files', file))
       });
 
-      expect(sequelizeFolder['models']).to.have.property('AddressDir', AddressDir);
-      expect(sequelizeFolder['models']).to.have.property('UserDir', UserDir);
+      expect(sequelizeFolder._).to.have.property('AddressDir', AddressDir);
+      expect(sequelizeFolder._).to.have.property('UserDir', UserDir);
 
     });
 
