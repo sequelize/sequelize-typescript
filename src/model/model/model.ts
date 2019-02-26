@@ -36,7 +36,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
   /**
    * Adds relation between specified instances and source instance
    */
-  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<this> {
+  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
     return this['add' + capitalize(propertyKey)](instances, options);
   };
 
@@ -44,7 +44,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<this> {
+  $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
     return this['set' + capitalize(propertyKey)](instances, options);
   };
 
@@ -65,21 +65,21 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
   /**
    * Creates instances and relate them to source instance
    */
-  $create<R extends Model<R>>(propertyKey: string, values: any, options?: AssociationActionOptions): Promise<R | this> {
+  $create<R extends Model<R>>(propertyKey: string, values: any, options?: AssociationActionOptions): Promise<R> {
     return this['create' + capitalize(propertyKey)](values, options);
   };
 
   /**
    * Checks if specified instances is related to source instance
    */
-  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this> {
+  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<boolean> {
     return this['has' + capitalize(propertyKey)](instances, options);
   };
 
   /**
    * Removes specified instances from source instance
    */
-  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<this> {
+  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<any> {
     return this['remove' + capitalize(propertyKey)](instances, options);
   };
 
