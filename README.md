@@ -481,7 +481,7 @@ explicitly:
 When including a model that has multiple relations you will need to use as property:
 ```typescript
   // In the class "books":
-  @DefaultScopes({
+  @DefaultScope({
     include: [
       {
         // note as with the @BelongsTo Column name
