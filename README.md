@@ -26,10 +26,10 @@ Decorators and some other features for sequelize (v3, v4, v5).
  - [Why `() => Model`?](#user-content-why---model)
  - [Recommendations and limitations](#recommendations-and-limitations)
 
-### Installation
+## Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
 
-#### Latest sequelize (v5)
+### Latest sequelize (v5)
 ```sh
 npm install sequelize --save
 ```
@@ -37,7 +37,7 @@ npm install sequelize --save
 npm install sequelize-typescript@canary --save 
 ```
 
-#### Older versions (v4, v3)
+### Older versions (v4, v3)
 ```sh
 npm install sequelize@4 --save
 npm install sequelize@3 --save
@@ -46,20 +46,20 @@ npm install sequelize@3 --save
 npm install sequelize-typescript --save 
 ```
 
-#### `reflect-metadata`
+### `reflect-metadata`
 [reflect-metadata](https://www.npmjs.com/package/reflect-metadata) is also required
 ```
 npm install reflect-metadata --save
 ```
 
-#### TypeScript Config
+### TypeScript Config
 Your `tsconfig.json` needs the following flags:
 ```json
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true
 ```
 
-#### Beta releases
+### Beta releases
 Use `next` tag for installing beta releases.
 ```
 npm install sequelize-typescript@next --save 
