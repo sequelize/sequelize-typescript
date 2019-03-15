@@ -4,7 +4,7 @@
 [![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
-Decorators and some other features for sequelize (v3 + v4).
+Decorators and some other features for sequelize (v5).
 
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
