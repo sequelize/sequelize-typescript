@@ -4,7 +4,7 @@
 [![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
-Decorators and some other features for sequelize (v3, v4, v5-beta.15).
+Decorators and some other features for sequelize (v3, v4, v5).
 
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
@@ -28,18 +28,31 @@ Decorators and some other features for sequelize (v3, v4, v5-beta.15).
 
 ### Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
+
+#### Latest sequelize (v5)
 ```sh
-npm install sequelize@5.0.0-beta.15 --save # v5 - note that beta.16 and above are not supported yet
-npm install sequelize --save # v4
-npm install sequelize@3.30.4 --save # or v3
+npm install sequelize --save
 ```
-and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
-npm install reflect-metadata --save
+npm install sequelize-typescript@canary --save 
+```
+
+#### Older versions (v4, v3)
+```sh
+npm install sequelize@4 --save
+npm install sequelize@3 --save
 ```
 ```
 npm install sequelize-typescript --save 
 ```
+
+#### `reflect-metadata`
+[reflect-metadata](https://www.npmjs.com/package/reflect-metadata) is also required
+```
+npm install reflect-metadata --save
+```
+
+#### TypeScript Config
 Your `tsconfig.json` needs the following flags:
 ```json
 "experimentalDecorators": true,
