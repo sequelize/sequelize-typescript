@@ -1,19 +1,15 @@
 import * as express from 'express';
-import {userRouterFactory} from "./users/userRouterFactory";
-import {sequelize} from "./database/sequelize";
-import {User} from "./users/User";
-import {json} from "body-parser";
-import * as strongErrorHandler from "strong-error-handler";
-import {Post} from "./posts/Post";
-import {postRouterFactory} from "./posts/postRouterFactory";
+import * as strongErrorHandler from 'strong-error-handler';
+import {json} from 'body-parser';
+
+import {sequelize} from './database/sequelize';
+import {userRouterFactory} from './users/userRouterFactory';
+import {postRouterFactory} from './posts/postRouterFactory';
+import {User} from './users/User';
+import {Post} from './posts/Post';
 
 const userRepository = sequelize.getRepository(User);
 const postRepository = sequelize.getRepository(Post);
-
-(async () => {
-  const user = await userRepository.create();
-  user.
-})();
 
 export const app = express();
 

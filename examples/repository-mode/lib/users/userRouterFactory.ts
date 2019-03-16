@@ -1,7 +1,8 @@
-import {Router} from "express";
-import {Repository} from "sequelize-typescript";
-import {User} from "./User";
-import {Post} from "../posts/Post";
+import {Router} from 'express';
+import {Repository} from 'sequelize-typescript';
+
+import {User} from './User';
+import {Post} from '../posts/Post';
 
 export const userRouterFactory = (
   userRepository: Repository<User>,
