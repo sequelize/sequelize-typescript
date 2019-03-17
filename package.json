@@ -6,7 +6,7 @@
     "build": "tsc",
     "test": "mocha",
     "cover": "nyc mocha",
-    "lint": "tslint .",
+    "lint": "tslint -c tslint.json --project tsconfig.json",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -66,12 +66,13 @@
     "source-map-support": "0.4.14",
     "sqlite3": "4.0.4",
     "ts-node": "7.0.1",
-    "tslint": "4.3.1",
+    "tslint": "5.14.0",
     "typescript": "3.3.3",
     "uuid-validate": "0.0.2"
   },
   "peerDependencies": {
-    "reflect-metadata": "*"
+    "reflect-metadata": "*",
+    "sequelize": "^5.1.0"
   },
   "engines": {
     "node": ">=0.8.15"

@@ -4,12 +4,12 @@ import {setModelName, addOptions} from "../shared/model-service";
 
 export function Table(options: TableOptions): Function;
 export function Table(target: Object): void;
-export function Table(arg: any): void|Function {
+export function Table(arg: any): void | Function {
 
   if (typeof arg === 'function') {
     annotate(arg);
   } else {
-    const options: TableOptions = Object.assign({}, arg);
+    const options: TableOptions = {...arg};
     return (target: any) => annotate(target, options);
   }
 }

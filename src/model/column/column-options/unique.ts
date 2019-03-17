@@ -15,8 +15,8 @@ export function Unique(target: Object, propertyName: string): void;
 export function Unique(...args: any[]): void | Function {
   if (args.length === 1) {
     const [options] = args;
-    return (target, propertyName) => {
-      annotate(target, propertyName, options);
+    return (_target, _propertyName) => {
+      annotate(_target, _propertyName, options);
     };
   }
   const [target, propertyName] = args;

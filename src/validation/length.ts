@@ -7,12 +7,7 @@ export function Length({msg, min, max}: {msg?: string; min?: number; max?: numbe
 
   let options: [number, number] | {msg: string, args: [number, number]};
   const length = [min || 0, max] as [number, number];
-
-  if (msg) {
-    options = {args: length, msg: msg as string};
-  } else {
-    options = length;
-  }
+  options = msg ? {args: length, msg: msg as string} : length;
 
   return (target: any, propertyName: string) =>
     addAttributeOptions(target, propertyName, {

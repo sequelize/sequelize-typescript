@@ -40,7 +40,7 @@ function annotate(target: any,
     };
   } else {
 
-    options = Object.assign({}, optionsOrDataType as ModelAttributeColumnOptions);
+    options = {...(optionsOrDataType as ModelAttributeColumnOptions)};
 
     if (!options.type) {
       options.type = getSequelizeTypeByDesignType(target, propertyName);

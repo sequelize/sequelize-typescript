@@ -7,7 +7,7 @@ import {addAttributeOptions} from "../model/column/attribute-service";
  */
 export function Validate(options: ModelValidateOptions): Function {
 
-  options = Object.assign({}, options);
+  options = {...options};
 
   return (target: any, propertyName: string) =>
     addAttributeOptions(target, propertyName, {

@@ -4,8 +4,8 @@ import {addAttributeOptions} from "../model/column/attribute-service";
  * Don't allow empty strings
  */
 export function NotEmpty(target: any, propertyName: string): void;
-export function NotEmpty(options: {msg: string}): Function;
-export function NotEmpty(...args: any[]): void|Function {
+export function NotEmpty(options: { msg: string }): Function;
+export function NotEmpty(...args: any[]): void | Function {
 
   if (args.length === 1) {
 

@@ -38,7 +38,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
    */
   $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
     return this['add' + capitalize(propertyKey)](instances, options);
-  };
+  }
 
   /**
    * Sets relation between specified instances and source instance
@@ -46,46 +46,46 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
    */
   $set<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
     return this['set' + capitalize(propertyKey)](instances, options);
-  };
+  }
 
   /**
    * Returns related instance (specified by propertyKey) of source instance
    */
   $get<R extends Model<R>>(propertyKey: string, options?: AssociationGetOptions<R>): Promise<R | R[]> {
     return this['get' + capitalize(propertyKey)](options);
-  };
+  }
 
   /**
    * Counts related instances (specified by propertyKey) of source instance
    */
   $count<R extends Model<R>>(propertyKey: string, options?: AssociationCountOptions<R>): Promise<number> {
     return this['count' + capitalize(propertyKey)](options);
-  };
+  }
 
   /**
    * Creates instances and relate them to source instance
    */
   $create<R extends Model<R>>(propertyKey: string, values: any, options?: AssociationActionOptions): Promise<R> {
     return this['create' + capitalize(propertyKey)](values, options);
-  };
+  }
 
   /**
    * Checks if specified instances is related to source instance
    */
   $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<boolean> {
     return this['has' + capitalize(propertyKey)](instances, options);
-  };
+  }
 
   /**
    * Removes specified instances from source instance
    */
   $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<any> {
     return this['remove' + capitalize(propertyKey)](instances, options);
-  };
+  }
 
   reload(options?: FindOptions): Promise<this> {
     return super.reload(inferAlias(options, this));
-  };
+  }
 
 }
 

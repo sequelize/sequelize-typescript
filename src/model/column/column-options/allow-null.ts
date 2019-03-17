@@ -5,7 +5,7 @@ import {addAttributeOptions} from '../attribute-service';
  */
 export function AllowNull(target: any, propertyName: string): void;
 export function AllowNull(allowNull: boolean): Function;
-export function AllowNull(...args: any[]): void|Function {
+export function AllowNull(...args: any[]): void | Function {
 
   if (args.length === 1) {
 

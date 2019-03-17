@@ -73,21 +73,21 @@ export function cloneRegExp(input: RegExp, injectFlags?: string): RegExp {
   let flags = "";
   // Make sure the parameter is a defined string - it will make the conditional
   // logic easier to read.
-  injectFlags = ( injectFlags || "" );
+  injectFlags = (injectFlags || "");
   // Test for global.
-  if (input.global || ( /g/i ).test(injectFlags)) {
+  if (input.global || (/g/i).test(injectFlags)) {
     flags += "g";
   }
   // Test for ignoreCase.
-  if (input.ignoreCase || ( /i/i ).test(injectFlags)) {
+  if (input.ignoreCase || (/i/i).test(injectFlags)) {
     flags += "i";
   }
   // Test for multiline.
-  if (input.multiline || ( /m/i ).test(injectFlags)) {
+  if (input.multiline || (/m/i).test(injectFlags)) {
     flags += "m";
   }
   // Return a clone with the additive flags.
-  return ( new RegExp(pattern, flags) );
+  return (new RegExp(pattern, flags));
 }
 
 export function getAllPropertyNames(obj: any): string[] {

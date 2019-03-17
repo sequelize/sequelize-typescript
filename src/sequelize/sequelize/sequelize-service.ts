@@ -1,9 +1,8 @@
-import * as path from "path";
+import {basename, extname, join, parse} from "path";
 import * as glob from "glob";
 import {uniqueFilter} from "../../shared/array";
 import {ModelMatch, SequelizeOptions} from "./sequelize-options";
 import {Model} from "../../model/model/model";
-import {extname} from "path";
 
 /**
  * Prepares sequelize config passed to original sequelize constructor
@@ -29,12 +28,9 @@ export function prepareArgs(...args: any[]) {
 function getValidationOnlyOptions(options: SequelizeOptions): SequelizeOptions {
   return {
     ...options,
-    database: '_name_',
-    username: '_username_',
-    password: '_password_',
     dialect: 'sqlite',
     dialectModulePath: __dirname + '/../validation-only/db-dialect-dummy'
-  } as SequelizeOptions;
+  };
 }
 
 /**
@@ -50,7 +46,7 @@ export function getModels(
 
     return arg.reduce((models: any[], dir) => {
 
-      if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = path.join(dir, '/*');
+      if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = join(dir, '/*');
       const _models = glob
         .sync(dir as string)
         .filter(isImportable)
@@ -59,7 +55,7 @@ export function getModels(
         .map(fullPath => {
 
           const module = require(fullPath);
-          const fileName = path.basename(fullPath);
+          const fileName = basename(fullPath);
 
           const matchedMemberKey = Object.keys(module).find(m => modelMatch(fileName, m));
           const matchedMember = matchedMemberKey ? module[matchedMemberKey] : undefined;
@@ -94,6 +90,6 @@ function isImportable(file: string): boolean {
  * Return the value of the full path with filename, without extension
  */
 function getFullfilepathWithoutExtension(file: string): string {
-  const parsedFile = path.parse(file);
-  return path.join(parsedFile.dir, parsedFile.name);
+  const parsedFile = parse(file);
+  return join(parsedFile.dir, parsedFile.name);
 }
