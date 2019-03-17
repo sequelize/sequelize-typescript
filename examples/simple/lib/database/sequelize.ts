@@ -6,6 +6,5 @@ import {Post} from '../posts/Post';
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: ':memory:',
-  operatorsAliases: false,
   models: [User, Post],
 });

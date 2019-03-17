@@ -16,7 +16,7 @@ export const userRouterFactory = (
     )
 
     .get('/users/:id', (req, res, next) =>
-      userRepository.findById(req.params.id)
+      userRepository.findByPk(req.params.id)
         .then(user => user
           ? res.json(user)
           : next({statusCode: 404}))

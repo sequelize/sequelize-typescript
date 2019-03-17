@@ -13,7 +13,7 @@ export const postRouterFactory = (
     )
 
     .get('/posts/:id', (req, res, next) =>
-      postRepository.findById(req.params.id)
+      postRepository.findByPk(req.params.id)
         .then(post => post
           ? res.json(post)
           : next({statusCode: 404}))
