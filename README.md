@@ -7,7 +7,7 @@
 Decorators and some other features for sequelize (v5).
 
  - [Installation](#installation)
- - [Upgrade to `sequelize-typescript@1`](#upgrade-to-sequelize-typescript@1)
+ - [Upgrade to `sequelize-typescript@1`](#upgrade-to-sequelize-typescript1)
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
    - [`@Column` API](#column-api)
@@ -33,7 +33,7 @@ Decorators and some other features for sequelize (v5).
  - [Why `() => Model`?](#user-content-why---model)
  - [Recommendations and limitations](#recommendations-and-limitations)
 
-### Installation
+## Installation
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
 ```
 npm install sequelize --save
