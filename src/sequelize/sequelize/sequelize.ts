@@ -53,8 +53,8 @@ export class Sequelize extends OriginSequelize {
     installHooks(definedModels);
   }
 
-  getRepository<M extends { new (): Model }>(modelClass: M): Repository<M> {
-    return this.model(modelClass as any) as any as M;
+  getRepository<M extends Model>(modelClass: (new() => M)): Repository<M> {
+    return this.model(modelClass as any) as Repository<M>;
   }
 
   private associateModels(models: Array<typeof Model>): void {
