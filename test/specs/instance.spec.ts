@@ -654,7 +654,9 @@ describe('instance', () => {
     it('should support updating a subset of attributes', () =>
       User
         .create({aNumber: 1, bNumber: 1})
-        .tap((user) => User.update({bNumber: 2}, {where: {id: user.get('id')}}))
+        // TODO Sequelize typings issue caused by sequelize/types/lib/model.d.ts on line 2394
+        // TODO The order of overloads is wrong
+        .tap((user) => User.update({bNumber: 2}, {where: {id: user.get('id') as any}}))
         .then((user) => user.reload({attributes: ['bNumber']}))
         .then((user) => {
           expect(user.get('aNumber')).to.equal(1);

@@ -1532,7 +1532,7 @@ describe('association', () => {
       before(() => sequelize.addModels([User77, Subscription]));
 
       it('should set scope in pure sequelize association options', () => {
-        expect(User77['associations'].usersSubscribedTo.through)
+        expect(User77['associations'].usersSubscribedTo['through'])
           .to.have.property('scope').that.eqls({targetType: 'user'});
       });
 

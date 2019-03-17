@@ -61,7 +61,7 @@
     "nyc": "13.3.0",
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.9",
-    "sequelize": "5.0.0-beta.16",
+    "sequelize": "5.1.0",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
     "source-map-support": "0.4.14",
