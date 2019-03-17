@@ -6,6 +6,8 @@
 # sequelize-typescript
 Decorators and some other features for sequelize (v5).
 
+ - [Installation](#installation)
+ - [Upgrade to `sequelize-typescript@1`](#upgrade-to-sequelize-typescript@1)
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
    - [`@Column` API](#column-api)
@@ -49,6 +51,31 @@ Your `tsconfig.json` needs the following flags:
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true
 ```
+
+## Upgrade to `sequelize-typescript@1`
+`sequelize-typescript@1` only works with `sequelize@5`. 
+For `sequelize@4` & `sequelize@3` use `sequelize-typescript@0.6`.
+
+### Breaking Changes
+All breaking changes of `sequelize@5` are also valid for `sequelize-typescript@1`. 
+See [Upgrade to v5](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md) for details.
+
+#### Official Sequelize Typings
+sequelize-typescript now uses the official typings bundled with sequelize 
+(See [this](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md#typescript-support)).
+Please note the following details:
+- Most of the sequelize-typescript interfaces of the previous version are replaced by the official ones
+- `@types/sequelize` is no longer used
+- `@types/bluebird` is no longer an explicit dependency
+- The official typings are less strict than the former sequelize-typescript ones
+
+#### Sequelize Options
+- `SequelizeConfig` renamed to `SequelizeOptions`
+- `modelPaths` property renamed to `models`
+
+### Repository Mode
+With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
+
 
 ## Model definition
 ```typescript
