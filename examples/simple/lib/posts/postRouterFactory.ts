@@ -1,19 +1,16 @@
 import {Router} from "express";
-import {Repository} from "sequelize-typescript";
 import {Post} from "./Post";
 
-export const postRouterFactory = (
-  postRepository: Repository<Post>,
-  ) => Router()
+export const postRouterFactory = () => Router()
 
     .get('/posts', (req, res, next) =>
-      postRepository.findAll()
+      Post.findAll()
         .then(posts => res.json(posts))
         .catch(next)
     )
 
     .get('/posts/:id', (req, res, next) =>
-      postRepository.findById(req.params.id)
+      Post.findByPk(req.params.id)
         .then(post => post
           ? res.json(post)
           : next({statusCode: 404}))
@@ -21,7 +18,7 @@ export const postRouterFactory = (
     )
 
     .post('/posts', (req, res, next) =>
-      postRepository.create(req.body)
+      Post.create(req.body)
         .then(post => res.json(post))
         .catch(next)
     )
