@@ -3,8 +3,7 @@
   "version": "1.0.0-alpha.8",
   "description": "Decorators and some other features for sequelize",
   "scripts": {
-    "copyJsAndDeclarationFiles": "copyfiles -u 1 src/**/*.js src/**/*.d.ts dist",
-    "build": "tsc && npm run copyJsAndDeclarationFiles",
+    "build": "tsc",
     "test": "mocha",
     "cover": "nyc mocha",
     "lint": "tslint .",
