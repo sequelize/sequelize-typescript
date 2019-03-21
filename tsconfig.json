@@ -15,7 +15,8 @@
     "lib/**/*"
   ],
   "files": [
-    "index.ts"
+    "index.ts",
+    "browser/index.ts"
   ],
   "exclude": [
     "node_modules",

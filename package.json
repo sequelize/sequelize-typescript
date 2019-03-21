@@ -108,5 +108,8 @@
     "all": true,
     "check-coverage": true,
     "report-dir": "./coverage"
+  },
+  "browser": {
+    "index.js": "./browser/index.js"
   }
 }
