@@ -10,14 +10,16 @@ async function main() {
   // gathering annotation inputs
   const inputs = (await recursive(annotationsDir)).filter(f => f.endsWith('.js'));
 
+  // write out the noop function that all the annotations will use
   const noopDir = path.join(targetBase, 'noop.js');
   await mkdirp(path.dirname(noopDir));
   fs.writeFileSync(noopDir, `export function noop(){}`);
   const exportedFiles = [];
 
-  // common annotations
+  // write the noop functions for all the annotations
   for(const f of inputs) {
     const fileParts = f.split('/');
+    // assume the function exported is the same as the filename
     const functionName = fileParts[fileParts.length -1].replace('.js', '');
 
     const outPath = path.join(targetBase, f);
@@ -32,13 +34,13 @@ export function ${functionName}() { return noop; }
     fs.writeFileSync(outPath, file)
   }
 
-  // model file
+  // we need to include the model file
   const modelFilePath = path.join(targetBase, 'models', 'Model.js')
   await mkdirp(path.dirname(modelFilePath));
   fs.writeFileSync(modelFilePath, `export class Model {}\n`)
   exportedFiles.push({functionName: 'Model', path: modelFilePath})
 
-  // index export file
+  // export all the files we made in our index
   let indexFile = '';
   for(const fn of exportedFiles) {
     const p = path.relative(targetBase, fn.path).replace('.js', '')
@@ -46,7 +48,7 @@ export function ${functionName}() { return noop; }
   }
   fs.writeFileSync(path.join(targetBase, 'index.js'), indexFile);
 
-  // update package.json
+  // update package.json with new set of browser files
   const browser = {
     "index.js": path.join(targetBase, "index.js"),
   };
