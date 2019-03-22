@@ -12,6 +12,7 @@ node_modules
 npm-debug.log
 
 # build
+!generate-browser.js
 **/*.js
 **/*.js.map
 **/*.d.ts
