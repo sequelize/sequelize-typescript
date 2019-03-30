@@ -109,7 +109,10 @@ export abstract class BaseModel {
     if (!options['includeNames']) options['includeNames'] = [];
 
     if (!options['includeValidated']) {
-      Model[staticMethodPrefix + 'conformOptions'](options, source);
+      const conformOptionsName = staticMethodPrefix + 'conformOptions';
+      const conformIncludesName = staticMethodPrefix + 'conformIncludes';
+      const conformMethodName = conformOptionsName in Model ? conformOptionsName : conformIncludesName;
+      Model[conformMethodName](options, source);
       if (options.include) {
         Model[staticMethodPrefix + 'expandIncludeAll'].call(source, options);
         Model[staticMethodPrefix + 'validateIncludedElements'].call(source, options);
