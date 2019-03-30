@@ -34,7 +34,7 @@ Decorators and some other features for sequelize (v5).
  - [Recommendations and limitations](#recommendations-and-limitations)
 
 ## Installation
-*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
+*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize) and additional typings as documented [here](http://docs.sequelizejs.com/manual/typescript.html)
 ```
 npm install sequelize --save
 ```
