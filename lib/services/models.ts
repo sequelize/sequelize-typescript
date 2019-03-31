@@ -189,7 +189,7 @@ export function getModels(
 
     return arg.reduce((models: any[], dir) => {
 
-      if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = path.join(dir, '/*');
+      if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = path.join(dir as string, '/*');
       const _models = glob
         .sync(dir as string)
         .filter(isImportable)
