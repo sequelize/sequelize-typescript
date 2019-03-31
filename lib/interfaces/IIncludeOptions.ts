@@ -27,5 +27,9 @@ export interface IIncludeOptions extends IBaseIncludeOptions {
    * be returned. Only applies if `options.paranoid` is true for the model.
    */
   paranoid?: boolean;
-
+  
+  /**
+  * If true, runs a separate query to fetch the associated instances, only supported for hasMany associations
+  */
+  separate?: boolean;                  
 }
