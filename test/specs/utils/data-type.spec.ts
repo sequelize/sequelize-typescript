@@ -24,6 +24,7 @@ describe('utils', () => {
 
         expect(isDataType(DataType.STRING(55))).to.be.true;
         expect(isDataType(DataType.ENUM('a', 'b'))).to.be.true;
+        expect(isDataType(DataType.ARRAY(DataType.STRING))).to.be.true;
       });
 
       it('should return false', () => {

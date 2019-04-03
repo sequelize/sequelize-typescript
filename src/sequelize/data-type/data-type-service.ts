@@ -1,16 +1,12 @@
-import {DataTypeAbstract} from 'sequelize';
-import {DataType} from './data-type';
+import {DataType, DataTypeAbstract, DataTypes} from 'sequelize';
 
 /*
  * Checks if specified value is a sequelize data type (ABSTRACT, STRING...)
  */
-export function isDataType(value: any): boolean {
+export function isDataType(value: any): value is DataType {
 
-  return value === DataType.ABSTRACT ||
-    value === DataType.NUMBER ||
-    (typeof value === 'function' &&
-      value({}) instanceof (DataType.ABSTRACT as any)) ||
-    value instanceof (DataType.ABSTRACT as any);
+  return (typeof value === 'function' && value({}) instanceof (DataTypes.ABSTRACT as any)) ||
+    value instanceof (DataTypes.ABSTRACT as any);
 }
 
 /**
@@ -20,15 +16,15 @@ export function inferDataType(designType: any): DataTypeAbstract | undefined {
 
   switch (designType) {
     case String:
-      return DataType.STRING;
+      return DataTypes.STRING;
     case Number:
-      return DataType.INTEGER;
+      return DataTypes.INTEGER;
     case Boolean:
-      return DataType.BOOLEAN;
+      return DataTypes.BOOLEAN;
     case Date:
-      return DataType.DATE;
+      return DataTypes.DATE;
     case Buffer:
-      return DataType.BLOB;
+      return DataTypes.BLOB;
     default:
       return void 0;
   }

@@ -1,3 +1,3 @@
-import * as Sequelize from "sequelize";
+import { DataTypes } from 'sequelize';
 
-export const DataType: typeof Sequelize = Sequelize;
+export const DataType: typeof DataTypes = DataTypes;
