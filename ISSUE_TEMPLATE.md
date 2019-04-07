@@ -1,4 +1,4 @@
-<!-- Before submitting an issue, please consult our docs (https://github.com/RobinBuschmann/sequelize-typescript) and checker whether an issue was already reported (https://github.com/RobinBuschmann/sequelize-typescript/issues) -->
+<!-- Before submitting an issue, please consult our docs (https://github.com/RobinBuschmann/sequelize-typescript) and check whether your problem was already reported (https://github.com/RobinBuschmann/sequelize-typescript/issues) -->
 
 <!-- Please make sure you are posting an issue pertaining to sequelize-typescript. If you are having an issue with sequelize itself, please consult the sequelize team (https://github.com/sequelize/sequelize/issues) -->
 
