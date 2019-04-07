@@ -306,6 +306,9 @@ Another way to match model to file is to make your model the default export.
 export default class User extends Model<User> {}
 ```
 
+> ⚠️ When using paths to add models, keep in mind that they will be loaded during runtime. This means that the path
+> may differ from development time to execution time. For instance, using `.ts` extension within paths will only work 
+> together with [ts-node](https://github.com/TypeStrong/ts-node).
 
 ### Build and create
 Instantiation and inserts can be achieved in the good old sequelize way
