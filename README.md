@@ -656,7 +656,8 @@ export class Shoe extends Model<Shoe> {
 ## Scopes
 Scopes can be defined with annotations as well. The scope options are mostly identical to native
 sequelize except for the way model classes are referenced. So instead of referencing them directly a getter
-function `() => Model` is used instead. 
+function `() => Model` is used instead. (⚠️ For scope functions, models are still referenced directly
+`full() { return {include: [Manufacturer] };}`)
 (See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/scopes.html) for more details)
 
 ### `@DefaultScope` and `@Scopes`
