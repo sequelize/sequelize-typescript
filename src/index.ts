@@ -9,7 +9,7 @@ export * from './associations/has/has-one';
 export * from './associations/has/has-many';
 export * from './associations/shared/association';
 export * from './associations/shared/base-association';
-export * from './associations/shared/association-action-options';
+export * from './model/model/association/association-action-options';
 export * from './associations/shared/union-association-options';
 export * from './associations/shared/association-service';
 export * from './associations/through/through-options';

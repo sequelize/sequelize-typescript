@@ -1,7 +1,5 @@
-import {Model} from '../model';
-import {WhereOptions} from "sequelize";
+import {FindOptions} from "sequelize";
 
-export interface AssociationCountOptions<T extends Model<T>> {
-  where: WhereOptions;
-  scope: string | boolean;
-}
+export type AssociationCountOptions = {
+  scope?: string | boolean;
+} & FindOptions;

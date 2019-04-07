@@ -5,7 +5,8 @@ import {ModelNotInitializedError} from '../shared/model-not-initialized-error';
 import {getAllPropertyNames} from '../../shared/object';
 import {AssociationGetOptions} from "./association/association-get-options";
 import {AssociationCountOptions} from "./association/association-count-options";
-import {AssociationActionOptions} from "../../associations/shared/association-action-options";
+import {AssociationActionOptions} from "./association/association-action-options";
+import {AssociationCreateOptions} from "./association/association-create-options";
 
 export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
 
@@ -51,28 +52,28 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
   /**
    * Returns related instance (specified by propertyKey) of source instance
    */
-  $get<R extends Model<R>>(propertyKey: string, options?: AssociationGetOptions<R>): Promise<R | R[]> {
+  $get<R extends Model<R>>(propertyKey: string, options?: AssociationGetOptions): Promise<R | R[]> {
     return this['get' + capitalize(propertyKey)](options);
   }
 
   /**
    * Counts related instances (specified by propertyKey) of source instance
    */
-  $count<R extends Model<R>>(propertyKey: string, options?: AssociationCountOptions<R>): Promise<number> {
+  $count<R extends Model<R>>(propertyKey: string, options?: AssociationCountOptions): Promise<number> {
     return this['count' + capitalize(propertyKey)](options);
   }
 
   /**
    * Creates instances and relate them to source instance
    */
-  $create<R extends Model<R>>(propertyKey: string, values: any, options?: AssociationActionOptions): Promise<R> {
+  $create<R extends Model<R>>(propertyKey: string, values: any, options?: AssociationCreateOptions): Promise<R> {
     return this['create' + capitalize(propertyKey)](values, options);
   }
 
   /**
    * Checks if specified instances is related to source instance
    */
-  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<boolean> {
+  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationGetOptions): Promise<boolean> {
     return this['has' + capitalize(propertyKey)](instances, options);
   }
 

@@ -1,8 +1,6 @@
-import {Model} from '../model';
-import {WhereOptions} from "sequelize";
+import {FindOptions} from "sequelize";
 
-export interface AssociationGetOptions<T extends Model<T>> {
-  where: WhereOptions;
-  scope: string | boolean;
-  schema: string;
-}
+export type AssociationGetOptions = {
+  scope?: string | boolean;
+  schema?: string;
+} & FindOptions;
