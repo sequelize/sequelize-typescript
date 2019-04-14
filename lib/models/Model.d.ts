@@ -19,6 +19,7 @@ import {ICountOptions} from '../interfaces/ICountOptions';
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {NonAbstract, Omit, RecursivePartial} from '../utils/types';
 import {IValidateOptions} from '../interfaces/IValidateOptions';
+import {IDefineOptions} from '../interfaces/IDefineOptions';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
@@ -43,8 +44,10 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
   static primaryKeyAttribute: string;
   static attributes: { [key: string]: IPartialDefineAttributeColumnOptions };
   static rawAttributes: { [key: string]: IPartialDefineAttributeColumnOptions };
+  static options: IDefineOptions;
 
   static isInitialized: boolean;
+
 
   static associations?: { [key: string]: any };
 
