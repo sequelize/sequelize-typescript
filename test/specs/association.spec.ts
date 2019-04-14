@@ -28,7 +28,7 @@ class BookModel extends ConcreteModel<BookModel> {
   authors: AuthorModel[];
 }
 
-class PageModel extends ConcreteModel<BookModel> {
+class PageModel extends ConcreteModel<PageModel> {
   content: string;
   bookId: number;
   book: BookModel;
@@ -1600,7 +1600,21 @@ describe('association', () => {
       country: 'United States',
     };
 
-    function oneToOneTestSuites(User: typeof ConcreteModel, Address: typeof ConcreteModel): void {
+    class AbstractUser extends Model<AbstractUser> {
+      name: string;
+      address: AbstractAddress;
+    }
+
+    class AbstractAddress extends Model<AbstractAddress> {
+      street: string;
+      zipCode: string;
+      city: string;
+      country: string;
+      userId: number;
+      user: AbstractUser;
+    }
+
+    function oneToOneTestSuites(User: typeof AbstractUser, Address: typeof AbstractAddress): void {
 
       before(() => sequelize.addModels([User, Address]));
 
@@ -1909,13 +1923,15 @@ describe('association', () => {
 
         @BelongsTo(() => User2, 'userId')
         user: User2;
+
+        userId: number;
       }
 
       oneToOneTestSuites(User2, Address2);
     });
 
-    function oneToOneWithOptionsTestSuites(User: typeof ConcreteModel,
-                                           Address: typeof ConcreteModel,
+    function oneToOneWithOptionsTestSuites(User: typeof AbstractUser,
+                                           Address: typeof AbstractAddress,
                                            alternateName: boolean = false,
                                            onDeleteAction: string = 'CASCADE'): void {
       const foreignKey = alternateName ? 'user_id' : 'userId';
@@ -2051,6 +2067,8 @@ describe('association', () => {
           onDelete: 'CASCADE',
         })
         user: User4;
+
+        userId: number;
       }
 
       oneToOneWithOptionsTestSuites(User4, Address4, true);
@@ -2085,6 +2103,8 @@ describe('association', () => {
 
         @BelongsTo(() => User5, {foreignKey: 'userId'})
         user: User5;
+
+        userId: number;
       }
 
       oneToOneTestSuites(User5, Address5);
