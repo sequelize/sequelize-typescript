@@ -5,7 +5,8 @@ import {DataType, DataTypeAbstract, DataTypes} from 'sequelize';
  */
 export function isDataType(value: any): value is DataType {
 
-  return (typeof value === 'function' && value({}) instanceof (DataTypes.ABSTRACT as any)) ||
+  return typeof value === 'string' ||
+    (typeof value === 'function' && value({}) instanceof (DataTypes.ABSTRACT as any)) ||
     value instanceof (DataTypes.ABSTRACT as any);
 }
 
