@@ -37,7 +37,7 @@ Decorators and some other features for sequelize (v5).
 *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize), additional typings as documented [here](http://docs.sequelizejs.com/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
 npm install sequelize
-npm install @types/bluebird @types/validator
+npm install @types/bluebird @types/node @types/validator
 npm install reflect-metadata
 ```
 ```

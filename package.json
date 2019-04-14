@@ -34,7 +34,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@types/node": "*",
     "glob": "7.1.2"
   },
   "devDependencies": {
@@ -71,6 +70,9 @@
     "uuid-validate": "0.0.2"
   },
   "peerDependencies": {
+    "@types/bluebird": "*",
+    "@types/node": "*",
+    "@types/validator": "*",
     "reflect-metadata": "*",
     "sequelize": "^5.1.0"
   },
