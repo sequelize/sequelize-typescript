@@ -417,6 +417,13 @@ class BookAuthor extends Model<BookAuthor> {
   authorId: number;
 }
 ```
+#### Type safe *through*-table instance access
+To access the *through*-table instance (instanceOf `BookAuthor` in the upper example) type safely, the type 
+need to be set up manually. For `Author` model it can be achieved like so:
+```ts
+  @BelongsToMany(() => Book, () => BookAuthor)
+  books: Array<Book & {BookAuthor: BookAuthor}>;
+```
 
 ### One-to-one
 For one-to-one use `@HasOne(...)`(foreign key for the relation exists on the other model) and 
