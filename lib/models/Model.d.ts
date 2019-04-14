@@ -18,6 +18,7 @@ import {IFindCreateFindOptions} from "../interfaces/IFindCreateFindOptions";
 import {ICountOptions} from '../interfaces/ICountOptions';
 import {IPartialDefineAttributeColumnOptions} from "../interfaces/IPartialDefineAttributeColumnOptions";
 import {NonAbstract, Omit, RecursivePartial} from '../utils/types';
+import {IValidateOptions} from '../interfaces/IValidateOptions';
 
 /* tslint:disable:member-ordering */
 /* tslint:disable:array-type */
@@ -637,7 +638,7 @@ export declare abstract class Model<T extends Model<T>> extends Hooks {
    *
    * @param options.skip An array of strings. All properties that are in this array will not be validated
    */
-  validate(options?: { skip?: string[] }): Promise<ValidationError>;
+  validate(options?: IValidateOptions): Promise<ValidationError>;
 
   /**
    * This is the same as calling `set` and then calling `save`.
