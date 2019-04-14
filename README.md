@@ -34,16 +34,14 @@ Decorators and some other features for sequelize (v5).
  - [Recommendations and limitations](#recommendations-and-limitations)
 
 ## Installation
-*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize) and additional typings as documented [here](http://docs.sequelizejs.com/manual/typescript.html)
+*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize), additional typings as documented [here](http://docs.sequelizejs.com/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
-npm install sequelize --save
-```
-and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
-```
-npm install reflect-metadata --save
+npm install sequelize
+npm install @types/bluebird @types/validator
+npm install reflect-metadata
 ```
 ```
-npm install sequelize-typescript --save 
+npm install sequelize-typescript@canary
 ```
 Your `tsconfig.json` needs the following flags:
 ```json
