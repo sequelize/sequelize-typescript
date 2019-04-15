@@ -63,6 +63,9 @@ export class User extends Model<User> {
   @Column
   email: string;
 
+  @Column('VARCHAR(255)')
+  city: string;
+
   extraField: string;
   extraField2: boolean;
   extraField3: number;

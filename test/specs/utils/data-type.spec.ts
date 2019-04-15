@@ -24,11 +24,12 @@ describe('utils', () => {
 
         expect(isDataType(DataType.STRING(55))).to.be.true;
         expect(isDataType(DataType.ENUM('a', 'b'))).to.be.true;
+        expect(isDataType(DataType.ARRAY(DataType.STRING))).to.be.true;
+        expect(isDataType('VARCHAR(255)')).to.be.true;
       });
 
       it('should return false', () => {
 
-        expect(isDataType('abc')).to.be.false;
         expect(isDataType(function(): void {})).to.be.false;
         expect(isDataType(() => null)).to.be.false;
         expect(isDataType({})).to.be.false;
