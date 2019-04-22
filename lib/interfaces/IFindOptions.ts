@@ -95,4 +95,11 @@ export interface IFindOptions<T> extends LoggingOptions, SearchPathOptions {
    * Throw EmptyResultError if a record is not found
    */
   rejectOnEmpty?: boolean | Error;
+
+  /**
+   * Force the query to use the write pool
+   *
+   * Defaults to false
+   */
+  useMaster?: boolean;
 }
