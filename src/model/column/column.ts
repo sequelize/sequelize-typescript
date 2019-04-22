@@ -1,10 +1,10 @@
-import {ModelAttributeColumnOptions, DataTypeAbstract} from 'sequelize';
+import {ModelAttributeColumnOptions, DataType} from 'sequelize';
 
 import {addAttribute} from './attribute-service';
 import {isDataType} from "../../sequelize/data-type/data-type-service";
 import {getSequelizeTypeByDesignType} from "../shared/model-service";
 
-export function Column(dataType: DataTypeAbstract): Function;
+export function Column(dataType: DataType): Function;
 export function Column(options: Partial<ModelAttributeColumnOptions>): Function;
 export function Column(target: any, propertyName: string, propertyDescriptor?: PropertyDescriptor): void;
 export function Column(...args: any[]): Function | void {
@@ -29,14 +29,14 @@ export function Column(...args: any[]): Function | void {
 function annotate(target: any,
                   propertyName: string,
                   propertyDescriptor?: PropertyDescriptor,
-                  optionsOrDataType: Partial<ModelAttributeColumnOptions> | DataTypeAbstract = {}): void {
+                  optionsOrDataType: Partial<ModelAttributeColumnOptions> | DataType = {}): void {
 
   let options: Partial<ModelAttributeColumnOptions>;
 
   if (isDataType(optionsOrDataType)) {
 
     options = {
-      type: optionsOrDataType as DataTypeAbstract
+      type: optionsOrDataType
     };
   } else {
 

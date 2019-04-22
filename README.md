@@ -41,7 +41,7 @@ npm install @types/bluebird @types/node @types/validator
 npm install reflect-metadata
 ```
 ```
-npm install sequelize-typescript@canary
+npm install sequelize-typescript@next
 ```
 Your `tsconfig.json` needs the following flags:
 ```json
