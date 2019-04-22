@@ -34,7 +34,7 @@ Decorators and some other features for sequelize (v3, v4, v5).
 npm install sequelize --save
 ```
 ```
-npm install sequelize-typescript@canary --save 
+npm install sequelize-typescript@next --save 
 ```
 
 ### Older versions (v4, v3)
