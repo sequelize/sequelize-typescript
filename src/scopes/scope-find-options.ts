@@ -1,5 +1,5 @@
 import {Association, FindOptions, IncludeOptions} from "sequelize";
-import {ModelClassGetter} from "../../model/shared/model-class-getter";
+import {ModelClassGetter} from "../model/shared/model-class-getter";
 
 export type ScopeIncludeOptions = {
   [K in keyof IncludeOptions]: K extends 'model'

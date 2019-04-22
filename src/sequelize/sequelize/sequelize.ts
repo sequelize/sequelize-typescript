@@ -4,7 +4,7 @@ import {ModelMatch, SequelizeOptions} from "./sequelize-options";
 import {getModels, prepareArgs} from "./sequelize-service";
 import {Model} from "../../model/model/model";
 import {getModelName, getOptions} from "../../model/shared/model-service";
-import {resolveScopes} from "../../scopes/shared/scope-service";
+import {resolveScopes} from "../../scopes/scope-service";
 import {installHooks} from "../../hooks/shared/hooks-service";
 import {getAssociations} from "../../associations/shared/association-service";
 import {getAttributes} from "../../model/column/attribute-service";

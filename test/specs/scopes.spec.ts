@@ -3,8 +3,8 @@ import * as chaiAsPromised from 'chai-as-promised';
 import {useFakeTimers} from 'sinon';
 import {Op} from 'sequelize';
 import {createSequelize} from "../utils/sequelize";
-import {getScopeOptions} from "../../src/scopes/shared/scope-service";
-import {ShoeWithScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithScopes";
+import {getScopeOptions} from "../../src/scopes/scope-service";
+import {ShoeWithDeprecatedScopes, SHOE_DEFAULT_SCOPE, SHOE_SCOPES} from "../models/ShoeWithDeprecatedScopes";
 import {Manufacturer} from "../models/Manufacturer";
 import {Person} from "../models/Person";
 import {Model} from '../../src/model/model/model';
@@ -13,6 +13,7 @@ import {Scopes} from '../../src/scopes/scopes';
 import {Column} from '../../src/model/column/column';
 import {UpdatedAt} from '../../src/model/column/timestamps/updated-at';
 import chaiDatetime = require('chai-datetime');
+import {ShoeWithScopes} from "../models/ShoeWithScopes";
 
 use(chaiAsPromised);
 use(chaiDatetime);
@@ -28,12 +29,12 @@ describe('scopes', () => {
   describe('options', () => {
 
     it('should be retrievable from class prototype', () => {
-      const showScopeOptions = getScopeOptions(ShoeWithScopes.prototype);
+      const showScopeOptions = getScopeOptions(ShoeWithDeprecatedScopes.prototype);
       expect(showScopeOptions).not.to.be.undefined;
     });
 
     it('should contain default and other scopes', () => {
-      const showScopeOptions = getScopeOptions(ShoeWithScopes.prototype);
+      const showScopeOptions = getScopeOptions(ShoeWithDeprecatedScopes.prototype);
 
       expect(showScopeOptions).to.have.property('defaultScope').that.eqls(SHOE_DEFAULT_SCOPE);
       expect(showScopeOptions).to.have.property('full').that.eqls(SHOE_SCOPES.full);
@@ -45,194 +46,206 @@ describe('scopes', () => {
     const BRAND = 'adiwas';
     const OWNER = 'bob';
 
-    beforeEach(() => ShoeWithScopes
-      .create({
-        secretKey: 'j435njk3',
-        primaryColor: 'red',
-        secondaryColor: 'blue',
-        producedAt: new Date(),
-        manufacturer: {
-          brand: BRAND,
-          notInScopeBrandOnly: 'invisible :)',
-        },
-        owner: {
-          name: OWNER
-        }
-      }, {include: [Manufacturer, Person]}));
+    [
+      ['option getters', ShoeWithDeprecatedScopes],
+      ['deprecated', ShoeWithScopes]
+    ]
+      .forEach(([descr, Shoe]: [string, typeof ShoeWithScopes]) => {
 
-    it('should consider default scope', () =>
+        describe(descr, () => {
 
-      ShoeWithScopes.findOne()
-        .then(shoe => {
+          beforeEach(() => Shoe
+            .create({
+              secretKey: 'j435njk3',
+              primaryColor: 'red',
+              secondaryColor: 'blue',
+              producedAt: new Date(),
+              manufacturer: {
+                brand: BRAND,
+                notInScopeBrandOnly: 'invisible :)',
+              },
+              owner: {
+                name: OWNER
+              }
+            }, {include: [Manufacturer, Person]}));
 
-          expect(Object.keys(shoe['dataValues'])).to.eql(SHOE_DEFAULT_SCOPE.attributes);
-        })
-    );
+          it('should consider default scope', () =>
 
-    it('should consider other scopes', () =>
+            Shoe.findOne()
+              .then(shoe => {
 
-      ShoeWithScopes.scope('full').findOne()
-        .then(shoe => {
+                expect(Object.keys(shoe['dataValues'])).to.eql(SHOE_DEFAULT_SCOPE.attributes);
+              })
+          );
 
-          expect(shoe).to.have.property('manufacturer').which.is.not.null;
-          expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
-        })
-        .then(() => (ShoeWithScopes.scope('yellow') as typeof ShoeWithScopes).findAll())
-        .then(yellowShoes => {
+          it('should consider other scopes', () =>
 
-          expect(yellowShoes).to.be.empty;
-        })
-        .then(() => (ShoeWithScopes.scope('noImg') as typeof ShoeWithScopes).findAll())
-        .then(noImgShoes => {
+            Shoe.scope('full').findOne()
+              .then(shoe => {
 
-          expect(noImgShoes).to.be.not.empty;
-        })
-    );
+                expect(shoe).to.have.property('manufacturer').which.is.not.null;
+                expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
+              })
+              .then(() => (Shoe.scope('yellow') as typeof Shoe).findAll())
+              .then(yellowShoes => {
 
-    it('should not consider default scope due to unscoped call', () =>
-      ShoeWithScopes
-        .unscoped()
-        .findOne()
-        .then(shoe => {
-          expect(shoe).to.have.property('secretKey').which.is.a('string');
-        })
-    );
+                expect(yellowShoes).to.be.empty;
+              })
+              .then(() => (Shoe.scope('noImg') as typeof Shoe).findAll())
+              .then(noImgShoes => {
 
-    describe('with include options', () => {
+                expect(noImgShoes).to.be.not.empty;
+              })
+          );
 
-      it('should consider scopes and additional included model (object)', () =>
-        expect(
-          ShoeWithScopes.scope('full')
-            .findOne({
-              include: [{
-                model: Person,
-              }]
-            })
-            .then(shoe => {
-              expect(shoe).to.have.property('manufacturer').which.is.not.null;
-              expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
-              expect(shoe).to.have.property('owner').which.is.not.null;
-            })
-        ).not.to.be.rejected
-      );
+          it('should not consider default scope due to unscoped call', () =>
+            Shoe
+              .unscoped()
+              .findOne()
+              .then(shoe => {
+                expect(shoe).to.have.property('secretKey').which.is.a('string');
+              })
+          );
 
-      it('should consider scopes and additional included model (model)', () =>
-        expect(
-          ShoeWithScopes.scope('full')
-            .findOne({
-              include: [Person]
-            })
-            .then(shoe => {
-              expect(shoe).to.have.property('manufacturer').which.is.not.null;
-              expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
-              expect(shoe).to.have.property('owner').which.is.not.null;
-            })
-        ).not.to.be.rejected
-      );
+          describe('with include options', () => {
 
-      it('should not consider default scope due to unscoped call, but additonal includes (object)', () =>
+            it('should consider scopes and additional included model (object)', () =>
+              expect(
+                Shoe.scope('full')
+                  .findOne({
+                    include: [{
+                      model: Person,
+                    }]
+                  })
+                  .then(shoe => {
+                    expect(shoe).to.have.property('manufacturer').which.is.not.null;
+                    expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
+                    expect(shoe).to.have.property('owner').which.is.not.null;
+                  })
+              ).not.to.be.rejected
+            );
 
-        ShoeWithScopes.unscoped()
-          .findOne({
-            include: [{model: Person}]
-          })
-          .then(shoe => {
-            expect(shoe).to.have.property('secretKey').which.is.not.null;
-            expect(shoe).to.have.property('owner').which.is.not.null;
-          })
-      );
+            it('should consider scopes and additional included model (model)', () =>
+              expect(
+                Shoe.scope('full')
+                  .findOne({
+                    include: [Person]
+                  })
+                  .then(shoe => {
+                    expect(shoe).to.have.property('manufacturer').which.is.not.null;
+                    expect(shoe).to.have.property('manufacturer').which.have.property('brand', BRAND);
+                    expect(shoe).to.have.property('owner').which.is.not.null;
+                  })
+              ).not.to.be.rejected
+            );
 
-      it('should not consider default scope due to unscoped call, but additonal includes (model)', () =>
+            it('should not consider default scope due to unscoped call, but additonal includes (object)', () =>
 
-        ShoeWithScopes
-          .unscoped()
-          .findOne({
-            include: [Person]
-          })
-          .then(shoe => {
-            expect(shoe).to.have.property('secretKey').which.is.not.null;
-            expect(shoe).to.have.property('owner').which.is.not.null;
-          })
-      );
+              Shoe.unscoped()
+                .findOne({
+                  include: [{model: Person}]
+                })
+                .then(shoe => {
+                  expect(shoe).to.have.property('secretKey').which.is.not.null;
+                  expect(shoe).to.have.property('owner').which.is.not.null;
+                })
+            );
 
-      describe('with using scoped included model', () => {
+            it('should not consider default scope due to unscoped call, but additonal includes (model)', () =>
 
-        // TODO deactivated due to: https://github.com/sequelize/sequelize/issues/10399
+              Shoe
+                .unscoped()
+                .findOne({
+                  include: [Person]
+                })
+                .then(shoe => {
+                  expect(shoe).to.have.property('secretKey').which.is.not.null;
+                  expect(shoe).to.have.property('owner').which.is.not.null;
+                })
+            );
 
-        it.skip('should consider scope of included model (without own scope)', () =>
-          ShoeWithScopes
-            .findOne({
-              include: [Manufacturer.scope('brandOnly')]
-            })
-            .then(shoe => {
-              expect(shoe).to.have.property('manufacturer')
-                .that.have.property('notInScopeBrandOnly')
-                .which.is.undefined;
-            })
-        );
+            describe('with using scoped included model', () => {
 
-        it.skip('should consider scope of included model (with own scope)', () =>
-          ShoeWithScopes.scope('red')
-            .findOne({
-              include: [Manufacturer.scope('brandOnly') as typeof Manufacturer]
-            })
-            .then(shoe => {
-              expect(shoe).to.have.property('manufacturer')
-                .that.have.property('notInScopeBrandOnly')
-                .which.is.undefined;
-            })
-        );
+              // TODO deactivated due to: https://github.com/sequelize/sequelize/issues/10399
+
+              it.skip('should consider scope of included model (without own scope)', () =>
+                Shoe
+                  .findOne({
+                    include: [Manufacturer.scope('brandOnly')]
+                  })
+                  .then(shoe => {
+                    expect(shoe).to.have.property('manufacturer')
+                      .that.have.property('notInScopeBrandOnly')
+                      .which.is.undefined;
+                  })
+              );
+
+              it.skip('should consider scope of included model (with own scope)', () =>
+                Shoe.scope('red')
+                  .findOne({
+                    include: [Manufacturer.scope('brandOnly') as typeof Manufacturer]
+                  })
+                  .then(shoe => {
+                    expect(shoe).to.have.property('manufacturer')
+                      .that.have.property('notInScopeBrandOnly')
+                      .which.is.undefined;
+                  })
+              );
+
+            });
+
+          });
+
+          describe('with nested scope', () => {
+
+            // TODO deactivated due to: https://github.com/sequelize/sequelize/issues/10399
+
+            it.skip('should consider nested scope', () =>
+              Shoe.scope('manufacturerWithScope')
+                .findOne()
+                .then(shoe => {
+                  expect(shoe).to.have.property('manufacturer')
+                    .that.have.property('notInScopeBrandOnly')
+                    .which.is.undefined;
+                })
+            );
+
+            it('should not consider nested scope', () =>
+              Shoe.scope('full')
+                .findOne()
+                .then(shoe => {
+                  expect(shoe).to.have.property('manufacturer')
+                    .that.have.property('notInScopeBrandOnly')
+                    .which.is.a('string');
+                })
+            );
+
+          });
+
+          describe('with scope function', () => {
+
+            it('should find appropriate shoe due to correctly passed scope function param', () =>
+              Shoe.scope({method: ['primaryColor', 'red']})
+                .findOne()
+                .then(shoe => {
+                  expect(shoe).to.have.property('primaryColor', 'red');
+                })
+            );
+
+            it('should find appropriate shoe due to correctly passed scope function param including associated model', () =>
+              Shoe.scope({method: ['primaryColorWithManufacturer', 'red']})
+                .findOne()
+                .then(shoe => {
+                  expect(shoe).to.have.property('primaryColor', 'red');
+                  expect(shoe).to.have.property('manufacturer').that.is.an('object');
+                })
+            );
+
+          });
+
+        });
 
       });
-
-    });
-
-    describe('with nested scope', () => {
-
-      // TODO deactivated due to: https://github.com/sequelize/sequelize/issues/10399
-
-      it.skip('should consider nested scope', () =>
-        ShoeWithScopes.scope('manufacturerWithScope')
-          .findOne()
-          .then(shoe => {
-            expect(shoe).to.have.property('manufacturer')
-              .that.have.property('notInScopeBrandOnly')
-              .which.is.undefined;
-          })
-      );
-
-      it('should not consider nested scope', () =>
-        ShoeWithScopes.scope('full')
-          .findOne()
-          .then(shoe => {
-            expect(shoe).to.have.property('manufacturer')
-              .that.have.property('notInScopeBrandOnly')
-              .which.is.a('string');
-          })
-      );
-
-    });
-
-    describe('with scope function', () => {
-
-      it('should find appropriate shoe due to correctly passed scope function param', () =>
-        ShoeWithScopes.scope({method: ['primaryColor', 'red']})
-          .findOne()
-          .then(shoe => {
-            expect(shoe).to.have.property('primaryColor', 'red');
-          })
-      );
-
-      it('should find appropriate shoe due to correctly passed scope function param including associated model', () =>
-        ShoeWithScopes.scope({method: ['primaryColorWithManufacturer', 'red']})
-          .findOne()
-          .then(shoe => {
-            expect(shoe).to.have.property('primaryColor', 'red');
-            expect(shoe).to.have.property('manufacturer').that.is.an('object');
-          })
-      );
-
-    });
 
     describe('with symbols', () => {
       let _sequelize;
@@ -242,7 +255,7 @@ describe('scopes', () => {
         updated: {where: {updated: {[Op.gt]: new Date(2000, 1)}}},
       })
       @Table
-      class Person extends Model<Person> {
+      class _Person extends Model<_Person> {
 
         @Column
         name: string;
@@ -253,28 +266,28 @@ describe('scopes', () => {
 
       before(() => {
         _sequelize = createSequelize(false);
-        _sequelize.addModels([Person]);
+        _sequelize.addModels([_Person]);
       });
 
       beforeEach(() => _sequelize.sync({force: true}));
 
       it('should consider symbols while finding elements', () => {
-        return Person
+        return _Person
           .create({name: '1bob2'})
-          .then(() => Person.create({name: 'bob'}))
-          .then(() => Person.create({name: 'bobby'}))
-          .then(() => Person.create({name: 'robert'}))
-          .then(() => (Person.scope('bob') as typeof Person).findAll())
+          .then(() => _Person.create({name: 'bob'}))
+          .then(() => _Person.create({name: 'bobby'}))
+          .then(() => _Person.create({name: 'robert'}))
+          .then(() => (_Person.scope('bob') as typeof _Person).findAll())
           .then(persons => expect(persons).to.have.property('length', 3))
           ;
       });
 
       it('should consider symbols on timestamp column while finding elements', () => {
         const clock = useFakeTimers(+new Date());
-        return Person
+        return _Person
           .create({name: 'test'})
-          .then(() => (Person.scope('updated') as typeof Person).findAll())
-          .then(() => Person.findAll())
+          .then(() => (_Person.scope('updated') as typeof _Person).findAll())
+          .then(() => _Person.findAll())
           .then(persons => expect(persons).to.have.property('length', 1))
           .then(() => clock.restore())
           ;

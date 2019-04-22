@@ -74,10 +74,10 @@ export * from './model/shared/model-service';
 export * from './model/table/table';
 export * from './model/table/table-options';
 
-export * from './scopes/shared/default-scope';
-export * from './scopes/shared/scope-options';
-export * from './scopes/shared/scope-service';
-export * from './scopes/shared/scope-table-options';
+export * from './scopes/default-scope';
+export * from './scopes/scope-options';
+export * from './scopes/scope-service';
+export * from './scopes/scope-table-options';
 export * from './scopes/scopes';
 
 export * from './sequelize/data-type/data-type';

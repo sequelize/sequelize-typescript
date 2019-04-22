@@ -3,12 +3,12 @@ import {Table, Model, Column, ForeignKey, BelongsTo,
 import {Manufacturer} from "./Manufacturer";
 import {Person} from "./Person";
 
-export const SHOE_DEFAULT_SCOPE_GETTER = () => ({
+export const SHOE_DEFAULT_SCOPE = {
   attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt']
-});
-export const SHOE_SCOPES__GETTER = () => ({
+};
+export const SHOE_SCOPES = {
   full: {
-    include: [Manufacturer]
+    include: [() => Manufacturer]
   },
   yellow: {
     where: {primaryColor: 'yellow'}
@@ -20,7 +20,7 @@ export const SHOE_SCOPES__GETTER = () => ({
     where: {img: null}
   },
   manufacturerWithScope: {
-    include: [Manufacturer.scope('brandOnly')]
+    include: [() => Manufacturer.scope('brandOnly')]
   },
   primaryColor: primaryColor => ({
       where: {primaryColor}
@@ -31,12 +31,12 @@ export const SHOE_SCOPES__GETTER = () => ({
       where: {primaryColor},
     }
   )
-});
+};
 
-@DefaultScope(SHOE_DEFAULT_SCOPE_GETTER)
-@Scopes(SHOE_SCOPES__GETTER)
+@DefaultScope(SHOE_DEFAULT_SCOPE)
+@Scopes(SHOE_SCOPES)
 @Table
-export class ShoeWithScopes extends Model<ShoeWithScopes> {
+export class ShoeWithDeprecatedScopes extends Model<ShoeWithDeprecatedScopes> {
 
   @Column
   readonly secretKey: string;

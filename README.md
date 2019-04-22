@@ -71,6 +71,18 @@ Please note the following details:
 - `SequelizeConfig` renamed to `SequelizeOptions`
 - `modelPaths` property renamed to `models`
 
+#### Scopes Options
+The `@Scopes` and `@DefaultScope` decorators now take lambda's as options
+```ts
+@DefaultScope(() => ({...}))
+@Scopes(() => ({...}))
+```
+instead of deprecated way:
+```ts
+@DefaultScope({...})
+@Scopes({...}))
+```
+
 ### Repository Mode
 With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
 
@@ -571,7 +583,7 @@ userRepository.create({name: 'Bear'}, {include: [addressRepository]});
 ### Limitations of repository mode
 Nested scopes and includes in general won't work when using `@Scope` annotation together with repository mode like:
 ```typescript
-@Scopes({
+@Scopes(() => ({
   // includes
   withAddress: {
     include: [() => Address],
@@ -580,7 +592,7 @@ Nested scopes and includes in general won't work when using `@Scope` annotation 
   withAddressIncludingLatLng: {
     include: [() => Address.scope('withLatLng')],
   }
-})
+}))
 @Table
 class User extends Model<User> {}
 ```
@@ -659,25 +671,22 @@ export class Shoe extends Model<Shoe> {
 ```
 
 ## Scopes
-Scopes can be defined with annotations as well. The scope options are mostly identical to native
-sequelize except for the way model classes are referenced. So instead of referencing them directly a getter
-function `() => Model` is used instead. (⚠️ For scope functions, models are still referenced directly
-`full() { return {include: [Manufacturer] };}`)
-(See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/scopes.html) for more details)
+Scopes can be defined with annotations as well. The scope options are identical to native
+sequelize (See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/scopes.html) for more details)
 
 ### `@DefaultScope` and `@Scopes`
 ```typescript
-@DefaultScope({
+@DefaultScope(() => ({
   attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt']
-})
-@Scopes({
+}))
+@Scopes(() => ({
   full: {
     include: [() => Manufacturer]
   },
   yellow: {
     where: {primaryColor: 'yellow'}
   }
-})
+}))
 @Table
 export class ShoeWithScopes extends Model<ShoeWithScopes> {
 
