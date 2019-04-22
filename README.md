@@ -681,7 +681,7 @@ sequelize (See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/scop
 }))
 @Scopes(() => ({
   full: {
-    include: [() => Manufacturer]
+    include: [Manufacturer]
   },
   yellow: {
     where: {primaryColor: 'yellow'}
