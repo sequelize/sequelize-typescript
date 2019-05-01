@@ -3,14 +3,18 @@ import {ScopeFindOptions} from "./scope-find-options";
 import {DefaultScopeGetter} from "./scope-options";
 
 /**
+ * Decorator for defining default Model scope
+ */
+export function DefaultScope(scopeGetter: DefaultScopeGetter): Function;
+
+/**
+ * Decorator for defining default Model scope
  * @deprecated
  */
 export function DefaultScope(scope: ScopeFindOptions): Function;
 
-export function DefaultScope(scopeGetter: DefaultScopeGetter): Function;
-
 /**
- * Sets default scope for annotated class
+ * Decorator for defining default Model scope
  */
 export function DefaultScope(scopeOrSsopeGetter: ScopeFindOptions | DefaultScopeGetter): Function {
   return (target: any) => {

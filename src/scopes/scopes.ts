@@ -3,14 +3,18 @@ import {ScopeTableOptions} from "./scope-table-options";
 import {ScopesOptionsGetter} from "./scope-options";
 
 /**
+ * Decorator for defining Model scopes
+ */
+export function Scopes(scopesGetter: ScopesOptionsGetter): Function;
+
+/**
+ * Decorator for defining Model scopes
  * @deprecated
  */
 export function Scopes(scopes: ScopeTableOptions): Function;
 
-export function Scopes(scopesGetter: ScopesOptionsGetter): Function;
-
 /**
- * Sets scopes for annotated class
+ * Decorator for defining Model scopes
  */
 export function Scopes(scopesOrScopesGetter: ScopeTableOptions | ScopesOptionsGetter): Function {
   return (target: any) => {
