@@ -1,10 +1,11 @@
 import 'reflect-metadata';
-import {setModelName, addOptions} from "../services/models";
-import {IDefineOptions} from "../interfaces/IDefineOptions";
+import {setModelName, addOptions} from '../services/models';
+import {IDefineOptions} from '../interfaces/IDefineOptions';
+import {majorVersion} from '../utils/versioning';
 
 export function Table(options: IDefineOptions): Function;
 export function Table(target: any): void;
-export function Table(arg: any): void|Function {
+export function Table(arg: any): void | Function {
 
   if (typeof arg === 'function') {
 
@@ -19,8 +20,10 @@ export function Table(arg: any): void|Function {
 }
 
 function annotate(target: any, options: IDefineOptions = {}): void {
-  options.instanceMethods = target.prototype;
-  options.classMethods = target;
+  if (majorVersion < 4) {
+    options.instanceMethods = target.prototype;
+    options.classMethods = target;
+  }
 
   setModelName(target.prototype, options.modelName || target.name);
   addOptions(target.prototype, options);

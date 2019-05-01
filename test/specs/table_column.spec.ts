@@ -1,12 +1,13 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {DefineAttributes} from 'sequelize';
-import {Model, Table, Column, DataType} from "../../index";
-import {createSequelize} from "../utils/sequelize";
-import {User} from "../models/User";
-import {getOptions, getAttributes} from "../../lib/services/models";
-import {Shoe, SHOE_TABLE_NAME} from "../models/Shoe";
+import {Model, Table, Column, DataType} from '../../index';
+import {createSequelize} from '../utils/sequelize';
+import {User} from '../models/User';
+import {getOptions, getAttributes} from '../../lib/services/models';
+import {Shoe, SHOE_TABLE_NAME} from '../models/Shoe';
 import * as _ from 'lodash';
+import {majorVersion} from '../../lib/utils/versioning';
 
 use(chaiAsPromised);
 
@@ -107,21 +108,26 @@ describe('table_column', () => {
       expect(shoeDefineOptions).to.have.property('tableName', SHOE_TABLE_NAME);
     });
 
-    it('should have class methods', () => {
-      const userDefineOptions = getOptions(User.prototype);
-      expect(userDefineOptions).to.have.property('classMethods', User);
+    if (majorVersion < 4) {
 
-      const shoeDefineOptions = getOptions(Shoe.prototype);
-      expect(shoeDefineOptions).to.have.property('classMethods', Shoe);
-    });
+      it('should have class methods', () => {
+        const userDefineOptions = getOptions(User.prototype);
+        expect(userDefineOptions).to.have.property('classMethods', User);
 
-    it('should have instance methods', () => {
-      const userDefineOptions = getOptions(User.prototype);
-      expect(userDefineOptions).to.have.property('instanceMethods', User.prototype);
+        const shoeDefineOptions = getOptions(Shoe.prototype);
+        expect(shoeDefineOptions).to.have.property('classMethods', Shoe);
+      });
 
-      const shoeDefineOptions = getOptions(Shoe.prototype);
-      expect(shoeDefineOptions).to.have.property('instanceMethods', Shoe.prototype);
-    });
+      it('should have instance methods', () => {
+        const userDefineOptions = getOptions(User.prototype);
+        expect(userDefineOptions).to.have.property('instanceMethods', User.prototype);
+
+        const shoeDefineOptions = getOptions(Shoe.prototype);
+        expect(shoeDefineOptions).to.have.property('instanceMethods', Shoe.prototype);
+      });
+
+    }
+
   });
 
   describe('attribute options', () => {
