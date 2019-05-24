@@ -1,6 +1,10 @@
 import {Model} from "../models/Model";
 import {IIncludeAssociation} from "./IIncludeAssociation";
 import {IBaseIncludeOptions} from "./IBaseIncludeOptions";
+import { IFindOptions } from "./IFindOptions";
+import { IWhereOptions } from "./IWhereOptions";
+import { where } from "sequelize";
+
 
 /**
  * Complex include options
@@ -20,7 +24,7 @@ export interface IIncludeOptions extends IBaseIncludeOptions {
   /**
    * Load further nested related models
    */
-  include?: Array<typeof Model | IIncludeOptions>;
+  include?: Array<typeof Model | IIncludeOptions| IIncludeOptionsSeparate>;
 
   /**
    * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -32,4 +36,19 @@ export interface IIncludeOptions extends IBaseIncludeOptions {
   * If true, runs a separate query to fetch the associated instances, only supported for hasMany associations
   */
   separate?: boolean;                  
+}
+
+/**
+ * Complex include options for executing seperate queries.
+ */
+export interface IIncludeOptionsSeparate extends IIncludeOptions, IFindOptions<any> {
+  
+  /**
+  * If true, runs a separate query to fetch the associated instances, only supported for hasMany associations
+  */
+  separate: true;
+
+  where?: IWhereOptions<any> | where;
+  
+  include?: Array<typeof Model | IIncludeOptions | IIncludeOptionsSeparate>;
 }
