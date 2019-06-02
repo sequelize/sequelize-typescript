@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp-promise');
 const recursive = require("recursive-readdir");
+const lodash = require('lodash');
 const base = 'lib';
 const targetBase = 'browser';
 
@@ -55,7 +56,7 @@ export function ${functionName}() { return noop; }
   const browser = {
     "index.js": path.posix.join(targetBase, "index.js"),
   };
-  for(const fn of exportedFiles) {
+  for(const fn of lodash.sortBy(exportedFiles, f => f.path)) {
     const relativePath = path.posix.relative(targetBase, fn.path);
     browser[relativePath] = fn.path;
   }
