@@ -12,6 +12,7 @@ node_modules
 npm-debug.log
 
 # build
+!generate-browser.js
 **/*.js
 **/*.js.map
 **/*.d.ts
@@ -28,3 +29,6 @@ npm-debug.log
 coverage
 .nyc_output
 !test/tsconfig.mocha.js
+
+# generated browser files
+browser
