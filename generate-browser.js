@@ -30,19 +30,12 @@ async function main() {
     exportedFiles.push({functionName, path: outPath});
     const noopRelatitiveDir = path.posix.relative(path.posix.dirname(outPath), path.posix.dirname(noopDir));
 
-    const noopImport = `import {noop} from '${path.posix.join(noopRelatitiveDir, 'noop')}';`;
-    const file = `${noopImport}
+    const file = `import {noop} from '${path.posix.join(noopRelatitiveDir, 'noop')}';
 export function ${functionName}() { return noop; }
 `;
+
     await mkdirp(path.posix.dirname(outPath));
     fs.writeFileSync(outPath, file)
- 
-    const declarationFile = `${noopImport}
-export declare function ${functionName}(): typeof noop
-`;
-    fs.writeFileSync(outPath.replace('.js', '.d.ts'), declarationFile)
-    
-
   }
 
   // we need to include the model file
@@ -55,11 +48,9 @@ export declare function ${functionName}(): typeof noop
   let indexFile = '';
   for(const fn of exportedFiles) {
     const p = path.posix.relative(targetBase, fn.path).replace('.js', '');
-    const exportStatement = `export {${fn.functionName}} from './${p}'\n`
-    indexFile += exportStatement;
+    indexFile += `export {${fn.functionName}} from './${p}'\n`;
   }
   fs.writeFileSync(path.posix.join(targetBase, 'index.js'), indexFile);
-  fs.writeFileSync(path.posix.join(targetBase, 'index.d.ts'), indexFile);
 
   // update package.json with new set of browser files
   const browser = {
@@ -67,7 +58,7 @@ export declare function ${functionName}(): typeof noop
   };
   for(const fn of lodash.sortBy(exportedFiles, f => f.path)) {
     const relativePath = path.posix.relative(targetBase, fn.path);
-    browser[relativePath] = fn.path;
+    browser[relativePath] = './' + fn.path;
   }
   const packageJson = JSON.parse(fs.readFileSync('package.json').toString());
   packageJson.browser = browser;
