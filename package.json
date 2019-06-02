@@ -1,6 +1,6 @@
 {
   "name": "sequelize-typescript",
-  "version": "0.6.12-beta.1",
+  "version": "0.6.12-beta.2",
   "description": "Decorators and some other features for sequelize (v3, v4, v5)",
   "scripts": {
     "generate-browser": "node generate-browser.js",
