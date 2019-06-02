@@ -30,12 +30,19 @@ async function main() {
     exportedFiles.push({functionName, path: outPath});
     const noopRelatitiveDir = path.posix.relative(path.posix.dirname(outPath), path.posix.dirname(noopDir));
 
-    const file = `import {noop} from '${path.posix.join(noopRelatitiveDir, 'noop')}';
+    const noopImport = `import {noop} from '${path.posix.join(noopRelatitiveDir, 'noop')}';`;
+    const file = `${noopImport}
 export function ${functionName}() { return noop; }
-`
-
+`;
     await mkdirp(path.posix.dirname(outPath));
     fs.writeFileSync(outPath, file)
+ 
+    const declarationFile = `${noopImport}
+export declare function ${functionName}(): typeof noop
+`;
+    fs.writeFileSync(outPath.replace('.js', '.d.ts'), declarationFile)
+    
+
   }
 
   // we need to include the model file
@@ -47,10 +54,12 @@ export function ${functionName}() { return noop; }
   // export all the files we made in our index
   let indexFile = '';
   for(const fn of exportedFiles) {
-    const p = path.posix.relative(targetBase, fn.path).replace('.js', '')
-    indexFile += `export {${fn.functionName}} from './${p}'\n`;
+    const p = path.posix.relative(targetBase, fn.path).replace('.js', '');
+    const exportStatement = `export {${fn.functionName}} from './${p}'\n`
+    indexFile += exportStatement;
   }
   fs.writeFileSync(path.posix.join(targetBase, 'index.js'), indexFile);
+  fs.writeFileSync(path.posix.join(targetBase, 'index.d.ts'), indexFile);
 
   // update package.json with new set of browser files
   const browser = {
