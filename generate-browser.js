@@ -54,7 +54,7 @@ export function ${functionName}() { return noop; }
 
   // update package.json with new set of browser files
   const browser = {
-    "index.js": path.posix.join(targetBase, "index.js"),
+    "index.js": './' + path.posix.join(targetBase, "index.js"),
   };
   for(const fn of lodash.sortBy(exportedFiles, f => f.path)) {
     const relativePath = path.posix.relative(targetBase, fn.path);
