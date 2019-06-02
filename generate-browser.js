@@ -62,7 +62,7 @@ export function ${functionName}() { return noop; }
   }
   const packageJson = JSON.parse(fs.readFileSync('package.json').toString());
   packageJson.browser = browser;
-  fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2))
+  fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2)  + '\n')
 
 }
 
