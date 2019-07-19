@@ -5,4 +5,5 @@ import {IThroughOptions} from './IThroughOptions';
 export interface IAssociationOptionsBelongsToMany extends AssociationOptionsManyToMany {
   through: ModelClassGetter | string | IThroughOptions;
   otherKey?: string | AssociationForeignKeyOptions;
+  foreignKey?: string | AssociationForeignKeyOptions;
 }
