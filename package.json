@@ -113,7 +113,8 @@
     "report-dir": "./coverage"
   },
   "browser": {
-    "index.js": "browser/index.js",
+    "index.js": "./browser/index.js",
+    "enums/DataType.js": "./browser/enums/DataType.js",
     "lib/annotations/AllowNull.js": "./browser/lib/annotations/AllowNull.js",
     "lib/annotations/AutoIncrement.js": "./browser/lib/annotations/AutoIncrement.js",
     "lib/annotations/Column.js": "./browser/lib/annotations/Column.js",
