@@ -11,7 +11,7 @@ async function main() {
   // gathering annotation inputs
   const inputs = (await recursive(annotationsDir))
     .filter(f => f.endsWith('.js'))
-    // since recursive-readdir dosen't provide an a posix api, replace all \\ with // 
+    // since recursive-readdir dosen't provide an a posix api, replace all \\ with //
     .map(p => p.replace(/\\/g, '/'));
 
   // write out the noop function that all the annotations will use
@@ -43,6 +43,12 @@ export function ${functionName}() { return noop; }
   await mkdirp(path.posix.dirname(modelFilePath));
   fs.writeFileSync(modelFilePath, `export class Model {}\n`)
   exportedFiles.push({functionName: 'Model', path: modelFilePath})
+
+  // DataType.js
+  const dataTypeFilePath = path.posix.join(targetBase, 'enums', 'DataType.js')
+  await mkdirp(path.posix.dirname(dataTypeFilePath));
+  fs.writeFileSync(dataTypeFilePath, `export const DataType = {}\n`)
+  exportedFiles.push({functionName: 'DataType', path: dataTypeFilePath})
 
   // export all the files we made in our index
   let indexFile = '';
