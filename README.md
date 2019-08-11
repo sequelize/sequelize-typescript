@@ -280,7 +280,7 @@ For example, if your models are named `user.model.ts`, and your class is called
 import {Sequelize} from 'sequelize-typescript';
 
 const sequelize =  new Sequelize({
-  modelPaths: [__dirname + '/models/**/*.model.ts']
+  models: [__dirname + '/models/**/*.model.ts']
   modelMatch: (filename, member) => {
     return filename.substring(0, filename.indexOf('.model')) === member.toLowerCase();
   },
