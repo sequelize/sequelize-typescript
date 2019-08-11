@@ -13,4 +13,4 @@ export interface ScopeOptionsGetters {
 
 export type DefaultScopeGetter = () => FindOptions;
 export type ScopesOptionsGetter = () => ({[sopeName: string]: ScopesOptions});
-export type ScopesOptions = FindOptions | ((...args: any) => FindOptions);
+export type ScopesOptions = FindOptions | ((...args: any[]) => FindOptions);
