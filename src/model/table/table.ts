@@ -3,7 +3,7 @@ import {Model} from "../model/model";
 import {setModelName, addOptions} from "../shared/model-service";
 
 export function Table(options: TableOptions): Function;
-export function Table(target: Object): void;
+export function Table(target: Function): void;
 export function Table(arg: any): void | Function {
 
   if (typeof arg === 'function') {

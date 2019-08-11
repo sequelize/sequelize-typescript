@@ -2,7 +2,7 @@ import {InitOptions, Sequelize as OriginSequelize} from 'sequelize';
 import {ModelNotInitializedError} from "../../model/shared/model-not-initialized-error";
 import {ModelMatch, SequelizeOptions} from "./sequelize-options";
 import {getModels, prepareArgs} from "./sequelize-service";
-import {Model} from "../../model/model/model";
+import {Model, ModelCtor} from "../../model/model/model";
 import {getModelName, getOptions} from "../../model/shared/model-service";
 import {resolveScopes} from "../../scopes/scope-service";
 import {installHooks} from "../../hooks/shared/hooks-service";
@@ -32,18 +32,18 @@ export class Sequelize extends OriginSequelize {
     }
   }
 
-  model(model: string | typeof Model) {
+  model(model: string | typeof Model): ModelCtor {
     if (typeof model !== 'string') {
-      return super.model(getModelName(model.prototype)) as typeof Model;
+      return super.model(getModelName(model.prototype)) as ModelCtor;
     }
-    return super.model(model) as typeof Model;
+    return super.model(model) as ModelCtor;
   }
 
-  addModels(models: Array<typeof Model>);
+  addModels(models: ModelCtor[]);
   addModels(modelPaths: string[]);
   addModels(modelPaths: string[], modelMatch?: ModelMatch);
-  addModels(arg: Array<typeof Model | string>);
-  addModels(arg: Array<typeof Model | string>, modelMatch?: ModelMatch) {
+  addModels(arg: Array<ModelCtor | string>);
+  addModels(arg: Array<ModelCtor | string>, modelMatch?: ModelMatch) {
     const defaultModelMatch = (filename, member) => filename === member;
     const models = getModels(arg, modelMatch || this.options.modelMatch || defaultModelMatch);
 
@@ -57,7 +57,7 @@ export class Sequelize extends OriginSequelize {
     return this.model(modelClass as any) as Repository<M>;
   }
 
-  private associateModels(models: Array<typeof Model>): void {
+  private associateModels(models: ModelCtor[]): void {
 
     models.forEach(model => {
       const associations = getAssociations(model.prototype);
@@ -74,12 +74,12 @@ export class Sequelize extends OriginSequelize {
             `Association between ${associatedClass.name} and ${model.name} cannot be resolved.`
           );
         }
-        model[association.getAssociation()](associatedClass, options as any);
+        model[association.getAssociation() as any](associatedClass, options as any);
       });
     });
   }
 
-  private defineModels(models: Array<typeof Model>): Array<typeof Model> {
+  private defineModels(models: ModelCtor[]): ModelCtor[] {
 
     return models.map(model => {
       const modelName = getModelName(model.prototype);
@@ -88,7 +88,7 @@ export class Sequelize extends OriginSequelize {
 
       if (!modelOptions) throw new Error(`@Table annotation is missing on class "${model['name']}"`);
 
-      const initOptions: InitOptions & {modelName} = {
+      const initOptions: InitOptions & { modelName } = {
         ...modelOptions,
         modelName,
         sequelize: this,
@@ -103,7 +103,7 @@ export class Sequelize extends OriginSequelize {
     });
   }
 
-  private createRepositoryModel(modelClass: typeof Model): typeof Model {
+  private createRepositoryModel(modelClass: ModelCtor): ModelCtor {
     return class extends modelClass<any> {
     };
   }

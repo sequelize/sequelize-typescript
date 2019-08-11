@@ -135,12 +135,14 @@ describe('sequelize', () => {
           .to.have.property('options')
           .that.has.property('define')
           .that.eqls(DEFINE_OPTIONS)
-          ;
+        ;
       });
 
       it('should set define options for models', () => {
         @Table
-        class User extends Model<User> {}
+        class User extends Model<User> {
+        }
+
         sequelizeFromUriObject.addModels([User]);
 
         Object
@@ -251,6 +253,39 @@ describe('sequelize', () => {
       });
 
       expect(sequelizeModelMatch['models']).to.have.property('Match', Match);
+    });
+  });
+
+  describe('Add model references', () => {
+    it('should load models from constructor references', () => {
+      @Table
+      class Test extends Model<Test> {
+      }
+
+      const sequelize1 = new Sequelize({
+        database: '__',
+        dialect: 'sqlite',
+        storage: ':memory:',
+        logging: !('SEQ_SILENT' in process.env),
+        models: [Test]
+      });
+
+      expect(sequelize1['models']).to.have.property('Test', Test);
+    });
+    it('should load models from references passed to addModels', () => {
+      @Table
+      class Test extends Model<Test> {
+      }
+
+      const sequelize1 = new Sequelize({
+        database: '__',
+        dialect: 'sqlite',
+        storage: ':memory:',
+        logging: !('SEQ_SILENT' in process.env),
+      });
+      sequelize1.addModels([Test]);
+
+      expect(sequelize1['models']).to.have.property('Test', Test);
     });
   });
 

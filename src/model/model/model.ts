@@ -8,6 +8,9 @@ import {AssociationCountOptions} from "./association/association-count-options";
 import {AssociationActionOptions} from "./association/association-action-options";
 import {AssociationCreateOptions} from "./association/association-create-options";
 
+export type ModelType = typeof Model;
+export type ModelCtor<M extends Model = Model> = (new () => M) & ModelType;
+
 export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
 
   // TODO Consider moving the following props to OriginModel
@@ -21,6 +24,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
 
   static init(attributes: ModelAttributes, options: InitOptions): void {
     this.isInitialized = true;
+    // @ts-ignore
     return super.init(attributes, options);
   }
 

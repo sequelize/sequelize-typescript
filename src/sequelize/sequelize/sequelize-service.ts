@@ -2,7 +2,7 @@ import {basename, extname, join, parse} from "path";
 import * as glob from "glob";
 import {uniqueFilter} from "../../shared/array";
 import {ModelMatch, SequelizeOptions} from "./sequelize-options";
-import {Model} from "../../model/model/model";
+import {ModelCtor} from "../../model/model/model";
 
 /**
  * Prepares sequelize config passed to original sequelize constructor
@@ -37,9 +37,9 @@ function getValidationOnlyOptions(options: SequelizeOptions): SequelizeOptions {
  * Determines models from value
  */
 export function getModels(
-  arg: Array<typeof Model | string>,
+  arg: Array<ModelCtor | string>,
   modelMatch: ModelMatch,
-): Array<typeof Model> {
+): ModelCtor[] {
   const hasSupportedExtension = path => ['.ts', '.js'].indexOf(extname(path)) !== -1;
 
   if (arg && typeof arg[0] === 'string') {
@@ -74,7 +74,7 @@ export function getModels(
       ;
   }
 
-  return arg as Array<typeof Model>;
+  return arg as ModelCtor[];
 }
 
 /**

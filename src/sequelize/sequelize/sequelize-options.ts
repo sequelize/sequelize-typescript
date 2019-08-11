@@ -1,5 +1,5 @@
 import {Options} from "sequelize";
-import {Model} from "../../model/model/model";
+import {ModelCtor} from "../../model/model/model";
 
 export type ModelMatch = (filename: string, member: string) => boolean;
 
@@ -9,7 +9,7 @@ export interface SequelizeOptions extends Options {
    * Path to models or actual models,
    * which should be loaded for sequelize instance
    */
-  models?: string[] | Array<typeof Model>;
+  models?: string[] | ModelCtor[];
 
   /**
    * Path to models, which should be loaded

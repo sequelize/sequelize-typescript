@@ -83,7 +83,8 @@ describe('model', () => {
       class Test extends Model<Test> {
       }
 
-      expect(() => Test.beforeCreate(() => {})).to.throw(/^Model not initialized/);
+      expect(() => Test.beforeCreate(() => {
+      })).to.throw(/^Model not initialized/);
     });
 
   });
@@ -467,14 +468,14 @@ describe('model', () => {
           {
             name: 'user_and_email_index',
             unique: true,
-            method: 'BTREE',
             fields: ['userId', {
-              attribute: 'email',
+              name: 'email',
               collate: 'RTRIM',
               order: 'DESC',
-              length: 5
+              length: 5,
             }]
-          }]
+          }
+        ]
       })
       class User extends Model<User> {
 
@@ -579,9 +580,12 @@ describe('model', () => {
 
     it('should create an instance of defined model', () => {
       const name = 'test';
-      @Table class User extends Model<User> {
+
+      @Table
+      class User extends Model<User> {
         @Column name: string;
       }
+
       sequelize.addModels([User]);
       const user = new User({name});
 
@@ -704,6 +708,7 @@ describe('model', () => {
         set price(value: any) {
           this.setDataValue('priceInCents', value * 100);
         }
+
         get price() {
           return '$' + (this.getDataValue('priceInCents') / 100);
         }
@@ -731,13 +736,13 @@ describe('model', () => {
           userId: number;
 
           @BelongsTo(() => User)
-          user: {id: number; firstName: string; lastName: string; products: Product[]}; // why {...} instead of User?
-                     // with User reference it throws,
-                     // because of order of classes: User reference
-                     // does not exist here, when transpiled to es6
-                     // see transpiled js file for details
-                     // NOTICE: this wouldn't be a problem if each
-                     // class is defined in its own file
+          user: { id: number; firstName: string; lastName: string; products: Product[] }; // why {...} instead of User?
+          // with User reference it throws,
+          // because of order of classes: User reference
+          // does not exist here, when transpiled to es6
+          // see transpiled js file for details
+          // NOTICE: this wouldn't be a problem if each
+          // class is defined in its own file
         }
 
         @Table
