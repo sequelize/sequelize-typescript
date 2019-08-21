@@ -41,7 +41,7 @@ npm install @types/bluebird @types/node @types/validator
 npm install reflect-metadata
 ```
 ```
-npm install sequelize-typescript@next
+npm install sequelize-typescript
 ```
 Your `tsconfig.json` needs the following flags:
 ```json
@@ -51,7 +51,7 @@ Your `tsconfig.json` needs the following flags:
 ```
 
 ## Upgrade to `sequelize-typescript@1`
-`sequelize-typescript@1` only works with `sequelize@5`. 
+`sequelize-typescript@1` only works with `sequelize@5>=`. 
 For `sequelize@4` & `sequelize@3` use `sequelize-typescript@0.6`.
 
 ### Breaking Changes
