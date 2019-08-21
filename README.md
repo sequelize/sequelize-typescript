@@ -52,7 +52,7 @@ Your `tsconfig.json` needs the following flags:
 
 ### ⚠️ sequelize@4
 `sequelize@4` requires `sequelize-typescript@0.6`. See 
-[this](https://github.com/RobinBuschmann/sequelize-typescript/tree/0.6.X) for documentation
+[documentation](https://github.com/RobinBuschmann/sequelize-typescript/tree/0.6.X) for version `0.6`.
 ```
 npm install sequelize-typescript@0.6
 ```
