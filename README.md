@@ -50,6 +50,13 @@ Your `tsconfig.json` needs the following flags:
 "emitDecoratorMetadata": true
 ```
 
+### ⚠️ sequelize@4
+`sequelize@4` requires `sequelize-typescript@0.6`. See 
+[this](https://github.com/RobinBuschmann/sequelize-typescript/tree/0.6.X) for documentation
+```
+npm install sequelize-typescript@0.6
+```
+
 ## Upgrade to `sequelize-typescript@1`
 `sequelize-typescript@1` only works with `sequelize@5>=`. 
 For `sequelize@4` & `sequelize@3` use `sequelize-typescript@0.6`.
