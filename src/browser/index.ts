@@ -1,4 +1,4 @@
-function noop() { return () => {}; }
+function noop() { return (target: Object, propertyName: string) => {}; }
 
 export class Model {}
 export const DataType = {};
