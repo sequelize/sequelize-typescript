@@ -33,6 +33,7 @@
   "homepage": "https://github.com/RobinBuschmann/sequelize-typescript#readme",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "browser": "dist/browser/index.js",
   "dependencies": {
     "glob": "7.1.2"
   },
