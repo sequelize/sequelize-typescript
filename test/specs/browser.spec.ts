@@ -1,5 +1,5 @@
 import * as browser from '../../src/browser';
-import {expect} from 'chai';
+import {expect, should} from 'chai';
 import { stringify } from 'querystring';
 
 describe('browser definitions', () => {
@@ -104,6 +104,6 @@ describe('browser definitions', () => {
       field: string;
     }
 
-    expect(new TestModel()).eq({});
+    should().exist(new TestModel());
   });
 });
