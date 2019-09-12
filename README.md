@@ -195,15 +195,15 @@ Decorator                             | Description
 If you're in love with decorators: *sequelize-typescript* provides some more of them. The following decorators can be 
 used together with the @Column annotation to make some attribute options easier available:
 
-Decorator                             | Description
---------------------------------------|---------------------
- `@AllowNull(allowNull?: boolean)`    | sets `attribute.allowNull` (default is `true`)
- `@AutoIncrement`                     | sets `attribute.autoIncrement=true`
- `@Unique`                            | sets `attribute.unique=true`
- `@Default(value: any)`               | sets `attribute.defaultValue` to specified value
- `@PrimaryKey`                        | sets `attribute.primaryKey=true`
- `@Comment(value: string)`            | sets `attribute.comment` to specified string
- Validate annotations                 | see [Model validation](#model-validation)
+Decorator                             | Description                                         | Options
+--------------------------------------|-----------------------------------------------------|---------------------
+ `@AllowNull(allowNull?: boolean)`    | sets `attribute.allowNull` (default is `true`)      | 
+ `@AutoIncrement`                     | sets `attribute.autoIncrement=true`                 | 
+ `@Unique(options? UniqueOptions)`    | sets `attribute.unique=true`                        | [UniqueOptions](https://github.com/RobinBuschmann/sequelize-typescript/blob/master/src/model/column/column-options/unique.ts#L3)
+ `@Default(value: any)`               | sets `attribute.defaultValue` to specified value    |
+ `@PrimaryKey`                        | sets `attribute.primaryKey=true`                    |
+ `@Comment(value: string)`            | sets `attribute.comment` to specified string        |
+ Validate annotations                 | see [Model validation](#model-validation)           |
 
 ### Type inference
 The following types can be automatically inferred from javascript type. Others have to be defined explicitly.
