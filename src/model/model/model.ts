@@ -11,6 +11,8 @@ import {AssociationCreateOptions} from "./association/association-create-options
 export type ModelType = typeof Model;
 export type ModelCtor<M extends Model = Model> = (new () => M) & ModelType;
 
+export type $GetType<T> = NonNullable<T> extends any[] ? NonNullable<T> : (NonNullable<T> | null);
+
 export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
 
   // TODO Consider moving the following props to OriginModel
@@ -56,7 +58,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
   /**
    * Returns related instance (specified by propertyKey) of source instance
    */
-  $get<R extends Model<R>>(propertyKey: keyof this, options?: AssociationGetOptions): Promise<R | R[]> {
+  $get<K extends keyof this>(propertyKey: K, options?: AssociationGetOptions): Promise<$GetType<this[K]>> {
     return this['get' + capitalize(propertyKey as string)](options);
   }
 
