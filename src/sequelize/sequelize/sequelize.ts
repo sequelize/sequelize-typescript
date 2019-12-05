@@ -90,8 +90,11 @@ export class Sequelize extends OriginSequelize {
 
       if (!modelOptions) throw new Error(`@Table annotation is missing on class "${model['name']}"`);
 
+      const indexArray = Object.keys(indexes.named)
+        .map(key => indexes.named[key])
+        .concat(indexes.unnamed);
       const initOptions: InitOptions & { modelName } = {
-        indexes: indexes && Object.keys(indexes).map(key => indexes[key]),
+        ...(indexArray.length > 0 && { indexes: indexArray }),
         ...modelOptions,
         modelName,
         sequelize: this,

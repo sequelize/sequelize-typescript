@@ -11,23 +11,28 @@ export interface IndexFieldOptions {
   collate?: string;
 }
 
+export interface IndexesMeta {
+  named: { [name: string]: IndexOptions };
+  unnamed: IndexOptions[];
+}
+
 export type IndexOptions = Pick<SequelizeIndexOptions, Exclude<keyof SequelizeIndexOptions, 'fields'>>;
 
 /**
  * Returns model indexes from class by restoring this
  * information from reflect metadata
  */
-export function getIndexes(target: any): any | undefined {
-  const indexes = Reflect.getMetadata(INDEXES_KEY, target);
+export function getIndexes(target: any): IndexesMeta {
+  const { named = {}, unnamed = [] }: IndexesMeta =
+    Reflect.getMetadata(INDEXES_KEY, target) || {};
 
-  // tslint:disable-next-line:prefer-object-spread
-  return indexes && Object.assign([], indexes);
+  return { named: {...named}, unnamed: [...unnamed] };
 }
 
 /**
  * Sets indexes
  */
-export function setIndexes(target: any, indexes: any): void {
+export function setIndexes(target: any, indexes: IndexesMeta): void {
   Reflect.defineMetadata(INDEXES_KEY, indexes, target);
 }
 
@@ -39,14 +44,17 @@ export function addFieldToIndex(target: any,
                                 fieldOptions: IndexFieldOptions,
                                 indexOptions: IndexOptions,
                                 indexId?: string | number): string | number {
-  const indexes = getIndexes(target) || [];
+  const indexes = getIndexes(target);
 
   const chosenId = typeof indexId !== 'undefined'
     ? indexId
-    : indexOptions.name || indexes.length;
-  if (!indexes[chosenId]) indexes[chosenId] = {...indexOptions};
+    : indexOptions.name || indexes.unnamed.length;
+  const indexStore = typeof chosenId === 'string'
+    ? indexes.named
+    : indexes.unnamed;
+  if (!indexStore[chosenId]) indexStore[chosenId] = {...indexOptions};
 
-  const index = indexes[chosenId];
+  const index = indexStore[chosenId];
   if (!index.fields) index.fields = [];
   index.fields.push(fieldOptions);
 
