@@ -73,6 +73,9 @@ export * from './model/shared/model-class-getter';
 export * from './model/shared/model-service';
 export * from './model/table/table';
 export * from './model/table/table-options';
+export * from './model/index/create-index-decorator';
+export * from './model/index/index-decorator';
+export * from './model/index/index-service';
 
 export * from './scopes/default-scope';
 export * from './scopes/scope-options';
