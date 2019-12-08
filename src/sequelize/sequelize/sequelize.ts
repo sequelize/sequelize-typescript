@@ -8,6 +8,7 @@ import {resolveScopes} from "../../scopes/scope-service";
 import {installHooks} from "../../hooks/shared/hooks-service";
 import {getAssociations} from "../../associations/shared/association-service";
 import {getAttributes} from "../../model/column/attribute-service";
+import {getIndexes} from "../../model/index/index-service";
 import {Repository} from "../..";
 
 export class Sequelize extends OriginSequelize {
@@ -84,11 +85,16 @@ export class Sequelize extends OriginSequelize {
     return models.map(model => {
       const modelName = getModelName(model.prototype);
       const attributes = getAttributes(model.prototype);
+      const indexes = getIndexes(model.prototype);
       const modelOptions = getOptions(model.prototype);
 
       if (!modelOptions) throw new Error(`@Table annotation is missing on class "${model['name']}"`);
 
+      const indexArray = Object.keys(indexes.named)
+        .map(key => indexes.named[key])
+        .concat(indexes.unnamed);
       const initOptions: InitOptions & { modelName } = {
+        ...(indexArray.length > 0 && { indexes: indexArray }),
         ...modelOptions,
         modelName,
         sequelize: this,

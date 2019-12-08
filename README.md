@@ -22,6 +22,9 @@ Decorators and some other features for sequelize (v5).
    - [`@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API](#foreignkey-belongsto-hasmany-hasone-belongstomany-api)
    - [Generated getter and setter](#type-safe-usage-of-auto-generated-functions)
    - [Multiple relations of same models](#multiple-relations-of-same-models)
+ - [Indexes](#indexes)
+   - [`@Index` API](#index)
+   - [`createIndexDecorator()` API](#createindexdecorator)
  - [Repository mode](#repository-mode)
    - [How to enable repository mode?](#how-to-enable-repository-mode)
    - [How to use repository mode?](#how-to-use-repository-mode)
@@ -51,22 +54,22 @@ Your `tsconfig.json` needs the following flags:
 ```
 
 ### ⚠️ sequelize@4
-`sequelize@4` requires `sequelize-typescript@0.6`. See 
+`sequelize@4` requires `sequelize-typescript@0.6`. See
 [documentation](https://github.com/RobinBuschmann/sequelize-typescript/tree/0.6.X) for version `0.6`.
 ```
 npm install sequelize-typescript@0.6
 ```
 
 ## Upgrade to `sequelize-typescript@1`
-`sequelize-typescript@1` only works with `sequelize@5>=`. 
+`sequelize-typescript@1` only works with `sequelize@5>=`.
 For `sequelize@4` & `sequelize@3` use `sequelize-typescript@0.6`.
 
 ### Breaking Changes
-All breaking changes of `sequelize@5` are also valid for `sequelize-typescript@1`. 
+All breaking changes of `sequelize@5` are also valid for `sequelize-typescript@1`.
 See [Upgrade to v5](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md) for details.
 
 #### Official Sequelize Typings
-sequelize-typescript now uses the official typings bundled with sequelize 
+sequelize-typescript now uses the official typings bundled with sequelize
 (See [this](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md#typescript-support)).
 Please note the following details:
 - Most of the sequelize-typescript interfaces of the previous version are replaced by the official ones
@@ -115,10 +118,10 @@ The model needs to extend the `Model` class and has to be annotated with the `@T
 should appear as a column in the database require the `@Column` annotation.
 
 See more advanced example [here](https://github.com/RobinBuschmann/sequelize-typescript-example).
- 
+
 ### `@Table`
 The `@Table` annotation can be used without passing any parameters. To specify some more define options, use
-an object literal (all [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration) 
+an object literal (all [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration)
 from sequelize are valid):
 ```typescript
 @Table({
@@ -132,11 +135,11 @@ class Person extends Model<Person> {}
 Decorator                             | Description
 --------------------------------------|---------------------
  `@Table`                             | sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` automatically
- `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration) (also sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` if not already defined by define options) 
+ `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration) (also sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` if not already defined by define options)
 
 #### Primary key
-A primary key (`id`) will be inherited from base class `Model`. This primary key is by default an `INTEGER` and has 
-`autoIncrement=true` (This behaviour is a native sequelize thing). The id can easily be overridden by marking another 
+A primary key (`id`) will be inherited from base class `Model`. This primary key is by default an `INTEGER` and has
+`autoIncrement=true` (This behaviour is a native sequelize thing). The id can easily be overridden by marking another
 attribute as primary key. So either set `@Column({primaryKey: true})` or use `@PrimaryKey` together with `@Column`.
 
 #### `@CreatedAt`, `@UpdatedAt`, `@DeletedAt`
@@ -147,7 +150,7 @@ Annotations to define custom and type safe `createdAt`, `updatedAt` and `deleted
 
   @UpdatedAt
   updatedOn: Date;
-  
+
   @DeletedAt
   deletionDate: Date;
 ```
@@ -172,8 +175,8 @@ import {DataType} from 'sequelize-typescript';
   @Column(DataType.TEXT)
   name: string;
 ```
-Or for a more detailed column description, use an object literal 
-(all [attribute options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration) 
+Or for a more detailed column description, use an object literal
+(all [attribute options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration)
 from sequelize are valid):
 ```typescript
   @Column({
@@ -192,7 +195,7 @@ Decorator                             | Description
  `@Column(options: AttributeOptions)` | sets [attribute options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration)
 
 #### *Shortcuts*
-If you're in love with decorators: *sequelize-typescript* provides some more of them. The following decorators can be 
+If you're in love with decorators: *sequelize-typescript* provides some more of them. The following decorators can be
 used together with the @Column annotation to make some attribute options easier available:
 
 Decorator                             | Description
@@ -215,7 +218,7 @@ Design type      | Sequelize data type
  `number`        | `INTEGER`
  `Date`          | `DATE`
  `Buffer`        | `BLOB`
- 
+
 ### Accessors
 Get/set accessors do work as well
 ```typescript
@@ -226,18 +229,18 @@ class Person extends Model<Person> {
   get name(): string {
     return 'My name is ' + this.getDataValue('name');
   }
-  
+
   set name(value: string) {
     this.setDataValue('name', value);
   }
 }
 ```
- 
+
 ## Usage
-Except for minor variations *sequelize-typescript* will work like pure sequelize. 
+Except for minor variations *sequelize-typescript* will work like pure sequelize.
 (See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/models-usage.html))
 ### Configuration
-To make the defined models available, you have to configure a `Sequelize` instance from `sequelize-typescript`(!). 
+To make the defined models available, you have to configure a `Sequelize` instance from `sequelize-typescript`(!).
 ```typescript
 import {Sequelize} from 'sequelize-typescript';
 
@@ -250,8 +253,8 @@ const sequelize =  new Sequelize({
         models: [__dirname + '/models'], // or [Player, Team],
 });
 ```
-Before you can use your models you have to tell sequelize where they can be found. So either set `models` in the 
-sequelize config or add the required models later on by calling `sequelize.addModels([Person])` or 
+Before you can use your models you have to tell sequelize where they can be found. So either set `models` in the
+sequelize config or add the required models later on by calling `sequelize.addModels([Person])` or
 `sequelize.addModels([__dirname + '/models'])`:
 
 ```typescript
@@ -326,7 +329,7 @@ export default class User extends Model<User> {}
 ```
 
 > ⚠️ When using paths to add models, keep in mind that they will be loaded during runtime. This means that the path
-> may differ from development time to execution time. For instance, using `.ts` extension within paths will only work 
+> may differ from development time to execution time. For instance, using `.ts` extension within paths will only work
 > together with [ts-node](https://github.com/TypeStrong/ts-node).
 
 ### Build and create
@@ -344,13 +347,13 @@ person.save();
 ```
 
 ### Find and update
-Finding and updating entries does also work like using native sequelize. So see sequelize 
+Finding and updating entries does also work like using native sequelize. So see sequelize
 [docs](http://docs.sequelizejs.com/manual/tutorial/models-usage.html) for more details.
 ```typescript
 Person
  .findOne()
  .then(person => {
-     
+
      person.age = 100;
      return person.save();
  });
@@ -360,7 +363,7 @@ Person
    name: 'bobby'
  }, {where: {id: 1}})
  .then(() => {
-     
+
  });
 ```
 
@@ -378,11 +381,11 @@ class Player extends Model<Player> {
 
   @Column
   num: number;
-  
+
   @ForeignKey(() => Team)
   @Column
   teamId: number;
-  
+
   @BelongsTo(() => Team)
   team: Team;
 }
@@ -403,7 +406,7 @@ That's all, *sequelize-typescript* does everything else for you. So when retriev
 Team
  .findOne({include: [Player]})
  .then(team => {
-     
+
      team.players.forEach(player => console.log(`Player ${player.name}`));
  })
 ```
@@ -412,7 +415,7 @@ the players will also be resolved (when passing `include: Player` to the find op
 ### Many-to-many
 ```typescript
 @Table
-class Book extends Model<Book> { 
+class Book extends Model<Book> {
   @BelongsToMany(() => Author, () => BookAuthor)
   authors: Author[];
 }
@@ -437,7 +440,7 @@ class BookAuthor extends Model<BookAuthor> {
 }
 ```
 #### Type safe *through*-table instance access
-To access the *through*-table instance (instanceOf `BookAuthor` in the upper example) type safely, the type 
+To access the *through*-table instance (instanceOf `BookAuthor` in the upper example) type safely, the type
 need to be set up manually. For `Author` model it can be achieved like so:
 ```ts
   @BelongsToMany(() => Book, () => BookAuthor)
@@ -445,17 +448,17 @@ need to be set up manually. For `Author` model it can be achieved like so:
 ```
 
 ### One-to-one
-For one-to-one use `@HasOne(...)`(foreign key for the relation exists on the other model) and 
+For one-to-one use `@HasOne(...)`(foreign key for the relation exists on the other model) and
 `@BelongsTo(...)` (foreign key for the relation exists on this model)
 
 ### `@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API
 
 Decorator                                 | Description
 ------------------------------------------|---------------------
- `@ForeignKey(relatedModelGetter: () => typeof Model)` | marks property as `foreignKey` for related class 
- `@BelongsTo(relatedModelGetter: () => typeof Model)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is resolved from source class 
- `@BelongsTo(relatedModelGetter: () => typeof Model, foreignKey: string)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is explicitly specified value 
- `@BelongsTo(relatedModelGetter: () => typeof Model, options: AssociationOptionsBelongsTo)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `options` are additional association options 
+ `@ForeignKey(relatedModelGetter: () => typeof Model)` | marks property as `foreignKey` for related class
+ `@BelongsTo(relatedModelGetter: () => typeof Model)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is resolved from source class
+ `@BelongsTo(relatedModelGetter: () => typeof Model, foreignKey: string)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is explicitly specified value
+ `@BelongsTo(relatedModelGetter: () => typeof Model, options: AssociationOptionsBelongsTo)` | sets `SourceModel.belongsTo(RelatedModel, ...)` while `as` is key of annotated property and `options` are additional association options
  `@HasMany(relatedModelGetter: () => typeof Model)` | sets `SourceModel.hasMany(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is resolved from target related class
  `@HasMany(relatedModelGetter: () => typeof Model, foreignKey: string)` | sets `SourceModel.hasMany(RelatedModel, ...)` while `as` is key of annotated property and `foreignKey` is explicitly specified value
  `@HasMany(relatedModelGetter: () => typeof Model, options: AssociationOptionsHasMany)` | sets `SourceModel.hasMany(RelatedModel, ...)` while `as` is key of annotated property and `options` are additional association options
@@ -469,25 +472,25 @@ Decorator                                 | Description
  `@BelongsToMany(relatedModelGetter: () => typeof Model, options: AssociationOptionsBelongsToMany)` | sets `SourceModel.belongsToMany(RelatedModel, {through: throughString, ...})` while `as` is key of annotated property and `options` are additional association values, including `foreignKey` and `otherKey`.
 
 Note that when using AssociationOptions, certain properties will be overwritten when the association is built, based on reflection metadata or explicit attribute parameters. For example, `as` will always be the annotated property's name, and `through` will be the explicitly stated value.
- 
+
 ### Multiple relations of same models
 *sequelize-typescript* resolves the foreign keys by identifying the corresponding class references.
 So if you define a model with multiple relations like
 ```typescript
 @Table
-class Book extends Model<Book> { 
+class Book extends Model<Book> {
 
   @ForeignKey(() => Person)
   @Column
   authorId: number;
-  
+
   @BelongsTo(() => Person)
-  author: Person; 
-  
+  author: Person;
+
   @ForeignKey(() => Person)
   @Column
   proofreaderId: number;
-  
+
   @BelongsTo(() => Person)
   proofreader: Person;
 }
@@ -508,11 +511,11 @@ explicitly:
 
   // in class "Books":
   @BelongsTo(() => Person, 'authorId')
-  author: Person; 
+  author: Person;
 
   @BelongsTo(() => Person, 'proofreaderId')
-  proofreader: Person; 
-  
+  proofreader: Person;
+
   // in class "Person":
   @HasMany(() => Book, 'authorId')
   writtenBooks: Book[];
@@ -524,10 +527,10 @@ explicitly:
 ### Type safe usage of auto generated functions
 With the creation of a relation, sequelize generates some method on the corresponding
 models. So when you create a 1:n relation between `ModelA` and `ModelB`, an instance of `ModelA` will
-have the functions `getModelBs`, `setModelBs`, `addModelB`, `removeModelB`, `hasModelB`. These functions still exist with *sequelize-typescript*. 
-But TypeScript wont recognize them and will complain if you try to access `getModelB`, `setModelB` or 
-`addModelB`. To make TypeScript happy, the `Model.prototype` of *sequelize-typescript* has `$set`, `$get`, `$add` 
-functions. 
+have the functions `getModelBs`, `setModelBs`, `addModelB`, `removeModelB`, `hasModelB`. These functions still exist with *sequelize-typescript*.
+But TypeScript wont recognize them and will complain if you try to access `getModelB`, `setModelB` or
+`addModelB`. To make TypeScript happy, the `Model.prototype` of *sequelize-typescript* has `$set`, `$get`, `$add`
+functions.
 ```typescript
 @Table
 class ModelA extends Model<ModelA> {
@@ -556,8 +559,111 @@ modelA.$remove('bs', /* instance */ ).then( /* ... */);
 modelA.$create('bs', /* value */ ).then( /* ... */);
 ```
 
+## Indexes
+
+### `@Index`
+The `@Index` annotation can be used without passing any parameters.
+```typescript
+@Table
+class Person extends Model<Person> {
+  @Index // Define an index with default name
+  @Column
+  name: string;
+
+  @Index // Define another index
+  @Column
+  birthday: Date;
+}
+```
+
+To specify index and index field options, use
+an object literal (see [indexes define option](https://sequelize.org/v5/manual/models-definition.html#indexes)):
+```typescript
+@Table
+class Person extends Model<Person> {
+  @Index('my-index') // Define a multi-field index on name and birthday
+  @Column
+  name: string;
+
+  @Index('my-index') // Add birthday as the second field to my-index
+  @Column
+  birthday: Date;
+
+  @Index({
+    // index options
+    name: 'job-index',
+    parser: 'my-parser',
+    type: 'UNIQUE',
+    unique: true,
+    where: { isEmployee: true },
+    concurrently: true,
+    using: 'BTREE',
+    operator: 'text_pattern_ops',
+    prefix: 'test-',
+    // index field options
+    length: 10,
+    order: 'ASC',
+    collate: 'NOCASE',
+  })
+  @Column
+  jobTitle: string;
+
+  @Column
+  isEmployee: boolean;
+}
+```
+
+#### Index API
+
+Decorator                                 | Description
+------------------------------------------|---------------------
+ `@Index`                                 | adds new index on decorated field to `options.indexes`
+ `@Index(name: string)`                   | adds new index or adds the field to an existing index with specified name
+ `@Table(options: IndexDecoratorOptions)` | sets both index and index field [options](https://sequelize.org/v5/manual/models-definition.html#indexes)
+
+### `createIndexDecorator()`
+The `createIndexDecorator()` function can be used to create a decorator for an index with options specified with an object literal supplied as the argument. Fields are added to the index by decorating properties.
+```typescript
+const SomeIndex = createIndexDecorator();
+const JobIndex = createIndexDecorator({
+  // index options
+  name: 'job-index',
+  parser: 'my-parser',
+  type: 'UNIQUE',
+  unique: true,
+  where: { isEmployee: true },
+  concurrently: true,
+  using: 'BTREE',
+  operator: 'text_pattern_ops',
+  prefix: 'test-',
+});
+
+@Table
+class Person extends Model<Person> {
+  @SomeIndex // Add name to SomeIndex
+  @Column
+  name: string;
+
+  @SomeIndex // Add birthday to SomeIndex
+  @Column
+  birthday: Date;
+
+  @JobIndex({
+    // index field options
+    length: 10,
+    order: 'ASC',
+    collate: 'NOCASE',
+  })
+  @Column
+  jobTitle: string;
+
+  @Column
+  isEmployee: boolean;
+}
+```
+
 ## Repository mode
-The repository mode makes it possible to separate static operations like `find`, `create`, ... from model definitions. 
+The repository mode makes it possible to separate static operations like `find`, `create`, ... from model definitions.
 It also empowers models so that they can be used with multiple sequelize instances.
 
 ### How to enable repository mode?
@@ -606,12 +712,12 @@ class User extends Model<User> {}
 > ⚠️ This will change in the future: Simple includes will be implemented.
 
 ## Model validation
-Validation options can be set through the `@Column` annotation, but if you prefer to use separate decorators for 
+Validation options can be set through the `@Column` annotation, but if you prefer to use separate decorators for
 validation instead, you can do so by simply adding the validate options *as* decorators:
-So that `validate.isEmail=true` becomes `@IsEmail`, `validate.equals='value'` becomes `@Equals('value')` 
-and so on. Please notice that a validator that expects a boolean is translated to an annotation without a parameter. 
+So that `validate.isEmail=true` becomes `@IsEmail`, `validate.equals='value'` becomes `@Equals('value')`
+and so on. Please notice that a validator that expects a boolean is translated to an annotation without a parameter.
 
-See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#validations) 
+See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#validations)
 for all validators.
 
 ### Exceptions
@@ -621,7 +727,7 @@ Validator                        | Annotation
 ---------------------------------|--------------------------------------------------------
  `validate.len=[number, number]` | `@Length({max?: number, min?: number})`
  `validate[customName: string]`  | For custom validators also use the `@Is(...)` annotation: Either `@Is('custom', (value) => { /* ... */})` or with named function `@Is(function custom(value) { /* ... */})`
-                                 
+
 ### Example
 ```typescript
 const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
@@ -752,23 +858,23 @@ comes to circular-dependencies (which are in general solved by node for you) `Mo
 when it gets passed to @ForeignKey. With the usage of a function, which returns the actual model, we prevent
 this issue.
 
-## Recommendations and limitations 
+## Recommendations and limitations
 
 ### One Sequelize instance per model (without repository mode)
-Unless you are using the [repository mode](#repository-mode), you won't be able to add one and the same model to multiple 
+Unless you are using the [repository mode](#repository-mode), you won't be able to add one and the same model to multiple
 Sequelize instances with differently configured connections. So that one model will only work for one connection.
 
 ### One model class per file
 This is not only good practice regarding design, but also matters for the order
-of execution. Since Typescript creates a `__metadata("design:type", SomeModel)` call due to `emitDecoratorMetadata` 
+of execution. Since Typescript creates a `__metadata("design:type", SomeModel)` call due to `emitDecoratorMetadata`
 compile option, in some cases `SomeModel` is probably not defined(not undefined!) and would throw a `ReferenceError`.
 When putting `SomeModel` in a separate file, it would look like `__metadata("design:type", SomeModel_1.SomeModel)`,
 which does not throw an error.
 
 ### Minification
-If you need to minify your code, you need to set `tableName` and `modelName` 
+If you need to minify your code, you need to set `tableName` and `modelName`
 in the `DefineOptions` for `@Table` annotation. sequelize-typescript
-uses the class name as default name for `tableName` and `modelName`. 
+uses the class name as default name for `tableName` and `modelName`.
 When the code is minified the class name will no longer be the originally
 defined one (So that `class User` will become `class b` for example).
 
@@ -789,7 +895,7 @@ In order to open a pull request please:
 In order to update the types for sequelize please go to [the Definitely Typed repo](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/sequelize), it would also be a good
 idea to open a PR into [sequelize](https://github.com/sequelize/sequelize) so that Sequelize can maintain its own types, but that
 might be harder than getting updated types into microsoft's repo. The Typescript team is slowly trying to encourage
-npm package maintainers to maintain their own typings, but Microsoft still has dedicated and good people maintaining the DT repo, 
+npm package maintainers to maintain their own typings, but Microsoft still has dedicated and good people maintaining the DT repo,
 accepting PR's and keeping quality high.
 
 **Keep in mind `sequelize-typescript` does not provide typings for `sequelize`** - these are seperate things.
