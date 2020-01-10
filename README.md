@@ -191,7 +191,7 @@ from sequelize are valid):
 Decorator                             | Description
 --------------------------------------|---------------------
  `@Column`                            | tries to infer [dataType](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#data-types) from js type
- `@Column(dataType: DateType)`        | sets [dataType](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#data-types) explicitly
+ `@Column(dataType: DataType)`        | sets [dataType](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#data-types) explicitly
  `@Column(options: AttributeOptions)` | sets [attribute options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration)
 
 #### *Shortcuts*
