@@ -37,7 +37,7 @@ Decorators and some other features for sequelize (v5).
  - [Recommendations and limitations](#recommendations-and-limitations)
 
 ## Installation
-*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize), additional typings as documented [here](http://docs.sequelizejs.com/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize), additional typings as documented [here](https://docs.sequelizejs.com/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
 npm install sequelize
 npm install @types/bluebird @types/node @types/validator
@@ -121,7 +121,7 @@ See more advanced example [here](https://github.com/RobinBuschmann/sequelize-typ
 
 ### `@Table`
 The `@Table` annotation can be used without passing any parameters. To specify some more define options, use
-an object literal (all [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration)
+an object literal (all [define options](https://sequelize.org/v5/manual/models-definition.html#configuration)
 from sequelize are valid):
 ```typescript
 @Table({
@@ -135,7 +135,7 @@ class Person extends Model<Person> {}
 Decorator                             | Description
 --------------------------------------|---------------------
  `@Table`                             | sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` automatically
- `@Table(options: DefineOptions)`     | sets [define options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration) (also sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` if not already defined by define options)
+ `@Table(options: DefineOptions)`     | sets [define options](https://sequelize.org/v5/manual/models-definition.html#configuration) (also sets `options.tableName=<CLASS_NAME>` and  `options.modelName=<CLASS_NAME>` if not already defined by define options)
 
 #### Primary key
 A primary key (`id`) will be inherited from base class `Model`. This primary key is by default an `INTEGER` and has
@@ -176,7 +176,7 @@ import {DataType} from 'sequelize-typescript';
   name: string;
 ```
 Or for a more detailed column description, use an object literal
-(all [attribute options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration)
+(all [attribute options](https://sequelize.org/v5/manual/models-definition.html#configuration)
 from sequelize are valid):
 ```typescript
   @Column({
@@ -190,9 +190,9 @@ from sequelize are valid):
 
 Decorator                             | Description
 --------------------------------------|---------------------
- `@Column`                            | tries to infer [dataType](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#data-types) from js type
- `@Column(dataType: DataType)`        | sets [dataType](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#data-types) explicitly
- `@Column(options: AttributeOptions)` | sets [attribute options](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#configuration)
+ `@Column`                            | tries to infer [dataType](https://sequelize.org/v5/manual/models-definition.html#data-types) from js type
+ `@Column(dataType: DataType)`        | sets [dataType](https://sequelize.org/v5/manual/models-definition.html#data-types) explicitly
+ `@Column(options: AttributeOptions)` | sets [attribute options](https://sequelize.org/v5/manual/models-definition.html#configuration)
 
 #### *Shortcuts*
 If you're in love with decorators: *sequelize-typescript* provides some more of them. The following decorators can be
@@ -238,7 +238,7 @@ class Person extends Model<Person> {
 
 ## Usage
 Except for minor variations *sequelize-typescript* will work like pure sequelize.
-(See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/models-usage.html))
+(See sequelize [docs](https://docs.sequelizejs.com/manual/tutorial/models-usage.html))
 ### Configuration
 To make the defined models available, you have to configure a `Sequelize` instance from `sequelize-typescript`(!).
 ```typescript
@@ -348,7 +348,7 @@ person.save();
 
 ### Find and update
 Finding and updating entries does also work like using native sequelize. So see sequelize
-[docs](http://docs.sequelizejs.com/manual/tutorial/models-usage.html) for more details.
+[docs](https://docs.sequelizejs.com/manual/tutorial/models-usage.html) for more details.
 ```typescript
 Person
  .findOne()
@@ -717,7 +717,7 @@ validation instead, you can do so by simply adding the validate options *as* dec
 So that `validate.isEmail=true` becomes `@IsEmail`, `validate.equals='value'` becomes `@Equals('value')`
 and so on. Please notice that a validator that expects a boolean is translated to an annotation without a parameter.
 
-See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/models-definition.html#validations)
+See sequelize [docs](https://sequelize.org/v5/manual/models-definition.html#validations)
 for all validators.
 
 ### Exceptions
@@ -785,7 +785,7 @@ export class Shoe extends Model<Shoe> {
 
 ## Scopes
 Scopes can be defined with annotations as well. The scope options are identical to native
-sequelize (See sequelize [docs](http://docs.sequelizejs.com/manual/tutorial/scopes.html) for more details)
+sequelize (See sequelize [docs](https://docs.sequelizejs.com/manual/tutorial/scopes.html) for more details)
 
 ### `@DefaultScope` and `@Scopes`
 ```typescript
