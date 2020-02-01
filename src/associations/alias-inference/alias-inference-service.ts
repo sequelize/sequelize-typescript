@@ -14,7 +14,10 @@ export function inferAlias(options: any, source: any): any {
   if (!Array.isArray(options.include)) {
     options.include = [options.include];
   } else if (!options.include.length) {
-    delete options.include;
+    // Do NOT delete options.include here!
+    // See https://github.com/sequelize/sequelize/issues/6953 and a
+    // dozen other Sequelize bugs that are being ignored.
+    // delete options.include;
     return options;
   }
 
