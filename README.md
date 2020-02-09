@@ -66,11 +66,11 @@ For `sequelize@4` & `sequelize@3` use `sequelize-typescript@0.6`.
 
 ### Breaking Changes
 All breaking changes of `sequelize@5` are also valid for `sequelize-typescript@1`.
-See [Upgrade to v5](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md) for details.
+See [Upgrade to v5](https://sequelize.org/v5/manual/upgrade-to-v5.html) for details.
 
 #### Official Sequelize Typings
 sequelize-typescript now uses the official typings bundled with sequelize
-(See [this](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md#typescript-support)).
+(See [this](https://sequelize.org/v5/manual/upgrade-to-v5.html#typescript-support)).
 Please note the following details:
 - Most of the sequelize-typescript interfaces of the previous version are replaced by the official ones
 - `@types/sequelize` is no longer used
