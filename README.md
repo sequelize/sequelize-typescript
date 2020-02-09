@@ -25,7 +25,7 @@ Decorators and some other features for sequelize (v5).
  - [Indexes](#indexes)
    - [`@Index` API](#index)
    - [`createIndexDecorator()` API](#createindexdecorator)
- - [Repository mode](#repository-mode)
+ - [Repository mode](#repository-mode-1)
    - [How to enable repository mode?](#how-to-enable-repository-mode)
    - [How to use repository mode?](#how-to-use-repository-mode)
    - [How to use associations with repository mode?](#how-to-use-associations-with-repository-mode)
@@ -94,7 +94,7 @@ instead of deprecated way:
 ```
 
 ### Repository Mode
-With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
+With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode-1) for details.
 
 
 ## Model definition
@@ -861,7 +861,7 @@ this issue.
 ## Recommendations and limitations
 
 ### One Sequelize instance per model (without repository mode)
-Unless you are using the [repository mode](#repository-mode), you won't be able to add one and the same model to multiple
+Unless you are using the [repository mode](#repository-mode-1), you won't be able to add one and the same model to multiple
 Sequelize instances with differently configured connections. So that one model will only work for one connection.
 
 ### One model class per file
