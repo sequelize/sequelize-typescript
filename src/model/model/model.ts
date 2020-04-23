@@ -51,7 +51,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: keyof this, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
+  $set<R extends Model<R>>(propertyKey: keyof this, instances: R | R[] | string[] | string | number[] | number | null, options?: AssociationActionOptions): Promise<unknown> {
     return this['set' + capitalize(propertyKey as string)](instances, options);
   }
 
