@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {DataTypeAbstract, ModelOptions} from 'sequelize';
 
 import {Model} from '../model/model';

@@ -33,18 +33,18 @@ export class Sequelize extends OriginSequelize {
     }
   }
 
-  model(model: string | typeof Model): ModelCtor {
+  model(model: string | typeof Model): ModelCtor<Model> {
     if (typeof model !== 'string') {
-      return super.model(getModelName(model.prototype)) as ModelCtor;
+      return super.model(getModelName(model.prototype)) as ModelCtor<Model>;
     }
-    return super.model(model) as ModelCtor;
+    return super.model(model) as ModelCtor<Model>;
   }
 
-  addModels(models: ModelCtor[]);
+  addModels(models: Array<ModelCtor<Model>>);
   addModels(modelPaths: string[]);
   addModels(modelPaths: string[], modelMatch?: ModelMatch);
-  addModels(arg: Array<ModelCtor | string>);
-  addModels(arg: Array<ModelCtor | string>, modelMatch?: ModelMatch) {
+  addModels(arg: Array<ModelCtor<Model> | string>);
+  addModels(arg: Array<ModelCtor<Model> | string>, modelMatch?: ModelMatch) {
     const defaultModelMatch = (filename, member) => filename === member;
     const models = getModels(arg, modelMatch || this.options.modelMatch || defaultModelMatch);
 
@@ -58,7 +58,7 @@ export class Sequelize extends OriginSequelize {
     return this.model(modelClass as any) as Repository<M>;
   }
 
-  private associateModels(models: ModelCtor[]): void {
+  private associateModels(models: Array<ModelCtor<Model>>): void {
 
     models.forEach(model => {
       const associations = getAssociations(model.prototype);
@@ -69,7 +69,7 @@ export class Sequelize extends OriginSequelize {
         const options = association.getSequelizeOptions(model, this);
         const associatedClass = this.model(association.getAssociatedClass());
 
-        if (!associatedClass.isInitialized) {
+        if (!associatedClass.sequelize) {
           throw new ModelNotInitializedError(
             associatedClass,
             `Association between ${associatedClass.name} and ${model.name} cannot be resolved.`
@@ -80,8 +80,7 @@ export class Sequelize extends OriginSequelize {
     });
   }
 
-  private defineModels(models: ModelCtor[]): ModelCtor[] {
-
+  private defineModels(models: Array<ModelCtor<Model>>): Array<ModelCtor<Model>> {
     return models.map(model => {
       const modelName = getModelName(model.prototype);
       const attributes = getAttributes(model.prototype);
@@ -109,7 +108,7 @@ export class Sequelize extends OriginSequelize {
     });
   }
 
-  private createRepositoryModel(modelClass: ModelCtor): ModelCtor {
+  private createRepositoryModel(modelClass: ModelCtor<Model>): ModelCtor<Model> {
     return class extends modelClass<any> {
     };
   }

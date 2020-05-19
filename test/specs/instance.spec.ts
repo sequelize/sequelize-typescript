@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import { expect, use } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { useFakeTimers } from 'sinon';
@@ -654,9 +653,10 @@ describe('instance', () => {
     it('should support updating a subset of attributes', () =>
       User
         .create({aNumber: 1, bNumber: 1})
-        // TODO Sequelize typings issue caused by sequelize/types/lib/model.d.ts on line 2394
-        // TODO The order of overloads is wrong
-        .tap((user) => User.update({bNumber: 2}, {where: {id: user.get('id') as any}}))
+        .then((user) => {
+          User.update({bNumber: 2}, {where: {id: user.get('id') }});
+          return user;
+        })
         .then((user) => user.reload({attributes: ['bNumber']}))
         .then((user) => {
           expect(user.get('aNumber')).to.equal(1);
@@ -777,7 +777,7 @@ describe('instance', () => {
             })
             .then((lePlayer: Player) => {
               expect(lePlayer.shoe).not.to.be.null;
-              return lePlayer.shoe.destroy().return(lePlayer);
+              return lePlayer.shoe.destroy().then(() => lePlayer);
             })
             .then((lePlayer) => lePlayer.reload() as any)
             .then((lePlayer: Player) => {
@@ -809,7 +809,8 @@ describe('instance', () => {
                 .destroy()
                 .then(() => {
                   return leTeam.players[0].destroy();
-                }).return(leTeam);
+                })
+                .then(() => leTeam);
             })
             .then((leTeam) => leTeam.reload() as any)
             .then((leTeam: Team) => {
@@ -1321,7 +1322,7 @@ describe('instance', () => {
             .update(
               {aNumber: 1},
               {
-                where: {}, 
+                where: {},
                 // TODO silent options missing in UpdateOptions
                 ['silent' as any]: true
               }
@@ -1496,7 +1497,7 @@ describe('instance', () => {
     describe('with version option', () => {
 
       it("version column is updated by sequelize", () => {
-          let version = undefined;
+          let version: number | any;
           UserWithCustomUpdatedAt
             .sync()
             .then(() => UserWithVersion.create({name: 'john doe'}))
@@ -1666,15 +1667,15 @@ describe('instance', () => {
       it('saves many objects that each a have collection of eagerly loaded objects', () =>
 
         Promise
-          .props({
-            bart: UserEager.create({username: 'bart', age: 20}),
-            lisa: UserEager.create({username: 'lisa', age: 20}),
-            detention1: ProjectEager.create({title: 'detention1', overdueDays: 0}),
-            detention2: ProjectEager.create({title: 'detention2', overdueDays: 0}),
-            exam1: ProjectEager.create({title: 'exam1', overdueDays: 0}),
-            exam2: ProjectEager.create({title: 'exam2', overdueDays: 0})
-          })
-          .then(({bart, lisa, detention1, detention2, exam1, exam2}) =>
+          .all([
+            UserEager.create({username: 'bart', age: 20}),
+            UserEager.create({username: 'lisa', age: 20}),
+            ProjectEager.create({title: 'detention1', overdueDays: 0}),
+            ProjectEager.create({title: 'detention2', overdueDays: 0}),
+            ProjectEager.create({title: 'exam1', overdueDays: 0}),
+            ProjectEager.create({title: 'exam2', overdueDays: 0})
+          ])
+          .then(([bart, lisa, detention1, detention2, exam1, exam2]) =>
             Promise
               .all([
                 bart.$set('projects', [detention1, detention2]),
@@ -1686,13 +1687,10 @@ describe('instance', () => {
                 include: [ProjectEager]
               }))
               .then((simpsons) => {
-                let _bart;
-                let _lisa;
-
                 expect(simpsons.length).to.equal(2);
 
-                _bart = simpsons[0];
-                _lisa = simpsons[1];
+                const _bart = simpsons[0];
+                const _lisa = simpsons[1];
 
                 expect(_bart.projects).to.exist;
                 expect(_lisa.projects).to.exist;
@@ -2412,12 +2410,10 @@ describe('instance', () => {
 
   describe('restore', () => {
 
-    it('returns an error if the model is not paranoid', () =>
-
-      User.create({username: 'Peter'}).then((user) =>
-        expect(() => user.restore()).to.throw(Error, 'Model is not paranoid')
-      )
-    );
+    it('returns an error if the model is not paranoid', async () => {
+      const user = await User.create({username: 'Peter'});
+      return expect(user.restore()).to.be.rejectedWith(Error, 'Model is not paranoid');
+    });
 
     it('restores a previously deleted model', () => {
 

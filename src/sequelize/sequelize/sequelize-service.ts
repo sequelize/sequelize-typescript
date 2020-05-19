@@ -1,8 +1,9 @@
 import {basename, extname, join, parse} from "path";
+
 import * as glob from "glob";
 import {uniqueFilter} from "../../shared/array";
 import {ModelMatch, SequelizeOptions} from "./sequelize-options";
-import {ModelCtor} from "../../model/model/model";
+import {Model, ModelCtor} from "../../model/model/model";
 
 /**
  * Prepares sequelize config passed to original sequelize constructor
@@ -37,9 +38,9 @@ function getValidationOnlyOptions(options: SequelizeOptions): SequelizeOptions {
  * Determines models from value
  */
 export function getModels(
-  arg: Array<ModelCtor | string>,
+  arg: Array<ModelCtor<Model> | string>,
   modelMatch: ModelMatch,
-): ModelCtor[] {
+): Array<ModelCtor<Model>> {
   const hasSupportedExtension = path => ['.ts', '.js'].indexOf(extname(path)) !== -1;
 
   if (arg && typeof arg[0] === 'string') {
@@ -74,7 +75,7 @@ export function getModels(
       ;
   }
 
-  return arg as ModelCtor[];
+  return arg as Array<ModelCtor<Model>>;
 }
 
 /**
