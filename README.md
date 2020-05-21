@@ -25,7 +25,7 @@ Decorators and some other features for sequelize (v5).
  - [Indexes](#indexes)
    - [`@Index` API](#index)
    - [`createIndexDecorator()` API](#createindexdecorator)
- - [Repository mode](#repository-mode)
+ - [Repository mode](#repository-mode-1)
    - [How to enable repository mode?](#how-to-enable-repository-mode)
    - [How to use repository mode?](#how-to-use-repository-mode)
    - [How to use associations with repository mode?](#how-to-use-associations-with-repository-mode)
@@ -94,7 +94,7 @@ instead of deprecated way:
 ```
 
 ### Repository Mode
-With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
+With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode-1) for details.
 
 
 ## Model definition
