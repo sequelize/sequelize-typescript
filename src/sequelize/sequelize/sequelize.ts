@@ -33,18 +33,18 @@ export class Sequelize extends OriginSequelize {
     }
   }
 
-  model(model: string | typeof Model): ModelCtor<Model> {
+  model(model: string | typeof Model): ModelCtor {
     if (typeof model !== 'string') {
-      return super.model(getModelName(model.prototype)) as ModelCtor<Model>;
+      return super.model(getModelName(model.prototype)) as ModelCtor;
     }
-    return super.model(model) as ModelCtor<Model>;
+    return super.model(model) as ModelCtor;
   }
 
-  addModels(models: Array<ModelCtor<Model>>);
+  addModels(models: ModelCtor[]);
   addModels(modelPaths: string[]);
   addModels(modelPaths: string[], modelMatch?: ModelMatch);
-  addModels(arg: Array<ModelCtor<Model> | string>);
-  addModels(arg: Array<ModelCtor<Model> | string>, modelMatch?: ModelMatch) {
+  addModels(arg: Array<ModelCtor | string>);
+  addModels(arg: Array<ModelCtor | string>, modelMatch?: ModelMatch) {
     const defaultModelMatch = (filename, member) => filename === member;
     const models = getModels(arg, modelMatch || this.options.modelMatch || defaultModelMatch);
 
@@ -58,7 +58,7 @@ export class Sequelize extends OriginSequelize {
     return this.model(modelClass as any) as Repository<M>;
   }
 
-  private associateModels(models: Array<ModelCtor<Model>>): void {
+  private associateModels(models: ModelCtor[]): void {
 
     models.forEach(model => {
       const associations = getAssociations(model.prototype);
@@ -80,7 +80,7 @@ export class Sequelize extends OriginSequelize {
     });
   }
 
-  private defineModels(models: Array<ModelCtor<Model>>): Array<ModelCtor<Model>> {
+  private defineModels(models: ModelCtor[]): ModelCtor[] {
     return models.map(model => {
       const modelName = getModelName(model.prototype);
       const attributes = getAttributes(model.prototype);
@@ -108,7 +108,7 @@ export class Sequelize extends OriginSequelize {
     });
   }
 
-  private createRepositoryModel(modelClass: ModelCtor<Model>): ModelCtor<Model> {
+  private createRepositoryModel(modelClass: ModelCtor): ModelCtor {
     return class extends modelClass<any> {
     };
   }
