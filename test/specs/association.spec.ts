@@ -3,7 +3,6 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as OriginSequelize from 'sequelize';
-import * as Promise from 'bluebird';
 import {createSequelize} from "../utils/sequelize";
 import {
   Sequelize, Model, Table, Column, BelongsToMany,

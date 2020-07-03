@@ -1,6 +1,6 @@
 {
   "name": "sequelize-typescript",
-  "version": "1.1.0-beta.0",
+  "version": "1.1.0-beta.1",
   "description": "Decorators and some other features for sequelize",
   "scripts": {
     "build": "tsc",
@@ -61,11 +61,11 @@
     "nyc": "13.3.0",
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.9",
-    "sequelize": "5.15.1",
+    "sequelize": "6.2.4",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
     "source-map-support": "0.4.14",
-    "sqlite3": "4.0.4",
+    "sqlite3": "5.0.0",
     "ts-node": "7.0.1",
     "tslint": "5.14.0",
     "typescript": "3.3.3",
@@ -76,10 +76,10 @@
     "@types/node": "*",
     "@types/validator": "*",
     "reflect-metadata": "*",
-    "sequelize": "^5.1.0"
+    "sequelize": "^6.0.0"
   },
   "engines": {
-    "node": ">=0.8.15"
+    "node": ">=10.0.0"
   },
   "nyc": {
     "lines": 85,

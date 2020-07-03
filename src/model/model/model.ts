@@ -1,4 +1,4 @@
-import {InitOptions, Model as OriginModel, ModelAttributes, FindOptions, BuildOptions, Promise} from 'sequelize';
+import {InitOptions, Model as OriginModel, ModelAttributes, FindOptions, BuildOptions} from 'sequelize';
 import {capitalize} from '../../shared/string';
 import {inferAlias} from '../../associations/alias-inference/alias-inference-service';
 import {ModelNotInitializedError} from '../shared/model-not-initialized-error';
@@ -24,7 +24,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
 
   static isInitialized = false;
 
-  static init(attributes: ModelAttributes, options: InitOptions): void {
+  static init(attributes: ModelAttributes, options: InitOptions): Model {
     this.isInitialized = true;
     // @ts-ignore
     return super.init(attributes, options);
@@ -135,7 +135,7 @@ function isFunctionMember(propertyKey: string, target: any): boolean {
 
 function isForbiddenMember(propertyKey: string): boolean {
   const FORBIDDEN_KEYS = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
-    'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes', 'inspect'];
+    'queryInterface', 'queryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes', 'inspect'];
   return FORBIDDEN_KEYS.indexOf(propertyKey) !== -1;
 }
 
