@@ -1,6 +1,6 @@
 {
   "name": "sequelize-typescript",
-  "version": "1.1.0-beta.1",
+  "version": "1.1.0-beta.0",
   "description": "Decorators and some other features for sequelize",
   "scripts": {
     "build": "tsc",
@@ -60,7 +60,7 @@
     "nyc": "13.3.0",
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.9",
-    "sequelize": "6.2.4",
+    "sequelize": "6.1.1",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
     "source-map-support": "0.4.14",
