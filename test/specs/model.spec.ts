@@ -5,7 +5,6 @@ import {useFakeTimers, stub, spy} from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import * as Promise from 'bluebird';
 import {Op, UniqueConstraintError} from 'sequelize';
 import * as chaiAsPromised from 'chai-as-promised';
 import {createSequelize} from "../utils/sequelize";
@@ -453,9 +452,10 @@ describe('model', () => {
         return Promise.all([
           User.create({username: 'tobi', email: 'tobi@tobi.me'}),
           User.create({username: 'tobi', email: 'tobi@tobi.me'})]);
-      }).catch(UniqueConstraintError, (err) => {
+      }) .catch( (err) => {
         expect(err.message).to.equal('User and email must be unique');
-      });
+      });//  Native Catch expect one parameter only
+      
     });
 
     // If you use migrations to create unique indexes that have explicit names and/or contain fields
@@ -509,9 +509,10 @@ describe('model', () => {
         return Promise.all([
           User.create({userId: 1, email: 'tobi@tobi.me'}),
           User.create({userId: 1, email: 'tobi@tobi.me'})]);
-      }).catch(UniqueConstraintError, (err) => {
+      }).catch( (err) => {
         expect(err.message).to.equal('User and email must be unique');
-      });
+      });//  Native Catch expect one parameter only
+
     });
 
     it('should allow the user to specify indexes in options', () => {

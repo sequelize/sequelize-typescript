@@ -1,4 +1,4 @@
-import * as Promise from 'bluebird';
+
 import { expect, use } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { useFakeTimers } from 'sinon';
@@ -656,13 +656,16 @@ describe('instance', () => {
         .create({aNumber: 1, bNumber: 1})
         // TODO Sequelize typings issue caused by sequelize/types/lib/model.d.ts on line 2394
         // TODO The order of overloads is wrong
-        .tap((user) => User.update({bNumber: 2}, {where: {id: user.get('id') as any}}))
+        .then((user) => {
+          User.update({bNumber: 2}, {where: {id: user.get('id') as any}})
+          return user;
+         })
         .then((user) => user.reload({attributes: ['bNumber']}))
         .then((user) => {
           expect(user.get('aNumber')).to.equal(1);
           expect(user.get('bNumber')).to.equal(2);
         })
-    );
+    );   // taps are no more supported 
 
     it('should update read only attributes as well (updatedAt)', () => {
       let _originalUser;
@@ -777,7 +780,8 @@ describe('instance', () => {
             })
             .then((lePlayer: Player) => {
               expect(lePlayer.shoe).not.to.be.null;
-              return lePlayer.shoe.destroy().return(lePlayer);
+               lePlayer.shoe.destroy();  // Destroy Now Returns Void So can't call return() void 
+              return lePlayer;
             })
             .then((lePlayer) => lePlayer.reload() as any)
             .then((lePlayer: Player) => {
@@ -808,8 +812,9 @@ describe('instance', () => {
               return leTeam.players[1]
                 .destroy()
                 .then(() => {
-                  return leTeam.players[0].destroy();
-                }).return(leTeam);
+                   leTeam.players[0].destroy();
+                   return leTeam;  // Destroy Return type is Void
+                })
             })
             .then((leTeam) => leTeam.reload() as any)
             .then((leTeam: Team) => {
@@ -836,7 +841,8 @@ describe('instance', () => {
             })
             .then((leTeam: Team) => {
               expect(leTeam.players).to.have.length(2);
-              return leTeam.players[0].destroy().then(() => leTeam as Team);
+              leTeam.players[0].destroy(); // Since destroy return void now 
+              return leTeam;
             })
             .then((leTeam) => leTeam.reload() as any)
             .then((leTeam: Team) => {
@@ -1665,16 +1671,16 @@ describe('instance', () => {
 
       it('saves many objects that each a have collection of eagerly loaded objects', () =>
 
-        Promise
-          .props({
-            bart: UserEager.create({username: 'bart', age: 20}),
-            lisa: UserEager.create({username: 'lisa', age: 20}),
-            detention1: ProjectEager.create({title: 'detention1', overdueDays: 0}),
-            detention2: ProjectEager.create({title: 'detention2', overdueDays: 0}),
-            exam1: ProjectEager.create({title: 'exam1', overdueDays: 0}),
-            exam2: ProjectEager.create({title: 'exam2', overdueDays: 0})
-          })
-          .then(({bart, lisa, detention1, detention2, exam1, exam2}) =>
+        Promise // Converting to native es6 promises
+          .all([
+             UserEager.create({username: 'bart', age: 20}),
+             UserEager.create({username: 'lisa', age: 20}),
+             ProjectEager.create({title: 'detention1', overdueDays: 0}),
+             ProjectEager.create({title: 'detention2', overdueDays: 0}),
+             ProjectEager.create({title: 'exam1', overdueDays: 0}),
+             ProjectEager.create({title: 'exam2', overdueDays: 0})
+          ])
+          .then(([bart, lisa, detention1, detention2, exam1, exam2]) =>
             Promise
               .all([
                 bart.$set('projects', [detention1, detention2]),
@@ -2414,10 +2420,11 @@ describe('instance', () => {
 
     it('returns an error if the model is not paranoid', () =>
 
-      User.create({username: 'Peter'}).then((user) =>
-        expect(() => user.restore()).to.throw(Error, 'Model is not paranoid')
-      )
-    );
+      User.create({username: 'Peter'}).then((user) =>user.restore()).
+      catch(error=>
+        expect(error.message).to.equal('Model is not paranoid')
+        )
+    );// Native Promises
 
     it('restores a previously deleted model', () => {
 
