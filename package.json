@@ -50,7 +50,7 @@
     "chai": "3.5.0",
     "chai-as-promised": "6.0.0",
     "chai-datetime": "1.4.1",
-    "codecov": "3.6.5",
+    "codecov": "3.7.1",
     "copyfiles": "2.3.0",
     "has-flag": "2.0.0",
     "lodash": "4.17.19",
