@@ -93,7 +93,7 @@ instead of deprecated way:
 @Scopes({...}))
 ```
 
-### Repository Mode
+### New Repository Mode
 With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
 
 
