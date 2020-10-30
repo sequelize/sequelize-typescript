@@ -94,7 +94,7 @@ instead of deprecated way:
 ```
 
 ### Repository Mode
-With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
+With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode-1) for details.
 
 
 ## Model definition
