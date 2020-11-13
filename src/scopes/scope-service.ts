@@ -1,6 +1,6 @@
 import {FindOptions} from "sequelize";
 
-import {Model} from "../model/model/model";
+import {ModelCtor} from "../model/model/model";
 import {deepAssign} from "../shared/object";
 import {ScopeOptions, ScopeOptionsGetters, ScopesOptions} from "./scope-options";
 import {resolveModelGetter} from '../model/shared/model-service';
@@ -13,7 +13,7 @@ const SCOPES_OPTIONS_KEY = 'sequelize:scopes-options';
 /**
  * Resolves scopes and adds them to the specified models
  */
-export function resolveScopes(models: Array<typeof Model>): void {
+export function resolveScopes(models: Array<ModelCtor>): void {
   models.forEach(model => {
     resolvesDeprecatedScopes(model);
     const {getDefaultScope, getScopes} = getScopeOptionsGetters(model.prototype);
@@ -29,7 +29,7 @@ export function resolveScopes(models: Array<typeof Model>): void {
       .forEach(key => resolveScope(key, model, options[key]));
   });
 }
-export const resolveScope = (scopeName: string, model: typeof Model, options: ScopesOptions) => {
+export const resolveScope = (scopeName: string, model: ModelCtor, options: ScopesOptions) => {
   if (typeof options === 'function') {
     const fn = options;
     options = (...args: any[]) => inferAlias(fn(...args), model);
@@ -59,7 +59,7 @@ export const setScopeOptionsGetters = (target: any, options: ScopeOptionsGetters
 /**
  * @deprecated
  */
-export const resolvesDeprecatedScopes = (model: typeof Model) => {
+export const resolvesDeprecatedScopes = (model: ModelCtor) => {
   const options = getScopeOptions(model.prototype) || {};
   Object
     .keys(options)
@@ -89,7 +89,7 @@ export function getScopeOptions(target: any): ScopeOptions | undefined {
 /**
  * @deprecated
  */
-function resolveDeprecatedScope(scopeName: string, model: typeof Model, options: ScopeFindOptions | Function | undefined): void {
+function resolveDeprecatedScope(scopeName: string, model: ModelCtor, options: ScopeFindOptions | Function | undefined): void {
   if (typeof options === 'function') {
     const fn: Function = options;
     options = (...args: any[]) => inferAlias(fn(...args), model);

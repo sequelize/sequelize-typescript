@@ -12,7 +12,7 @@ describe('unique decorator', () => {
 
   before(() => {
     @Table
-    class UserModel extends Model<UserModel> {
+    class UserModel extends Model {
       @Unique('test') @Column name: string;
       @Unique @Column key: string;
     }

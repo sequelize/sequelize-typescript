@@ -16,7 +16,7 @@ import {DefaultScope} from "../../src/scopes/default-scope";
   }
 }))
 @Table
-export class User extends Model<User> {
+export class User extends Model {
   @Column(DataType.ARRAY(DataType.STRING))
   myCol: string[];
 }

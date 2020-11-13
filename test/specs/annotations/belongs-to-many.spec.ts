@@ -14,10 +14,10 @@ describe('BelongsToMany', () => {
   const sequelize = createSequelize(false);
 
   @Table
-  class Team extends Model<Team> {}
+  class Team extends Model {}
 
   @Table
-  class Player extends Model<Player> {
+  class Player extends Model {
 
     @BelongsToMany(() => Team, {
       as,

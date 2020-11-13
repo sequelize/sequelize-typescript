@@ -1,7 +1,7 @@
 import {Table, Model, Column, DataType} from "../../src";
 
 @Table
-export class UserWithSwag extends Model<UserWithSwag> {
+export class UserWithSwag extends Model {
 
   @Column
   name: string;
