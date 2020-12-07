@@ -60,7 +60,7 @@
     "nyc": "15.1.0",
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.9",
-    "sequelize": "6.1.1",
+    "sequelize": "6.3.5",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
     "source-map-support": "0.4.14",

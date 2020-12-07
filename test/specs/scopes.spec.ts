@@ -255,7 +255,7 @@ describe('scopes', () => {
         updated: {where: {updated: {[Op.gt]: new Date(2000, 1)}}},
       })
       @Table
-      class _Person extends Model<_Person> {
+      class _Person extends Model {
 
         @Column
         name: string;

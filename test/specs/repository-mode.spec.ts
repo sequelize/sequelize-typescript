@@ -25,7 +25,7 @@ describe('repository-mode', () => {
   describe('simple setup', () => {
 
     @Table
-    class User extends Model<User> {
+    class User extends Model {
       @Column name: string;
       @Column birthday: Date;
     }
@@ -90,14 +90,14 @@ describe('repository-mode', () => {
       type _Address = Partial<Address>;
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
         @Column name: string;
         @Column birthday: Date;
         @HasOne(() => Address) address: _Address;
       }
 
       @Table
-      class Address extends Model<Address> {
+      class Address extends Model {
         @Column street: string;
         @Column city: string;
         @ForeignKey(() => User) userId: number;
@@ -140,7 +140,7 @@ describe('repository-mode', () => {
     describe('one-to-many', () => {
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
         @Column name: string;
         @Column birthday: Date;
 
@@ -149,7 +149,7 @@ describe('repository-mode', () => {
       }
 
       @Table
-      class Comment extends Model<Comment> {
+      class Comment extends Model {
         @Column text: string;
 
         @ForeignKey(() => User)
@@ -220,19 +220,19 @@ describe('repository-mode', () => {
     describe('many-to-many', () => {
 
       @Table
-      class UserEvent extends Model<UserEvent> {
+      class UserEvent extends Model {
         @ForeignKey(() => User) @Column userId: number;
         @ForeignKey(() => Event) @Column eventId: number;
       }
 
       @Table
-      class Event extends Model<Event> {
+      class Event extends Model {
         @Column name: string;
         @BelongsToMany(() => User, () => UserEvent) users: any[];
       }
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
         @Column name: string;
         @BelongsToMany(() => Event, () => UserEvent) events: Event[];
       }

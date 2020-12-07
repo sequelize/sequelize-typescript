@@ -140,7 +140,7 @@ describe('sequelize', () => {
 
       it('should set define options for models', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
         }
 
         sequelizeFromUriObject.addModels([User]);
@@ -259,7 +259,7 @@ describe('sequelize', () => {
   describe('Add model references', () => {
     it('should load models from constructor references', () => {
       @Table
-      class Test extends Model<Test> {
+      class Test extends Model {
       }
 
       const sequelize1 = new Sequelize({
@@ -274,7 +274,7 @@ describe('sequelize', () => {
     });
     it('should load models from references passed to addModels', () => {
       @Table
-      class Test extends Model<Test> {
+      class Test extends Model {
       }
 
       const sequelize1 = new Sequelize({
