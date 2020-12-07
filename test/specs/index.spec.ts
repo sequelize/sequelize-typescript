@@ -16,7 +16,7 @@ before(() => {
 describe('built-in index decorator', () => {
   it('creates index', async () => {
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @Index
       @Column
       field: string;
@@ -34,7 +34,7 @@ describe('built-in index decorator', () => {
 
   it('creates multiple indexes', async () => {
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @Index
       @Column
       fieldA: string;
@@ -57,7 +57,7 @@ describe('built-in index decorator', () => {
 
   it('creates named index', async () => {
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @Index('my-index')
       @Column
       field: string;
@@ -75,7 +75,7 @@ describe('built-in index decorator', () => {
 
   it('adds multiple fields to the same index', async () => {
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @Index('my-index')
       @Column
       fieldA: string;
@@ -97,7 +97,7 @@ describe('built-in index decorator', () => {
 
   it('sets extra options for index', async () => {
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @Index({
         name: 'my-index',
         unique: true,
@@ -122,7 +122,7 @@ describe('built-in index decorator', () => {
 
   it('sets extra options for field', async () => {
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @Index({
         name: 'my-index',
         order: 'ASC',
@@ -157,7 +157,7 @@ describe('custom index decorator', () => {
     const OtherIndex = createIndexDecorator();
 
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @MyIndex
       @Column
       fieldA: string;
@@ -190,7 +190,7 @@ describe('custom index decorator', () => {
     });
 
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @MyIndex
       @Column
       field: string;
@@ -213,7 +213,7 @@ describe('custom index decorator', () => {
     const MyIndex = createIndexDecorator({ name: 'my-index' });
 
     @Table
-    class Test extends Model<Test> {
+    class Test extends Model {
       @MyIndex({ order: 'ASC', collate: 'NOCASE' })
       @Column
       fieldA: string;
