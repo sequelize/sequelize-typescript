@@ -1,12 +1,13 @@
-import {ForeignKeyOptions, Model} from "sequelize";
+import {ForeignKeyOptions} from "sequelize";
 
 import {ForeignKeyMeta} from './foreign-key-meta';
 import {ModelClassGetter} from "../../model/shared/model-class-getter";
+import {ModelType} from "../../model/model/model";
 
 const FOREIGN_KEYS_KEY = 'sequelize:foreignKeys';
 
-export function getForeignKeyOptions(relatedClass: typeof Model,
-                                     classWithForeignKey?: typeof Model,
+export function getForeignKeyOptions<TCreationAttributes, TModelAttributes>(relatedClass: ModelType<TCreationAttributes, TModelAttributes>,
+                                     classWithForeignKey?: ModelType<TCreationAttributes, TModelAttributes>,
                                      foreignKey?: string | ForeignKeyOptions): ForeignKeyOptions {
   let foreignKeyOptions: ForeignKeyOptions = {};
 
@@ -36,8 +37,8 @@ export function getForeignKeyOptions(relatedClass: typeof Model,
 /**
  * Adds foreign key meta data for specified class
  */
-export function addForeignKey(target: any,
-                              relatedClassGetter: ModelClassGetter,
+export function addForeignKey<TCreationAttributes, TModelAttributes>(target: any,
+                              relatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
                               foreignKey: string): void {
   let foreignKeys = getForeignKeys(target);
   if (!foreignKeys) {
@@ -53,7 +54,7 @@ export function addForeignKey(target: any,
 /**
  * Returns foreign key meta data from specified class
  */
-export function getForeignKeys(target: any): ForeignKeyMeta[] | undefined {
+export function getForeignKeys<TCreationAttributes, TModelAttributes>(target: any): ForeignKeyMeta<TCreationAttributes, TModelAttributes>[] | undefined {
   const foreignKeys = Reflect.getMetadata(FOREIGN_KEYS_KEY, target);
   if (foreignKeys) {
     return [...foreignKeys];

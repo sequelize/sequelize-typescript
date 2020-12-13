@@ -1,4 +1,4 @@
-import {BelongsToManyOptions as OriginBelongsToManyOptions, Model, ThroughOptions} from "sequelize";
+import {BelongsToManyOptions as OriginBelongsToManyOptions, ThroughOptions} from "sequelize";
 
 import {BaseAssociation} from '../shared/base-association';
 import {BelongsToManyOptions} from './belongs-to-many-options';
@@ -8,11 +8,12 @@ import {ModelClassGetter} from "../../model/shared/model-class-getter";
 import {Association} from "../shared/association";
 import {Sequelize} from "../../sequelize/sequelize/sequelize";
 import {UnionAssociationOptions} from "../shared/union-association-options";
+import {ModelType} from "../../model/model/model";
 
-export class BelongsToManyAssociation extends BaseAssociation {
+export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes> extends BaseAssociation<TCreationAttributes, TModelAttributes> {
 
-  constructor(associatedClassGetter: ModelClassGetter,
-              protected options: BelongsToManyOptions) {
+  constructor(associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
+              protected options: BelongsToManyOptions<TCreationAttributes, TModelAttributes>) {
     super(associatedClassGetter, options);
   }
 
@@ -20,7 +21,7 @@ export class BelongsToManyAssociation extends BaseAssociation {
     return Association.BelongsToMany;
   }
 
-  getSequelizeOptions(model: typeof Model,
+  getSequelizeOptions(model: ModelType<TCreationAttributes, TModelAttributes>,
                       sequelize: Sequelize): UnionAssociationOptions {
     const options: OriginBelongsToManyOptions = {...this.options as any};
     const associatedClass = this.getAssociatedClass();

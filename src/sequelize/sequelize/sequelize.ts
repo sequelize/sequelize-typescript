@@ -2,7 +2,7 @@ import {InitOptions, Sequelize as OriginSequelize} from 'sequelize';
 import {ModelNotInitializedError} from "../../model/shared/model-not-initialized-error";
 import {ModelMatch, SequelizeOptions} from "./sequelize-options";
 import {getModels, prepareArgs} from "./sequelize-service";
-import {Model, ModelCtor} from "../../model/model/model";
+import {Model, ModelCtor, ModelType} from "../../model/model/model";
 import {getModelName, getOptions} from "../../model/shared/model-service";
 import {resolveScopes} from "../../scopes/scope-service";
 import {installHooks} from "../../hooks/shared/hooks-service";
@@ -33,7 +33,7 @@ export class Sequelize extends OriginSequelize {
     }
   }
 
-  model(model: string | typeof Model): ModelCtor {
+  model<TCreationAttributes, TModelAttributes>(model: string | ModelType<TCreationAttributes, TModelAttributes>): ModelCtor {
     if (typeof model !== 'string') {
       return super.model(getModelName(model.prototype)) as ModelCtor;
     }

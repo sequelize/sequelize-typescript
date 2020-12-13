@@ -8,8 +8,8 @@ import {AssociationCountOptions} from "./association/association-count-options";
 import {AssociationActionOptions} from "./association/association-action-options";
 import {AssociationCreateOptions} from "./association/association-create-options";
 
-export type ModelType = typeof Model;
-export type ModelCtor<M extends Model = Model> = (new () => M) & ModelType;
+export type ModelType<TCreationAttributes, TModelAttributes> = new (values?: TCreationAttributes, options?: any) => Model<TModelAttributes, TCreationAttributes>;
+export type ModelCtor<M extends Model = Model> = (new () => M) & typeof Model;
 
 export type $GetType<T> = NonNullable<T> extends any[] ? NonNullable<T> : (NonNullable<T> | null);
 
