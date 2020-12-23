@@ -16,7 +16,7 @@ export function Is(validator: (value: any) => any): Function;
 /**
  * Will only allow values, that match the string regex or real regex
  */
-export function Is(arg: string | Array<string | RegExp> | RegExp | {msg: string, args: string | Array<string | RegExp> | RegExp}): Function;
+export function Is(arg: string | (string | RegExp)[] | RegExp | {msg: string, args: string | (string | RegExp)[] | RegExp}): Function;
 export function Is(...args: any[]): Function {
 
   const options: ModelValidateOptions = {};
