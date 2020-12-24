@@ -48,7 +48,7 @@
     "@types/node": "11.12.2",
     "@types/sequelize": "4.28.3",
     "es6-shim": "0.35.3",
-    "glob": "7.1.2"
+    "glob": "7.1.6"
   },
   "devDependencies": {
     "mkdirp-promise": "5.0.1",
