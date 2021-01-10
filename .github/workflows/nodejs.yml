@@ -27,8 +27,7 @@ jobs:
       - name: 'Cache dependencies'
         uses: 'actions/cache@v2'
         with:
-          path: |
-            **/node_modules
+          path: '**/node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
       - run: 'npm install'
