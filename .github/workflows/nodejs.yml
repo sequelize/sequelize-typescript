@@ -33,5 +33,5 @@ jobs:
       - run: 'npm install'
       - run: 'npm run lint'
       - run: 'npm run build'
-      - run: 'npm run cover'
+      - run: 'DISABLE_LOGGING=1 npm run cover'
       - run: 'npx nyc report --reporter=lcov > coverage.lcov && npx codecov'
