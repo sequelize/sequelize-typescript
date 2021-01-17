@@ -199,7 +199,7 @@ describe('validation', () => {
 
       it('should not produce an error', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Length({min: 0, max: 5}) @Column name: string;
         }
 
@@ -212,7 +212,7 @@ describe('validation', () => {
 
       it('should produce an error due to unfulfilled max', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Length({min: 0, max: 5}) @Column name: string;
         }
 
@@ -225,7 +225,7 @@ describe('validation', () => {
 
       it('should produce an error due to unfulfilled min', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Length({min: 5, max: 5}) @Column name: string;
         }
 
@@ -238,7 +238,7 @@ describe('validation', () => {
 
       it('should not produce an error (max only)', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Length({max: 5}) @Column name: string;
         }
 
@@ -251,7 +251,7 @@ describe('validation', () => {
 
       it('should produce an error (max only)', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Length({max: 5}) @Column name: string;
         }
 
@@ -264,7 +264,7 @@ describe('validation', () => {
 
       it('should not produce an error (min only)', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Length({min: 4}) @Column name: string;
         }
 
@@ -277,7 +277,7 @@ describe('validation', () => {
 
       it('should produce an error (min only)', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Length({min: 5}) @Column name: string;
         }
 
@@ -294,7 +294,7 @@ describe('validation', () => {
 
       it('should not produce an error', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @NotEmpty @Column name: string;
         }
 
@@ -307,7 +307,7 @@ describe('validation', () => {
 
       it('should produce an error', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @NotEmpty @Column name: string;
         }
 
@@ -320,7 +320,7 @@ describe('validation', () => {
 
       it('should not produce an error (with msg)', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
         }
 
@@ -333,7 +333,7 @@ describe('validation', () => {
 
       it('should produce an error (with msg)', () => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
         }
 
@@ -354,7 +354,7 @@ describe('validation', () => {
         let _sequelize;
 
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Column name: string;
 
           @Validator userValidator(): void {
@@ -392,7 +392,7 @@ describe('validation', () => {
         let _sequelize;
 
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @Column name: string;
           @Column age: number;
 

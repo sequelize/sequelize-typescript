@@ -19,9 +19,9 @@ export const SHOE_SCOPES = {
   noImg: {
     where: {img: null}
   },
-  manufacturerWithScope: {
+  /*manufacturerWithScope: {
     include: [() => Manufacturer.scope('brandOnly')]
-  },
+  },*/
   primaryColor: primaryColor => ({
       where: {primaryColor}
     }
@@ -36,7 +36,7 @@ export const SHOE_SCOPES = {
 @DefaultScope(SHOE_DEFAULT_SCOPE)
 @Scopes(SHOE_SCOPES)
 @Table
-export class ShoeWithDeprecatedScopes extends Model<ShoeWithDeprecatedScopes> {
+export class ShoeWithDeprecatedScopes extends Model {
 
   @Column
   readonly secretKey: string;

@@ -1,7 +1,7 @@
 import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull, Unique, Length, IsInt} from "../../src";
 
 @Table
-export class User extends Model<User> {
+export class User extends Model {
 
   @PrimaryKey
   @AutoIncrement

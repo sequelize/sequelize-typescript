@@ -13,7 +13,7 @@ export type ModelCtor<M extends Model = Model> = (new () => M) & ModelType;
 
 export type $GetType<T> = NonNullable<T> extends any[] ? NonNullable<T> : (NonNullable<T> | null);
 
-export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
+export abstract class Model<TModelAttributes extends {} = any, TCreationAttributes extends {} = TModelAttributes> extends OriginModel<TModelAttributes, TCreationAttributes> {
 
   // TODO Consider moving the following props to OriginModel
   id?: number | any;
@@ -30,7 +30,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
     return super.init(attributes, options);
   }
 
-  constructor(values?: object, options?: BuildOptions) {
+  constructor(values?: TCreationAttributes, options?: BuildOptions) {
     if (!new.target.isInitialized) {
       throw new ModelNotInitializedError(
         new.target,

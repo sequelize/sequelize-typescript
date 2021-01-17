@@ -202,7 +202,7 @@ describe('table_column', () => {
       const seq = createSequelize(false);
 
       @Table({timestamps: false})
-      class Bottle extends Model<Bottle> {
+      class Bottle extends Model {
 
         @Column(DataType.STRING(5))
         brand: string;
@@ -233,7 +233,7 @@ describe('table_column', () => {
     describe('get', () => {
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         get name(): string {
@@ -275,7 +275,7 @@ describe('table_column', () => {
     describe('set', () => {
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         get name(): string {

@@ -2,7 +2,7 @@ import {Table, Model, PrimaryKey, AutoIncrement, Column, HasMany} from "../../sr
 import {Player} from "./Player";
 
 @Table
-export class Team extends Model<Team> {
+export class Team extends Model {
 
   @PrimaryKey
   @AutoIncrement

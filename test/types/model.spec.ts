@@ -6,7 +6,7 @@ import {Table} from '../../src/model/table/table';
 import {DataType} from '../../src/sequelize/data-type/data-type';
 
 @Table
-export class User extends Model<User> {
+export class User extends Model {
   @Column(DataType.ARRAY(DataType.STRING))
   myCol: string[];
 }

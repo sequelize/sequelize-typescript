@@ -7,7 +7,7 @@ describe('instance-methods', () => {
   let sequelize;
 
   @Table
-  class User extends Model<User> {
+  class User extends Model {
 
     @Column
     firstName: string;
