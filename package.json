@@ -71,11 +71,10 @@
     "uuid-validate": "0.0.2"
   },
   "peerDependencies": {
-    "@types/bluebird": "*",
     "@types/node": "*",
     "@types/validator": "*",
     "reflect-metadata": "*",
-    "sequelize": "^6.0.0"
+    "sequelize": ">=6.2.0"
   },
   "engines": {
     "node": ">=10.0.0"
