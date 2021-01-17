@@ -34,4 +34,4 @@ jobs:
       - run: 'npm run lint'
       - run: 'npm run build'
       - run: 'npm run cover'
-      - run: 'nyc report --reporter=lcov > coverage.lcov && codecov'
+      - run: 'npx nyc report --reporter=lcov > coverage.lcov && npx codecov'
