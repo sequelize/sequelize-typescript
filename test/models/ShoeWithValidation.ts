@@ -27,7 +27,7 @@ export const PRODUCED_AT_IS_BEFORE = '2017-02-27';
 export const BRAND_LENGTH = {min: 3, max: 15};
 
 @Table
-export class ShoeWithValidation extends Model<ShoeWithValidation> {
+export class ShoeWithValidation extends Model {
 
   @IsUUID(UUID_VERSION)
   @PrimaryKey

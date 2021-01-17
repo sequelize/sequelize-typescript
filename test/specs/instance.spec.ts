@@ -1,4 +1,4 @@
-import * as Promise from 'bluebird';
+
 import { expect, use } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { useFakeTimers } from 'sinon';
@@ -656,13 +656,16 @@ describe('instance', () => {
         .create({aNumber: 1, bNumber: 1})
         // TODO Sequelize typings issue caused by sequelize/types/lib/model.d.ts on line 2394
         // TODO The order of overloads is wrong
-        .tap((user) => User.update({bNumber: 2}, {where: {id: user.get('id') as any}}))
+        .then((user) => {
+          User.update({bNumber: 2}, {where: {id: user.get('id') as any}})
+          return user;
+         })
         .then((user) => user.reload({attributes: ['bNumber']}))
         .then((user) => {
           expect(user.get('aNumber')).to.equal(1);
           expect(user.get('bNumber')).to.equal(2);
         })
-    );
+    );   // taps are no more supported 
 
     it('should update read only attributes as well (updatedAt)', () => {
       let _originalUser;
@@ -777,7 +780,8 @@ describe('instance', () => {
             })
             .then((lePlayer: Player) => {
               expect(lePlayer.shoe).not.to.be.null;
-              return lePlayer.shoe.destroy().return(lePlayer);
+               lePlayer.shoe.destroy();  // Destroy Now Returns Void So can't call return() void 
+              return lePlayer;
             })
             .then((lePlayer) => lePlayer.reload() as any)
             .then((lePlayer: Player) => {
@@ -808,8 +812,9 @@ describe('instance', () => {
               return leTeam.players[1]
                 .destroy()
                 .then(() => {
-                  return leTeam.players[0].destroy();
-                }).return(leTeam);
+                   leTeam.players[0].destroy();
+                   return leTeam;  // Destroy Return type is Void
+                })
             })
             .then((leTeam) => leTeam.reload() as any)
             .then((leTeam: Team) => {
@@ -836,7 +841,8 @@ describe('instance', () => {
             })
             .then((leTeam: Team) => {
               expect(leTeam.players).to.have.length(2);
-              return leTeam.players[0].destroy().then(() => leTeam as Team);
+              leTeam.players[0].destroy(); // Since destroy return void now 
+              return leTeam;
             })
             .then((leTeam) => leTeam.reload() as any)
             .then((leTeam: Team) => {
@@ -1442,7 +1448,7 @@ describe('instance', () => {
           timestamps: true,
           createdAt: false
         })
-        class User2 extends Model<User2> {
+        class User2 extends Model {
 
           @Column
           username: string;
@@ -1465,7 +1471,7 @@ describe('instance', () => {
         @Table({
           timestamps: true
         })
-        class User3 extends Model<User3> {
+        class User3 extends Model {
 
           @Column
           username: string;
@@ -1578,7 +1584,7 @@ describe('instance', () => {
 
     it('saves a record with no primary key', () => {
       @Table
-      class HistoryLog extends Model<HistoryLog> {
+      class HistoryLog extends Model {
 
         @Column
         someText: string;
@@ -1604,7 +1610,7 @@ describe('instance', () => {
     describe('eagerly loaded objects', () => {
 
       @Table
-      class UserEager extends Model<UserEager> {
+      class UserEager extends Model {
 
         @Column
         username: string;
@@ -1617,7 +1623,7 @@ describe('instance', () => {
       }
 
       @Table
-      class ProjectEager extends Model<ProjectEager> {
+      class ProjectEager extends Model {
 
         @Column
         title: string;
@@ -1665,16 +1671,16 @@ describe('instance', () => {
 
       it('saves many objects that each a have collection of eagerly loaded objects', () =>
 
-        Promise
-          .props({
-            bart: UserEager.create({username: 'bart', age: 20}),
-            lisa: UserEager.create({username: 'lisa', age: 20}),
-            detention1: ProjectEager.create({title: 'detention1', overdueDays: 0}),
-            detention2: ProjectEager.create({title: 'detention2', overdueDays: 0}),
-            exam1: ProjectEager.create({title: 'exam1', overdueDays: 0}),
-            exam2: ProjectEager.create({title: 'exam2', overdueDays: 0})
-          })
-          .then(({bart, lisa, detention1, detention2, exam1, exam2}) =>
+        Promise // Converting to native es6 promises
+          .all([
+             UserEager.create({username: 'bart', age: 20}),
+             UserEager.create({username: 'lisa', age: 20}),
+             ProjectEager.create({title: 'detention1', overdueDays: 0}),
+             ProjectEager.create({title: 'detention2', overdueDays: 0}),
+             ProjectEager.create({title: 'exam1', overdueDays: 0}),
+             ProjectEager.create({title: 'exam2', overdueDays: 0})
+          ])
+          .then(([bart, lisa, detention1, detention2, exam1, exam2]) =>
             Promise
               .all([
                 bart.$set('projects', [detention1, detention2]),
@@ -1769,7 +1775,7 @@ describe('instance', () => {
   describe('toJSON', () => {
 
     @Table
-    class NiceUser extends Model<NiceUser> {
+    class NiceUser extends Model {
 
       @Column
       username: string;
@@ -1785,7 +1791,7 @@ describe('instance', () => {
     }
 
     @Table
-    class NiceProject extends Model<NiceProject> {
+    class NiceProject extends Model {
 
       @Column
       title: string;
@@ -1910,7 +1916,7 @@ describe('instance', () => {
   describe('findAll', () => {
 
     @Table({timestamps: true, paranoid: true})
-    class ParanoidUser extends Model<ParanoidUser> {
+    class ParanoidUser extends Model {
 
       @Column
       username: string;
@@ -2038,7 +2044,7 @@ describe('instance', () => {
     it('destroys a record with a primary key of something other than id', () => {
 
       @Table
-      class UserDestroy extends Model<UserDestroy> {
+      class UserDestroy extends Model {
 
         @PrimaryKey
         @Column
@@ -2130,7 +2136,7 @@ describe('instance', () => {
     it('returns null for null, undefined, and unset boolean values', () => {
 
       @Table({logging: true} as TableOptions)
-      class Setting extends Model<Setting> {
+      class Setting extends Model {
 
         @Column
         settingKey: string;
@@ -2176,7 +2182,7 @@ describe('instance', () => {
     it('does not compare the existence of associations', () => {
 
       @Table
-      class UserAssociationEqual extends Model<UserAssociationEqual> {
+      class UserAssociationEqual extends Model {
 
         @Column
         username: string;
@@ -2187,7 +2193,7 @@ describe('instance', () => {
       }
 
       @Table
-      class ProjectAssociationEqual extends Model<ProjectAssociationEqual> {
+      class ProjectAssociationEqual extends Model {
 
         @Column
         title: string;
@@ -2239,7 +2245,7 @@ describe('instance', () => {
     it('returns all values', () => {
 
       @Table({logging: false} as TableOptions)
-      class UserHelper extends Model<UserHelper> {
+      class UserHelper extends Model {
 
         @Column
         username: string;
@@ -2286,7 +2292,7 @@ describe('instance', () => {
     it('does not set the deletedAt date in subsequent destroys if dao is paranoid', () => {
 
       @Table({timestamps: true, paranoid: true})
-      class UserDestroy extends Model<UserDestroy> {
+      class UserDestroy extends Model {
 
         @Column
         name: string;
@@ -2316,7 +2322,7 @@ describe('instance', () => {
 
     it('deletes a record from the database if dao is not paranoid', () => {
       @Table
-      class UserDestroy extends Model<UserDestroy> {
+      class UserDestroy extends Model {
 
         @Column
         name: string;
@@ -2343,7 +2349,7 @@ describe('instance', () => {
 
     it('allows sql logging of delete statements', () => {
       @Table({paranoid: true})
-      class UserDelete extends Model<UserDelete> {
+      class UserDelete extends Model {
 
         @Column
         name: string;
@@ -2371,7 +2377,7 @@ describe('instance', () => {
 
     it('delete a record of multiple primary keys table', () => {
       @Table
-      class MultiPrimary extends Model<MultiPrimary> {
+      class MultiPrimary extends Model {
 
         @PrimaryKey
         @Column(DataType.CHAR(2))
@@ -2414,15 +2420,16 @@ describe('instance', () => {
 
     it('returns an error if the model is not paranoid', () =>
 
-      User.create({username: 'Peter'}).then((user) =>
-        expect(() => user.restore()).to.throw(Error, 'Model is not paranoid')
-      )
-    );
+      User.create({username: 'Peter'}).then((user) =>user.restore()).
+      catch(error=>
+        expect(error.message).to.equal('Model is not paranoid')
+        )
+    );// Native Promises
 
     it('restores a previously deleted model', () => {
 
       @Table({timestamps: true, paranoid: true})
-      class ParanoidUser2 extends Model<ParanoidUser2> {
+      class ParanoidUser2 extends Model {
 
         @Column
         username: string;

@@ -14,10 +14,10 @@ describe('BelongsTo', () => {
   const sequelize = createSequelize(false);
 
   @Table
-  class Team extends Model<Team> {}
+  class Team extends Model {}
 
   @Table
-  class Player extends Model<Player> {
+  class Player extends Model {
 
     @BelongsTo(() => Team, {as, foreignKey: 'teamId'})
     team: Team;
@@ -33,10 +33,10 @@ describe('BelongsTo', () => {
     const _sequelize = createSequelize(false);
 
     @Table
-    class Team extends Model<Team> {}
+    class Team extends Model {}
 
     @Table
-    class Player extends Model<Player> {
+    class Player extends Model {
       @BelongsTo(() => Team)
       team: Team;
     }

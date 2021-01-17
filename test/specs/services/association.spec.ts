@@ -11,7 +11,7 @@ describe('service.association', () => {
     it('should add foreign key to target metadata', () => {
       const target = {};
       const FOREIGN_KEY = 'testId';
-      const RELATED_CLASS_GETTER = () => class T extends Model<T> {};
+      const RELATED_CLASS_GETTER = () => class T extends Model {};
       addForeignKey(target, RELATED_CLASS_GETTER, FOREIGN_KEY);
       const foreignKeys = getForeignKeys(target);
 
@@ -27,7 +27,7 @@ describe('service.association', () => {
       const target = Object.create(parent);
       const FOREIGN_KEY = 'testId';
       const PARENT_FOREIGN_KEY = 'parentTestId';
-      const RELATED_CLASS_GETTER = () => class T extends Model<T> {};
+      const RELATED_CLASS_GETTER = () => class T extends Model {};
       addForeignKey(parent, RELATED_CLASS_GETTER, PARENT_FOREIGN_KEY);
       addForeignKey(target, RELATED_CLASS_GETTER, FOREIGN_KEY);
 

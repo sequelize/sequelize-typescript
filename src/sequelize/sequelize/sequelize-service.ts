@@ -37,7 +37,7 @@ function getValidationOnlyOptions(options: SequelizeOptions): SequelizeOptions {
  * Determines models from value
  */
 export function getModels(
-  arg: Array<ModelCtor | string>,
+  arg: (ModelCtor | string)[],
   modelMatch: ModelMatch,
 ): ModelCtor[] {
   const hasSupportedExtension = path => ['.ts', '.js'].indexOf(extname(path)) !== -1;
