@@ -3,7 +3,7 @@ import {Table, Model, PrimaryKey, AutoIncrement, Column} from "../../src";
 @Table({
   timestamps: true
 })
-export class TimeStampsUser extends Model<TimeStampsUser> {
+export class TimeStampsUser extends Model {
 
   @PrimaryKey
   @AutoIncrement

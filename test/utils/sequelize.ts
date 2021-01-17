@@ -24,7 +24,7 @@ export function createSequelize(useModelsInPathOrPartialOptions?: boolean | Part
     password: '',
     define,
     storage: ':memory:',
-    logging: !('SEQ_SILENT' in process.env),
+    logging: !('DISABLE_LOGGING' in process.env),
     modelPaths: useModelsInPath ? [__dirname + '/../models'] : [],
     ...partialOptions,
   });
@@ -35,7 +35,7 @@ export function createSequelizeValidationOnly(useModelsInPath: boolean = true): 
   return new Sequelize({
     operatorsAliases: Op,
     validateOnly: true,
-    logging: !('SEQ_SILENT' in process.env),
+    logging: !('DISABLE_LOGGING' in process.env),
     models: useModelsInPath ? [__dirname + '/../models'] : []
   });
 }
