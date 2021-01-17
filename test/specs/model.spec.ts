@@ -28,7 +28,7 @@ describe('model', () => {
   let sequelize;
 
   @Table
-  class MainUser extends Model<MainUser> {
+  class MainUser extends Model {
 
     @Column
     username: string;
@@ -67,7 +67,7 @@ describe('model', () => {
 
     it('should throw an error', () => {
       @Table
-      class Test extends Model<Test> {
+      class Test extends Model {
       }
 
       expect(() => new Test()).to.throw(/^Model not initialized/);
@@ -79,7 +79,7 @@ describe('model', () => {
 
     it('should throw an error', () => {
       @Table
-      class Test extends Model<Test> {
+      class Test extends Model {
       }
 
       expect(() => Test.beforeCreate(() => {
@@ -92,7 +92,7 @@ describe('model', () => {
     it('uses the passed dao name as tablename if freezeTableName', () => {
 
       @Table({freezeTableName: true, tableName: 'FrozenUser'})
-      class User extends Model<User> {
+      class User extends Model {
       }
 
       sequelize.addModels([User]);
@@ -102,7 +102,7 @@ describe('model', () => {
 
     it('uses the pluralized dao name as tablename unless freezeTableName', () => {
       @Table({freezeTableName: false, tableName: 'SuperUser'})
-      class User extends Model<User> {
+      class User extends Model {
       }
 
       sequelize.addModels([User]);
@@ -114,7 +114,7 @@ describe('model', () => {
 
       (() => {
         @Table({freezeTableName: false, tableName: 'SuperUser'})
-        class User extends Model<User> {
+        class User extends Model {
         }
 
         sequelize.addModels([User]);
@@ -124,7 +124,7 @@ describe('model', () => {
 
       (() => {
         @Table({freezeTableName: false, tableName: 'SuperUser'})
-        class User extends Model<User> {
+        class User extends Model {
         }
 
         sequelize.addModels([User]);
@@ -136,7 +136,7 @@ describe('model', () => {
 
     it('allows us us to predefine the ID column with our own specs', () => {
       @Table
-      class User extends Model<User> {
+      class User extends Model {
         @PrimaryKey
         @Default('User')
         @Column
@@ -153,7 +153,7 @@ describe('model', () => {
     it('throws an error if 2 autoIncrements are passed', () => {
       expect(() => {
         @Table
-        class User extends Model<User> {
+        class User extends Model {
           @PrimaryKey
           @AutoIncrement
           @Column
@@ -173,7 +173,7 @@ describe('model', () => {
     // it('throws an error if a custom model-wide validation is not a function', () => {
     //   expect(() => {
     //     @Table
-    //     class User extends Model<User> {
+    //     class User extends Model {
     //       @Column({
     //         validate: {
     //           notFunction: 33
@@ -188,7 +188,7 @@ describe('model', () => {
     // it('throws an error if a custom model-wide validation has the same name as a field', () => {
     //   expect(() => {
     //     @Table
-    //     class User extends Model<User> {
+    //     class User extends Model {
     //       @Column({
     //         validate: {
     //           field: () => null
@@ -204,7 +204,7 @@ describe('model', () => {
       clock.restore();
 
       @Table({timestamps: true})
-      class User extends Model<User> {
+      class User extends Model {
         @Column
         aNumber: number;
 
@@ -243,7 +243,7 @@ describe('model', () => {
       const defaultFunction = stub().returns(5);
 
       @Table({timestamps: true})
-      class User extends Model<User> {
+      class User extends Model {
         @Default(defaultFunction)
         @Column
         aNumber: number;
@@ -264,7 +264,7 @@ describe('model', () => {
 
     it('should allow me to override updatedAt, createdAt, and deletedAt fields', () => {
       @Table
-      class User extends Model<User> {
+      class User extends Model {
         @Column
         aNumber: number;
 
@@ -295,7 +295,7 @@ describe('model', () => {
 
     it('should allow me to disable some of the timestamp fields', () => {
       @Table({updatedAt: false, createdAt: false})
-      class User extends Model<User> {
+      class User extends Model {
         @Column
         name: string;
 
@@ -329,7 +329,7 @@ describe('model', () => {
       const titleSetter = spy();
 
       @Table({updatedAt: false, createdAt: false})
-      class Task extends Model<Task> {
+      class Task extends Model {
         @Column({
           type: DataType.STRING(50),
           allowNull: false,
@@ -355,7 +355,7 @@ describe('model', () => {
 
     it('should work with both paranoid and underscored being true', () => {
       @Table({paranoid: true, underscored: true})
-      class User extends Model<User> {
+      class User extends Model {
         @Column
         aNumber: number;
       }
@@ -373,7 +373,7 @@ describe('model', () => {
 
     it('allows multiple column unique keys to be defined', () => {
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column({
           unique: 'user_and_email'
@@ -408,7 +408,7 @@ describe('model', () => {
 
     it('allows unique on column with field aliases', () => {
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column({
           field: 'user_name',
@@ -433,7 +433,7 @@ describe('model', () => {
     it('allows us to customize the error message for unique constraint', () => {
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column({
           unique: {name: 'user_and_email', msg: 'User and email must be unique'}
@@ -477,7 +477,7 @@ describe('model', () => {
           }
         ]
       })
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         userId: number;
@@ -491,7 +491,7 @@ describe('model', () => {
       return User.sync({force: true}).then(() => {
         // Redefine the model to use the index in database and override error message
         @Table({timestamps: true})
-        class User extends Model<User> {
+        class User extends Model {
 
           @Column({
             unique: {name: 'user_and_email_index', msg: 'User and email must be unique'}
@@ -538,7 +538,7 @@ describe('model', () => {
         }],
         engine: 'MyISAM'
       } as TableOptions)
-      class ModelA extends Model<ModelA> {
+      class ModelA extends Model {
         @Column
         fieldA: string;
         @Column
@@ -583,7 +583,7 @@ describe('model', () => {
       const name = 'test';
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
         @Column name: string;
       }
 
@@ -606,7 +606,7 @@ describe('model', () => {
 
     it('fills the objects with default values (timestamps=true)', () => {
       @Table({timestamps: true})
-      class Task extends Model<Task> {
+      class Task extends Model {
 
         @Default('a task!')
         @Column
@@ -639,7 +639,7 @@ describe('model', () => {
 
     it('fills the objects with default values', () => {
       @Table
-      class Task extends Model<Task> {
+      class Task extends Model {
 
         @Default('a task!')
         @Column
@@ -672,7 +672,7 @@ describe('model', () => {
 
     it('attaches getter and setter methods from attribute definition', () => {
       @Table
-      class Product extends Model<Product> {
+      class Product extends Model {
 
         @Column({
           get(this: Product): string {
@@ -698,7 +698,7 @@ describe('model', () => {
 
     it('uses get/set accessors', () => {
       @Table
-      class Product extends Model<Product> {
+      class Product extends Model {
 
         @Column(DataType.INTEGER)
         get priceInCents() {
@@ -725,7 +725,7 @@ describe('model', () => {
 
       it('should support basic includes', () => {
         @Table
-        class Product extends Model<Product> {
+        class Product extends Model {
 
           @Column
           title: string;
@@ -747,7 +747,7 @@ describe('model', () => {
         }
 
         @Table
-        class Tag extends Model<Tag> {
+        class Tag extends Model {
 
           id: number;
 
@@ -759,7 +759,7 @@ describe('model', () => {
         }
 
         @Table
-        class User extends Model<User> {
+        class User extends Model {
 
           @Column
           firstName: string;
@@ -801,7 +801,7 @@ describe('model', () => {
 
       it('should support includes with aliases', () => {
         @Table
-        class Product extends Model<Product> {
+        class Product extends Model {
 
           @Column
           title: string;
@@ -817,7 +817,7 @@ describe('model', () => {
         }
 
         @Table
-        class Tag extends Model<Tag> {
+        class Tag extends Model {
 
           id: number;
 
@@ -829,7 +829,7 @@ describe('model', () => {
         }
 
         @Table
-        class User extends Model<User> {
+        class User extends Model {
 
           id: number;
 
@@ -905,7 +905,7 @@ describe('model', () => {
 
     it('should not fail if model is paranoid and where is an empty array', () => {
       @Table({paranoid: true, timestamps: true})
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         username: string;
@@ -927,7 +927,7 @@ describe('model', () => {
 
     it('should filter based on the where clause even if IFindOptions.include is []', () => {
       @Table({paranoid: true, timestamps: true})
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         username: string;
@@ -1049,7 +1049,7 @@ describe('model', () => {
   describe('update', () => {
     it('throws an error if no where clause is given', () => {
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         username: string;
@@ -1094,7 +1094,7 @@ describe('model', () => {
 
     it('updates the attributes that we select only without updating createdAt', () => {
       @Table({timestamps: true, paranoid: true})
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         username: string;

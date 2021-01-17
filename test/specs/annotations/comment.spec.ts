@@ -10,7 +10,7 @@ describe("comment", () => {
     const BookTitleCommentString = "title for book";
 
     @Table
-    class Book extends Model<Book> {
+    class Book extends Model {
         @Comment(BookTitleCommentString)
         @Column
         title: string;

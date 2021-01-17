@@ -14,10 +14,10 @@ describe('HasOne', () => {
   const sequelize = createSequelize(false);
 
   @Table
-  class Player extends Model<Player> {}
+  class Player extends Model {}
 
   @Table
-  class Team extends Model<Team> {
+  class Team extends Model {
 
     @HasOne(() => Player, {
       as,

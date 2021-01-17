@@ -1448,7 +1448,7 @@ describe('instance', () => {
           timestamps: true,
           createdAt: false
         })
-        class User2 extends Model<User2> {
+        class User2 extends Model {
 
           @Column
           username: string;
@@ -1471,7 +1471,7 @@ describe('instance', () => {
         @Table({
           timestamps: true
         })
-        class User3 extends Model<User3> {
+        class User3 extends Model {
 
           @Column
           username: string;
@@ -1584,7 +1584,7 @@ describe('instance', () => {
 
     it('saves a record with no primary key', () => {
       @Table
-      class HistoryLog extends Model<HistoryLog> {
+      class HistoryLog extends Model {
 
         @Column
         someText: string;
@@ -1610,7 +1610,7 @@ describe('instance', () => {
     describe('eagerly loaded objects', () => {
 
       @Table
-      class UserEager extends Model<UserEager> {
+      class UserEager extends Model {
 
         @Column
         username: string;
@@ -1623,7 +1623,7 @@ describe('instance', () => {
       }
 
       @Table
-      class ProjectEager extends Model<ProjectEager> {
+      class ProjectEager extends Model {
 
         @Column
         title: string;
@@ -1775,7 +1775,7 @@ describe('instance', () => {
   describe('toJSON', () => {
 
     @Table
-    class NiceUser extends Model<NiceUser> {
+    class NiceUser extends Model {
 
       @Column
       username: string;
@@ -1791,7 +1791,7 @@ describe('instance', () => {
     }
 
     @Table
-    class NiceProject extends Model<NiceProject> {
+    class NiceProject extends Model {
 
       @Column
       title: string;
@@ -1916,7 +1916,7 @@ describe('instance', () => {
   describe('findAll', () => {
 
     @Table({timestamps: true, paranoid: true})
-    class ParanoidUser extends Model<ParanoidUser> {
+    class ParanoidUser extends Model {
 
       @Column
       username: string;
@@ -2044,7 +2044,7 @@ describe('instance', () => {
     it('destroys a record with a primary key of something other than id', () => {
 
       @Table
-      class UserDestroy extends Model<UserDestroy> {
+      class UserDestroy extends Model {
 
         @PrimaryKey
         @Column
@@ -2136,7 +2136,7 @@ describe('instance', () => {
     it('returns null for null, undefined, and unset boolean values', () => {
 
       @Table({logging: true} as TableOptions)
-      class Setting extends Model<Setting> {
+      class Setting extends Model {
 
         @Column
         settingKey: string;
@@ -2182,7 +2182,7 @@ describe('instance', () => {
     it('does not compare the existence of associations', () => {
 
       @Table
-      class UserAssociationEqual extends Model<UserAssociationEqual> {
+      class UserAssociationEqual extends Model {
 
         @Column
         username: string;
@@ -2193,7 +2193,7 @@ describe('instance', () => {
       }
 
       @Table
-      class ProjectAssociationEqual extends Model<ProjectAssociationEqual> {
+      class ProjectAssociationEqual extends Model {
 
         @Column
         title: string;
@@ -2245,7 +2245,7 @@ describe('instance', () => {
     it('returns all values', () => {
 
       @Table({logging: false} as TableOptions)
-      class UserHelper extends Model<UserHelper> {
+      class UserHelper extends Model {
 
         @Column
         username: string;
@@ -2292,7 +2292,7 @@ describe('instance', () => {
     it('does not set the deletedAt date in subsequent destroys if dao is paranoid', () => {
 
       @Table({timestamps: true, paranoid: true})
-      class UserDestroy extends Model<UserDestroy> {
+      class UserDestroy extends Model {
 
         @Column
         name: string;
@@ -2322,7 +2322,7 @@ describe('instance', () => {
 
     it('deletes a record from the database if dao is not paranoid', () => {
       @Table
-      class UserDestroy extends Model<UserDestroy> {
+      class UserDestroy extends Model {
 
         @Column
         name: string;
@@ -2349,7 +2349,7 @@ describe('instance', () => {
 
     it('allows sql logging of delete statements', () => {
       @Table({paranoid: true})
-      class UserDelete extends Model<UserDelete> {
+      class UserDelete extends Model {
 
         @Column
         name: string;
@@ -2377,7 +2377,7 @@ describe('instance', () => {
 
     it('delete a record of multiple primary keys table', () => {
       @Table
-      class MultiPrimary extends Model<MultiPrimary> {
+      class MultiPrimary extends Model {
 
         @PrimaryKey
         @Column(DataType.CHAR(2))
@@ -2429,7 +2429,7 @@ describe('instance', () => {
     it('restores a previously deleted model', () => {
 
       @Table({timestamps: true, paranoid: true})
-      class ParanoidUser2 extends Model<ParanoidUser2> {
+      class ParanoidUser2 extends Model {
 
         @Column
         username: string;

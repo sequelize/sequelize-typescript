@@ -4,7 +4,7 @@ import {Table, Model, Column} from "../../src";
   timestamps: true,
   updatedAt: false
 })
-export class UserWithCreatedAtButWithoutUpdatedAt extends Model<UserWithCreatedAtButWithoutUpdatedAt> {
+export class UserWithCreatedAtButWithoutUpdatedAt extends Model {
 
   @Column
   name: string;
