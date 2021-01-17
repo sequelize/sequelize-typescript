@@ -27,7 +27,7 @@ describe('hook', () => {
   it('should throw on non-static hooks', () => {
     expect(() => {
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         firstName: string;
@@ -45,7 +45,7 @@ describe('hook', () => {
     expect(() => {
       // tslint:disable-next-line:max-classes-per-file
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         firstName: string;

@@ -36,7 +36,7 @@ export const SHOE_SCOPES__GETTER = () => ({
 @DefaultScope(SHOE_DEFAULT_SCOPE_GETTER)
 @Scopes(SHOE_SCOPES__GETTER)
 @Table
-export class ShoeWithScopes extends Model<ShoeWithScopes> {
+export class ShoeWithScopes extends Model {
 
   @Column
   readonly secretKey: string;

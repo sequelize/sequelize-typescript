@@ -12,7 +12,7 @@ describe('unique decorator', () => {
 
   before(() => {
     @Table
-    class UserModel extends Model<UserModel> {
+    class UserModel extends Model {
       @Unique('test') @Column name: string;
       @Unique @Column key: string;
     }
@@ -22,7 +22,7 @@ describe('unique decorator', () => {
       operatorsAliases: Op,
       dialect: 'sqlite',
       storage: ':memory:',
-      logging: !('SEQ_SILENT' in process.env),
+      logging: !('DISABLE_LOGGING' in process.env),
       models: [User],
     });
   });

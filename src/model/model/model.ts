@@ -1,4 +1,4 @@
-import {InitOptions, Model as OriginModel, ModelAttributes, FindOptions, BuildOptions, Promise} from 'sequelize';
+import {InitOptions, Model as OriginModel, ModelAttributes, FindOptions, BuildOptions} from 'sequelize';
 import {capitalize} from '../../shared/string';
 import {inferAlias} from '../../associations/alias-inference/alias-inference-service';
 import {ModelNotInitializedError} from '../shared/model-not-initialized-error';
@@ -11,7 +11,9 @@ import {AssociationCreateOptions} from "./association/association-create-options
 export type ModelType = typeof Model;
 export type ModelCtor<M extends Model = Model> = (new () => M) & ModelType;
 
-export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
+export type $GetType<T> = NonNullable<T> extends any[] ? NonNullable<T> : (NonNullable<T> | null);
+
+export abstract class Model<TModelAttributes extends {} = any, TCreationAttributes extends {} = TModelAttributes> extends OriginModel<TModelAttributes, TCreationAttributes> {
 
   // TODO Consider moving the following props to OriginModel
   id?: number | any;
@@ -22,13 +24,13 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
 
   static isInitialized = false;
 
-  static init(attributes: ModelAttributes, options: InitOptions): void {
+  static init(attributes: ModelAttributes, options: InitOptions): Model {
     this.isInitialized = true;
     // @ts-ignore
     return super.init(attributes, options);
   }
 
-  constructor(values?: object, options?: BuildOptions) {
+  constructor(values?: TCreationAttributes, options?: BuildOptions) {
     if (!new.target.isInitialized) {
       throw new ModelNotInitializedError(
         new.target,
@@ -56,7 +58,7 @@ export abstract class Model<T = any, T2 = any> extends OriginModel<T, T2> {
   /**
    * Returns related instance (specified by propertyKey) of source instance
    */
-  $get<R extends Model<R>>(propertyKey: keyof this, options?: AssociationGetOptions): Promise<R | R[]> {
+  $get<K extends keyof this>(propertyKey: K, options?: AssociationGetOptions): Promise<$GetType<this[K]>> {
     return this['get' + capitalize(propertyKey as string)](options);
   }
 
@@ -133,7 +135,7 @@ function isFunctionMember(propertyKey: string, target: any): boolean {
 
 function isForbiddenMember(propertyKey: string): boolean {
   const FORBIDDEN_KEYS = ['name', 'constructor', 'length', 'prototype', 'caller', 'arguments', 'apply',
-    'QueryInterface', 'QueryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes', 'inspect'];
+    'queryInterface', 'queryGenerator', 'init', 'replaceHookAliases', 'refreshAttributes', 'inspect'];
   return FORBIDDEN_KEYS.indexOf(propertyKey) !== -1;
 }
 

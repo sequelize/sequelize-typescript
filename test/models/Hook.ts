@@ -44,7 +44,7 @@ import {
  * Model used to test hook decorators. Defined hooks are mocked out for testing.
  */
 @Table
-export class Hook extends Model<Hook> {
+export class Hook extends Model {
 
   @Column
   name: string;
