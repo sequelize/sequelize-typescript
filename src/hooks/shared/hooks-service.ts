@@ -9,7 +9,7 @@ const HOOKS_KEY = 'sequelize:hooks';
 /**
  * Installs hooks on the specified models
  */
-export function installHooks(models: Array<ModelCtor>): void {
+export function installHooks(models: ModelCtor[]): void {
   models.forEach(model => {
     const hooks = getHooks(model);
 
