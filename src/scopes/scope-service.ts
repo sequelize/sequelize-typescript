@@ -13,7 +13,7 @@ const SCOPES_OPTIONS_KEY = 'sequelize:scopes-options';
 /**
  * Resolves scopes and adds them to the specified models
  */
-export function resolveScopes(models: Array<ModelCtor>): void {
+export function resolveScopes(models: ModelCtor[]): void {
   models.forEach(model => {
     resolvesDeprecatedScopes(model);
     const {getDefaultScope, getScopes} = getScopeOptionsGetters(model.prototype);
