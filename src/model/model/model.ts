@@ -43,7 +43,7 @@ export abstract class Model<TModelAttributes extends {} = any, TCreationAttribut
   /**
    * Adds relation between specified instances and source instance
    */
-  $add<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
+  $add<R extends Model>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
     return this['add' + capitalize(propertyKey)](instances, options);
   }
 
@@ -51,7 +51,7 @@ export abstract class Model<TModelAttributes extends {} = any, TCreationAttribut
    * Sets relation between specified instances and source instance
    * (replaces old relations)
    */
-  $set<R extends Model<R>>(propertyKey: keyof this, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
+  $set<R extends Model>(propertyKey: keyof this, instances: R | R[] | string[] | string | number[] | number, options?: AssociationActionOptions): Promise<unknown> {
     return this['set' + capitalize(propertyKey as string)](instances, options);
   }
 
@@ -65,28 +65,28 @@ export abstract class Model<TModelAttributes extends {} = any, TCreationAttribut
   /**
    * Counts related instances (specified by propertyKey) of source instance
    */
-  $count<R extends Model<R>>(propertyKey: string, options?: AssociationCountOptions): Promise<number> {
+  $count<R extends Model>(propertyKey: string, options?: AssociationCountOptions): Promise<number> {
     return this['count' + capitalize(propertyKey)](options);
   }
 
   /**
    * Creates instances and relate them to source instance
    */
-  $create<R extends Model<R>>(propertyKey: string, values: any, options?: AssociationCreateOptions): Promise<R> {
+  $create<R extends Model>(propertyKey: string, values: any, options?: AssociationCreateOptions): Promise<R> {
     return this['create' + capitalize(propertyKey)](values, options);
   }
 
   /**
    * Checks if specified instances is related to source instance
    */
-  $has<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationGetOptions): Promise<boolean> {
+  $has<R extends Model>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: AssociationGetOptions): Promise<boolean> {
     return this['has' + capitalize(propertyKey)](instances, options);
   }
 
   /**
    * Removes specified instances from source instance
    */
-  $remove<R extends Model<R>>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<any> {
+  $remove<R extends Model>(propertyKey: string, instances: R | R[] | string[] | string | number[] | number, options?: any): Promise<any> {
     return this['remove' + capitalize(propertyKey)](instances, options);
   }
 
