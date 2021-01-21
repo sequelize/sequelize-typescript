@@ -1,12 +1,13 @@
-[![Build Status](https://travis-ci.org/RobinBuschmann/sequelize-typescript.svg?branch=master)](https://travis-ci.org/RobinBuschmann/sequelize-typescript)
+[![Build Status](https://github.com/RobinBuschmann/sequelize-typescript/workflows/Node.js%20CI/badge.svg)](https://github.com/RobinBuschmann/sequelize-typescript/actions?query=workflow%3A%22Node.js+CI%22)
 [![codecov](https://codecov.io/gh/RobinBuschmann/sequelize-typescript/branch/master/graph/badge.svg)](https://codecov.io/gh/RobinBuschmann/sequelize-typescript)
 [![NPM](https://img.shields.io/npm/v/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 [![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
-Decorators and some other features for sequelize (v5).
+Decorators and some other features for sequelize (v6).
 
  - [Installation](#installation)
+ - [Upgrade to `sequelize-typescript@2`](#upgrade-to-sequelize-typescript2)
  - [Upgrade to `sequelize-typescript@1`](#upgrade-to-sequelize-typescript1)
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
@@ -37,20 +38,34 @@ Decorators and some other features for sequelize (v5).
  - [Recommendations and limitations](#recommendations-and-limitations)
 
 ## Installation
-*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize), additional typings as documented [here](https://docs.sequelizejs.com/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+
+- this assumes usage of `sequelize@6`
+- *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
+- additional typings as documented [here](https://sequelize.org/master/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+
 ```
 npm install sequelize
-npm install @types/bluebird @types/node @types/validator
+npm install @types/node @types/validator
 npm install reflect-metadata
 ```
+
 ```
 npm install sequelize-typescript
 ```
+
 Your `tsconfig.json` needs the following flags:
+
 ```json
 "target": "es6", // or a more recent ecmascript version
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true
+```
+
+### ⚠️ sequelize@5
+`sequelize@5` requires `sequelize-typescript@1`. See
+[documentation](https://github.com/RobinBuschmann/sequelize-typescript/tree/1.0.0) for version `1.0`.
+```
+npm install sequelize-typescript@1.0
 ```
 
 ### ⚠️ sequelize@4
@@ -58,6 +73,60 @@ Your `tsconfig.json` needs the following flags:
 [documentation](https://github.com/RobinBuschmann/sequelize-typescript/tree/0.6.X) for version `0.6`.
 ```
 npm install sequelize-typescript@0.6
+```
+
+## Upgrade to `sequelize-typescript@2`
+
+- `sequelize-typescript@2` only works with `sequelize@6.2>=`.
+For `sequelize@5` use `sequelize-typescript@1.0`.
+
+### Breaking Changes
+
+- All breaking changes of `sequelize@6` are also valid for `sequelize-typescript@2`.
+See [Upgrade to v6](https://sequelize.org/master/manual/upgrade-to-v6.html) for details.
+- `@types/bluebird` is no longer needed, `sequelize@6` removed usage of `bluebird`
+- Sequelize v6.2 introduced additional model attributes typings, which affects how the model is defined.
+- See below comparison between V5 and V6 model definition to show how to upgrade models.
+- For more details, see [sequelize typescript docs](https://sequelize.org/master/manual/typescript.html).
+
+#### V5 Model definition
+
+```typescript
+import { Table, Model } from 'sequelize-typescript';
+
+@Table
+class Person extends Model<Person> {}
+```
+
+#### V6 Model definition (less strict)
+
+```typescript
+import { Table, Model } from 'sequelize-typescript';
+
+@Table
+class Person extends Model {}
+```
+
+#### V6 Model definition (more strict)
+
+- ⚠️ not yet implemented in `sequelize-typescript`
+- to allow more strict model attributes type-checks, you can define `ModelAttributes` and `ModelCreationAttributes` interfaces
+
+
+```typescript
+import { Optional } from 'sequelize';
+import { Table, Model } from 'sequelize-typescript';
+
+interface PersonAttributes {
+  id: number;
+  name: string;
+}
+
+interface PersonCreationAttributes extends Optional<PersonAttributes, 'id'> {
+}
+
+@Table
+class Person extends Model<PersonAttributes, PersonCreationAttributes> {}
 ```
 
 ## Upgrade to `sequelize-typescript@1`
@@ -102,7 +171,7 @@ With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mo
 import {Table, Column, Model, HasMany} from 'sequelize-typescript';
 
 @Table
-class Person extends Model<Person> {
+class Person extends Model {
 
   @Column
   name: string;
@@ -128,7 +197,7 @@ from sequelize are valid):
   timestamps: true,
   ...
 })
-class Person extends Model<Person> {}
+class Person extends Model {}
 ```
 #### Table API
 
@@ -223,7 +292,7 @@ Design type      | Sequelize data type
 Get/set accessors do work as well
 ```typescript
 @Table
-class Person extends Model<Person> {
+class Person extends Model {
 
   @Column
   get name(): string {
@@ -277,7 +346,7 @@ sequelize.addModels([__dirname + '/**/*.model.ts']);
 A model is matched to a file by its filename. E.g.
 ```typescript
 // File User.ts matches the following exported model.
-export class User extends Model<User> {}
+export class User extends Model {}
 ```
 This is done by comparison of the filename against all exported members. The
 matching can be customized by specifying the `modelMatch` function in the
@@ -308,7 +377,7 @@ export const UserN = 'Not a model';
 export const NUser = 'Not a model';
 
 @Table
-export class User extends Model<User> {
+export class User extends Model {
 
   @Column
   nickname: string;
@@ -325,7 +394,7 @@ user.model User  -> true (User will be added as model)
 Another way to match model to file is to make your model the default export.
 
 ```TypeScript
-export default class User extends Model<User> {}
+export default class User extends Model {}
 ```
 
 > ⚠️ When using paths to add models, keep in mind that they will be loaded during runtime. This means that the path
@@ -374,7 +443,7 @@ and `@ForeignKey` annotations.
 ### One-to-many
 ```typescript
 @Table
-class Player extends Model<Player> {
+class Player extends Model {
 
   @Column
   name: string;
@@ -391,7 +460,7 @@ class Player extends Model<Player> {
 }
 
 @Table
-class Team extends Model<Team> {
+class Team extends Model {
 
   @Column
   name: string;
@@ -415,20 +484,20 @@ the players will also be resolved (when passing `include: Player` to the find op
 ### Many-to-many
 ```typescript
 @Table
-class Book extends Model<Book> {
+class Book extends Model {
   @BelongsToMany(() => Author, () => BookAuthor)
   authors: Author[];
 }
 
 @Table
-class Author extends Model<Author> {
+class Author extends Model {
 
   @BelongsToMany(() => Book, () => BookAuthor)
   books: Book[];
 }
 
 @Table
-class BookAuthor extends Model<BookAuthor> {
+class BookAuthor extends Model {
 
   @ForeignKey(() => Book)
   @Column
@@ -478,7 +547,7 @@ Note that when using AssociationOptions, certain properties will be overwritten 
 So if you define a model with multiple relations like
 ```typescript
 @Table
-class Book extends Model<Book> {
+class Book extends Model {
 
   @ForeignKey(() => Person)
   @Column
@@ -496,7 +565,7 @@ class Book extends Model<Book> {
 }
 
 @Table
-class Person extends Model<Person> {
+class Person extends Model {
 
   @HasMany(() => Book)
   writtenBooks: Book[];
@@ -533,14 +602,14 @@ But TypeScript wont recognize them and will complain if you try to access `getMo
 functions.
 ```typescript
 @Table
-class ModelA extends Model<ModelA> {
+class ModelA extends Model {
 
   @HasMany(() => ModelB)
   bs: ModelB[];
 }
 
 @Table
-class ModelB extends Model<ModelB> {
+class ModelB extends Model {
 
   @BelongsTo(() => ModelA)
   a: ModelA;
@@ -565,7 +634,7 @@ modelA.$create('bs', /* value */ ).then( /* ... */);
 The `@Index` annotation can be used without passing any parameters.
 ```typescript
 @Table
-class Person extends Model<Person> {
+class Person extends Model {
   @Index // Define an index with default name
   @Column
   name: string;
@@ -580,7 +649,7 @@ To specify index and index field options, use
 an object literal (see [indexes define option](https://sequelize.org/v5/manual/models-definition.html#indexes)):
 ```typescript
 @Table
-class Person extends Model<Person> {
+class Person extends Model {
   @Index('my-index') // Define a multi-field index on name and birthday
   @Column
   name: string;
@@ -639,7 +708,7 @@ const JobIndex = createIndexDecorator({
 });
 
 @Table
-class Person extends Model<Person> {
+class Person extends Model {
   @SomeIndex // Add name to SomeIndex
   @Column
   name: string;
@@ -707,7 +776,7 @@ Nested scopes and includes in general won't work when using `@Scope` annotation 
   }
 }))
 @Table
-class User extends Model<User> {}
+class User extends Model {}
 ```
 > ⚠️ This will change in the future: Simple includes will be implemented.
 
@@ -733,7 +802,7 @@ Validator                        | Annotation
 const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
 @Table
-export class Shoe extends Model<Shoe> {
+export class Shoe extends Model {
 
   @IsUUID(4)
   @PrimaryKey
@@ -801,7 +870,7 @@ sequelize (See sequelize [docs](https://docs.sequelizejs.com/manual/tutorial/sco
   }
 }))
 @Table
-export class ShoeWithScopes extends Model<ShoeWithScopes> {
+export class ShoeWithScopes extends Model {
 
   @Column
   readonly secretKey: string;
@@ -833,7 +902,7 @@ The name of the method cannot be the same as the name of the hook (for example, 
 
 ```typescript
 @Table
-export class Person extends Model<Person> {
+export class Person extends Model {
   @Column
   name: string;
 

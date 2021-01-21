@@ -1,6 +1,6 @@
 import {Model, Table} from "../../../../src";
 
 @Table
-export class UserDir extends Model<UserDir> {
+export class UserDir extends Model {
 
 }

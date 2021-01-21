@@ -3,7 +3,6 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as OriginSequelize from 'sequelize';
-import * as Promise from 'bluebird';
 import {createSequelize} from "../utils/sequelize";
 import {
   Sequelize, Model, Table, Column, BelongsToMany,
@@ -19,22 +18,22 @@ use(chaiAsPromised);
 const Association: any = OriginSequelize['Association'];
 
 /* Some base classes that we can override later */
-class ConcreteModel<T extends Model<T>> extends Model<T> {
+class ConcreteModel extends Model {
 }
 
-class BookModel extends ConcreteModel<BookModel> {
+class BookModel extends ConcreteModel {
   title: string;
   pages: PageModel[];
   authors: AuthorModel[];
 }
 
-class PageModel extends ConcreteModel<PageModel> {
+class PageModel extends ConcreteModel {
   content: string;
   bookId: number;
   book: BookModel;
 }
 
-class AuthorModel extends ConcreteModel<AuthorModel> {
+class AuthorModel extends ConcreteModel {
   name: string;
   books: BookWithAuthorModel[];
 }
@@ -576,7 +575,7 @@ describe('association', () => {
     describe('resolve foreign keys automatically', () => {
 
       @Table
-      class Book extends Model<Book> implements BookModel {
+      class Book extends Model implements BookModel {
 
         @Column
         title: string;
@@ -588,7 +587,7 @@ describe('association', () => {
       }
 
       @Table
-      class Page extends Model<Page> implements PageModel {
+      class Page extends Model implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -606,7 +605,7 @@ describe('association', () => {
     describe('set foreign keys explicitly', () => {
 
       @Table
-      class Book2 extends Model<Book2> implements BookModel {
+      class Book2 extends Model implements BookModel {
 
         @Column
         title: string;
@@ -618,7 +617,7 @@ describe('association', () => {
       }
 
       @Table
-      class Page2 extends Model<Page2> implements PageModel {
+      class Page2 extends Model implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -716,7 +715,7 @@ describe('association', () => {
     describe('resolve foreign keys automatically with association options', () => {
 
       @Table
-      class Book3 extends Model<Book3> implements BookModel {
+      class Book3 extends Model implements BookModel {
 
         @Column
         title: string;
@@ -728,7 +727,7 @@ describe('association', () => {
       }
 
       @Table
-      class Page3 extends Model<Page3> implements PageModel {
+      class Page3 extends Model implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -746,7 +745,7 @@ describe('association', () => {
     describe('set foreign keys explicitly with association options', () => {
 
       @Table
-      class Book4 extends Model<Book4> implements BookModel {
+      class Book4 extends Model implements BookModel {
 
         @Column
         title: string;
@@ -758,7 +757,7 @@ describe('association', () => {
       }
 
       @Table
-      class Page4 extends Model<Page4> implements PageModel {
+      class Page4 extends Model implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -776,7 +775,7 @@ describe('association', () => {
     describe('set foreign keys explicitly via options', () => {
 
       @Table
-      class Book5 extends Model<Book5> implements BookModel {
+      class Book5 extends Model implements BookModel {
 
         @Column
         title: string;
@@ -788,7 +787,7 @@ describe('association', () => {
       }
 
       @Table
-      class Page5 extends Model<Page5> implements PageModel {
+      class Page5 extends Model implements PageModel {
 
         @Column(DataType.TEXT)
         content: string;
@@ -807,11 +806,11 @@ describe('association', () => {
       const _sequelize = createSequelize(false);
 
       @Table
-      class Friend extends Model<Friend> {
+      class Friend extends Model {
       }
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @HasOne(() => Friend, 'userId')
         friend: Friend;
@@ -1286,7 +1285,7 @@ describe('association', () => {
       }
 
       @Table
-      class AuthorBook extends Model<AuthorBook> {
+      class AuthorBook extends Model {
 
         @ForeignKey(() => Book)
         bookId: number;
@@ -1297,7 +1296,7 @@ describe('association', () => {
       }
 
       @Table
-      class Author extends Model<Author> {
+      class Author extends Model {
 
         @Column
         name: string;
@@ -1324,7 +1323,7 @@ describe('association', () => {
       }
 
       @Table
-      class AuthorBook4 extends Model<AuthorBook4> {
+      class AuthorBook4 extends Model {
 
         @ForeignKey(() => Book4)
         bookId: number;
@@ -1334,7 +1333,7 @@ describe('association', () => {
       }
 
       @Table
-      class Author4 extends Model<Author4> {
+      class Author4 extends Model {
 
         @Column
         name: string;
@@ -1361,7 +1360,7 @@ describe('association', () => {
       }
 
       @Table
-      class Author2 extends Model<Author2> {
+      class Author2 extends Model {
 
         @Column
         name: string;
@@ -1390,7 +1389,7 @@ describe('association', () => {
       }
 
       @Table
-      class Author3 extends Model<Author3> {
+      class Author3 extends Model {
 
         @Column
         name: string;
@@ -1409,7 +1408,7 @@ describe('association', () => {
     describe('set through model via through options', () => {
 
       @Table
-      class Book66 extends Model<Book66> {
+      class Book66 extends Model {
 
         @Column
         title: string;
@@ -1425,7 +1424,7 @@ describe('association', () => {
       }
 
       @Table
-      class AuthorBook66 extends Model<AuthorBook66> {
+      class AuthorBook66 extends Model {
 
         @ForeignKey(() => Book66)
         bookId: number;
@@ -1435,7 +1434,7 @@ describe('association', () => {
       }
 
       @Table
-      class Author66 extends Model<Author66> {
+      class Author66 extends Model {
 
         @Column
         name: string;
@@ -1454,7 +1453,7 @@ describe('association', () => {
     describe('set through model string via through options', () => {
 
       @Table
-      class Book66 extends Model<Book66> {
+      class Book66 extends Model {
 
         @Column
         title: string;
@@ -1472,7 +1471,7 @@ describe('association', () => {
       }
 
       @Table
-      class Author66 extends Model<Author66> {
+      class Author66 extends Model {
 
         @Column
         name: string;
@@ -1493,7 +1492,7 @@ describe('association', () => {
     describe('ThroughOptions', () => {
 
       @Table
-      class User77 extends Model<User77> {
+      class User77 extends Model {
 
         @Column
         name: string;
@@ -1514,7 +1513,7 @@ describe('association', () => {
       }
 
       @Table
-      class Subscription extends Model<Subscription> {
+      class Subscription extends Model {
 
         @PrimaryKey
         @ForeignKey(() => User77)
@@ -1543,15 +1542,15 @@ describe('association', () => {
       const _sequelize = createSequelize(false);
 
       @Table
-      class UserFriend extends Model<UserFriend> {
+      class UserFriend extends Model {
       }
 
       @Table
-      class Friend extends Model<Friend> {
+      class Friend extends Model {
       }
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @BelongsToMany(() => Friend, () => UserFriend)
         friend: Friend;
@@ -1600,12 +1599,12 @@ describe('association', () => {
       country: 'United States',
     };
 
-    class AbstractUser extends Model<AbstractUser> {
+    class AbstractUser extends Model {
       name: string;
       address: AbstractAddress;
     }
 
-    class AbstractAddress extends Model<AbstractAddress> {
+    class AbstractAddress extends Model {
       street: string;
       zipCode: string;
       city: string;
@@ -1860,7 +1859,7 @@ describe('association', () => {
     describe('resolve foreign keys automatically', () => {
 
       @Table
-      class User extends Model<User> {
+      class User extends Model {
 
         @Column
         name: string;
@@ -1870,7 +1869,7 @@ describe('association', () => {
       }
 
       @Table
-      class Address extends Model<Address> {
+      class Address extends Model {
 
         @Column
         street: string;
@@ -1897,7 +1896,7 @@ describe('association', () => {
     describe('set foreign keys explicitly', () => {
 
       @Table
-      class User2 extends Model<User2> {
+      class User2 extends Model {
 
         @Column
         name: string;
@@ -1907,7 +1906,7 @@ describe('association', () => {
       }
 
       @Table
-      class Address2 extends Model<Address2> {
+      class Address2 extends Model {
 
         @Column
         street: string;
@@ -1999,7 +1998,7 @@ describe('association', () => {
       const ON_DELETE_ACTION = 'SET NULL';
 
       @Table
-      class User3 extends Model<User3> {
+      class User3 extends Model {
 
         @Column
         name: string;
@@ -2009,7 +2008,7 @@ describe('association', () => {
       }
 
       @Table
-      class Address3 extends Model<Address3> {
+      class Address3 extends Model {
 
         @Column
         street: string;
@@ -2038,7 +2037,7 @@ describe('association', () => {
     describe('set foreign keys explicitly with association options', () => {
 
       @Table
-      class User4 extends Model<User4> {
+      class User4 extends Model {
 
         @Column
         name: string;
@@ -2048,7 +2047,7 @@ describe('association', () => {
       }
 
       @Table
-      class Address4 extends Model<Address4> {
+      class Address4 extends Model {
 
         @Column
         street: string;
@@ -2077,7 +2076,7 @@ describe('association', () => {
     describe('set foreign keys explicitly via options', () => {
 
       @Table
-      class User5 extends Model<User5> {
+      class User5 extends Model {
 
         @Column
         name: string;
@@ -2087,7 +2086,7 @@ describe('association', () => {
       }
 
       @Table
-      class Address5 extends Model<Address5> {
+      class Address5 extends Model {
 
         @Column
         street: string;
@@ -2113,7 +2112,7 @@ describe('association', () => {
     describe('set foreign keys explicitly with association options (allowNull: false on foreignKey)', () => {
 
       @Table
-      class User6 extends Model<User6> {
+      class User6 extends Model {
 
         @Column
         name: string;
@@ -2123,7 +2122,7 @@ describe('association', () => {
       }
 
       @Table
-      class Address6 extends Model<Address6> {
+      class Address6 extends Model {
 
         @Column
         street: string;

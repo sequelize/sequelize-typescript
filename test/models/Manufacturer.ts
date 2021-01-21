@@ -9,7 +9,7 @@ import {ShoeWithScopes} from "./ShoeWithScopes";
   }
 })
 @Table
-export class Manufacturer extends Model<Manufacturer> {
+export class Manufacturer extends Model {
 
   @Column
   brand: string;
