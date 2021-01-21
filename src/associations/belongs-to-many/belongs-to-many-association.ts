@@ -26,7 +26,7 @@ export class BelongsToManyAssociation extends BaseAssociation {
     const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(sequelize);
 
-    const throughModel = typeof throughOptions === 'object' ? throughOptions.model : undefined;
+    const throughModel = typeof throughOptions === 'object' && typeof throughOptions.model !== "string" ? throughOptions.model : undefined;
     options.through = throughOptions;
     options.foreignKey = getForeignKeyOptions(model, throughModel, this.options.foreignKey);
     options.otherKey = getForeignKeyOptions(associatedClass, throughModel, this.options.otherKey);

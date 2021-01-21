@@ -27,3 +27,8 @@ npm-debug.log
 coverage
 .nyc_output
 !test/tsconfig.mocha.js
+!.mocharc.js
+
+
+# lockFile
+*.lock

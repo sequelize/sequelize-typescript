@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import * as Promise from 'bluebird';
 import {Model, Table, Column} from "../../src";
 import {createSequelize} from "../utils/sequelize";
 
@@ -8,7 +7,7 @@ describe('instance-methods', () => {
   let sequelize;
 
   @Table
-  class User extends Model<User> {
+  class User extends Model {
 
     @Column
     firstName: string;

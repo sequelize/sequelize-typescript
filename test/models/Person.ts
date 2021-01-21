@@ -1,7 +1,7 @@
 import {Table, Model, Column, PrimaryKey, DataType, Default} from "../../src";
 
 @Table
-export class Person extends Model<Person> {
+export class Person extends Model {
 
   @PrimaryKey
   @Default(DataType.UUIDV1)
