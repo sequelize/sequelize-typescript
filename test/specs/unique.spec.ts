@@ -22,7 +22,7 @@ describe('unique decorator', () => {
       operatorsAliases: Op,
       dialect: 'sqlite',
       storage: ':memory:',
-      logging: !('SEQ_SILENT' in process.env),
+      logging: !('DISABLE_LOGGING' in process.env),
       models: [User],
     });
   });

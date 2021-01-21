@@ -43,8 +43,8 @@ export class Sequelize extends OriginSequelize {
   addModels(models: ModelCtor[]);
   addModels(modelPaths: string[]);
   addModels(modelPaths: string[], modelMatch?: ModelMatch);
-  addModels(arg: Array<ModelCtor | string>);
-  addModels(arg: Array<ModelCtor | string>, modelMatch?: ModelMatch) {
+  addModels(arg: (ModelCtor | string)[]);
+  addModels(arg: (ModelCtor | string)[], modelMatch?: ModelMatch) {
     const defaultModelMatch = (filename, member) => filename === member;
     const models = getModels(arg, modelMatch || this.options.modelMatch || defaultModelMatch);
 

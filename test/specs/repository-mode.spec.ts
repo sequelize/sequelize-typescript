@@ -18,7 +18,7 @@ describe('repository-mode', () => {
     dialect: 'sqlite',
     username: 'root',
     password: '',
-    logging: !!process.env.SEQ_SILENT,
+    logging: !!process.env.DISABLE_LOGGING,
     repositoryMode: true,
   };
 
@@ -168,7 +168,7 @@ describe('repository-mode', () => {
           ...defaultOptions,
           database: 'a',
           repositoryMode: true,
-          logging: !!process.env.SEQ_SILENT,
+          logging: !!process.env.DISABLE_LOGGING,
           models: [User, Comment],
         });
         sequelizeB = new Sequelize({
@@ -176,7 +176,7 @@ describe('repository-mode', () => {
           ...defaultOptions,
           database: 'b',
           repositoryMode: true,
-          logging: !!process.env.SEQ_SILENT,
+          logging: !!process.env.DISABLE_LOGGING,
           models: [User, Comment],
         });
       });
@@ -246,7 +246,7 @@ describe('repository-mode', () => {
           ...defaultOptions,
           database: 'a',
           repositoryMode: true,
-          logging: !!process.env.SEQ_SILENT,
+          logging: !!process.env.DISABLE_LOGGING,
           models: [User, Event, UserEvent],
         });
         sequelizeB = new Sequelize({
@@ -254,7 +254,7 @@ describe('repository-mode', () => {
           ...defaultOptions,
           database: 'b',
           repositoryMode: true,
-          logging: !!process.env.SEQ_SILENT,
+          logging: !!process.env.DISABLE_LOGGING,
           models: [User, Event, UserEvent],
         });
       });

@@ -61,7 +61,7 @@ describe('sequelize', () => {
       username: 'root',
       password: '',
       storage: ':memory:',
-      logging: !('SEQ_SILENT' in process.env),
+      logging: !('DISABLE_LOGGING' in process.env),
     });
 
     it('should equal Sequelize class', () => {
@@ -82,7 +82,7 @@ describe('sequelize', () => {
     const sequelizeUri = new Sequelize(connectionUri, {
       operatorsAliases: Op,
       storage: ':memory:',
-      logging: !('SEQ_SILENT' in process.env),
+      logging: !('DISABLE_LOGGING' in process.env),
       pool: {max: 8, min: 0},
     });
 
@@ -266,7 +266,7 @@ describe('sequelize', () => {
         database: '__',
         dialect: 'sqlite',
         storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
+        logging: !('DISABLE_LOGGING' in process.env),
         models: [Test]
       });
 
@@ -281,7 +281,7 @@ describe('sequelize', () => {
         database: '__',
         dialect: 'sqlite',
         storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
+        logging: !('DISABLE_LOGGING' in process.env),
       });
       sequelize1.addModels([Test]);
 
@@ -299,7 +299,7 @@ describe('sequelize', () => {
         username: 'root',
         password: '',
         storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
+        logging: !('DISABLE_LOGGING' in process.env),
         models: [__dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
       });
 
@@ -318,7 +318,7 @@ describe('sequelize', () => {
         username: 'root',
         password: '',
         storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
+        logging: !('DISABLE_LOGGING' in process.env),
         models: [__dirname + '/../../models/globs/match-dir-only']
       });
 
@@ -337,7 +337,7 @@ describe('sequelize', () => {
         username: 'root',
         password: '',
         storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
+        logging: !('DISABLE_LOGGING' in process.env),
         models: ['AddressDir.ts', 'UserDir.ts'].map(file => join(__dirname, '/../../models/globs/match-files', file))
       });
 
@@ -355,7 +355,7 @@ describe('sequelize', () => {
         username: 'root',
         password: '',
         storage: ':memory:',
-        logging: !('SEQ_SILENT' in process.env),
+        logging: !('DISABLE_LOGGING' in process.env),
         modelPaths: [__dirname + '/../../models/globs/match-dir-only', __dirname + '/../../models/globs/match-sub-dir-files/**/*.model.ts']
       });
 

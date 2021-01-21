@@ -1,12 +1,13 @@
-[![Build Status](https://travis-ci.org/RobinBuschmann/sequelize-typescript.svg?branch=master)](https://travis-ci.org/RobinBuschmann/sequelize-typescript)
+[![Build Status](https://github.com/RobinBuschmann/sequelize-typescript/workflows/Node.js%20CI/badge.svg)](https://github.com/RobinBuschmann/sequelize-typescript/actions?query=workflow%3A%22Node.js+CI%22)
 [![codecov](https://codecov.io/gh/RobinBuschmann/sequelize-typescript/branch/master/graph/badge.svg)](https://codecov.io/gh/RobinBuschmann/sequelize-typescript)
 [![NPM](https://img.shields.io/npm/v/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 [![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 # sequelize-typescript
-Decorators and some other features for sequelize (v5).
+Decorators and some other features for sequelize (v6).
 
  - [Installation](#installation)
+ - [Upgrade to `sequelize-typescript@2`](#upgrade-to-sequelize-typescript2)
  - [Upgrade to `sequelize-typescript@1`](#upgrade-to-sequelize-typescript1)
  - [Model Definition](#model-definition)
    - [`@Table` API](#table-api)
@@ -37,20 +38,34 @@ Decorators and some other features for sequelize (v5).
  - [Recommendations and limitations](#recommendations-and-limitations)
 
 ## Installation
-*sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize), additional typings as documented [here](https://docs.sequelizejs.com/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+
+- this assumes usage of `sequelize@6`
+- *sequelize-typescript* requires [sequelize](https://github.com/sequelize/sequelize)
+- additional typings as documented [here](https://sequelize.org/master/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+
 ```
 npm install sequelize
-npm install @types/bluebird @types/node @types/validator
+npm install @types/node @types/validator
 npm install reflect-metadata
 ```
+
 ```
 npm install sequelize-typescript
 ```
+
 Your `tsconfig.json` needs the following flags:
+
 ```json
 "target": "es6", // or a more recent ecmascript version
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true
+```
+
+### ⚠️ sequelize@5
+`sequelize@5` requires `sequelize-typescript@1`. See
+[documentation](https://github.com/RobinBuschmann/sequelize-typescript/tree/1.0.0) for version `1.0`.
+```
+npm install sequelize-typescript@1.0
 ```
 
 ### ⚠️ sequelize@4
@@ -58,6 +73,60 @@ Your `tsconfig.json` needs the following flags:
 [documentation](https://github.com/RobinBuschmann/sequelize-typescript/tree/0.6.X) for version `0.6`.
 ```
 npm install sequelize-typescript@0.6
+```
+
+## Upgrade to `sequelize-typescript@2`
+
+- `sequelize-typescript@2` only works with `sequelize@6.2>=`.
+For `sequelize@5` use `sequelize-typescript@1.0`.
+
+### Breaking Changes
+
+- All breaking changes of `sequelize@6` are also valid for `sequelize-typescript@2`.
+See [Upgrade to v6](https://sequelize.org/master/manual/upgrade-to-v6.html) for details.
+- `@types/bluebird` is no longer needed, `sequelize@6` removed usage of `bluebird`
+- Sequelize v6.2 introduced additional model attributes typings, which affects how the model is defined.
+- See below comparison between V5 and V6 model definition to show how to upgrade models.
+- For more details, see [sequelize typescript docs](https://sequelize.org/master/manual/typescript.html).
+
+#### V5 Model definition
+
+```typescript
+import { Table, Model } from 'sequelize-typescript';
+
+@Table
+class Person extends Model<Person> {}
+```
+
+#### V6 Model definition (less strict)
+
+```typescript
+import { Table, Model } from 'sequelize-typescript';
+
+@Table
+class Person extends Model {}
+```
+
+#### V6 Model definition (more strict)
+
+- ⚠️ not yet implemented in `sequelize-typescript`
+- to allow more strict model attributes type-checks, you can define `ModelAttributes` and `ModelCreationAttributes` interfaces
+
+
+```typescript
+import { Optional } from 'sequelize';
+import { Table, Model } from 'sequelize-typescript';
+
+interface PersonAttributes {
+  id: number;
+  name: string;
+}
+
+interface PersonCreationAttributes extends Optional<PersonAttributes, 'id'> {
+}
+
+@Table
+class Person extends Model<PersonAttributes, PersonCreationAttributes> {}
 ```
 
 ## Upgrade to `sequelize-typescript@1`
