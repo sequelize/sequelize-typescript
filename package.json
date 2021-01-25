@@ -61,7 +61,7 @@
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.13",
     "sequelize": "6.3.5",
-    "sinon": "9.2.3",
+    "sinon": "9.2.4",
     "sinon-chai": "3.5.0",
     "source-map-support": "0.5.19",
     "sqlite3": "5.0.1",
