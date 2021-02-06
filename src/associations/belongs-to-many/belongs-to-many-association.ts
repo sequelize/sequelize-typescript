@@ -1,5 +1,3 @@
-import {BelongsToManyOptions as OriginBelongsToManyOptions, ThroughOptions} from "sequelize";
-
 import {BaseAssociation} from '../shared/base-association';
 import {BelongsToManyOptions} from './belongs-to-many-options';
 import {ModelNotInitializedError} from '../../model/shared/model-not-initialized-error';
@@ -9,11 +7,12 @@ import {Association} from "../shared/association";
 import {Sequelize} from "../../sequelize/sequelize/sequelize";
 import {UnionAssociationOptions} from "../shared/union-association-options";
 import {ModelType} from "../../model/model/model";
+import {ThroughOptions} from "../through/through-options";
 
-export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes> extends BaseAssociation<TCreationAttributes, TModelAttributes> {
+export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes, TCreationAttributesThrough, TModelAttributesThrough> extends BaseAssociation<TCreationAttributes, TModelAttributes> {
 
   constructor(associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
-              protected options: BelongsToManyOptions<TCreationAttributes, TModelAttributes>) {
+              protected options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough>) {
     super(associatedClassGetter, options);
   }
 
@@ -23,7 +22,7 @@ export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes> ext
 
   getSequelizeOptions(model: ModelType<TCreationAttributes, TModelAttributes>,
                       sequelize: Sequelize): UnionAssociationOptions {
-    const options: OriginBelongsToManyOptions = {...this.options as any};
+    const options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough> = {...this.options};
     const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(sequelize);
 
@@ -35,10 +34,10 @@ export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes> ext
     return options;
   }
 
-  private getThroughOptions(sequelize: Sequelize): ThroughOptions | string {
+  private getThroughOptions(sequelize: Sequelize): ThroughOptions<TCreationAttributesThrough, TModelAttributesThrough> | string {
     const through = this.options.through;
     const throughModel = typeof through === 'object' ? through.model : through;
-    const throughOptions: ThroughOptions =
+    const throughOptions: ThroughOptions<TCreationAttributesThrough, TModelAttributesThrough> =
       typeof through === 'object' ? {...through} : {} as any;
 
     if (typeof throughModel === 'function') {
@@ -46,7 +45,7 @@ export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes> ext
       if (!throughModelClass.isInitialized) {
         throw new ModelNotInitializedError(throughModelClass, 'Association cannot be resolved.');
       }
-      throughOptions.model = throughModelClass;
+      throughOptions.model = throughModelClass as any;
     } else {
       return throughModel;
     }

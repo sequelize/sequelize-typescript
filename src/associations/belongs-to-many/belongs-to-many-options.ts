@@ -3,8 +3,8 @@ import {ModelClassGetter} from "../../model/shared/model-class-getter";
 import {ThroughOptions} from "../through/through-options";
 
 
-export type BelongsToManyOptions<TCreationAttributes, TModelAttributes> = {
+export type BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough> = {
   [K in keyof OriginBelongsToManyOptions]: K extends 'through'
-    ? ModelClassGetter<TCreationAttributes, TModelAttributes> | string | ThroughOptions<TCreationAttributes, TModelAttributes>
+    ? ModelClassGetter<TCreationAttributesThrough, TModelAttributesThrough> | string | ThroughOptions<TCreationAttributesThrough, TModelAttributesThrough>
     : OriginBelongsToManyOptions[K]
 };
