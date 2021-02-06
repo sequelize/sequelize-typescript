@@ -28,7 +28,7 @@ export function getPreparedAssociationOptions(optionsOrForeignKey?: string | Non
  * Stores association meta data for specified class
  */
 export function addAssociation<TCreationAttributes, TModelAttributes>(target: any,
-                               association: BaseAssociation<TCreationAttributes, TModelAttributes>) {
+                                                                      association: BaseAssociation<TCreationAttributes, TModelAttributes>) {
 
   let associations = getAssociations(target);
 
@@ -54,7 +54,7 @@ export function setAssociations<TCreationAttributes, TModelAttributes>(target: a
 }
 
 export function getAssociationsByRelation<TCreationAttributes, TModelAttributes>(target: any,
-                                          relatedClass: any): BaseAssociation<TCreationAttributes, TModelAttributes>[] {
+                                                                                 relatedClass: any): BaseAssociation<TCreationAttributes, TModelAttributes>[] {
   const associations = getAssociations<TCreationAttributes, TModelAttributes>(target);
   return (associations || []).filter(association => {
     const _relatedClass = association.getAssociatedClass();

@@ -7,8 +7,8 @@ import {ModelType} from "../../model/model/model";
 const FOREIGN_KEYS_KEY = 'sequelize:foreignKeys';
 
 export function getForeignKeyOptions<TCreationAttributes, TModelAttributes>(relatedClass: ModelType<TCreationAttributes, TModelAttributes>,
-                                     classWithForeignKey?: ModelType<TCreationAttributes, TModelAttributes>,
-                                     foreignKey?: string | ForeignKeyOptions): ForeignKeyOptions {
+                                                                            classWithForeignKey?: ModelType<TCreationAttributes, TModelAttributes>,
+                                                                            foreignKey?: string | ForeignKeyOptions): ForeignKeyOptions {
   let foreignKeyOptions: ForeignKeyOptions = {};
 
   if (typeof foreignKey === 'string') {
@@ -38,8 +38,8 @@ export function getForeignKeyOptions<TCreationAttributes, TModelAttributes>(rela
  * Adds foreign key meta data for specified class
  */
 export function addForeignKey<TCreationAttributes, TModelAttributes>(target: any,
-                              relatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
-                              foreignKey: string): void {
+                                                                     relatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
+                                                                     foreignKey: string): void {
   let foreignKeys = getForeignKeys(target);
   if (!foreignKeys) {
     foreignKeys = [];

@@ -4,15 +4,15 @@ import {ModelClassGetter} from "../../model/shared/model-class-getter";
 import {addAssociation} from "../shared/association-service";
 
 export function BelongsToMany<TCreationAttributes, TModelAttributes>(associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
-                              through: ModelClassGetter<TCreationAttributes, TModelAttributes> | string,
-                              foreignKey?: string,
-                              otherKey?: string): Function;
+                                                                     through: ModelClassGetter<TCreationAttributes, TModelAttributes> | string,
+                                                                     foreignKey?: string,
+                                                                     otherKey?: string): Function;
 export function BelongsToMany<TCreationAttributes, TModelAttributes>(associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
-                              options: BelongsToManyOptions<TCreationAttributes, TModelAttributes>): Function;
+                                                                     options: BelongsToManyOptions<TCreationAttributes, TModelAttributes>): Function;
 export function BelongsToMany<TCreationAttributes, TModelAttributes>(associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
-                              throughOrOptions: ModelClassGetter<TCreationAttributes, TModelAttributes> | string | BelongsToManyOptions<TCreationAttributes, TModelAttributes>,
-                              foreignKey?: string,
-                              otherKey?: string): Function {
+                                                                     throughOrOptions: ModelClassGetter<TCreationAttributes, TModelAttributes> | string | BelongsToManyOptions<TCreationAttributes, TModelAttributes>,
+                                                                     foreignKey?: string,
+                                                                     otherKey?: string): Function {
 
   return (target: any, propertyName: string) => {
     let options: Partial<BelongsToManyOptions<TCreationAttributes, TModelAttributes>> = {foreignKey, otherKey};
