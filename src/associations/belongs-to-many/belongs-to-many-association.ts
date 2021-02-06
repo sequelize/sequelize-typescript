@@ -29,8 +29,8 @@ export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes> ext
 
     const throughModel = typeof throughOptions === 'object' && typeof throughOptions.model !== "string" ? throughOptions.model : undefined;
     options.through = throughOptions;
-    options.foreignKey = getForeignKeyOptions(model, throughModel, this.options.foreignKey);
-    options.otherKey = getForeignKeyOptions(associatedClass, throughModel, this.options.otherKey);
+    options.foreignKey = getForeignKeyOptions(model, throughModel as any, this.options.foreignKey);
+    options.otherKey = getForeignKeyOptions(associatedClass, throughModel as any, this.options.otherKey);
 
     return options;
   }
