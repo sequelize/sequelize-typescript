@@ -110,7 +110,7 @@ export class Sequelize extends OriginSequelize {
   }
 
   private createRepositoryModel(modelClass: ModelCtor): ModelCtor {
-    return class extends modelClass<any> {
+    return class extends modelClass {
     };
   }
 

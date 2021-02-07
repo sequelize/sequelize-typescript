@@ -6,6 +6,8 @@ import {
   BelongsTo,
   BelongsToMany,
   ForeignKey,
+  PrimaryKey,
+  Sequelize,
 } from "../../src/index";
 import { Column } from "../../src/model/column/column";
 import { Model } from "../../src/model/model/model";
@@ -36,6 +38,7 @@ type PersonCreationAttributes = Optional<PersonAttributes, "id">;
 
 @Table
 export class Person extends Model<PersonAttributes, PersonCreationAttributes> {
+  @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
   id: number;
@@ -46,6 +49,7 @@ export class Person extends Model<PersonAttributes, PersonCreationAttributes> {
 
 @Table
 export class Pet extends Model {
+  @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
   petId: number;
@@ -70,4 +74,9 @@ export class Toy extends Model {
   // model without attributes
   @BelongsTo(() => Pet)
   pet: Pet;
+}
+
+function testTypes() {
+  // all models should be accepted
+  new Sequelize().addModels([Person, Pet, PetPerson]);
 }
