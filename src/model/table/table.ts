@@ -2,7 +2,7 @@ import {TableOptions} from "./table-options";
 import {Model} from "../model/model";
 import {setModelName, addOptions} from "../shared/model-service";
 
-export function Table(options: TableOptions): Function;
+export function Table<M extends Model = Model>(options: TableOptions<M>): Function;
 export function Table(target: Function): void;
 export function Table(arg: any): void | Function {
 
