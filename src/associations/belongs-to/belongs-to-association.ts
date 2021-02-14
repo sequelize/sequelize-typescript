@@ -4,12 +4,12 @@ import {BaseAssociation} from '../shared/base-association';
 import {getForeignKeyOptions} from "../foreign-key/foreign-key-service";
 import {ModelClassGetter} from "../../model/shared/model-class-getter";
 import {Association} from "../shared/association";
-import {Model} from "../../model/model/model";
+import {ModelType} from "../../model/model/model";
 import {UnionAssociationOptions} from "../shared/union-association-options";
 
-export class BelongsToAssociation extends BaseAssociation {
+export class BelongsToAssociation<TCreationAttributes, TModelAttributes> extends BaseAssociation<TCreationAttributes, TModelAttributes> {
 
-  constructor(associatedClassGetter: ModelClassGetter,
+  constructor(associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
               protected options: BelongsToOptions) {
     super(associatedClassGetter, options);
   }
@@ -18,7 +18,7 @@ export class BelongsToAssociation extends BaseAssociation {
     return Association.BelongsTo;
   }
 
-  getSequelizeOptions(model: typeof Model): UnionAssociationOptions {
+  getSequelizeOptions(model: ModelType<TCreationAttributes, TModelAttributes>): UnionAssociationOptions {
     const associatedClass = this.getAssociatedClass();
     const foreignKey = getForeignKeyOptions(associatedClass, model, this.options.foreignKey);
 
