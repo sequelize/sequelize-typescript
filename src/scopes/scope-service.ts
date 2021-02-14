@@ -70,7 +70,7 @@ export const resolvesDeprecatedScopes = (model: ModelCtor) => {
  * Adds scope option meta data for specified prototype
  * @deprecated
  */
-export function addScopeOptions(target: any, options: ScopeOptions): void {
+export function addScopeOptions<TCreationAttributes, TModelAttributes>(target: any, options: ScopeOptions<TCreationAttributes, TModelAttributes>): void {
   const _options = getScopeOptions(target) || {};
   setScopeOptions(target, deepAssign({}, _options, options));
 }
@@ -79,7 +79,7 @@ export function addScopeOptions(target: any, options: ScopeOptions): void {
  * Returns scope option meta data from specified target
  * @deprecated
  */
-export function getScopeOptions(target: any): ScopeOptions | undefined {
+export function getScopeOptions<TCreationAttributes, TModelAttributes>(target: any): ScopeOptions<TCreationAttributes, TModelAttributes> | undefined {
   const options = Reflect.getMetadata(SCOPES_KEY, target);
   if (options) {
     return deepAssign({}, options);
@@ -89,7 +89,7 @@ export function getScopeOptions(target: any): ScopeOptions | undefined {
 /**
  * @deprecated
  */
-function resolveDeprecatedScope(scopeName: string, model: ModelCtor, options: ScopeFindOptions | Function | undefined): void {
+function resolveDeprecatedScope<TCreationAttributes, TModelAttributes>(scopeName: string, model: ModelCtor, options: ScopeFindOptions<TCreationAttributes, TModelAttributes> | Function | undefined): void {
   if (typeof options === 'function') {
     const fn: Function = options;
     options = (...args: any[]) => inferAlias(fn(...args), model);
@@ -103,6 +103,6 @@ function resolveDeprecatedScope(scopeName: string, model: ModelCtor, options: Sc
  * Set scope option meta data for specified prototype
  * @deprecated
  */
-function setScopeOptions(target: any, options: ScopeOptions): void {
+function setScopeOptions<TCreationAttributes, TModelAttributes>(target: any, options: ScopeOptions<TCreationAttributes, TModelAttributes>): void {
   Reflect.defineMetadata(SCOPES_KEY, options, target);
 }

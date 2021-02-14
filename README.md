@@ -285,6 +285,7 @@ Design type      | Sequelize data type
  `string`        | `STRING`
  `boolean`       | `BOOLEAN`
  `number`        | `INTEGER`
+ `bigint`        | `BIGINT`
  `Date`          | `DATE`
  `Buffer`        | `BLOB`
 
