@@ -49,7 +49,7 @@
     "@types/sinon-chai": "3.2.5",
     "chai": "4.3.0",
     "chai-as-promised": "7.1.1",
-    "chai-datetime": "1.7.0",
+    "chai-datetime": "1.8.0",
     "codecov": "3.8.1",
     "copyfiles": "2.4.1",
     "has-flag": "4.0.0",
