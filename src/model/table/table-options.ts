@@ -1,6 +1,6 @@
-import {ModelOptions} from "sequelize";
+import {Model, ModelOptions} from "sequelize";
 
-export interface TableOptions extends ModelOptions {
+export interface TableOptions<M extends Model = Model> extends ModelOptions<M> {
   modelName?: string;
 
   /**
