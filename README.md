@@ -26,7 +26,7 @@ Decorators and some other features for sequelize (v6).
  - [Indexes](#indexes)
    - [`@Index` API](#index)
    - [`createIndexDecorator()` API](#createindexdecorator)
- - [Repository mode](#repository-mode)
+ - [Repository mode](#repository-mode-1)
    - [How to enable repository mode?](#how-to-enable-repository-mode)
    - [How to use repository mode?](#how-to-use-repository-mode)
    - [How to use associations with repository mode?](#how-to-use-associations-with-repository-mode)
@@ -135,11 +135,11 @@ For `sequelize@4` & `sequelize@3` use `sequelize-typescript@0.6`.
 
 ### Breaking Changes
 All breaking changes of `sequelize@5` are also valid for `sequelize-typescript@1`.
-See [Upgrade to v5](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md) for details.
+See [Upgrade to v5](https://sequelize.org/v5/manual/upgrade-to-v5.html) for details.
 
 #### Official Sequelize Typings
 sequelize-typescript now uses the official typings bundled with sequelize
-(See [this](https://github.com/sequelize/sequelize/blob/master/docs/upgrade-to-v5.md#typescript-support)).
+(See [this](https://sequelize.org/v5/manual/upgrade-to-v5.html#typescript-support)).
 Please note the following details:
 - Most of the sequelize-typescript interfaces of the previous version are replaced by the official ones
 - `@types/sequelize` is no longer used
@@ -163,7 +163,7 @@ instead of deprecated way:
 ```
 
 ### Repository Mode
-With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
+With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode-1) for details.
 
 
 ## Model definition
@@ -285,6 +285,7 @@ Design type      | Sequelize data type
  `string`        | `STRING`
  `boolean`       | `BOOLEAN`
  `number`        | `INTEGER`
+ `bigint`        | `BIGINT`
  `Date`          | `DATE`
  `Buffer`        | `BLOB`
 
@@ -930,7 +931,7 @@ this issue.
 ## Recommendations and limitations
 
 ### One Sequelize instance per model (without repository mode)
-Unless you are using the [repository mode](#repository-mode), you won't be able to add one and the same model to multiple
+Unless you are using the [repository mode](#repository-mode-1), you won't be able to add one and the same model to multiple
 Sequelize instances with differently configured connections. So that one model will only work for one connection.
 
 ### One model class per file

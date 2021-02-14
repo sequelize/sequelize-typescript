@@ -18,6 +18,8 @@ export function inferDataType(designType: any): DataTypeAbstract | undefined {
   switch (designType) {
     case String:
       return DataTypes.STRING;
+    case BigInt:
+      return DataTypes.BIGINT;
     case Number:
       return DataTypes.INTEGER;
     case Boolean:
