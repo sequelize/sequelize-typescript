@@ -34,6 +34,7 @@ Decorators and some other features for sequelize (v6).
  - [Model validation](#model-validation)
  - [Scopes](#scopes)
  - [Hooks](#hooks)
+ - [Virtual field](#virtual-field)
  - [Why `() => Model`?](#user-content-why---model)
  - [Recommendations and limitations](#recommendations-and-limitations)
 
@@ -920,6 +921,34 @@ export class Person extends Model {
     instance.name += ' 🦄';
   }
 }
+```
+
+## Virtual field
+Virtual fields are fields that Sequelize populates under the hood, but in reality they don't even exist in the database.
+For example, let's say we want to create a secret token and add it to a user but don't store this token into database.
+We can use the DataType.VIRTUAL to achieve that:
+
+```typescript
+
+import {Table, Column, Model, DataType} from 'sequelize-typescript';
+
+@Table({tableName: 'users'})
+class User extends Model {
+ 
+  @Column(DataType.VIRTUAL)
+  get secretToken() {
+    return this.getDataValue('secretToken');
+  }
+  set secretToken(value: string){
+    this.setDataValue('secretToken', value)
+  }
+}
+```
+After that you can populate the field like so:
+```typescript
+const user: User = await User.findOne({where: {id});
+user.secretToken = secretToken;
+return user;
 ```
 
 ## Why `() => Model`?
