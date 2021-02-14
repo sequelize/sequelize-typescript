@@ -1,7 +1,7 @@
 import {expect, use} from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import {ModelAttributes} from 'sequelize';
-import {Model, Table, Column, DataType} from "../../src";
+import {Model, Table, Column, DataType, AutoIncrement, PrimaryKey} from "../../src";
 import {createSequelize} from "../utils/sequelize";
 import {User} from "../models/User";
 import {getOptions} from "../../src/model/shared/model-service";
@@ -196,6 +196,22 @@ describe('table_column', () => {
   });
 
   describe('column', () => {
+
+    it('should infer the correct data type for bigint', () => {
+      @Table
+      class BigIntModel extends Model {
+        @PrimaryKey
+        @AutoIncrement
+        @Column
+        id: bigint;
+      }
+
+      sequelize.addModels([BigIntModel]);
+
+      const attributes = getAttributes(BigIntModel.prototype);
+
+      expect(attributes.id.type).to.equal(DataType.BIGINT);
+    });
 
     it('should create appropriate sql query', () => {
 
