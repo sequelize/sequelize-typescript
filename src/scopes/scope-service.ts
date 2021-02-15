@@ -1,11 +1,11 @@
-import {FindOptions} from "sequelize";
+import { FindOptions } from 'sequelize';
 
-import {ModelCtor} from "../model/model/model";
-import {deepAssign} from "../shared/object";
-import {ScopeOptions, ScopeOptionsGetters, ScopesOptions} from "./scope-options";
-import {resolveModelGetter} from '../model/shared/model-service';
-import {inferAlias} from '../associations/alias-inference/alias-inference-service';
-import {ScopeFindOptions} from "./scope-find-options";
+import { ModelCtor } from '../model/model/model';
+import { deepAssign } from '../shared/object';
+import { ScopeOptions, ScopeOptionsGetters, ScopesOptions } from './scope-options';
+import { resolveModelGetter } from '../model/shared/model-service';
+import { inferAlias } from '../associations/alias-inference/alias-inference-service';
+import { ScopeFindOptions } from './scope-find-options';
 
 const SCOPES_KEY = 'sequelize:scopes';
 const SCOPES_OPTIONS_KEY = 'sequelize:scopes-options';
@@ -14,63 +14,62 @@ const SCOPES_OPTIONS_KEY = 'sequelize:scopes-options';
  * Resolves scopes and adds them to the specified models
  */
 export function resolveScopes(models: ModelCtor[]): void {
-  models.forEach(model => {
+  models.forEach((model) => {
     resolvesDeprecatedScopes(model);
-    const {getDefaultScope, getScopes} = getScopeOptionsGetters(model.prototype);
+    const { getDefaultScope, getScopes } = getScopeOptionsGetters(model.prototype);
     let options = {};
     if (getDefaultScope) {
-      options = {...options, defaultScope: getDefaultScope()};
+      options = { ...options, defaultScope: getDefaultScope() };
     }
     if (getScopes) {
-      options = {...options, ...getScopes()};
+      options = { ...options, ...getScopes() };
     }
-    Object
-      .keys(options)
-      .forEach(key => resolveScope(key, model, options[key]));
+    Object.keys(options).forEach((key) => resolveScope(key, model, options[key]));
   });
 }
-export const resolveScope = (scopeName: string, model: ModelCtor, options: ScopesOptions) => {
+export const resolveScope = (scopeName: string, model: ModelCtor, options: ScopesOptions): void => {
   if (typeof options === 'function') {
     const fn = options;
     options = (...args: any[]) => inferAlias(fn(...args), model);
   } else {
     options = inferAlias(options, model);
   }
-  model.addScope(scopeName, options as FindOptions, {override: true});
+  model.addScope(scopeName, options as FindOptions, { override: true });
 };
 
-export const addScopeOptionsGetter = (target: any, options: ScopeOptionsGetters) => {
+export const addScopeOptionsGetter = (target: any, options: ScopeOptionsGetters): void => {
   const currentOptions = getScopeOptionsGetters(target) || {};
-  setScopeOptionsGetters(target, {...currentOptions, ...options});
+  setScopeOptionsGetters(target, { ...currentOptions, ...options });
 };
 
 export const getScopeOptionsGetters = (target: any): ScopeOptionsGetters => {
   const options = Reflect.getMetadata(SCOPES_OPTIONS_KEY, target);
   if (options) {
-    return {...options};
+    return { ...options };
   }
   return {};
 };
 
-export const setScopeOptionsGetters = (target: any, options: ScopeOptionsGetters) => {
+export const setScopeOptionsGetters = (target: any, options: ScopeOptionsGetters): void => {
   Reflect.defineMetadata(SCOPES_OPTIONS_KEY, options, target);
 };
 
 /**
  * @deprecated
  */
-export const resolvesDeprecatedScopes = (model: ModelCtor) => {
+export const resolvesDeprecatedScopes = (model: ModelCtor): void => {
   const options = getScopeOptions(model.prototype) || {};
-  Object
-    .keys(options)
-    .forEach(key => resolveDeprecatedScope(key, model, options[key]));
+  Object.keys(options).forEach((key) => resolveDeprecatedScope(key, model, options[key]));
 };
 
 /**
  * Adds scope option meta data for specified prototype
  * @deprecated
  */
-export function addScopeOptions<TCreationAttributes, TModelAttributes>(target: any, options: ScopeOptions<TCreationAttributes, TModelAttributes>): void {
+export function addScopeOptions<TCreationAttributes, TModelAttributes>(
+  target: any,
+  options: ScopeOptions<TCreationAttributes, TModelAttributes>
+): void {
   const _options = getScopeOptions(target) || {};
   setScopeOptions(target, deepAssign({}, _options, options));
 }
@@ -79,7 +78,9 @@ export function addScopeOptions<TCreationAttributes, TModelAttributes>(target: a
  * Returns scope option meta data from specified target
  * @deprecated
  */
-export function getScopeOptions<TCreationAttributes, TModelAttributes>(target: any): ScopeOptions<TCreationAttributes, TModelAttributes> | undefined {
+export function getScopeOptions<TCreationAttributes, TModelAttributes>(
+  target: any
+): ScopeOptions<TCreationAttributes, TModelAttributes> | undefined {
   const options = Reflect.getMetadata(SCOPES_KEY, target);
   if (options) {
     return deepAssign({}, options);
@@ -89,20 +90,27 @@ export function getScopeOptions<TCreationAttributes, TModelAttributes>(target: a
 /**
  * @deprecated
  */
-function resolveDeprecatedScope<TCreationAttributes, TModelAttributes>(scopeName: string, model: ModelCtor, options: ScopeFindOptions<TCreationAttributes, TModelAttributes> | Function | undefined): void {
+function resolveDeprecatedScope<TCreationAttributes, TModelAttributes>(
+  scopeName: string,
+  model: ModelCtor,
+  options: ScopeFindOptions<TCreationAttributes, TModelAttributes> | Function | undefined
+): void {
   if (typeof options === 'function') {
     const fn: Function = options;
     options = (...args: any[]) => inferAlias(fn(...args), model);
   } else {
     options = inferAlias(resolveModelGetter(options), model);
   }
-  model.addScope(scopeName, options as FindOptions, {override: true});
+  model.addScope(scopeName, options as FindOptions, { override: true });
 }
 
 /**
  * Set scope option meta data for specified prototype
  * @deprecated
  */
-function setScopeOptions<TCreationAttributes, TModelAttributes>(target: any, options: ScopeOptions<TCreationAttributes, TModelAttributes>): void {
+function setScopeOptions<TCreationAttributes, TModelAttributes>(
+  target: any,
+  options: ScopeOptions<TCreationAttributes, TModelAttributes>
+): void {
   Reflect.defineMetadata(SCOPES_KEY, options, target);
 }

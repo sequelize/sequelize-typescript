@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {IndexesOptions as SequelizeIndexOptions} from 'sequelize';
+import { IndexesOptions as SequelizeIndexOptions } from 'sequelize';
 
 const INDEXES_KEY = 'sequelize:indexes';
 
@@ -16,17 +16,19 @@ export interface IndexesMeta {
   unnamed: IndexOptions[];
 }
 
-export type IndexOptions = Pick<SequelizeIndexOptions, Exclude<keyof SequelizeIndexOptions, 'fields'>>;
+export type IndexOptions = Pick<
+  SequelizeIndexOptions,
+  Exclude<keyof SequelizeIndexOptions, 'fields'>
+>;
 
 /**
  * Returns model indexes from class by restoring this
  * information from reflect metadata
  */
 export function getIndexes(target: any): IndexesMeta {
-  const { named = {}, unnamed = [] }: IndexesMeta =
-    Reflect.getMetadata(INDEXES_KEY, target) || {};
+  const { named = {}, unnamed = [] }: IndexesMeta = Reflect.getMetadata(INDEXES_KEY, target) || {};
 
-  return { named: {...named}, unnamed: [...unnamed] };
+  return { named: { ...named }, unnamed: [...unnamed] };
 }
 
 /**
@@ -40,19 +42,18 @@ export function setIndexes(target: any, indexes: IndexesMeta): void {
  * Adds field to index by sequelize index and index field options,
  * and stores this information through reflect metadata. Returns index ID.
  */
-export function addFieldToIndex(target: any,
-                                fieldOptions: IndexFieldOptions,
-                                indexOptions: IndexOptions,
-                                indexId?: string | number): string | number {
+export function addFieldToIndex(
+  target: any,
+  fieldOptions: IndexFieldOptions,
+  indexOptions: IndexOptions,
+  indexId?: string | number
+): string | number {
   const indexes = getIndexes(target);
 
-  const chosenId = typeof indexId !== 'undefined'
-    ? indexId
-    : indexOptions.name || indexes.unnamed.length;
-  const indexStore = typeof chosenId === 'string'
-    ? indexes.named
-    : indexes.unnamed;
-  if (!indexStore[chosenId]) indexStore[chosenId] = {...indexOptions};
+  const chosenId =
+    typeof indexId !== 'undefined' ? indexId : indexOptions.name || indexes.unnamed.length;
+  const indexStore = typeof chosenId === 'string' ? indexes.named : indexes.unnamed;
+  if (!indexStore[chosenId]) indexStore[chosenId] = { ...indexOptions };
 
   const index = indexStore[chosenId];
   if (!index.fields) index.fields = [];

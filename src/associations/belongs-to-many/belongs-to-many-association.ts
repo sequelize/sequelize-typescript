@@ -1,18 +1,24 @@
-import {BaseAssociation} from '../shared/base-association';
-import {BelongsToManyOptions} from './belongs-to-many-options';
-import {ModelNotInitializedError} from '../../model/shared/model-not-initialized-error';
-import {getForeignKeyOptions} from "../foreign-key/foreign-key-service";
-import {ModelClassGetter} from "../../model/shared/model-class-getter";
-import {Association} from "../shared/association";
-import {Sequelize} from "../../sequelize/sequelize/sequelize";
-import {UnionAssociationOptions} from "../shared/union-association-options";
-import {ModelType} from "../../model/model/model";
-import {ThroughOptions} from "../through/through-options";
+import { BaseAssociation } from '../shared/base-association';
+import { BelongsToManyOptions } from './belongs-to-many-options';
+import { ModelNotInitializedError } from '../../model/shared/model-not-initialized-error';
+import { getForeignKeyOptions } from '../foreign-key/foreign-key-service';
+import { ModelClassGetter } from '../../model/shared/model-class-getter';
+import { Association } from '../shared/association';
+import { Sequelize } from '../../sequelize/sequelize/sequelize';
+import { UnionAssociationOptions } from '../shared/union-association-options';
+import { ModelType } from '../../model/model/model';
+import { ThroughOptions } from '../through/through-options';
 
-export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes, TCreationAttributesThrough, TModelAttributesThrough> extends BaseAssociation<TCreationAttributes, TModelAttributes> {
-
-  constructor(associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
-              protected options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough>) {
+export class BelongsToManyAssociation<
+  TCreationAttributes,
+  TModelAttributes,
+  TCreationAttributesThrough,
+  TModelAttributesThrough
+> extends BaseAssociation<TCreationAttributes, TModelAttributes> {
+  constructor(
+    associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
+    protected options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough>
+  ) {
     super(associatedClassGetter, options);
   }
 
@@ -20,25 +26,38 @@ export class BelongsToManyAssociation<TCreationAttributes, TModelAttributes, TCr
     return Association.BelongsToMany;
   }
 
-  getSequelizeOptions(model: ModelType<TCreationAttributes, TModelAttributes>,
-                      sequelize: Sequelize): UnionAssociationOptions {
-    const options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough> = {...this.options};
+  getSequelizeOptions(
+    model: ModelType<TCreationAttributes, TModelAttributes>,
+    sequelize: Sequelize
+  ): UnionAssociationOptions {
+    const options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough> = {
+      ...this.options,
+    };
     const associatedClass = this.getAssociatedClass();
     const throughOptions = this.getThroughOptions(sequelize);
 
-    const throughModel = typeof throughOptions === 'object' && typeof throughOptions.model !== "string" ? throughOptions.model : undefined;
+    const throughModel =
+      typeof throughOptions === 'object' && typeof throughOptions.model !== 'string'
+        ? throughOptions.model
+        : undefined;
     options.through = throughOptions;
     options.foreignKey = getForeignKeyOptions(model, throughModel as any, this.options.foreignKey);
-    options.otherKey = getForeignKeyOptions(associatedClass, throughModel as any, this.options.otherKey);
+    options.otherKey = getForeignKeyOptions(
+      associatedClass,
+      throughModel as any,
+      this.options.otherKey
+    );
 
     return options;
   }
 
-  private getThroughOptions(sequelize: Sequelize): ThroughOptions<TCreationAttributesThrough, TModelAttributesThrough> | string {
+  private getThroughOptions(
+    sequelize: Sequelize
+  ): ThroughOptions<TCreationAttributesThrough, TModelAttributesThrough> | string {
     const through = this.options.through;
     const throughModel = typeof through === 'object' ? through.model : through;
     const throughOptions: ThroughOptions<TCreationAttributesThrough, TModelAttributesThrough> =
-      typeof through === 'object' ? {...through} : {} as any;
+      typeof through === 'object' ? { ...through } : ({} as any);
 
     if (typeof throughModel === 'function') {
       const throughModelClass = sequelize.model(throughModel());
