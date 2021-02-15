@@ -1,43 +1,40 @@
-import {Table, Model, Column, ForeignKey, BelongsTo,
-  DefaultScope, Scopes} from "../../src";
-import {Manufacturer} from "./Manufacturer";
-import {Person} from "./Person";
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { Table, Model, Column, ForeignKey, BelongsTo, DefaultScope, Scopes } from '../../src';
+import { Manufacturer } from './Manufacturer';
+import { Person } from './Person';
 
 export const SHOE_DEFAULT_SCOPE = {
-  attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt']
+  attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt'],
 };
 export const SHOE_SCOPES = {
   full: {
-    include: [() => Manufacturer]
+    include: [() => Manufacturer],
   },
   yellow: {
-    where: {primaryColor: 'yellow'}
+    where: { primaryColor: 'yellow' },
   },
   red: {
-    where: {primaryColor: 'red'}
+    where: { primaryColor: 'red' },
   },
   noImg: {
-    where: {img: null}
+    where: { img: null },
   },
   /*manufacturerWithScope: {
     include: [() => Manufacturer.scope('brandOnly')]
   },*/
-  primaryColor: primaryColor => ({
-      where: {primaryColor}
-    }
-  ),
-  primaryColorWithManufacturer: primaryColor => ({
-      include: [Manufacturer],
-      where: {primaryColor},
-    }
-  )
+  primaryColor: (primaryColor) => ({
+    where: { primaryColor },
+  }),
+  primaryColorWithManufacturer: (primaryColor) => ({
+    include: [Manufacturer],
+    where: { primaryColor },
+  }),
 };
 
 @DefaultScope(SHOE_DEFAULT_SCOPE)
 @Scopes(SHOE_SCOPES)
 @Table
 export class ShoeWithDeprecatedScopes extends Model {
-
   @Column
   readonly secretKey: string;
 
@@ -66,5 +63,4 @@ export class ShoeWithDeprecatedScopes extends Model {
 
   @BelongsTo(() => Person)
   owner: Person;
-
 }

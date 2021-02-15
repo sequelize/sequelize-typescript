@@ -1,6 +1,4 @@
-import {Model, Table} from "../../../../src";
+import { Model, Table } from '../../../../src';
 
 @Table
-export class UserDir extends Model {
-
-}
+export class UserDir extends Model {}

@@ -1,85 +1,81 @@
-import {expect, use} from 'chai';
+import { expect, use } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {ModelAttributes} from 'sequelize';
-import {Model, Table, Column, DataType, AutoIncrement, PrimaryKey} from "../../src";
-import {createSequelize} from "../utils/sequelize";
-import {User} from "../models/User";
-import {getOptions} from "../../src/model/shared/model-service";
-import {Shoe, SHOE_TABLE_NAME} from "../models/Shoe";
+import { ModelAttributes } from 'sequelize';
+import { Model, Table, Column, DataType, AutoIncrement, PrimaryKey } from '../../src';
+import { createSequelize } from '../utils/sequelize';
+import { User } from '../models/User';
+import { getOptions } from '../../src/model/shared/model-service';
+import { Shoe, SHOE_TABLE_NAME } from '../models/Shoe';
 import * as _ from 'lodash';
-import {getAttributes} from '../../src/model/column/attribute-service';
+import { getAttributes } from '../../src/model/column/attribute-service';
 
 use(chaiAsPromised);
 
-/* tslint:disable:max-classes-per-file */
-
 describe('table_column', () => {
-
   let sequelize;
 
   const expectedUserAttributes: ModelAttributes = {
     id: {
       primaryKey: true,
       autoIncrement: true,
-      type: DataType.INTEGER
+      type: DataType.INTEGER,
     },
     uuidv1: {
       type: DataType.UUID,
-      defaultValue: DataType.UUIDV1
+      defaultValue: DataType.UUIDV1,
     },
     uuidv4: {
       type: DataType.UUID,
       unique: true,
-      defaultValue: DataType.UUIDV4
+      defaultValue: DataType.UUIDV4,
     },
     username: {
-      type: DataType.STRING
+      type: DataType.STRING,
     },
     username2: {
-      type: DataType.STRING(5)
+      type: DataType.STRING(5),
     },
     aNumber: {
-      type: DataType.INTEGER
+      type: DataType.INTEGER,
     },
     bNumber: {
-      type: DataType.INTEGER
+      type: DataType.INTEGER,
     },
     isAdmin: {
-      type: DataType.BOOLEAN
+      type: DataType.BOOLEAN,
     },
     isSuperUser: {
       type: DataType.BOOLEAN,
       defaultValue: false,
-      allowNull: false
+      allowNull: false,
     },
     touchedAt: {
       type: DataType.DATE,
-      defaultValue: DataType.NOW
+      defaultValue: DataType.NOW,
     },
     birthDate: {
-      type: DataType.DATE
+      type: DataType.DATE,
     },
     dateAllowNullTrue: {
       allowNull: true,
-      type: DataType.DATE
+      type: DataType.DATE,
     },
     name: {
-      type: DataType.STRING
+      type: DataType.STRING,
     },
     bio: {
-      type: DataType.TEXT
+      type: DataType.TEXT,
     },
     email: {
-      type: DataType.STRING
-    }
+      type: DataType.STRING,
+    },
   };
 
-  before(() => sequelize = createSequelize());
+  before(() => (sequelize = createSequelize()));
 
-  beforeEach(() => sequelize.sync({force: true}));
+  beforeEach(() => sequelize.sync({ force: true }));
 
   describe('define options', () => {
-
     it('should be retrievable from class prototype', () => {
       const userDefineOptions = getOptions(User.prototype);
       expect(userDefineOptions).not.to.be.undefined;
@@ -109,11 +105,9 @@ describe('table_column', () => {
 
       expect(shoeDefineOptions).to.have.property('tableName', SHOE_TABLE_NAME);
     });
-
   });
 
   describe('attribute options', () => {
-
     it('should be retrievable from class prototype', () => {
       const attributes = getAttributes(User.prototype);
 
@@ -128,56 +122,43 @@ describe('table_column', () => {
     });
 
     it('should have annotated attributes', () => {
-
       const attributes = getAttributes(User.prototype);
 
-      Object
-        .keys(expectedUserAttributes)
-        .forEach(key => {
+      Object.keys(expectedUserAttributes).forEach((key) => {
+        expect(attributes).to.have.property(key);
 
-          expect(attributes).to.have.property(key);
-
-          Object
-            .keys(expectedUserAttributes[key])
-            .forEach(attrOptionKey => {
-
-              try {
-
-                expect(attributes[key]).to.have.property(attrOptionKey).that.eql(expectedUserAttributes[key][attrOptionKey]);
-              } catch (e) {
-
-                e.message += ` for property "${key}"`;
-                throw e;
-              }
-            });
+        Object.keys(expectedUserAttributes[key]).forEach((attrOptionKey) => {
+          try {
+            expect(attributes[key])
+              .to.have.property(attrOptionKey)
+              .that.eql(expectedUserAttributes[key][attrOptionKey]);
+          } catch (e) {
+            e.message += ` for property "${key}"`;
+            throw e;
+          }
         });
+      });
     });
   });
 
   describe('rawAttributes', () => {
-
     let rawAttributes;
 
-    before(() => rawAttributes = User['rawAttributes']);
+    before(() => (rawAttributes = User['rawAttributes']));
 
     it('should have annotated attributes', () => {
-
-      Object
-        .keys(expectedUserAttributes)
-        .forEach(key => {
-          expect(rawAttributes).to.have.property(key);
-        });
+      Object.keys(expectedUserAttributes).forEach((key) => {
+        expect(rawAttributes).to.have.property(key);
+      });
     });
 
     it('should not have attributes, that are note annotated by column decorator', () => {
-
       expect(rawAttributes).not.to.have.property('extraField');
       expect(rawAttributes).not.to.have.property('extraField2');
       expect(rawAttributes).not.to.have.property('extraField3');
     });
 
     it('should have passed attribute options', () => {
-
       const uidv1SeqRawAttrOptions = rawAttributes.uuidv1;
 
       expect(uidv1SeqRawAttrOptions).to.have.property('type');
@@ -192,11 +173,9 @@ describe('table_column', () => {
       expect(uidv4SeqRawAttrOptions).to.have.property('defaultValue');
       expect(uidv4SeqRawAttrOptions.defaultValue).to.be.an.instanceof(DataType.UUIDV4);
     });
-
   });
 
   describe('column', () => {
-
     it('should infer the correct data type for bigint', () => {
       @Table
       class BigIntModel extends Model {
@@ -214,12 +193,10 @@ describe('table_column', () => {
     });
 
     it('should create appropriate sql query', () => {
-
       const seq = createSequelize(false);
 
-      @Table({timestamps: false})
+      @Table({ timestamps: false })
       class Bottle extends Model {
-
         @Column(DataType.STRING(5))
         brand: string;
 
@@ -234,23 +211,23 @@ describe('table_column', () => {
       seq.addModels([Bottle]);
 
       return Bottle.sync({
-        force: true, logging: _.after(2, _.once((sql) => {
-
-          // tslint:disable:max-line-length
-          expect(sql).to.match(/CREATE TABLE IF NOT EXISTS `Bottles` \(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `brand` VARCHAR\(5\), `key` CHAR\(2\), `num` INTEGER\(100\)\)/);
-        }))
+        force: true,
+        logging: _.after(
+          2,
+          _.once((sql) => {
+            expect(sql).to.match(
+              /CREATE TABLE IF NOT EXISTS `Bottles` \(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `brand` VARCHAR\(5\), `key` CHAR\(2\), `num` INTEGER\(100\)\)/
+            );
+          })
+        ),
       });
     });
-
   });
 
   describe('accessors', () => {
-
     describe('get', () => {
-
       @Table
       class User extends Model {
-
         @Column
         get name(): string {
           return 'My name is ' + this.getDataValue('name');
@@ -264,15 +241,13 @@ describe('table_column', () => {
       before(() => sequelize.addModels([User]));
 
       it('should consider getter', () => {
-
         const user = new User({});
         user.name = 'Peter';
 
         expect(user.name).to.equal('My name is Peter');
       });
 
-      it('shouldn\'t store value from getter into db', () => {
-
+      it("shouldn't store value from getter into db", () => {
         const user = new User({});
 
         user.name = 'elli';
@@ -280,19 +255,15 @@ describe('table_column', () => {
         return user
           .save()
           .then(() => User.findByPk(user.id))
-          .then(_user => {
-
+          .then((_user) => {
             expect(_user.getDataValue('name')).to.equal('elli');
           });
       });
-
     });
 
     describe('set', () => {
-
       @Table
       class User extends Model {
-
         @Column
         get name(): string {
           return this.getDataValue('name');
@@ -306,7 +277,6 @@ describe('table_column', () => {
       before(() => sequelize.addModels([User]));
 
       it('should consider setter', () => {
-
         const name = 'Peter';
 
         const user = new User({});
@@ -316,7 +286,6 @@ describe('table_column', () => {
       });
 
       it('should store value from setter into db', () => {
-
         const name = 'elli';
         const user = new User({});
 
@@ -325,14 +294,10 @@ describe('table_column', () => {
         return user
           .save()
           .then(() => User.findByPk(user.id))
-          .then(_user => {
-
+          .then((_user) => {
             expect(_user.getDataValue('name')).to.equal(name.toUpperCase());
           });
       });
-
     });
-
   });
-
 });

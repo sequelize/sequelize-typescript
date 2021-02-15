@@ -1,6 +1,6 @@
 // Types only test. This should compile successfully.
 
-import { Optional } from "sequelize";
+import { Optional } from 'sequelize';
 import {
   AutoIncrement,
   BelongsTo,
@@ -8,11 +8,11 @@ import {
   ForeignKey,
   PrimaryKey,
   Sequelize,
-} from "../../src/index";
-import { Column } from "../../src/model/column/column";
-import { Model } from "../../src/model/model/model";
-import { Table } from "../../src/model/table/table";
-import { DataType } from "../../src/sequelize/data-type/data-type";
+} from '../../src/index';
+import { Column } from '../../src/model/column/column';
+import { Model } from '../../src/model/model/model';
+import { Table } from '../../src/model/table/table';
+import { DataType } from '../../src/sequelize/data-type/data-type';
 
 interface PetPersonAttributes {
   petId: number;
@@ -34,7 +34,7 @@ interface PersonAttributes {
   id: number;
   name: string;
 }
-type PersonCreationAttributes = Optional<PersonAttributes, "id">;
+type PersonCreationAttributes = Optional<PersonAttributes, 'id'>;
 
 @Table
 export class Person extends Model<PersonAttributes, PersonCreationAttributes> {
@@ -76,6 +76,7 @@ export class Toy extends Model {
   pet: Pet;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function testTypes() {
   // all models should be accepted
   new Sequelize().addModels([Person, Pet, PetPerson]);

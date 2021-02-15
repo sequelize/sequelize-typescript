@@ -1,12 +1,10 @@
-import {Table, Model, Column} from "../../src";
+import { Table, Model, Column } from '../../src';
 
-@Table({timestamps: false})
+@Table({ timestamps: false })
 export class UserWithCustomUpdatedAt extends Model {
-
   @Column
   name: string;
 
   @Column
   updatedAt: Date;
-
 }

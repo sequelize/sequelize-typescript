@@ -1,21 +1,29 @@
-/* tslint:disable:max-classes-per-file */
-
-import {expect, use} from 'chai';
-import {useFakeTimers, stub, spy} from 'sinon';
+import { expect, use } from 'chai';
+import { useFakeTimers, stub, spy } from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import {Op, UniqueConstraintError} from 'sequelize';
+import { Op } from 'sequelize';
 import * as chaiAsPromised from 'chai-as-promised';
-import {createSequelize} from "../utils/sequelize";
+import { createSequelize } from '../utils/sequelize';
 import {
-  Model, Table, Column, PrimaryKey,
-  ForeignKey, HasMany, BelongsTo, DataType, Default,
-  AutoIncrement, CreatedAt, DeletedAt, UpdatedAt,
-  BelongsToMany
-} from "../../src";
+  Model,
+  Table,
+  Column,
+  PrimaryKey,
+  ForeignKey,
+  HasMany,
+  BelongsTo,
+  DataType,
+  Default,
+  AutoIncrement,
+  CreatedAt,
+  DeletedAt,
+  UpdatedAt,
+  BelongsToMany,
+} from '../../src';
 import chaiDatetime = require('chai-datetime');
-import {TableOptions} from "../../src/model/table/table-options";
+import { TableOptions } from '../../src/model/table/table-options';
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -24,12 +32,10 @@ use(chaiDatetime);
 let clock;
 
 describe('model', () => {
-
   let sequelize;
 
   @Table
   class MainUser extends Model {
-
     @Column
     username: string;
 
@@ -60,40 +66,35 @@ describe('model', () => {
   beforeEach(() => {
     sequelize = createSequelize();
     sequelize.addModels([MainUser]);
-    return MainUser.sync({force: true});
+    return MainUser.sync({ force: true });
   });
 
   describe('instantiation when not initialized', () => {
-
     it('should throw an error', () => {
       @Table
-      class Test extends Model {
-      }
+      class Test extends Model {}
 
       expect(() => new Test()).to.throw(/^Model not initialized/);
     });
-
   });
 
   describe('static functions when not initialized', () => {
-
     it('should throw an error', () => {
       @Table
-      class Test extends Model {
-      }
+      class Test extends Model {}
 
-      expect(() => Test.beforeCreate(() => {
-      })).to.throw(/^Model not initialized/);
+      expect(() =>
+        Test.beforeCreate(() => {
+          // beforeCreate
+        })
+      ).to.throw(/^Model not initialized/);
     });
-
   });
 
   describe('constructor', () => {
     it('uses the passed dao name as tablename if freezeTableName', () => {
-
-      @Table({freezeTableName: true, tableName: 'FrozenUser'})
-      class User extends Model {
-      }
+      @Table({ freezeTableName: true, tableName: 'FrozenUser' })
+      class User extends Model {}
 
       sequelize.addModels([User]);
 
@@ -101,9 +102,8 @@ describe('model', () => {
     });
 
     it('uses the pluralized dao name as tablename unless freezeTableName', () => {
-      @Table({freezeTableName: false, tableName: 'SuperUser'})
-      class User extends Model {
-      }
+      @Table({ freezeTableName: false, tableName: 'SuperUser' })
+      class User extends Model {}
 
       sequelize.addModels([User]);
 
@@ -111,11 +111,9 @@ describe('model', () => {
     });
 
     it('uses checks to make sure dao factory isnt leaking on multiple define', () => {
-
       (() => {
-        @Table({freezeTableName: false, tableName: 'SuperUser'})
-        class User extends Model {
-        }
+        @Table({ freezeTableName: false, tableName: 'SuperUser' })
+        class User extends Model {}
 
         sequelize.addModels([User]);
       })();
@@ -123,9 +121,8 @@ describe('model', () => {
       const factorySize = sequelize['modelManager'].all.length;
 
       (() => {
-        @Table({freezeTableName: false, tableName: 'SuperUser'})
-        class User extends Model {
-        }
+        @Table({ freezeTableName: false, tableName: 'SuperUser' })
+        class User extends Model {}
 
         sequelize.addModels([User]);
       })();
@@ -145,8 +142,11 @@ describe('model', () => {
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
-        return expect(User.create({id: 'My own ID!'})).to.eventually.have.property('id', 'My own ID!');
+      return User.sync({ force: true }).then(() => {
+        return expect(User.create({ id: 'My own ID!' })).to.eventually.have.property(
+          'id',
+          'My own ID!'
+        );
       });
     });
 
@@ -203,7 +203,7 @@ describe('model', () => {
     it('should allow me to set a default value for createdAt and updatedAt', () => {
       clock.restore();
 
-      @Table({timestamps: true})
+      @Table({ timestamps: true })
       class User extends Model {
         @Column
         aNumber: number;
@@ -219,14 +219,11 @@ describe('model', () => {
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
-        return User.create({aNumber: 5}).then((user) => {
+      return User.sync({ force: true }).then(() => {
+        return User.create({ aNumber: 5 }).then((user) => {
           clock.restore();
-          return User.bulkCreate([
-            {aNumber: 10},
-            {aNumber: 12}
-          ]).then(() => {
-            return User.findAll({where: {aNumber: {[Op.gte]: 10}}}).then((users) => {
+          return User.bulkCreate([{ aNumber: 10 }, { aNumber: 12 }]).then(() => {
+            return User.findAll({ where: { aNumber: { [Op.gte]: 10 } } }).then((users) => {
               expect(moment(user.createdAt).format('YYYY-MM-DD')).to.equal('2012-01-01');
               expect(moment(user.updatedAt).format('YYYY-MM-DD')).to.equal('2012-01-02');
               users.forEach((u) => {
@@ -242,7 +239,7 @@ describe('model', () => {
     it('should allow me to set a function as default value', () => {
       const defaultFunction = stub().returns(5);
 
-      @Table({timestamps: true})
+      @Table({ timestamps: true })
       class User extends Model {
         @Default(defaultFunction)
         @Column
@@ -251,7 +248,7 @@ describe('model', () => {
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
+      return User.sync({ force: true }).then(() => {
         return User.create().then((user) => {
           return User.create().then((user2) => {
             expect(user.aNumber).to.equal(5);
@@ -280,12 +277,12 @@ describe('model', () => {
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
-        return User.create({aNumber: 4}).then((user) => {
+      return User.sync({ force: true }).then(() => {
+        return User.create({ aNumber: 4 }).then((user) => {
           expect(user.updatedOn).to.exist;
           expect(user.dateCreated).to.exist;
           return user.destroy().then(() => {
-            return user.reload({paranoid: false}).then(() => {
+            return user.reload({ paranoid: false }).then(() => {
               expect(user.deletedAtThisTime).to.exist;
             });
           });
@@ -294,7 +291,7 @@ describe('model', () => {
     });
 
     it('should allow me to disable some of the timestamp fields', () => {
-      @Table({updatedAt: false, createdAt: false})
+      @Table({ updatedAt: false, createdAt: false })
       class User extends Model {
         @Column
         name: string;
@@ -305,9 +302,9 @@ describe('model', () => {
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
+      return User.sync({ force: true }).then(() => {
         return User.create({
-          name: 'heyo'
+          name: 'heyo',
         }).then((user) => {
           expect(user.createdAt).not.to.exist;
           expect(user['false']).not.to.exist; //  because, you know we might accidentally add a field named 'false'
@@ -316,7 +313,7 @@ describe('model', () => {
           return user.save().then((_user) => {
             expect(_user.updatedAt).not.to.exist;
             return _user.destroy().then(() => {
-              return _user.reload({paranoid: false}).then(() => {
+              return _user.reload({ paranoid: false }).then(() => {
                 expect(_user.deletedAtThisTime).to.exist;
               });
             });
@@ -328,13 +325,13 @@ describe('model', () => {
     it('returns proper defaultValues after save when setter is set', () => {
       const titleSetter = spy();
 
-      @Table({updatedAt: false, createdAt: false})
+      @Table({ updatedAt: false, createdAt: false })
       class Task extends Model {
         @Column({
           type: DataType.STRING(50),
           allowNull: false,
           defaultValue: '',
-          set: titleSetter
+          set: titleSetter,
         })
         title: string;
 
@@ -344,17 +341,19 @@ describe('model', () => {
 
       sequelize.addModels([Task]);
 
-      return Task.sync({force: true}).then(() => {
-        return Task.build().save().then((record) => {
-          expect(record.title).to.be.a('string');
-          expect(record.title).to.equal('');
-          expect(titleSetter.notCalled).to.be.ok; // The setter method should not be invoked for default values
-        });
+      return Task.sync({ force: true }).then(() => {
+        return Task.build()
+          .save()
+          .then((record) => {
+            expect(record.title).to.be.a('string');
+            expect(record.title).to.equal('');
+            expect(titleSetter.notCalled).to.be.ok; // The setter method should not be invoked for default values
+          });
       });
     });
 
     it('should work with both paranoid and underscored being true', () => {
-      @Table({paranoid: true, underscored: true})
+      @Table({ paranoid: true, underscored: true })
       class User extends Model {
         @Column
         aNumber: number;
@@ -362,8 +361,8 @@ describe('model', () => {
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
-        return User.create({aNumber: 30}).then(() => {
+      return User.sync({ force: true }).then(() => {
+        return User.create({ aNumber: 30 }).then(() => {
           return User.count().then((c) => {
             expect(c).to.equal(1);
           });
@@ -374,24 +373,23 @@ describe('model', () => {
     it('allows multiple column unique keys to be defined', () => {
       @Table
       class User extends Model {
-
         @Column({
-          unique: 'user_and_email'
+          unique: 'user_and_email',
         })
         username: string;
 
         @Column({
-          unique: 'user_and_email'
+          unique: 'user_and_email',
         })
         email: string;
 
         @Column({
-          unique: 'a_and_b'
+          unique: 'a_and_b',
         })
         aCol: string;
 
         @Column({
-          unique: 'a_and_b'
+          unique: 'a_and_b',
         })
         bCol: string;
       }
@@ -399,63 +397,72 @@ describe('model', () => {
       sequelize.addModels([User]);
 
       return User.sync({
-        force: true, logging: _.after(2, _.once((sql) => {
-          expect(sql).to.match(/UNIQUE\s*([`"]?user_and_email[`"]?)?\s*\([`"]?username[`"]?, [`"]?email[`"]?\)/);
-          expect(sql).to.match(/UNIQUE\s*([`"]?a_and_b[`"]?)?\s*\([`"]?aCol[`"]?, [`"]?bCol[`"]?\)/);
-        }))
+        force: true,
+        logging: _.after(
+          2,
+          _.once((sql) => {
+            expect(sql).to.match(
+              /UNIQUE\s*([`"]?user_and_email[`"]?)?\s*\([`"]?username[`"]?, [`"]?email[`"]?\)/
+            );
+            expect(sql).to.match(
+              /UNIQUE\s*([`"]?a_and_b[`"]?)?\s*\([`"]?aCol[`"]?, [`"]?bCol[`"]?\)/
+            );
+          })
+        ),
       });
     });
 
     it('allows unique on column with field aliases', () => {
       @Table
       class User extends Model {
-
         @Column({
           field: 'user_name',
-          unique: 'user_name_unique'
+          unique: 'user_name_unique',
         })
         username: string;
       }
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
+      return User.sync({ force: true }).then(() => {
         return sequelize['queryInterface'].showIndex(User['tableName']).then((indexes) => {
           expect(indexes).to.have.length(1);
           const idxUnique = indexes[0];
           expect(idxUnique.primary).to.equal(false);
           expect(idxUnique.unique).to.equal(true);
-          expect(idxUnique.fields).to.deep.equal([{attribute: 'user_name', length: undefined, order: undefined}]);
+          expect(idxUnique.fields).to.deep.equal([
+            { attribute: 'user_name', length: undefined, order: undefined },
+          ]);
         });
       });
     });
 
     it('allows us to customize the error message for unique constraint', () => {
-
       @Table
       class User extends Model {
-
         @Column({
-          unique: {name: 'user_and_email', msg: 'User and email must be unique'}
+          unique: { name: 'user_and_email', msg: 'User and email must be unique' },
         })
         username: string;
 
         @Column({
-          unique: 'user_and_email'
+          unique: 'user_and_email',
         })
         email: string;
       }
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
-        return Promise.all([
-          User.create({username: 'tobi', email: 'tobi@tobi.me'}),
-          User.create({username: 'tobi', email: 'tobi@tobi.me'})]);
-      }) .catch( (err) => {
-        expect(err.message).to.equal('User and email must be unique');
-      });//  Native Catch expect one parameter only
-      
+      return User.sync({ force: true })
+        .then(() => {
+          return Promise.all([
+            User.create({ username: 'tobi', email: 'tobi@tobi.me' }),
+            User.create({ username: 'tobi', email: 'tobi@tobi.me' }),
+          ]);
+        })
+        .catch((err) => {
+          expect(err.message).to.equal('User and email must be unique');
+        }); //  Native Catch expect one parameter only
     });
 
     // If you use migrations to create unique indexes that have explicit names and/or contain fields
@@ -468,17 +475,19 @@ describe('model', () => {
           {
             name: 'user_and_email_index',
             unique: true,
-            fields: ['userId', {
-              name: 'email',
-              collate: 'RTRIM',
-              order: 'DESC',
-              length: 5,
-            }]
-          }
-        ]
+            fields: [
+              'userId',
+              {
+                name: 'email',
+                collate: 'RTRIM',
+                order: 'DESC',
+                length: 5,
+              },
+            ],
+          },
+        ],
       })
       class User extends Model {
-
         @Column
         userId: number;
 
@@ -488,55 +497,62 @@ describe('model', () => {
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true}).then(() => {
-        // Redefine the model to use the index in database and override error message
-        @Table({timestamps: true})
-        class User extends Model {
+      return User.sync({ force: true })
+        .then(() => {
+          // Redefine the model to use the index in database and override error message
+          @Table({ timestamps: true })
+          class User extends Model {
+            @Column({
+              unique: { name: 'user_and_email_index', msg: 'User and email must be unique' },
+            })
+            userId: number;
 
-          @Column({
-            unique: {name: 'user_and_email_index', msg: 'User and email must be unique'}
-          })
-          userId: number;
+            @Column({
+              unique: 'user_and_email_index',
+            })
+            email: string;
+          }
 
-          @Column({
-            unique: 'user_and_email_index'
-          })
-          email: string;
-        }
+          sequelize.addModels([User]);
 
-        sequelize.addModels([User]);
-
-        return Promise.all([
-          User.create({userId: 1, email: 'tobi@tobi.me'}),
-          User.create({userId: 1, email: 'tobi@tobi.me'})]);
-      }).catch( (err) => {
-        expect(err.message).to.equal('User and email must be unique');
-      });//  Native Catch expect one parameter only
-
+          return Promise.all([
+            User.create({ userId: 1, email: 'tobi@tobi.me' }),
+            User.create({ userId: 1, email: 'tobi@tobi.me' }),
+          ]);
+        })
+        .catch((err) => {
+          expect(err.message).to.equal('User and email must be unique');
+        }); //  Native Catch expect one parameter only
     });
 
     it('should allow the user to specify indexes in options', () => {
-
       @Table({
-        indexes: [{
-          name: 'a_b_uniq',
-          unique: true,
-          method: 'BTREE',
-          fields: ['fieldB', {
-            attribute: 'fieldA',
-            collate: 'RTRIM',
-            order: 'DESC',
-            length: 5
-          }]
-        }, {
-          type: 'FULLTEXT',
-          fields: ['fieldC'],
-          concurrently: true
-        }, {
-          type: 'FULLTEXT',
-          fields: ['fieldD']
-        }],
-        engine: 'MyISAM'
+        indexes: [
+          {
+            name: 'a_b_uniq',
+            unique: true,
+            method: 'BTREE',
+            fields: [
+              'fieldB',
+              {
+                attribute: 'fieldA',
+                collate: 'RTRIM',
+                order: 'DESC',
+                length: 5,
+              },
+            ],
+          },
+          {
+            type: 'FULLTEXT',
+            fields: ['fieldC'],
+            concurrently: true,
+          },
+          {
+            type: 'FULLTEXT',
+            fields: ['fieldD'],
+          },
+        ],
+        engine: 'MyISAM',
       } as TableOptions)
       class ModelA extends Model {
         @Column
@@ -551,34 +567,34 @@ describe('model', () => {
 
       sequelize.addModels([ModelA]);
 
-      return sequelize.sync().then(() => {
-        return sequelize.sync(); // The second call should not try to create the indices again
-      }).then(() => {
-        return sequelize['queryInterface'].showIndex(ModelA['tableName']);
-      }).then(([idx1, idx2]) => {
+      return sequelize
+        .sync()
+        .then(() => {
+          return sequelize.sync(); // The second call should not try to create the indices again
+        })
+        .then(() => {
+          return sequelize['queryInterface'].showIndex(ModelA['tableName']);
+        })
+        .then(([idx1, idx2]) => {
+          expect(idx1.fields).to.deep.equal([
+            { attribute: 'fieldB', length: undefined, order: undefined },
+            { attribute: 'fieldA', length: undefined, order: undefined },
+          ]);
 
-        expect(idx1.fields).to.deep.equal([
-          {attribute: 'fieldB', length: undefined, order: undefined},
-          {attribute: 'fieldA', length: undefined, order: undefined}
-        ]);
+          expect(idx2.fields).to.deep.equal([
+            { attribute: 'fieldC', length: undefined, order: undefined },
+          ]);
 
-        expect(idx2.fields).to.deep.equal([
-          {attribute: 'fieldC', length: undefined, order: undefined}
-        ]);
+          expect(idx1.name).to.equal('a_b_uniq');
+          expect(idx1.unique).to.be.ok;
 
-        expect(idx1.name).to.equal('a_b_uniq');
-        expect(idx1.unique).to.be.ok;
-
-
-        expect(idx2.name).to.equal('model_as_field_c');
-        expect(idx2.unique).not.to.be.ok;
-
-      });
+          expect(idx2.name).to.equal('model_as_field_c');
+          expect(idx2.unique).not.to.be.ok;
+        });
     });
   });
 
   describe('build using new', () => {
-
     it('should create an instance of defined model', () => {
       const name = 'test';
 
@@ -588,26 +604,24 @@ describe('model', () => {
       }
 
       sequelize.addModels([User]);
-      const user = new User({name});
+      const user = new User({ name });
 
       expect(user).to.be.an.instanceOf(User);
       expect(user).to.have.property('name', name);
     });
-
   });
 
   describe('build', () => {
     it("doesn't create database entries", () => {
-      MainUser.build({username: 'John Wayne'});
+      MainUser.build({ username: 'John Wayne' });
       return MainUser.findAll().then((users) => {
         expect(users).to.have.length(0);
       });
     });
 
     it('fills the objects with default values (timestamps=true)', () => {
-      @Table({timestamps: true})
+      @Table({ timestamps: true })
       class Task extends Model {
-
         @Default('a task!')
         @Column
         title: string;
@@ -640,7 +654,6 @@ describe('model', () => {
     it('fills the objects with default values', () => {
       @Table
       class Task extends Model {
-
         @Default('a task!')
         @Column
         title: string;
@@ -673,23 +686,22 @@ describe('model', () => {
     it('attaches getter and setter methods from attribute definition', () => {
       @Table
       class Product extends Model {
-
         @Column({
           get(this: Product): string {
             return 'answer = ' + this.getDataValue('price');
           },
           set(this: Product, value: number): any {
             return this.setDataValue('price', value + 42);
-          }
+          },
         })
         price: number;
       }
 
       sequelize.addModels([Product]);
 
-      expect(Product.build({price: 42}).price).to.equal('answer = 84');
+      expect(Product.build({ price: 42 }).price).to.equal('answer = 84');
 
-      const p = Product.build({price: 1});
+      const p = Product.build({ price: 1 });
       expect(p.price).to.equal('answer = 43');
 
       p.price = 0;
@@ -699,7 +711,6 @@ describe('model', () => {
     it('uses get/set accessors', () => {
       @Table
       class Product extends Model {
-
         @Column(DataType.INTEGER)
         get priceInCents() {
           return this.getDataValue('priceInCents');
@@ -711,22 +722,20 @@ describe('model', () => {
         }
 
         get price() {
-          return '$' + (this.getDataValue('priceInCents') / 100);
+          return '$' + this.getDataValue('priceInCents') / 100;
         }
       }
 
       sequelize.addModels([Product]);
 
-      expect(Product.build({price: 20}).priceInCents).to.equal(20 * 100);
-      expect(Product.build({priceInCents: 30 * 100}).price).to.equal('$' + 30);
+      expect(Product.build({ price: 20 }).priceInCents).to.equal(20 * 100);
+      expect(Product.build({ priceInCents: 30 * 100 }).price).to.equal('$' + 30);
     });
 
     describe('include', () => {
-
       it('should support basic includes', () => {
         @Table
         class Product extends Model {
-
           @Column
           title: string;
 
@@ -748,7 +757,6 @@ describe('model', () => {
 
         @Table
         class Tag extends Model {
-
           id: number;
 
           @Column
@@ -760,7 +768,6 @@ describe('model', () => {
 
         @Table
         class User extends Model {
-
           @Column
           firstName: string;
 
@@ -773,24 +780,24 @@ describe('model', () => {
 
         sequelize.addModels([Product, Tag, User]);
 
-        const product = Product.build({
-          id: 1,
-          title: 'Chair',
-          tags: [
-            {id: 1, name: 'Alpha'},
-            {id: 2, name: 'Beta'}
-          ],
-          user: {
+        const product = Product.build(
+          {
             id: 1,
-            firstName: 'Mick',
-            lastName: 'Hansen'
+            title: 'Chair',
+            tags: [
+              { id: 1, name: 'Alpha' },
+              { id: 2, name: 'Beta' },
+            ],
+            user: {
+              id: 1,
+              firstName: 'Mick',
+              lastName: 'Hansen',
+            },
+          },
+          {
+            include: [User, Tag],
           }
-        }, {
-          include: [
-            User,
-            Tag
-          ]
-        });
+        );
 
         expect(product.tags).to.be.ok;
         expect(product.tags.length).to.equal(2);
@@ -802,7 +809,6 @@ describe('model', () => {
       it('should support includes with aliases', () => {
         @Table
         class Product extends Model {
-
           @Column
           title: string;
 
@@ -818,7 +824,6 @@ describe('model', () => {
 
         @Table
         class Tag extends Model {
-
           id: number;
 
           @Column
@@ -830,7 +835,6 @@ describe('model', () => {
 
         @Table
         class User extends Model {
-
           id: number;
 
           @Column
@@ -845,33 +849,36 @@ describe('model', () => {
 
         sequelize.addModels([Product, Tag, User]);
 
-        const product = Product.build({
-          id: 1,
-          title: 'Chair',
-          categories: [
-            {id: 1, name: 'Alpha'},
-            {id: 2, name: 'Beta'},
-            {id: 3, name: 'Charlie'},
-            {id: 4, name: 'Delta'}
-          ],
-          followers: [
-            {
-              id: 1,
-              firstName: 'Mick',
-              lastName: 'Hansen'
-            },
-            {
-              id: 2,
-              firstName: 'Jan',
-              lastName: 'Meier'
-            }
-          ]
-        }, {
-          include: [
-            {model: User, as: 'followers'},
-            {model: Tag, as: 'categories'}
-          ]
-        });
+        const product = Product.build(
+          {
+            id: 1,
+            title: 'Chair',
+            categories: [
+              { id: 1, name: 'Alpha' },
+              { id: 2, name: 'Beta' },
+              { id: 3, name: 'Charlie' },
+              { id: 4, name: 'Delta' },
+            ],
+            followers: [
+              {
+                id: 1,
+                firstName: 'Mick',
+                lastName: 'Hansen',
+              },
+              {
+                id: 2,
+                firstName: 'Jan',
+                lastName: 'Meier',
+              },
+            ],
+          },
+          {
+            include: [
+              { model: User, as: 'followers' },
+              { model: Tag, as: 'categories' },
+            ],
+          }
+        );
 
         expect(product.categories).to.be.ok;
         expect(product.categories.length).to.equal(4);
@@ -904,21 +911,20 @@ describe('model', () => {
     // }
 
     it('should not fail if model is paranoid and where is an empty array', () => {
-      @Table({paranoid: true, timestamps: true})
+      @Table({ paranoid: true, timestamps: true })
       class User extends Model {
-
         @Column
         username: string;
       }
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true})
+      return User.sync({ force: true })
         .then(() => {
-          return User.create({username: 'A fancy name'});
+          return User.create({ username: 'A fancy name' });
         })
         .then(() => {
-          return User.findOne({where: {}});
+          return User.findOne({ where: {} });
         })
         .then((u) => {
           expect(u.username).to.equal('A fancy name');
@@ -926,30 +932,29 @@ describe('model', () => {
     });
 
     it('should filter based on the where clause even if IFindOptions.include is []', () => {
-      @Table({paranoid: true, timestamps: true})
+      @Table({ paranoid: true, timestamps: true })
       class User extends Model {
-
         @Column
         username: string;
       }
 
       sequelize.addModels([User]);
 
-      return User.sync({force: true})
+      return User.sync({ force: true })
         .then(() => {
-          return User.create({username: 'a1'});
+          return User.create({ username: 'a1' });
         })
         .then(() => {
-          return User.create({username: 'a2'});
+          return User.create({ username: 'a2' });
         })
         .then(() => {
-          return User.findOne({where: {username: 'a2'}, include: []});
+          return User.findOne({ where: { username: 'a2' }, include: [] });
         })
         .then((u) => {
           expect(u.username).to.equal('a2');
         })
         .then(() => {
-          return User.findOne({where: {username: 'a1'}, include: []});
+          return User.findOne({ where: { username: 'a1' }, include: [] });
         })
         .then((u) => {
           expect(u.username).to.equal('a1');
@@ -995,10 +1000,9 @@ describe('model', () => {
 
     describe('returns an instance if it already exists', () => {
       it('with a single find field', () => {
-
-        return MainUser.create({username: 'Username'}).then((user) => {
+        return MainUser.create({ username: 'Username' }).then((user) => {
           return MainUser.findOrBuild({
-            where: {username: user.username}
+            where: { username: user.username },
           }).then(([_user, initialized]) => {
             expect(_user.id).to.equal(user.id);
             expect(_user.username).to.equal('Username');
@@ -1008,13 +1012,12 @@ describe('model', () => {
       });
 
       it('with multiple find fields', () => {
-
-        return MainUser.create({username: 'Username', data: 'data'}).then((user) => {
+        return MainUser.create({ username: 'Username', data: 'data' }).then((user) => {
           return MainUser.findOrBuild({
             where: {
               username: user.username,
-              data: user.data
-            }
+              data: user.data,
+            },
           }).then(([_user, initialized]) => {
             expect(_user.id).to.equal(user.id);
             expect(_user.username).to.equal('Username');
@@ -1026,15 +1029,15 @@ describe('model', () => {
 
       it('builds a new instance with default value.', () => {
         const data = {
-          username: 'Username'
+          username: 'Username',
         };
         const defaultValues = {
-          data: 'ThisIsData'
+          data: 'ThisIsData',
         };
 
         return MainUser.findOrBuild({
           where: data,
-          defaults: defaultValues
+          defaults: defaultValues,
         }).then(([user, initialized]) => {
           expect(user.id).to.be.null;
           expect(user.username).to.equal('Username');
@@ -1050,21 +1053,26 @@ describe('model', () => {
     it('throws an error if no where clause is given', () => {
       @Table
       class User extends Model {
-
         @Column
         username: string;
       }
 
       sequelize.addModels([User]);
 
-      return sequelize.sync({force: true}).then(() => {
-        return (User as any).update();
-      }).then(() => {
-        throw new Error('Update should throw an error if no where clause is given.');
-      }, (err) => {
-        expect(err).to.be.an.instanceof(Error);
-        expect(err.message).to.match(/^Missing where attribute in the options parameter/);
-      });
+      return sequelize
+        .sync({ force: true })
+        .then(() => {
+          return (User as any).update();
+        })
+        .then(
+          () => {
+            throw new Error('Update should throw an error if no where clause is given.');
+          },
+          (err) => {
+            expect(err).to.be.an.instanceof(Error);
+            expect(err.message).to.match(/^Missing where attribute in the options parameter/);
+          }
+        );
     });
 
     // TODO@robin sqlite3 transaction issue
@@ -1093,9 +1101,8 @@ describe('model', () => {
     // }
 
     it('updates the attributes that we select only without updating createdAt', () => {
-      @Table({timestamps: true, paranoid: true})
+      @Table({ timestamps: true, paranoid: true })
       class User extends Model {
-
         @Column
         username: string;
 
@@ -1106,19 +1113,26 @@ describe('model', () => {
       sequelize.addModels([User]);
 
       let test = false;
-      return User.sync({force: true}).then(() => {
-        return User.create({username: 'Peter', secretValue: '42'}).then((user) => {
-          return user.update({secretValue: '43'}, {
-            fields: ['secretValue'], logging: (sql) => {
-              test = true;
-              // tslint:disable:max-line-length
-              expect(sql).to.match(/UPDATE\s+[`"]+Users[`"]+\s+SET\s+[`"]+secretValue[`"]=(\$1|\?),[`"]+updatedAt[`"]+=(\$2|\?)\s+WHERE [`"]+id[`"]+\s=\s(\$3|\?)/);
-            }
+      return User.sync({ force: true })
+        .then(() => {
+          return User.create({ username: 'Peter', secretValue: '42' }).then((user) => {
+            return user.update(
+              { secretValue: '43' },
+              {
+                fields: ['secretValue'],
+                logging: (sql) => {
+                  test = true;
+                  expect(sql).to.match(
+                    /UPDATE\s+[`"]+Users[`"]+\s+SET\s+[`"]+secretValue[`"]=(\$1|\?),[`"]+updatedAt[`"]+=(\$2|\?)\s+WHERE [`"]+id[`"]+\s=\s(\$3|\?)/
+                  );
+                },
+              }
+            );
           });
+        })
+        .then(() => {
+          expect(test).to.be.true;
         });
-      }).then(() => {
-        expect(test).to.be.true;
-      });
     });
     //
     // it('allows sql logging of updated statements', () => {
@@ -1371,7 +1385,6 @@ describe('model', () => {
     //     });
     //   });
     // });
-
   });
   //
   // describe('destroy', () => {

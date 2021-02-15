@@ -3,11 +3,11 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 
-import { BeforeCreate, Sequelize } from "../../../src";
-import { Column, Model, Table } from "../../../src";
+import { BeforeCreate, Sequelize } from '../../../src';
+import { Column, Model, Table } from '../../../src';
 
-import { Hook } from "../../models/Hook";
-import { createSequelize } from "../../utils/sequelize";
+import { Hook } from '../../models/Hook';
+import { createSequelize } from '../../utils/sequelize';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -20,15 +20,14 @@ describe('hook', () => {
   });
 
   beforeEach(() => {
-
-    return sequelize.sync({force: true});
+    return sequelize.sync({ force: true });
   });
 
   it('should throw on non-static hooks', () => {
     expect(() => {
       @Table
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       class User extends Model {
-
         @Column
         firstName: string;
 
@@ -36,17 +35,18 @@ describe('hook', () => {
         lastName: string;
 
         @BeforeCreate
-        nonStaticHookFunction(): void {}
+        nonStaticHookFunction(): void {
+          // nonStaticHookFunction
+        }
       }
     }).to.throw(Error, /not a static method/);
   });
 
   it('should throw on methods with reserved names', () => {
     expect(() => {
-      // tslint:disable-next-line:max-classes-per-file
       @Table
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       class User extends Model {
-
         @Column
         firstName: string;
 
@@ -54,7 +54,9 @@ describe('hook', () => {
         lastName: string;
 
         @BeforeCreate
-        static beforeCreate(): void {}
+        static beforeCreate(): void {
+          // beforeCreate
+        }
       }
     }).to.throw(Error, /name is reserved/);
   });
@@ -80,7 +82,10 @@ describe('hook', () => {
     const beforeBulkUpdateHookStub = sinon.stub(Hook, 'beforeBulkUpdateHook');
     const afterBulkUpdateHookStub = sinon.stub(Hook, 'afterBulkUpdateHook');
     const beforeFindHookStub = sinon.stub(Hook, 'beforeFindHook');
-    const beforeFindAfterExpandIncludeAllHookStub = sinon.stub(Hook, 'beforeFindAfterExpandIncludeAllHook');
+    const beforeFindAfterExpandIncludeAllHookStub = sinon.stub(
+      Hook,
+      'beforeFindAfterExpandIncludeAllHook'
+    );
     const beforeFindAfterOptionsHookStub = sinon.stub(Hook, 'beforeFindAfterOptionsHook');
     const afterFindHookStub = sinon.stub(Hook, 'afterFindHook');
     const beforeCountHookStub = sinon.stub(Hook, 'beforeCountHook');
@@ -126,8 +131,14 @@ describe('hook', () => {
     const beforeBulkUpdateHookWithNameStub = sinon.stub(Hook, 'beforeBulkUpdateHookWithName');
     const afterBulkUpdateHookWithNameStub = sinon.stub(Hook, 'afterBulkUpdateHookWithName');
     const beforeFindHookWithNameStub = sinon.stub(Hook, 'beforeFindHookWithName');
-    const beforeFindAfterExpandIncludeAllHookWithNameStub = sinon.stub(Hook, 'beforeFindAfterExpandIncludeAllHookWithName');
-    const beforeFindAfterOptionsHookWithNameStub = sinon.stub(Hook, 'beforeFindAfterOptionsHookWithName');
+    const beforeFindAfterExpandIncludeAllHookWithNameStub = sinon.stub(
+      Hook,
+      'beforeFindAfterExpandIncludeAllHookWithName'
+    );
+    const beforeFindAfterOptionsHookWithNameStub = sinon.stub(
+      Hook,
+      'beforeFindAfterOptionsHookWithName'
+    );
     const afterFindHookWithNameStub = sinon.stub(Hook, 'afterFindHookWithName');
     const beforeCountHookWithNameStub = sinon.stub(Hook, 'beforeCountHookWithName');
 
@@ -172,8 +183,12 @@ describe('hook', () => {
     expect(Hook['options'].hooks['beforeBulkUpdate']).to.include(beforeBulkUpdateHookStub);
     expect(Hook['options'].hooks['afterBulkUpdate']).to.include(afterBulkUpdateHookStub);
     expect(Hook['options'].hooks['beforeFind']).to.include(beforeFindHookStub);
-    expect(Hook['options'].hooks['beforeFindAfterExpandIncludeAll']).to.include(beforeFindAfterExpandIncludeAllHookStub);
-    expect(Hook['options'].hooks['beforeFindAfterOptions']).to.include(beforeFindAfterOptionsHookStub);
+    expect(Hook['options'].hooks['beforeFindAfterExpandIncludeAll']).to.include(
+      beforeFindAfterExpandIncludeAllHookStub
+    );
+    expect(Hook['options'].hooks['beforeFindAfterOptions']).to.include(
+      beforeFindAfterOptionsHookStub
+    );
     expect(Hook['options'].hooks['afterFind']).to.include(afterFindHookStub);
     expect(Hook['options'].hooks['beforeCount']).to.include(beforeCountHookStub);
 
@@ -195,64 +210,120 @@ describe('hook', () => {
 
     // Named hooks
 
-    expect(Hook['options'].hooks['beforeValidate'])
-      .to.deep.include({ name: 'myBeforeValidateHook', fn: beforeValidateHookWithNameStub });
-    expect(Hook['options'].hooks['afterValidate'])
-      .to.deep.include({ name: 'myAfterValidateHook', fn: afterValidateHookWithNameStub });
-    expect(Hook['options'].hooks['validationFailed'])
-      .to.deep.include({ name: 'myValidationFailedHook', fn: validationFailedHookWithNameStub });
-    expect(Hook['options'].hooks['beforeCreate'])
-      .to.deep.include({ name: 'myBeforeCreateHook', fn: beforeCreateHookWithNameStub });
-    expect(Hook['options'].hooks['afterCreate'])
-      .to.deep.include({ name: 'myAfterCreateHook', fn: afterCreateHookWithNameStub });
-    expect(Hook['options'].hooks['beforeDestroy'])
-      .to.deep.include({ name: 'myBeforeDestroyHook', fn: beforeDestroyHookWithNameStub });
-    expect(Hook['options'].hooks['afterDestroy'])
-      .to.deep.include({ name: 'myAfterDestroyHook', fn: afterDestroyHookWithNameStub });
-    expect(Hook['options'].hooks['beforeRestore'])
-      .to.deep.include({ name: 'myBeforeRestoreHook', fn: beforeRestoreHookWithNameStub });
-    expect(Hook['options'].hooks['afterRestore'])
-      .to.deep.include({ name: 'myAfterRestoreHook', fn: afterRestoreHookWithNameStub });
-    expect(Hook['options'].hooks['beforeUpdate'])
-      .to.deep.include({ name: 'myBeforeUpdateHook', fn: beforeUpdateHookWithNameStub });
-    expect(Hook['options'].hooks['afterUpdate'])
-      .to.deep.include({ name: 'myAfterUpdateHook', fn: afterUpdateHookWithNameStub });
-    expect(Hook['options'].hooks['beforeBulkCreate'])
-      .to.deep.include({ name: 'myBeforeBulkCreateHook', fn: beforeBulkCreateHookWithNameStub });
-    expect(Hook['options'].hooks['afterBulkCreate'])
-      .to.deep.include({ name: 'myAfterBulkCreateHook', fn: afterBulkCreateHookWithNameStub });
-    expect(Hook['options'].hooks['beforeBulkDestroy'])
-      .to.deep.include({ name: 'myBeforeBulkDestroyHook', fn: beforeBulkDestroyHookWithNameStub });
-    expect(Hook['options'].hooks['afterBulkDestroy'])
-      .to.deep.include({ name: 'myAfterBulkDestroyHook', fn: afterBulkDestroyHookWithNameStub });
-    expect(Hook['options'].hooks['beforeBulkRestore'])
-      .to.deep.include({ name: 'myBeforeBulkRestoreHook', fn: beforeBulkRestoreHookWithNameStub });
-    expect(Hook['options'].hooks['afterBulkRestore'])
-      .to.deep.include({ name: 'myAfterBulkRestoreHook', fn: afterBulkRestoreHookWithNameStub });
-    expect(Hook['options'].hooks['beforeBulkUpdate'])
-      .to.deep.include({ name: 'myBeforeBulkUpdateHook', fn: beforeBulkUpdateHookWithNameStub });
-    expect(Hook['options'].hooks['afterBulkUpdate'])
-      .to.deep.include({ name: 'myAfterBulkUpdateHook', fn: afterBulkUpdateHookWithNameStub });
-    expect(Hook['options'].hooks['beforeFind'])
-      .to.deep.include({ name: 'myBeforeFindHook', fn: beforeFindHookWithNameStub });
-    expect(Hook['options'].hooks['beforeFindAfterExpandIncludeAll'])
-      .to.deep.include({ name: 'myBeforeFindAfterExpandIncludeAllHook', fn: beforeFindAfterExpandIncludeAllHookWithNameStub });
-    expect(Hook['options'].hooks['beforeFindAfterOptions'])
-      .to.deep.include({ name: 'myBeforeFindAfterOptionsHook', fn: beforeFindAfterOptionsHookWithNameStub });
-    expect(Hook['options'].hooks['afterFind'])
-      .to.deep.include({ name: 'myAfterFindHook', fn: afterFindHookWithNameStub });
-    expect(Hook['options'].hooks['beforeCount'])
-      .to.deep.include({ name: 'myBeforeCountHook', fn: beforeCountHookWithNameStub });
+    expect(Hook['options'].hooks['beforeValidate']).to.deep.include({
+      name: 'myBeforeValidateHook',
+      fn: beforeValidateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterValidate']).to.deep.include({
+      name: 'myAfterValidateHook',
+      fn: afterValidateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['validationFailed']).to.deep.include({
+      name: 'myValidationFailedHook',
+      fn: validationFailedHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeCreate']).to.deep.include({
+      name: 'myBeforeCreateHook',
+      fn: beforeCreateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterCreate']).to.deep.include({
+      name: 'myAfterCreateHook',
+      fn: afterCreateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeDestroy']).to.deep.include({
+      name: 'myBeforeDestroyHook',
+      fn: beforeDestroyHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterDestroy']).to.deep.include({
+      name: 'myAfterDestroyHook',
+      fn: afterDestroyHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeRestore']).to.deep.include({
+      name: 'myBeforeRestoreHook',
+      fn: beforeRestoreHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterRestore']).to.deep.include({
+      name: 'myAfterRestoreHook',
+      fn: afterRestoreHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeUpdate']).to.deep.include({
+      name: 'myBeforeUpdateHook',
+      fn: beforeUpdateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterUpdate']).to.deep.include({
+      name: 'myAfterUpdateHook',
+      fn: afterUpdateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeBulkCreate']).to.deep.include({
+      name: 'myBeforeBulkCreateHook',
+      fn: beforeBulkCreateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterBulkCreate']).to.deep.include({
+      name: 'myAfterBulkCreateHook',
+      fn: afterBulkCreateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeBulkDestroy']).to.deep.include({
+      name: 'myBeforeBulkDestroyHook',
+      fn: beforeBulkDestroyHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterBulkDestroy']).to.deep.include({
+      name: 'myAfterBulkDestroyHook',
+      fn: afterBulkDestroyHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeBulkRestore']).to.deep.include({
+      name: 'myBeforeBulkRestoreHook',
+      fn: beforeBulkRestoreHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterBulkRestore']).to.deep.include({
+      name: 'myAfterBulkRestoreHook',
+      fn: afterBulkRestoreHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeBulkUpdate']).to.deep.include({
+      name: 'myBeforeBulkUpdateHook',
+      fn: beforeBulkUpdateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterBulkUpdate']).to.deep.include({
+      name: 'myAfterBulkUpdateHook',
+      fn: afterBulkUpdateHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeFind']).to.deep.include({
+      name: 'myBeforeFindHook',
+      fn: beforeFindHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeFindAfterExpandIncludeAll']).to.deep.include({
+      name: 'myBeforeFindAfterExpandIncludeAllHook',
+      fn: beforeFindAfterExpandIncludeAllHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeFindAfterOptions']).to.deep.include({
+      name: 'myBeforeFindAfterOptionsHook',
+      fn: beforeFindAfterOptionsHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['afterFind']).to.deep.include({
+      name: 'myAfterFindHook',
+      fn: afterFindHookWithNameStub,
+    });
+    expect(Hook['options'].hooks['beforeCount']).to.deep.include({
+      name: 'myBeforeCountHook',
+      fn: beforeCountHookWithNameStub,
+    });
 
     if (OriginSequelize['version'].split('.')[0] === '4') {
-      expect(Hook['options'].hooks['beforeSave'])
-        .to.deep.include({ name: 'myBeforeSaveHook', fn: beforeSaveHookWithNameStub });
-      expect(Hook['options'].hooks['afterSave'])
-        .to.deep.include({ name: 'myAfterSaveHook', fn: afterSaveHookWithNameStub });
-      expect(Hook['options'].hooks['beforeUpsert'])
-        .to.deep.include({ name: 'myBeforeUpsertHook', fn: beforeUpsertHookWithNameStub });
-      expect(Hook['options'].hooks['afterUpsert'])
-        .to.deep.include({ name: 'myAfterUpsertHook', fn: afterUpsertHookWithNameStub });
+      expect(Hook['options'].hooks['beforeSave']).to.deep.include({
+        name: 'myBeforeSaveHook',
+        fn: beforeSaveHookWithNameStub,
+      });
+      expect(Hook['options'].hooks['afterSave']).to.deep.include({
+        name: 'myAfterSaveHook',
+        fn: afterSaveHookWithNameStub,
+      });
+      expect(Hook['options'].hooks['beforeUpsert']).to.deep.include({
+        name: 'myBeforeUpsertHook',
+        fn: beforeUpsertHookWithNameStub,
+      });
+      expect(Hook['options'].hooks['afterUpsert']).to.deep.include({
+        name: 'myAfterUpsertHook',
+        fn: afterUpsertHookWithNameStub,
+      });
     }
   });
 });

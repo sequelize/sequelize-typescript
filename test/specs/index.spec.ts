@@ -1,10 +1,10 @@
-import {expect, use} from 'chai';
+import { expect, use } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 
-import {createSequelize} from '../utils/sequelize';
-import {Sequelize, Model, Table, Column} from '../../src';
-import {Index} from '../../src/model/index/index-decorator';
-import {createIndexDecorator} from '../../src/model/index/create-index-decorator';
+import { createSequelize } from '../utils/sequelize';
+import { Sequelize, Model, Table, Column } from '../../src';
+import { Index } from '../../src/model/index/index-decorator';
+import { createIndexDecorator } from '../../src/model/index/create-index-decorator';
 
 use(chaiAsPromised);
 
@@ -23,10 +23,10 @@ describe('built-in index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 4);
     expect(queries[3]).to.equal('CREATE INDEX `tests_field` ON `Tests` (`field`)');
@@ -45,10 +45,10 @@ describe('built-in index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 5);
     expect(queries[3]).to.equal('CREATE INDEX `tests_field_a` ON `Tests` (`fieldA`)');
@@ -64,10 +64,10 @@ describe('built-in index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 4);
     expect(queries[3]).to.equal('CREATE INDEX `my-index` ON `Tests` (`field`)');
@@ -86,10 +86,10 @@ describe('built-in index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 4);
     expect(queries[3]).to.equal('CREATE INDEX `my-index` ON `Tests` (`fieldA`, `fieldB`)');
@@ -111,13 +111,15 @@ describe('built-in index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 4);
-    expect(queries[3]).to.equal('CREATE UNIQUE INDEX `my-index` ON `Tests` (`field`) WHERE `indexed` = 1');
+    expect(queries[3]).to.equal(
+      'CREATE UNIQUE INDEX `my-index` ON `Tests` (`field`) WHERE `indexed` = 1'
+    );
   });
 
   it('sets extra options for field', async () => {
@@ -140,14 +142,15 @@ describe('built-in index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 4);
-    expect(queries[3]).to.equal('CREATE INDEX `my-index` ON `Tests`' +
-      ' (`fieldA` COLLATE `NOCASE` ASC, `fieldB` DESC)');
+    expect(queries[3]).to.equal(
+      'CREATE INDEX `my-index` ON `Tests`' + ' (`fieldA` COLLATE `NOCASE` ASC, `fieldB` DESC)'
+    );
   });
 });
 
@@ -172,13 +175,15 @@ describe('custom index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 5);
-    expect(queries[3]).to.equal('CREATE INDEX `tests_field_a_field_b` ON `Tests` (`fieldA`, `fieldB`)');
+    expect(queries[3]).to.equal(
+      'CREATE INDEX `tests_field_a_field_b` ON `Tests` (`fieldA`, `fieldB`)'
+    );
     expect(queries[4]).to.equal('CREATE INDEX `tests_field_c` ON `Tests` (`fieldC`)');
   });
 
@@ -200,13 +205,15 @@ describe('custom index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 4);
-    expect(queries[3]).to.equal('CREATE UNIQUE INDEX `my-index` ON `Tests` (`field`) WHERE `indexed` = 1');
+    expect(queries[3]).to.equal(
+      'CREATE UNIQUE INDEX `my-index` ON `Tests` (`field`) WHERE `indexed` = 1'
+    );
   });
 
   it('sets extra options for field', async () => {
@@ -224,13 +231,14 @@ describe('custom index decorator', () => {
     }
     sequelize.addModels([Test]);
 
-    let queries = [];
+    const queries = [];
     await Test.sync({
       force: true,
-      logging: sql => queries.push(sql.substr(sql.indexOf(':') + 2)),
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
     });
     expect(queries).to.have.property('length', 4);
-    expect(queries[3]).to.equal('CREATE INDEX `my-index` ON `Tests`' +
-      ' (`fieldA` COLLATE `NOCASE` ASC, `fieldB` DESC)');
+    expect(queries[3]).to.equal(
+      'CREATE INDEX `my-index` ON `Tests`' + ' (`fieldA` COLLATE `NOCASE` ASC, `fieldB` DESC)'
+    );
   });
 });
