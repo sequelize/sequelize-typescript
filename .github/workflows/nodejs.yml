@@ -24,14 +24,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: 'Cache dependencies'
-        uses: 'actions/cache@v2.1.4'
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
-
-      - run: 'npm install'
+      - run: 'npm ci'
       - run: 'npm run lint'
+      - run: 'npm run markdownlint'
       - run: 'npm run build'
       - run: 'DISABLE_LOGGING=1 npm run cover'
       - run: 'npx nyc report --reporter=lcov > coverage.lcov && npx codecov'

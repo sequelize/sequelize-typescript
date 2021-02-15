@@ -1,0 +1,18 @@
+# For more information see: https://github.com/marketplace/actions/commit-linter
+
+name: 'Lint Commit Messages'
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'actions/checkout@v2'
+        with:
+          fetch-depth: 0
+      - uses: 'wagoid/commitlint-github-action@v2'
