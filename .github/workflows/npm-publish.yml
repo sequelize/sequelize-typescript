@@ -12,18 +12,12 @@ jobs:
     steps:
       - uses: 'actions/checkout@v2'
 
-      - name: 'Cache dependencies'
-        uses: 'actions/cache@v2.1.4'
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
-
       - uses: 'actions/setup-node@v2.1.4'
         with:
           node-version: 14
           registry-url: 'https://registry.npmjs.org/'
 
-      - run: 'npm install'
+      - run: 'npm ci'
       - run: 'npm run build'
       - run: 'npm publish'
         env:
