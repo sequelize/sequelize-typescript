@@ -7,7 +7,7 @@
     "test": "mocha test/**/*.spec.ts",
     "cover": "nyc mocha test/**/*.spec.ts",
     "lint": "eslint --ext .ts src/ test/",
-    "lint:fix": "eslint --ext .ts src/ test/ --fix",
+    "lint:fix": "npm run lint -- --fix",
     "markdownlint": "markdownlint '**/*.md' --ignore node_modules",
     "release": "release-it",
     "postinstall": "husky install",
