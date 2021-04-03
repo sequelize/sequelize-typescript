@@ -125,7 +125,7 @@
     "reflect-metadata": "0.1.13",
     "release-it": "14.5.1",
     "sequelize": "6.5.0",
-    "sinon": "9.2.4",
+    "sinon": "10.0.0",
     "sinon-chai": "3.5.0",
     "source-map-support": "0.5.19",
     "sqlite3": "5.0.0",
