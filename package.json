@@ -105,7 +105,7 @@
     "@types/mocha": "8.2.2",
     "@types/node": "14.14.37",
     "@types/prettyjson": "0.0.29",
-    "@types/sinon": "9.0.10",
+    "@types/sinon": "9.0.11",
     "@types/sinon-chai": "3.2.5",
     "chai": "4.3.4",
     "chai-as-promised": "7.1.1",
