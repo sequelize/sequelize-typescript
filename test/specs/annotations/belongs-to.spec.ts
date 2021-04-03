@@ -1,15 +1,13 @@
-import {expect, use} from 'chai';
+import { expect, use } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {Table} from '../../../src/model/table/table';
-import {BelongsTo} from '../../../src/associations/belongs-to/belongs-to';
-import {Model} from '../../../src/model/model/model';
-import {createSequelize} from '../../utils/sequelize';
+import { Table } from '../../../src/model/table/table';
+import { BelongsTo } from '../../../src/associations/belongs-to/belongs-to';
+import { Model } from '../../../src/model/model/model';
+import { createSequelize } from '../../utils/sequelize';
 
 use(chaiAsPromised);
 
-// tslint:disable:max-classes-per-file
 describe('BelongsTo', () => {
-
   const as = 'parent';
   const sequelize = createSequelize(false);
 
@@ -18,8 +16,7 @@ describe('BelongsTo', () => {
 
   @Table
   class Player extends Model {
-
-    @BelongsTo(() => Team, {as, foreignKey: 'teamId'})
+    @BelongsTo(() => Team, { as, foreignKey: 'teamId' })
     team: Team;
   }
 
@@ -41,7 +38,8 @@ describe('BelongsTo', () => {
       team: Team;
     }
 
-    expect(() => _sequelize.addModels([Team, Player])).to.throw(/Foreign key for "\w+" is missing on "\w+"./);
+    expect(() => _sequelize.addModels([Team, Player])).to.throw(
+      /Foreign key for "\w+" is missing on "\w+"./
+    );
   });
-
 });

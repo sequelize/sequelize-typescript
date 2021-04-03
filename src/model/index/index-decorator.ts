@@ -1,15 +1,17 @@
-import {addFieldToIndex, IndexOptions, IndexFieldOptions} from './index-service';
+import { addFieldToIndex, IndexOptions, IndexFieldOptions } from './index-service';
 
-type IndexDecoratorOptions =
-  IndexOptions & Pick<IndexFieldOptions, Exclude<keyof IndexFieldOptions, 'name'>>;
+type IndexDecoratorOptions = IndexOptions &
+  Pick<IndexFieldOptions, Exclude<keyof IndexFieldOptions, 'name'>>;
 
 export function Index(name: string): Function;
 export function Index(options: IndexDecoratorOptions): Function;
-export function Index(target: any, propertyName: string, propertyDescriptor?: PropertyDescriptor): void;
+export function Index(
+  target: any,
+  propertyName: string,
+  propertyDescriptor?: PropertyDescriptor
+): void;
 export function Index(...args: any[]): Function | void {
-
   if (args.length >= 2) {
-
     const [target, propertyName] = args;
 
     annotateModelWithIndex(target, propertyName);
@@ -21,11 +23,12 @@ export function Index(...args: any[]): Function | void {
   };
 }
 
-export function annotateModelWithIndex(target: any,
-                                       propertyName: string,
-                                       optionsOrName: IndexDecoratorOptions | string = {},
-                                       indexId?: string | number): string | number {
-
+export function annotateModelWithIndex(
+  target: any,
+  propertyName: string,
+  optionsOrName: IndexDecoratorOptions | string = {},
+  indexId?: string | number
+): string | number {
   let indexOptions: IndexOptions;
   let fieldOptions: IndexFieldOptions;
   if (typeof optionsOrName === 'string') {

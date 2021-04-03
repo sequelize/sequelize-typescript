@@ -1,58 +1,66 @@
-/* tslint:disable:max-classes-per-file */
-
-import {expect, use} from 'chai';
+import { expect, use } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import {ModelValidateOptions} from "sequelize";
-import {createSequelize, createSequelizeValidationOnly} from "../utils/sequelize";
+import { ModelValidateOptions } from 'sequelize';
+import { createSequelize, createSequelizeValidationOnly } from '../utils/sequelize';
 import {
-  ShoeWithValidation, KEY_VALUE, PARTIAL_SPECIAL_VALUE, BRAND_LENGTH,
-  hexColor, HEX_REGEX, PRODUCED_AT_IS_AFTER, PRODUCED_AT_IS_BEFORE, UUID_VERSION, MAX, MIN, NOT, IS_IN, NOT_CONTAINS
-} from "../models/ShoeWithValidation";
-import {Is} from "../../src/validation/is";
-import {Model} from "../../src/model/model/model";
-import {Table} from "../../src/model/table/table";
-import {Column} from "../../src/model/column/column";
-import {Length} from "../../src/validation/length";
-import {NotEmpty} from "../../src/validation/not-empty";
-import {Validator} from '../../src/validation/validator';
+  ShoeWithValidation,
+  KEY_VALUE,
+  PARTIAL_SPECIAL_VALUE,
+  BRAND_LENGTH,
+  hexColor,
+  HEX_REGEX,
+  PRODUCED_AT_IS_AFTER,
+  PRODUCED_AT_IS_BEFORE,
+  UUID_VERSION,
+  MAX,
+  MIN,
+  NOT,
+  IS_IN,
+  NOT_CONTAINS,
+} from '../models/ShoeWithValidation';
+import { Is } from '../../src/validation/is';
+import { Model } from '../../src/model/model/model';
+import { Table } from '../../src/model/table/table';
+import { Column } from '../../src/model/column/column';
+import { Length } from '../../src/validation/length';
+import { NotEmpty } from '../../src/validation/not-empty';
+import { Validator } from '../../src/validation/validator';
 
 use(chaiAsPromised);
 
 describe('validation', () => {
-
   let sequelize;
 
-  before(() => sequelize = createSequelize());
+  before(() => (sequelize = createSequelize()));
 
-  beforeEach(() => sequelize.sync({force: true}));
+  beforeEach(() => sequelize.sync({ force: true }));
 
   describe(`rawAttributes of ${ShoeWithValidation.name}`, () => {
-
     let rawAttributes;
     const shoeAttributes: { [key: string]: ModelValidateOptions } = {
       id: {
-        isUUID: UUID_VERSION
+        isUUID: UUID_VERSION,
       },
       key: {
-        equals: KEY_VALUE
+        equals: KEY_VALUE,
       },
       special: {
-        contains: PARTIAL_SPECIAL_VALUE
+        contains: PARTIAL_SPECIAL_VALUE,
       },
       brand: {
-        len: [BRAND_LENGTH.min, BRAND_LENGTH.max]
+        len: [BRAND_LENGTH.min, BRAND_LENGTH.max],
       },
       brandUrl: {
-        isUrl: true
+        isUrl: true,
       },
       primaryColor: {
-        isHexColor: hexColor
+        isHexColor: hexColor,
       },
       secondaryColor: {
-        isHexColor: hexColor
+        isHexColor: hexColor,
       },
       tertiaryColor: {
-        is: HEX_REGEX
+        is: HEX_REGEX,
       },
       producedAt: {
         isDate: true,
@@ -79,35 +87,26 @@ describe('validation', () => {
         notIn: IS_IN,
         notContains: NOT_CONTAINS,
         isArray: true,
-      }
+      },
     };
 
-    before(() => rawAttributes = ShoeWithValidation['rawAttributes']);
+    before(() => (rawAttributes = ShoeWithValidation['rawAttributes']));
 
     it(`should have properties with defined validations`, () => {
-      Object
-        .keys(shoeAttributes)
-        .forEach(key => {
+      Object.keys(shoeAttributes).forEach((key) => {
+        expect(rawAttributes[key]).to.have.property('validate');
+        const validations = shoeAttributes[key];
 
-
-          expect(rawAttributes[key]).to.have.property('validate');
-          const validations = shoeAttributes[key];
-
-          Object
-            .keys(validations)
-            .forEach(validateKey => {
-
-              expect(rawAttributes[key].validate).to.have.property(validateKey)
-                .that.eqls(validations[validateKey]);
-            });
-
+        Object.keys(validations).forEach((validateKey) => {
+          expect(rawAttributes[key].validate)
+            .to.have.property(validateKey)
+            .that.eqls(validations[validateKey]);
         });
+      });
     });
-
   });
 
   describe('validation', () => {
-
     const data: { [key: string]: { valid: any[]; invalid: any[] } } = {
       id: {
         valid: ['903830b8-4dcc-4f10-a5aa-35afa8445691', null, undefined],
@@ -122,7 +121,7 @@ describe('validation', () => {
           `abc${PARTIAL_SPECIAL_VALUE}`,
           `abc${PARTIAL_SPECIAL_VALUE}def`,
           `${PARTIAL_SPECIAL_VALUE}def`,
-          `_${PARTIAL_SPECIAL_VALUE}_`
+          `_${PARTIAL_SPECIAL_VALUE}_`,
         ],
         invalid: ['', 'ad', '1234567891234567', 2],
       },
@@ -156,56 +155,53 @@ describe('validation', () => {
     const invalidPromises: Array<Promise<any>> = [];
 
     before(() => {
-      Object
-        .keys(data)
-        .forEach(key => {
+      Object.keys(data).forEach((key) => {
+        const valid = data[key].valid;
+        const invalid = data[key].invalid;
 
-          const valid = data[key].valid;
-          const invalid = data[key].invalid;
+        validPromises.push(
+          Promise.all(
+            valid.map((value) => {
+              const shoe = new ShoeWithValidation({ [key]: value });
 
-          validPromises.push(Promise.all(valid.map(value => {
+              return expect(shoe.validate()).to.be.fulfilled;
+            })
+          )
+        );
 
-            const shoe = new ShoeWithValidation({[key]: value});
+        invalidPromises.push(
+          Promise.all(
+            invalid.map((value) => {
+              const shoe = new ShoeWithValidation({ [key]: value });
 
-            return expect(shoe.validate()).to.be.fulfilled;
-          })));
-
-          invalidPromises.push(Promise.all(invalid.map(value => {
-
-            const shoe = new ShoeWithValidation({[key]: value});
-
-            return expect(shoe.validate()).to.be.rejected;
-          })));
-
-        });
+              return expect(shoe.validate()).to.be.rejected;
+            })
+          )
+        );
+      });
     });
 
     it(`should not throw due to valid values`, () => Promise.all(validPromises));
     it(`should throw due to invalid values`, () => Promise.all(invalidPromises));
-
   });
 
   describe('decorators', () => {
-
     describe('Is', () => {
-
       it('Should throw due to missing name of function', () => {
         expect(() => Is(() => null)).to.throw(/Passed validator function must have a name/);
       });
-
     });
 
     describe('Length', () => {
-
       it('should not produce an error', () => {
         @Table
         class User extends Model {
-          @Length({min: 0, max: 5}) @Column name: string;
+          @Length({ min: 0, max: 5 }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elisa'});
+        const user = new User({ name: 'elisa' });
 
         return expect(user.validate()).to.be.not.rejected;
       });
@@ -213,12 +209,12 @@ describe('validation', () => {
       it('should produce an error due to unfulfilled max', () => {
         @Table
         class User extends Model {
-          @Length({min: 0, max: 5}) @Column name: string;
+          @Length({ min: 0, max: 5 }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elisa tree'});
+        const user = new User({ name: 'elisa tree' });
 
         return expect(user.validate()).to.be.rejected;
       });
@@ -226,12 +222,12 @@ describe('validation', () => {
       it('should produce an error due to unfulfilled min', () => {
         @Table
         class User extends Model {
-          @Length({min: 5, max: 5}) @Column name: string;
+          @Length({ min: 5, max: 5 }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elli'});
+        const user = new User({ name: 'elli' });
 
         return expect(user.validate()).to.be.rejected;
       });
@@ -239,12 +235,12 @@ describe('validation', () => {
       it('should not produce an error (max only)', () => {
         @Table
         class User extends Model {
-          @Length({max: 5}) @Column name: string;
+          @Length({ max: 5 }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elisa'});
+        const user = new User({ name: 'elisa' });
 
         return expect(user.validate()).to.be.not.rejected;
       });
@@ -252,12 +248,12 @@ describe('validation', () => {
       it('should produce an error (max only)', () => {
         @Table
         class User extends Model {
-          @Length({max: 5}) @Column name: string;
+          @Length({ max: 5 }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elisa tree'});
+        const user = new User({ name: 'elisa tree' });
 
         return expect(user.validate()).to.be.rejected;
       });
@@ -265,12 +261,12 @@ describe('validation', () => {
       it('should not produce an error (min only)', () => {
         @Table
         class User extends Model {
-          @Length({min: 4}) @Column name: string;
+          @Length({ min: 4 }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elisa'});
+        const user = new User({ name: 'elisa' });
 
         return expect(user.validate()).to.be.not.rejected;
       });
@@ -278,20 +274,18 @@ describe('validation', () => {
       it('should produce an error (min only)', () => {
         @Table
         class User extends Model {
-          @Length({min: 5}) @Column name: string;
+          @Length({ min: 5 }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elli'});
+        const user = new User({ name: 'elli' });
 
         return expect(user.validate()).to.be.rejected;
       });
-
     });
 
     describe('NotEmpty', () => {
-
       it('should not produce an error', () => {
         @Table
         class User extends Model {
@@ -300,7 +294,7 @@ describe('validation', () => {
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elisa'});
+        const user = new User({ name: 'elisa' });
 
         return expect(user.validate()).to.be.not.rejected;
       });
@@ -313,7 +307,7 @@ describe('validation', () => {
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: ''});
+        const user = new User({ name: '' });
 
         return expect(user.validate()).to.be.rejected;
       });
@@ -321,12 +315,12 @@ describe('validation', () => {
       it('should not produce an error (with msg)', () => {
         @Table
         class User extends Model {
-          @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
+          @NotEmpty({ msg: 'NotEmpty' }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: 'elisa'});
+        const user = new User({ name: 'elisa' });
 
         return expect(user.validate()).to.be.not.rejected;
       });
@@ -334,21 +328,19 @@ describe('validation', () => {
       it('should produce an error (with msg)', () => {
         @Table
         class User extends Model {
-          @NotEmpty({msg: 'NotEmpty'}) @Column name: string;
+          @NotEmpty({ msg: 'NotEmpty' }) @Column name: string;
         }
 
         const sequelizeValidationOnly = createSequelizeValidationOnly(false);
         sequelizeValidationOnly.addModels([User]);
-        const user = new User({name: ''});
+        const user = new User({ name: '' });
 
         return expect(user.validate()).to.be.rejected;
       });
     });
 
     describe('Validator', () => {
-
       describe('simple model, one validator', () => {
-
         const VALID_NAME = 'bob';
         const ERROR_MESSAGE = `Invalid name: Only '${VALID_NAME}' is valid`;
         let _sequelize;
@@ -365,26 +357,24 @@ describe('validation', () => {
         }
 
         before(() => {
-          _sequelize = createSequelize({modelPaths: []});
+          _sequelize = createSequelize({ modelPaths: [] });
           _sequelize.addModels([User]);
         });
 
         it('should throw', () => {
-          const user = new User({name: 'will'});
+          const user = new User({ name: 'will' });
 
           return expect(user.validate()).to.be.rejected;
         });
 
         it('should not throw', () => {
-          const user = new User({name: VALID_NAME});
+          const user = new User({ name: VALID_NAME });
 
           return expect(user.validate()).to.be.fulfilled;
         });
-
       });
 
       describe('simple model, multiple validators', () => {
-
         const VALID_NAME = 'bob';
         const NAME_ERROR_MESSAGE = `Invalid name: Only '${VALID_NAME}' is valid`;
         const VALID_AGE = 99;
@@ -410,41 +400,34 @@ describe('validation', () => {
         }
 
         before(() => {
-          _sequelize = createSequelize({modelPaths: []});
+          _sequelize = createSequelize({ modelPaths: [] });
           _sequelize.addModels([User]);
         });
 
         it('should have metadata for multiple validators', () => {
-          const {validate} = Reflect.getMetadata('sequelize:options', User.prototype);
+          const { validate } = Reflect.getMetadata('sequelize:options', User.prototype);
           expect(validate).to.have.property('nameValidator');
           expect(validate).to.have.property('ageValidator');
         });
 
         it('should throw due to wrong name', () => {
-          const user = new User({name: 'will', age: VALID_AGE});
+          const user = new User({ name: 'will', age: VALID_AGE });
 
           return expect(user.validate()).to.be.rejectedWith(NAME_ERROR_MESSAGE);
         });
 
         it('should throw due to wrong age', () => {
-          const user = new User({name: VALID_NAME, age: 1});
+          const user = new User({ name: VALID_NAME, age: 1 });
 
           return expect(user.validate()).to.be.rejectedWith(AGE_ERROR_MESSAGE);
         });
-
       });
-
     });
-
   });
 
   describe('only', () => {
-
     it('should not throw', () => {
-
       expect(() => createSequelizeValidationOnly()).not.to.throw();
     });
-
   });
-
 });

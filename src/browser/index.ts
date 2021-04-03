@@ -1,4 +1,9 @@
-function noop() { return (target: Object, propertyName: string) => {}; }
+function noop() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return (target: Object, propertyName: string): void => {
+    // noop
+  };
+}
 
 export class Model {}
 export const DataType = {};

@@ -1,8 +1,7 @@
-import {Table, Model, Column, DataType} from "../../src";
+import { Table, Model, Column, DataType } from '../../src';
 
 @Table
 export class UserWithSwag extends Model {
-
   @Column
   name: string;
 
@@ -10,15 +9,14 @@ export class UserWithSwag extends Model {
     type: DataType.VIRTUAL,
     get(): string {
       return 'swag';
-    }
+    },
   })
   bio: string;
 
   @Column({
     validate: {
-      isEmail: true
-    }
+      isEmail: true,
+    },
   })
   email: string;
-
 }

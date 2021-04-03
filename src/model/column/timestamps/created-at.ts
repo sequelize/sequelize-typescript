@@ -1,9 +1,8 @@
-import {addOptions} from '../../shared/model-service';
+import { addOptions } from '../../shared/model-service';
 
 export function CreatedAt(target: any, propertyName: string): void {
-
   addOptions(target, {
     createdAt: propertyName,
-    timestamps: true
+    timestamps: true,
   });
 }

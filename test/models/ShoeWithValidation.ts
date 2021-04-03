@@ -1,12 +1,42 @@
 import {
-  Table, Model, Column, PrimaryKey, DataType,
-  Equals, Contains, Is, IsDate, Length, IsUrl, IsAfter, IsBefore,
-  IsUUID, IsAlpha, IsAlphanumeric, IsEmail, IsInt, IsDecimal, IsFloat,
-  IsIn, IsIP, IsIPv4, IsIPv6, IsLowercase, IsUppercase, Max, Min,
-  Not, NotContains, NotIn, NotNull, Validate, NotEmpty, IsNumeric,
-  IsNull, IsArray
-} from "../../src";
-import {IsCreditCard} from "../../src/validation/is-credit-card";
+  Table,
+  Model,
+  Column,
+  PrimaryKey,
+  DataType,
+  Equals,
+  Contains,
+  Is,
+  IsDate,
+  Length,
+  IsUrl,
+  IsAfter,
+  IsBefore,
+  IsUUID,
+  IsAlpha,
+  IsAlphanumeric,
+  IsEmail,
+  IsInt,
+  IsDecimal,
+  IsFloat,
+  IsIn,
+  IsIP,
+  IsIPv4,
+  IsIPv6,
+  IsLowercase,
+  IsUppercase,
+  Max,
+  Min,
+  Not,
+  NotContains,
+  NotIn,
+  Validate,
+  NotEmpty,
+  IsNumeric,
+  IsNull,
+  IsArray,
+} from '../../src';
+import { IsCreditCard } from '../../src/validation/is-credit-card';
 
 export const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 export function hexColor(value: string): void {
@@ -24,11 +54,10 @@ export const KEY_VALUE = 'READONLY';
 export const PARTIAL_SPECIAL_VALUE = 'Special';
 export const PRODUCED_AT_IS_AFTER = '1987-04-04';
 export const PRODUCED_AT_IS_BEFORE = '2017-02-27';
-export const BRAND_LENGTH = {min: 3, max: 15};
+export const BRAND_LENGTH = { min: 3, max: 15 };
 
 @Table
 export class ShoeWithValidation extends Model {
-
   @IsUUID(UUID_VERSION)
   @PrimaryKey
   @Column
@@ -51,7 +80,7 @@ export class ShoeWithValidation extends Model {
   brandUrl: string;
 
   @Is('HexColor', hexColor)
-  @Length({min: 4, msg: 'too short'})
+  @Length({ min: 4, msg: 'too short' })
   @Column
   primaryColor: string;
 
@@ -91,7 +120,7 @@ export class ShoeWithValidation extends Model {
   @IsIn(IS_IN)
   @NotIn(IS_IN)
   @NotContains(NOT_CONTAINS)
-  @Validate({isArray: true})
+  @Validate({ isArray: true })
   @Column(DataType.STRING)
   dummy: any;
 }

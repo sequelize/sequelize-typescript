@@ -1,13 +1,10 @@
-/* tslint:disable:max-classes-per-file */
-import {expect} from 'chai';
-import {addForeignKey} from "../../../src/associations/foreign-key/foreign-key-service";
-import {Model} from "../../../src/model/model/model";
-import {getForeignKeys} from '../../../src/associations/foreign-key/foreign-key-service';
+import { expect } from 'chai';
+import { addForeignKey } from '../../../src/associations/foreign-key/foreign-key-service';
+import { Model } from '../../../src/model/model/model';
+import { getForeignKeys } from '../../../src/associations/foreign-key/foreign-key-service';
 
 describe('service.association', () => {
-
   describe('addForeignKey', () => {
-
     it('should add foreign key to target metadata', () => {
       const target = {};
       const FOREIGN_KEY = 'testId';
@@ -49,7 +46,5 @@ describe('service.association', () => {
         relatedClassGetter: RELATED_CLASS_GETTER,
       });
     });
-
   });
-
 });

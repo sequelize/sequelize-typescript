@@ -1,4 +1,4 @@
-import {addFieldToIndex, IndexOptions, IndexFieldOptions} from './index-service';
+import { addFieldToIndex, IndexOptions, IndexFieldOptions } from './index-service';
 
 interface IndexDecorator {
   (fieldOptions: Pick<IndexFieldOptions, Exclude<keyof IndexFieldOptions, 'name'>>): Function;
@@ -9,7 +9,6 @@ export function createIndexDecorator(options: IndexOptions = {}): IndexDecorator
   let indexId: string | number;
   return ((...args: any[]) => {
     if (args.length >= 2) {
-
       const [target, propertyName] = args;
 
       const fieldOptions = { name: propertyName };

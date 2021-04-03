@@ -1,5 +1,8 @@
-import {ScopeFindOptions} from "./scope-find-options";
+import { ScopeFindOptions } from './scope-find-options';
 
 export interface ScopeTableOptions<TCreationAttributes, TModelAttributes> {
-  [scopeName: string]: ScopeFindOptions<TCreationAttributes, TModelAttributes> | Function | undefined;
+  [scopeName: string]:
+    | ScopeFindOptions<TCreationAttributes, TModelAttributes>
+    | Function
+    | undefined;
 }

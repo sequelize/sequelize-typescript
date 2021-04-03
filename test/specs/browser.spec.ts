@@ -1,13 +1,12 @@
 import * as browser from '../../src/browser';
-import {expect, should} from 'chai';
-import { stringify } from 'querystring';
+import { should } from 'chai';
 
 describe('browser definitions', () => {
   it('should be able to use noop implementations as decorators', () => {
     class TestModel extends browser.Model {
       // we don't care about the types matching here since at runtime you can pass
       // as many args to a function as you like
-      @(browser.AllowNull as any)({someOption: (browser.DataType as any).STRING} as any)
+      @((browser.AllowNull as any)({ someOption: (browser.DataType as any).STRING } as any))
       @browser.AutoIncrement()
       @browser.Column()
       @browser.Comment()
