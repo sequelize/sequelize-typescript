@@ -116,7 +116,7 @@
     "husky": "6.0.0",
     "lodash": "4.17.20",
     "markdownlint-cli": "0.26.0",
-    "mocha": "8.3.0",
+    "mocha": "8.3.2",
     "moment": "2.29.1",
     "mysql2": "2.2.5",
     "nyc": "15.1.0",
