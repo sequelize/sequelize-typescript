@@ -1,25 +1,36 @@
-import {addAttributeOptions} from '../attribute-service';
+import { addAttributeOptions } from "../attribute-service";
+
+type AllowNullOption = boolean;
 
 /**
- * Sets allowNull true for annotated property column.
+ * Sets allowNull option as specified in options and returns decorator
  */
-export function AllowNull(target: any, propertyName: string): void;
-export function AllowNull(allowNull: boolean): Function;
+export function AllowNull(options: AllowNullOption): Function;
+
+/**
+ * Decorator, which sets allowNull option true for annotated property.
+ */
+export function AllowNull(target: Object, propertyName: string): void;
+
 export function AllowNull(...args: any[]): void | Function {
-
   if (args.length === 1) {
+    const [options] = args;
 
-    const allowNull = args[0];
-
-    return (target: any, propertyName: string) =>
-      addAttributeOptions(target, propertyName, {allowNull});
-  } else {
-
-    const target = args[0];
-    const propertyName = args[1];
-
-    addAttributeOptions(target, propertyName, {
-      allowNull: true
-    });
+    return (_target, _propertyName) => {
+      annotate(_target, _propertyName, options);
+    };
   }
+
+  const [target, propertyName] = args;
+  annotate(target, propertyName);
+}
+
+function annotate(
+  target: Object,
+  propertyName: string,
+  option: AllowNullOption = true
+) {
+  addAttributeOptions(target, propertyName, {
+    allowNull: option,
+  });
 }

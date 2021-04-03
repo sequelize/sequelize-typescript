@@ -1,4 +1,4 @@
-import {addAttributeOptions} from "../attribute-service";
+import { addAttributeOptions } from "../attribute-service";
 
 type UniqueOptions = boolean | string | { name: string; msg: string };
 
@@ -15,15 +15,21 @@ export function Unique(target: Object, propertyName: string): void;
 export function Unique(...args: any[]): void | Function {
   if (args.length === 1) {
     const [options] = args;
+
     return (_target, _propertyName) => {
       annotate(_target, _propertyName, options);
     };
   }
+
   const [target, propertyName] = args;
   annotate(target, propertyName);
 }
 
-function annotate(target: Object, propertyName: string, option: UniqueOptions = true) {
+function annotate(
+  target: Object,
+  propertyName: string,
+  option: UniqueOptions = true
+) {
   addAttributeOptions(target, propertyName, {
     unique: option,
   });
