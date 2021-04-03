@@ -96,7 +96,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "11.0.0",
-    "@commitlint/config-conventional": "11.0.0",
+    "@commitlint/config-conventional": "12.1.1",
     "@release-it/conventional-changelog": "2.0.0",
     "@types/chai": "4.2.16",
     "@types/chai-as-promised": "7.1.3",
