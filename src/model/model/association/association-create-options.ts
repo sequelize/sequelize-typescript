@@ -1,4 +1,4 @@
-import {CreateOptions} from "sequelize";
+import { CreateOptions } from 'sequelize';
 
 export type AssociationCreateOptions = {
   through?: any;

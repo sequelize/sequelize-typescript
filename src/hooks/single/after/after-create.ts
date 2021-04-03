@@ -1,5 +1,5 @@
-import {HookOptions} from "../../shared/hook-options";
-import {implementHookDecorator} from "../../shared/hooks-service";
+import { HookOptions } from '../../shared/hook-options';
+import { implementHookDecorator } from '../../shared/hooks-service';
 
 export function AfterCreate(target: any, propertyName: string): void;
 export function AfterCreate(options: HookOptions): Function;

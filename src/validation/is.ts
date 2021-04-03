@@ -1,6 +1,6 @@
-import {ModelValidateOptions} from 'sequelize';
+import { ModelValidateOptions } from 'sequelize';
 
-import {addAttributeOptions} from "../model/column/attribute-service";
+import { addAttributeOptions } from '../model/column/attribute-service';
 
 /**
  * Adds custom validator
@@ -16,9 +16,14 @@ export function Is(validator: (value: any) => any): Function;
 /**
  * Will only allow values, that match the string regex or real regex
  */
-export function Is(arg: string | (string | RegExp)[] | RegExp | {msg: string, args: string | (string | RegExp)[] | RegExp}): Function;
+export function Is(
+  arg:
+    | string
+    | (string | RegExp)[]
+    | RegExp
+    | { msg: string; args: string | (string | RegExp)[] | RegExp }
+): Function;
 export function Is(...args: any[]): Function {
-
   const options: ModelValidateOptions = {};
   const argIsFunction = typeof args[0] === 'function';
 
@@ -27,13 +32,11 @@ export function Is(...args: any[]): Function {
     let name: string;
 
     if (argIsFunction) {
-
-      validator = (args[0] as (value: any) => any);
+      validator = args[0] as (value: any) => any;
       name = validator.name;
 
       if (!name) throw new Error(`Passed validator function must have a name`);
     } else {
-
       name = args[0];
       validator = args[1];
     }
@@ -45,6 +48,6 @@ export function Is(...args: any[]): Function {
 
   return (target: any, propertyName: string) =>
     addAttributeOptions(target, propertyName, {
-      validate: options
+      validate: options,
     });
 }

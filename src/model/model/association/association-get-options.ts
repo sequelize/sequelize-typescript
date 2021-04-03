@@ -1,4 +1,4 @@
-import {FindOptions} from "sequelize";
+import { FindOptions } from 'sequelize';
 
 export type AssociationGetOptions = {
   scope?: string | boolean;

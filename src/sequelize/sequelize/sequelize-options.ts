@@ -1,10 +1,9 @@
-import {Options} from "sequelize";
-import {ModelCtor} from "../../model/model/model";
+import { Options } from 'sequelize';
+import { ModelCtor } from '../../model/model/model';
 
 export type ModelMatch = (filename: string, member: string) => boolean;
 
 export interface SequelizeOptions extends Options {
-
   /**
    * Path to models or actual models,
    * which should be loaded for sequelize instance
@@ -27,7 +26,6 @@ export interface SequelizeOptions extends Options {
    * If true enables repository mode when true
    */
   repositoryMode?: boolean;
-
 
   /**
    * If true enables validate only mode

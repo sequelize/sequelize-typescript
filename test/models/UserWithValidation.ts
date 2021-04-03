@@ -1,21 +1,19 @@
-import {Table, Model, Column, DataType} from "../../src";
+import { Table, Model, Column, DataType } from '../../src';
 
 @Table
 export class UserWithValidation extends Model {
-
   @Column
   name: string;
 
   @Column({
-    type: DataType.TEXT
+    type: DataType.TEXT,
   })
   bio: string;
 
   @Column({
     validate: {
-      isEmail: true
-    }
+      isEmail: true,
+    },
   })
   email: string;
-
 }

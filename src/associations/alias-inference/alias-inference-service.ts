@@ -1,11 +1,10 @@
-import {getAssociationsByRelation} from "../shared/association-service";
+import { getAssociationsByRelation } from '../shared/association-service';
 
 /**
  * Pre conform includes, so that "as" value can be inferred from source
  */
 export function inferAlias(options: any, source: any): any {
-
-  options = {...options};
+  options = { ...options };
 
   if (!options.include) {
     return options;
@@ -37,9 +36,8 @@ function inferAliasForInclude(include: any, source: any): any {
   const isConstructorFn = include instanceof Function;
 
   if (isConstructorFn || hasModelOptionWithoutAsOption) {
-
     if (isConstructorFn) {
-      include = {model: include};
+      include = { model: include };
     }
 
     const targetPrototype = source.prototype || source;
@@ -48,8 +46,10 @@ function inferAliasForInclude(include: any, source: any): any {
 
     if (associations.length > 0) {
       if (associations.length > 1) {
-        throw new Error(`Alias cannot be inferred: "${source.name}" has multiple ` +
-          `relations with "${include.model.name}"`);
+        throw new Error(
+          `Alias cannot be inferred: "${source.name}" has multiple ` +
+            `relations with "${include.model.name}"`
+        );
       }
       include.as = associations[0].getAs();
     }

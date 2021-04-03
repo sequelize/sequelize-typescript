@@ -5,6 +5,5 @@
  */
 
 export function verbose(): any {
-
   return {};
 }

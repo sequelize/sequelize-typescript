@@ -1,8 +1,19 @@
-import {Table, Model, PrimaryKey, Column, AutoIncrement, DataType, Default, AllowNull, Unique, Length, IsInt} from "../../src";
+import {
+  Table,
+  Model,
+  PrimaryKey,
+  Column,
+  AutoIncrement,
+  DataType,
+  Default,
+  AllowNull,
+  Unique,
+  Length,
+  IsInt,
+} from '../../src';
 
 @Table
 export class User extends Model {
-
   @PrimaryKey
   @AutoIncrement
   @Column
@@ -10,7 +21,7 @@ export class User extends Model {
 
   @Column({
     type: DataType.UUID,
-    defaultValue: DataType.UUIDV1
+    defaultValue: DataType.UUIDV1,
   })
   uuidv1: string;
 
@@ -19,7 +30,7 @@ export class User extends Model {
   @Column(DataType.UUID)
   uuidv4: string;
 
-  @Length({max: 20})
+  @Length({ max: 20 })
   @Column
   username: string;
 
@@ -42,7 +53,7 @@ export class User extends Model {
   isSuperUser: boolean | number;
 
   @Column({
-    defaultValue: DataType.NOW
+    defaultValue: DataType.NOW,
   })
   touchedAt: Date;
 
@@ -50,7 +61,7 @@ export class User extends Model {
   birthDate: Date;
 
   @Column({
-    allowNull: true
+    allowNull: true,
   })
   dateAllowNullTrue: Date;
 
@@ -69,5 +80,4 @@ export class User extends Model {
   extraField: string;
   extraField2: boolean;
   extraField3: number;
-
 }

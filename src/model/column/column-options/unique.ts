@@ -1,4 +1,4 @@
-import {addAttributeOptions} from "../attribute-service";
+import { addAttributeOptions } from '../attribute-service';
 
 type UniqueOptions = boolean | string | { name: string; msg: string };
 

@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import {HookMeta} from "./hook-meta";
-import {HookOptions} from "./hook-options";
-import {SequelizeHooks} from "sequelize/types/lib/hooks";
-import {ModelCtor} from "../../model/model/model";
+import { HookMeta } from './hook-meta';
+import { HookOptions } from './hook-options';
+import { SequelizeHooks } from 'sequelize/types/lib/hooks';
+import { ModelCtor } from '../../model/model/model';
 
 const HOOKS_KEY = 'sequelize:hooks';
 
@@ -10,11 +10,11 @@ const HOOKS_KEY = 'sequelize:hooks';
  * Installs hooks on the specified models
  */
 export function installHooks(models: ModelCtor[]): void {
-  models.forEach(model => {
+  models.forEach((model) => {
     const hooks = getHooks(model);
 
     if (hooks) {
-      hooks.forEach(hook => {
+      hooks.forEach((hook) => {
         installHook(model, hook);
       });
     }
@@ -27,20 +27,20 @@ export function installHooks(models: ModelCtor[]): void {
  * factory function. When called with multiple arguments, they add the hook
  * to the model’s metadata.
  */
-export function implementHookDecorator(hookType: keyof SequelizeHooks, args: any[]): Function | void {
+export function implementHookDecorator(
+  hookType: keyof SequelizeHooks,
+  args: any[]
+): Function | void {
   if (args.length === 1) {
+    const options: HookOptions = args[0];
 
-      const options: HookOptions = args[0];
+    return (target: any, propertyName: string) => addHook(target, hookType, propertyName, options);
+  } else {
+    const target = args[0];
+    const propertyName = args[1];
 
-      return (target: any, propertyName: string) =>
-        addHook(target, hookType, propertyName, options);
-    } else {
-
-      const target = args[0];
-      const propertyName = args[1];
-
-      addHook(target, hookType, propertyName);
-    }
+    addHook(target, hookType, propertyName);
+  }
 }
 
 /**
@@ -48,16 +48,24 @@ export function implementHookDecorator(hookType: keyof SequelizeHooks, args: any
  * @throws if applied to a non-static method
  * @throws if the hook method name is reserved
  */
-export function addHook(target: any, hookType: keyof SequelizeHooks, methodName: string, options: HookOptions = {}): void {
+export function addHook(
+  target: any,
+  hookType: keyof SequelizeHooks,
+  methodName: string,
+  options: HookOptions = {}
+): void {
   if (typeof target !== 'function') {
-    throw new Error(`Hook method '${methodName}' is not a static method. ` +
-      `Only static methods can be used for hooks`);
+    throw new Error(
+      `Hook method '${methodName}' is not a static method. ` +
+        `Only static methods can be used for hooks`
+    );
   }
 
   // make sure the hook name doesn’t conflict with Sequelize’s existing methods
   if (methodName === hookType) {
-    throw new Error(`Hook method cannot be named '${methodName}'. That name is ` +
-      `reserved by Sequelize`);
+    throw new Error(
+      `Hook method cannot be named '${methodName}'. That name is ` + `reserved by Sequelize`
+    );
   }
 
   const hooks = getHooks(target) || [];
@@ -65,7 +73,7 @@ export function addHook(target: any, hookType: keyof SequelizeHooks, methodName:
   hooks.push({
     hookType,
     methodName,
-    options
+    options,
   });
 
   setHooks(target, hooks);

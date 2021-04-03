@@ -1,7 +1,7 @@
-import {DataTypeAbstract, ModelOptions} from 'sequelize';
+import { DataTypeAbstract, ModelOptions } from 'sequelize';
 
-import {Model} from '../model/model';
-import {inferDataType} from "../../sequelize/data-type/data-type-service";
+import { Model } from '../model/model';
+import { inferDataType } from '../../sequelize/data-type/data-type-service';
 
 const MODEL_NAME_KEY = 'sequelize:modelName';
 const OPTIONS_KEY = 'sequelize:options';
@@ -30,7 +30,7 @@ export function getOptions(target: any): ModelOptions | undefined {
   const options = Reflect.getMetadata(OPTIONS_KEY, target);
 
   if (options) {
-    return {...options};
+    return { ...options };
   }
 }
 
@@ -38,7 +38,7 @@ export function getOptions(target: any): ModelOptions | undefined {
  * Sets seuqlize define options to class prototype
  */
 export function setOptions(target: any, options: ModelOptions<any>): void {
-  Reflect.defineMetadata(OPTIONS_KEY, {...options}, target);
+  Reflect.defineMetadata(OPTIONS_KEY, { ...options }, target);
 }
 
 /**
@@ -50,10 +50,14 @@ export function addOptions(target: any, options: ModelOptions<any>): void {
   if (!_options) {
     _options = {};
   }
-  setOptions(target, {..._options, ...options, validate: {
-    ...(_options.validate || {}),
-    ...(options.validate || {}),
-  }});
+  setOptions(target, {
+    ..._options,
+    ...options,
+    validate: {
+      ...(_options.validate || {}),
+      ...(options.validate || {}),
+    },
+  });
 }
 
 /**
@@ -80,14 +84,13 @@ export function getSequelizeTypeByDesignType(target: any, propertyName: string):
  * So that {model: () => Person} will be converted to
  * {model: Person}
  */
-export function resolveModelGetter(options: any) {
-  const maybeModelGetter = value => typeof value === 'function' && value.length === 0;
-  const isModel = value => value && value.prototype && value.prototype instanceof Model;
-  const isOptionObjectOrArray = value => value && typeof value === 'object';
+export function resolveModelGetter(options: any): any {
+  const maybeModelGetter = (value) => typeof value === 'function' && value.length === 0;
+  const isModel = (value) => value && value.prototype && value.prototype instanceof Model;
+  const isOptionObjectOrArray = (value) => value && typeof value === 'object';
 
-  return Object
-    .keys(options)
-    .reduce((acc, key) => {
+  return Object.keys(options).reduce(
+    (acc, key) => {
       const value = options[key];
 
       if (maybeModelGetter(value)) {
@@ -101,6 +104,7 @@ export function resolveModelGetter(options: any) {
       }
 
       return acc;
-    }, Array.isArray(options) ? [...options] : {...options});
+    },
+    Array.isArray(options) ? [...options] : { ...options }
+  );
 }
-

@@ -12,9 +12,9 @@ node_modules
 npm-debug.log
 
 # build
-**/*.js
-**/*.js.map
-**/*.d.ts
+dist/**/*.js
+dist/**/*.js.map
+dist/**/*.d.ts
 
 # src
 !src/hooks/shared/hooks.d.ts
