@@ -99,6 +99,8 @@ export function getHooks(target: any): HookMeta[] | undefined {
   if (hooks) {
     return [...hooks];
   }
+
+  return;
 }
 
 /**
