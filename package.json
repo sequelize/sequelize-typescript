@@ -127,7 +127,7 @@
     "mysql2": "2.2.5",
     "nyc": "15.1.0",
     "pinst": "2.1.6",
-    "prettier": "2.2.1",
+    "prettier": "2.3.0",
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.13",
     "release-it": "14.6.1",
