@@ -101,7 +101,7 @@ export class Sequelize extends OriginSequelize {
       };
       const definedModel = this.repositoryMode ? this.createRepositoryModel(model) : model;
 
-      definedModel.init(attributes, initOptions);
+      definedModel.initialize(attributes, initOptions);
 
       return definedModel;
     });
