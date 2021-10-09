@@ -20,6 +20,7 @@ export type ModelType<TCreationAttributes, TModelAttributes> = new (
   options?: any
 ) => Model<TModelAttributes, TCreationAttributes>;
 export type ModelCtor<M extends Model = Model> = Repository<M>;
+export type ModelStatic<M extends Model = Model> = { new (): M };
 
 export type $GetType<T> = NonNullable<T> extends any[] ? NonNullable<T> : NonNullable<T> | null;
 
@@ -36,11 +37,15 @@ export abstract class Model<
 
   static isInitialized = false;
 
-  static init(attributes: ModelAttributes, options: InitOptions): Model {
+  public static initialize<MS extends ModelStatic<Model>, M extends InstanceType<MS>>(
+    attributes: ModelAttributes,
+    options: InitOptions
+  ): MS {
     this.isInitialized = true;
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return super.init(attributes, options);
+    return super.init<MS, M>(attributes, options);
   }
 
   constructor(values?: TCreationAttributes, options?: BuildOptions) {
