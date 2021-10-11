@@ -131,7 +131,7 @@
     "prettyjson": "1.2.1",
     "reflect-metadata": "0.1.13",
     "release-it": "14.11.6",
-    "sequelize": "6.6.5",
+    "sequelize": "6.7.0",
     "sinon": "11.1.2",
     "sinon-chai": "3.7.0",
     "source-map-support": "0.5.20",
