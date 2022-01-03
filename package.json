@@ -106,7 +106,7 @@
     "@types/mocha": "9.0.0",
     "@types/node": "16.10.3",
     "@types/prettyjson": "0.0.30",
-    "@types/sinon": "10.0.4",
+    "@types/sinon": "10.0.6",
     "@types/sinon-chai": "3.2.5",
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
