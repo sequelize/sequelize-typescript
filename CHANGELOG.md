@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/RobinBuschmann/sequelize-typescript/compare/v2.1.1...v2.1.2) (2022-01-03)
+
+### Bug Fixes
+
+* use custom decorator on column have a property descriptor ([#1070](https://github.com/RobinBuschmann/sequelize-typescript/issues/1070)) ([7ce03de](https://github.com/RobinBuschmann/sequelize-typescript/commit/7ce03de76b465172994f41a55058ea49f3ce27c3))
+* **validators:** allow any values for isIn/notIn ([#1124](https://github.com/RobinBuschmann/sequelize-typescript/issues/1124)) ([d25b392](https://github.com/RobinBuschmann/sequelize-typescript/commit/d25b39282d2a49e4e5cf286100344e7d1fda3c84))
+
 ## [2.1.1](https://github.com/RobinBuschmann/sequelize-typescript/compare/v2.1.0...v2.1.1) (2021-10-10)
 
 ### Bug Fixes
