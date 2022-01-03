@@ -24,7 +24,12 @@ export function Column(...args: any[]): Function | void {
   }
 
   return (target: any, propertyName: string, propertyDescriptor?: PropertyDescriptor) => {
-    annotate(target, propertyName, propertyDescriptor, args[0]);
+    annotate(
+      target,
+      propertyName,
+      propertyDescriptor ?? Object.getOwnPropertyDescriptor(target, propertyName),
+      args[0]
+    );
   };
 }
 

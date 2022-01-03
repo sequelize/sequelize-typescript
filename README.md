@@ -854,7 +854,7 @@ export class Shoe extends Model {
 ## Scopes
 
 Scopes can be defined with annotations as well. The scope options are identical to native
-sequelize (See sequelize [docs](https://docs.sequelizejs.com/manual/tutorial/scopes.html) for more details)
+sequelize (See sequelize [docs](https://sequelize.org/master/manual/scopes.html) for more details)
 
 ### `@DefaultScope` and `@Scopes`
 
