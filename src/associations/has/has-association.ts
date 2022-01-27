@@ -28,9 +28,14 @@ export class HasAssociation<TCreationAttributes, TModelAttributes> extends BaseA
     sequelize: Sequelize
   ): UnionAssociationOptions {
     const options = { ...this.options };
-    const associatedClass = this.getAssociatedClass(sequelize.getModelObject());
+    const associatedClass = this.getAssociatedClass(sequelize.stModels);
 
-    options.foreignKey = getForeignKeyOptions(model, associatedClass, options.foreignKey);
+    options.foreignKey = getForeignKeyOptions(
+      model,
+      sequelize,
+      associatedClass,
+      options.foreignKey
+    );
 
     return options;
   }

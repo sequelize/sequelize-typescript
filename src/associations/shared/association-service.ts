@@ -68,11 +68,13 @@ export function getAssociationsByRelation<TCreationAttributes, TModelAttributes>
 ): BaseAssociation<TCreationAttributes, TModelAttributes>[] {
   const associations = getAssociations<TCreationAttributes, TModelAttributes>(target);
   return (associations || []).filter((association) => {
-    
-    const modelObject: ModelObject =(relatedClass as Model).sequelize.modelManager.models.reduce((acc, model) => {
-      acc[getModelName(model.prototype)] = model;
-      return acc;
-    }, {});
+    const modelObject: ModelObject = (relatedClass as Model).sequelize.modelManager.models.reduce(
+      (acc, model) => {
+        acc[getModelName(model.prototype)] = model;
+        return acc;
+      },
+      {}
+    );
     const _relatedClass = association.getAssociatedClass(modelObject);
     return (
       _relatedClass.prototype === relatedClass.prototype ||

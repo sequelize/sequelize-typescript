@@ -24,7 +24,7 @@ export type ModelStatic<M extends Model = Model> = { new (): M };
 
 export type $GetType<T> = NonNullable<T> extends any[] ? NonNullable<T> : NonNullable<T> | null;
 export interface ModelObject {
-  [key: string]: ModelCtor | Model;
+  [key: string]: ModelCtor<Model>;
 }
 export abstract class Model<
   TModelAttributes extends {} = any,

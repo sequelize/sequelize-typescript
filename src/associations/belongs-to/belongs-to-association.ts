@@ -27,8 +27,13 @@ export class BelongsToAssociation<TCreationAttributes, TModelAttributes> extends
     model: ModelType<TCreationAttributes, TModelAttributes>,
     sequelize: Sequelize
   ): UnionAssociationOptions {
-    const associatedClass = this.getAssociatedClass(sequelize.getModelObject());
-    const foreignKey = getForeignKeyOptions(associatedClass, model, this.options.foreignKey);
+    const associatedClass = this.getAssociatedClass(sequelize.stModels);
+    const foreignKey = getForeignKeyOptions(
+      associatedClass,
+      sequelize,
+      model,
+      this.options.foreignKey
+    );
 
     return {
       ...this.options,

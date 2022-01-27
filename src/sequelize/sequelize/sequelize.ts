@@ -14,6 +14,7 @@ import { Repository } from '../..';
 export class Sequelize extends OriginSequelize {
   options: SequelizeOptions;
   repositoryMode: boolean;
+  stModels: ModelObject;
 
   constructor(database: string, username: string, password?: string, options?: SequelizeOptions);
   constructor(database: string, username: string, options?: SequelizeOptions);
@@ -50,6 +51,10 @@ export class Sequelize extends OriginSequelize {
     const models = getModels(arg, modelMatch || this.options.modelMatch || defaultModelMatch);
 
     const definedModels = this.defineModels(models);
+    this.stModels = definedModels.reduce((acc, model) => {
+      acc[getModelName(model.prototype)] = model;
+      return acc;
+    }, {});
     this.associateModels(definedModels);
     resolveScopes(definedModels);
     installHooks(definedModels);
@@ -59,16 +64,7 @@ export class Sequelize extends OriginSequelize {
     return this.model(modelClass as any) as Repository<M>;
   }
 
-  getModelObject(): ModelObject {
-    const modelObject: ModelObject = this.modelManager.models.reduce((acc, model) => {
-      acc[getModelName(model.prototype)] = model;
-      return acc;
-    }, {});
-    return modelObject;
-  }
-
   private associateModels(models: ModelCtor[]): void {
-    const modelObject = this.getModelObject();
     models.forEach((model) => {
       const associations = getAssociations(model.prototype);
 
@@ -76,7 +72,7 @@ export class Sequelize extends OriginSequelize {
 
       associations.forEach((association) => {
         const options = association.getSequelizeOptions(model, this);
-        const associatedClass = this.model(association.getAssociatedClass(modelObject));
+        const associatedClass = this.model(association.getAssociatedClass(this.stModels));
 
         if (!associatedClass.isInitialized) {
           throw new ModelNotInitializedError(
