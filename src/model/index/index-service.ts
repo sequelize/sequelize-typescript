@@ -16,10 +16,7 @@ export interface IndexesMeta {
   unnamed: IndexOptions[];
 }
 
-export type IndexOptions = Pick<
-  SequelizeIndexOptions,
-  Exclude<keyof SequelizeIndexOptions, 'fields'>
->;
+export type IndexOptions = SequelizeIndexOptions;
 
 /**
  * Returns model indexes from class by restoring this

@@ -241,4 +241,22 @@ describe('custom index decorator', () => {
       'CREATE INDEX `my-index` ON `Tests`' + ' (`fieldA` COLLATE `NOCASE` ASC, `fieldB` DESC)'
     );
   });
+
+  it('creates index using underscored', async () => {
+    @Table({ underscored: true })
+    class Test extends Model {
+      @Index
+      @Column
+      fieldName: string;
+    }
+    sequelize.addModels([Test]);
+
+    const queries = [];
+    await Test.sync({
+      force: true,
+      logging: (sql) => queries.push(sql.substr(sql.indexOf(':') + 2)),
+    });
+    expect(queries).to.have.property('length', 4);
+    expect(queries[3]).to.equal('CREATE INDEX `tests_field_name` ON `tests` (`field_name`)');
+  });
 });
