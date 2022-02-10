@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { HookMeta } from './hook-meta';
 import { HookOptions } from './hook-options';
-import { SequelizeHooks } from 'sequelize/types/lib/hooks';
+import { SequelizeHooks } from 'sequelize/types/hooks';
 import { ModelCtor } from '../../model/model/model';
 
 const HOOKS_KEY = 'sequelize:hooks';
