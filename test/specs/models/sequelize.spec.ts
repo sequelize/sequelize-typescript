@@ -11,7 +11,6 @@ import ShoeDir from '../../models/globs/match-dir-only/ShoeDir';
 import { Table } from '../../../src/model/table/table';
 import { Match } from '../../models/exports/custom-match/match.model';
 import { Model, Sequelize } from '../../../src';
-import { Op } from 'sequelize';
 import { join } from 'path';
 import { AddressDir } from '../../models/globs/match-files/AddressDir';
 import { UserDir } from '../../models/globs/match-files/UserDir';
@@ -45,7 +44,6 @@ describe('sequelize', () => {
   describe('constructor: using "name" property as a db name', () => {
     const db = '__';
     const sequelizeDbName = new Sequelize({
-      operatorsAliases: Op,
       database: db,
       dialect: 'sqlite',
       username: 'root',
@@ -68,7 +66,6 @@ describe('sequelize', () => {
 
   describe('constructor using uri in options object', () => {
     const sequelizeUri = new Sequelize(connectionUri, {
-      operatorsAliases: Op,
       storage: ':memory:',
       logging: !('DISABLE_LOGGING' in process.env),
       pool: { max: 8, min: 0 },
@@ -254,7 +251,6 @@ describe('sequelize', () => {
     it('should load classes from subfolders matching glob criteria', () => {
       const db = '__';
       const sequelizeGlob = new Sequelize({
-        operatorsAliases: Op,
         database: db,
         dialect: 'sqlite',
         username: 'root',
@@ -272,7 +268,6 @@ describe('sequelize', () => {
     it('should load classes from folders', () => {
       const db = '__';
       const sequelizeFolder = new Sequelize({
-        operatorsAliases: Op,
         database: db,
         dialect: 'sqlite',
         username: 'root',
@@ -290,7 +285,6 @@ describe('sequelize', () => {
     it('should load exact files', () => {
       const db = '__';
       const sequelizeFolder = new Sequelize({
-        operatorsAliases: Op,
         database: db,
         dialect: 'sqlite',
         username: 'root',
@@ -309,7 +303,6 @@ describe('sequelize', () => {
     it('should load classes from folders and from glob', () => {
       const db = '__';
       const sequelizeGlobFolder = new Sequelize({
-        operatorsAliases: Op,
         database: db,
         dialect: 'sqlite',
         username: 'root',
