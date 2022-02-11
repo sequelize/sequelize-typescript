@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { Op } from 'sequelize';
 
 import { BelongsToMany } from '../../src/associations/belongs-to-many/belongs-to-many';
 import { Table } from '../../src/model/table/table';
@@ -33,13 +32,11 @@ describe('repository-mode', () => {
 
     before(async () => {
       sequelizeA = new Sequelize({
-        operatorsAliases: Op,
         ...defaultOptions,
         database: 'a',
         models: [User],
       });
       sequelizeB = new Sequelize({
-        operatorsAliases: Op,
         ...defaultOptions,
         database: 'b',
         models: [User],
@@ -103,7 +100,6 @@ describe('repository-mode', () => {
 
       before(async () => {
         sequelize = new Sequelize({
-          operatorsAliases: Op,
           ...defaultOptions,
           database: 'a',
           models: [User, Address],
@@ -160,7 +156,6 @@ describe('repository-mode', () => {
 
       before(async () => {
         sequelizeA = new Sequelize({
-          operatorsAliases: Op,
           ...defaultOptions,
           database: 'a',
           repositoryMode: true,
@@ -168,7 +163,6 @@ describe('repository-mode', () => {
           models: [User, Comment],
         });
         sequelizeB = new Sequelize({
-          operatorsAliases: Op,
           ...defaultOptions,
           database: 'b',
           repositoryMode: true,
@@ -241,7 +235,6 @@ describe('repository-mode', () => {
 
       before(async () => {
         sequelizeA = new Sequelize({
-          operatorsAliases: Op,
           ...defaultOptions,
           database: 'a',
           repositoryMode: true,
@@ -249,7 +242,6 @@ describe('repository-mode', () => {
           models: [User, Event, UserEvent],
         });
         sequelizeB = new Sequelize({
-          operatorsAliases: Op,
           ...defaultOptions,
           database: 'b',
           repositoryMode: true,
