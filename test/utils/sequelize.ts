@@ -17,7 +17,6 @@ export function createSequelize(
   }
 
   return new Sequelize({
-    operatorsAliases: Op,
     database: '__',
     dialect: 'sqlite' as const,
     username: 'root',
@@ -32,7 +31,6 @@ export function createSequelize(
 
 export function createSequelizeValidationOnly(useModelsInPath = true): Sequelize {
   return new Sequelize({
-    operatorsAliases: Op,
     validateOnly: true,
     logging: !('DISABLE_LOGGING' in process.env),
     models: useModelsInPath ? [__dirname + '/../models'] : [],
@@ -48,7 +46,6 @@ export function createSequelizeFromUri(useModelsInPath = true): Sequelize {
 
 export function createSequelizeFromUriObject(useModelsInPath = true): Sequelize {
   return new Sequelize('sqlite://', {
-    operatorsAliases: Op,
     modelPaths: useModelsInPath ? [__dirname + '/../models'] : [],
   });
 }
