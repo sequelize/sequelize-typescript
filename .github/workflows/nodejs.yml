@@ -25,8 +25,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: 'npm ci'
-      - run: 'npm run lint'
-      - run: 'npm run markdownlint'
+      - name: Lint
+        if: ${{ matrix.node-version != '10.x' }}
+        run: 'npm run lint'
+      - name: Markdownlint
+        if: ${{ matrix.node-version != '10.x' }}
+        run: 'npm run markdownlint'
       - run: 'npm run build'
       - run: 'DISABLE_LOGGING=1 npm run cover'
       - run: 'npx nyc report --reporter=lcov > coverage.lcov && npx codecov'
