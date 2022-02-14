@@ -686,7 +686,7 @@ describe('instance', () => {
             leTeam.players[0].destroy(); // Since destroy return void now
             return leTeam;
           })
-          .then((leTeam) => leTeam.reload() as any)
+          .then((leTeam) => leTeam.reload())
           .then((leTeam: Team) => {
             expect(leTeam.players).to.have.length(1);
           })

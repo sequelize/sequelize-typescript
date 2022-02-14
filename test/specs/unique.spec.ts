@@ -1,5 +1,4 @@
 import { getAttributes, Model, Sequelize } from '../../src';
-import { Op } from 'sequelize';
 import { expect } from 'chai';
 import { Table } from '../../src/model/table/table';
 import { Column } from '../../src/model/column/column';
@@ -17,7 +16,6 @@ describe('unique decorator', () => {
     User = UserModel;
 
     new Sequelize({
-      operatorsAliases: Op,
       dialect: 'sqlite',
       storage: ':memory:',
       logging: !('DISABLE_LOGGING' in process.env),
