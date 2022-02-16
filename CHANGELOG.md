@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.3](https://github.com/RobinBuschmann/sequelize-typescript/compare/v2.1.2...v2.1.3) (2022-02-16)
+
+### Bug Fixes
+
+* Fix sequelize/types/lib/hooks path ([#1202](https://github.com/RobinBuschmann/sequelize-typescript/issues/1198)) ([ab45c14](https://github.com/RobinBuschmann/sequelize-typescript/commit/ab45c14da8cbd388f7611c0703e1f198e1f4541b))
+
 ## [2.1.2](https://github.com/RobinBuschmann/sequelize-typescript/compare/v2.1.1...v2.1.2) (2022-01-03)
 
 ### Bug Fixes
