@@ -4,6 +4,7 @@ import {
   ModelAttributes,
   FindOptions,
   BuildOptions,
+  Utils,
 } from 'sequelize';
 import { capitalize } from '../../shared/string';
 import { inferAlias } from '../../associations/alias-inference/alias-inference-service';
@@ -48,7 +49,7 @@ export abstract class Model<
     return super.init<MS, M>(attributes, options);
   }
 
-  constructor(values?: TCreationAttributes, options?: BuildOptions) {
+  constructor(values?: Utils.MakeNullishOptional<TCreationAttributes>, options?: BuildOptions) {
     if (!new.target.isInitialized) {
       throw new ModelNotInitializedError(new.target, `${new.target.name} cannot be instantiated.`);
     }
