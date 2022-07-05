@@ -102,7 +102,7 @@
     "@types/chai": "4.3.0",
     "@types/chai-as-promised": "7.1.5",
     "@types/chai-datetime": "0.0.37",
-    "@types/lodash": "4.14.178",
+    "@types/lodash": "4.14.182",
     "@types/mocha": "9.1.0",
     "@types/node": "18.0.1",
     "@types/prettyjson": "0.0.30",
