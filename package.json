@@ -98,7 +98,7 @@
   "devDependencies": {
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.2",
-    "@release-it/conventional-changelog": "4.3.0",
+    "@release-it/conventional-changelog": "5.0.0",
     "@types/chai": "4.3.1",
     "@types/chai-as-promised": "7.1.5",
     "@types/chai-datetime": "0.0.37",
@@ -130,7 +130,7 @@
     "prettier": "2.7.1",
     "prettyjson": "1.2.5",
     "reflect-metadata": "0.1.13",
-    "release-it": "14.14.3",
+    "release-it": "15.1.1",
     "sequelize": "6.21.3",
     "sinon": "13.0.1",
     "sinon-chai": "3.7.0",
