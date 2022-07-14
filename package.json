@@ -126,7 +126,7 @@
     "moment": "2.29.4",
     "mysql2": "2.3.3",
     "nyc": "15.1.0",
-    "pinst": "2.1.6",
+    "pinst": "3.0.0",
     "prettier": "2.7.1",
     "prettyjson": "1.2.5",
     "reflect-metadata": "0.1.13",
