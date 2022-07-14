@@ -93,7 +93,7 @@
     "report-dir": "./coverage"
   },
   "dependencies": {
-    "glob": "7.2.0"
+    "glob": "8.0.3"
   },
   "devDependencies": {
     "@commitlint/cli": "17.0.3",
