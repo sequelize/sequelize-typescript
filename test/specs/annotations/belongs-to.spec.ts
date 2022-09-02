@@ -15,15 +15,25 @@ describe('BelongsTo', () => {
   class Team extends Model {}
 
   @Table
+  class Rank extends Model {}
+
+  @Table
   class Player extends Model {
     @BelongsTo(() => Team, { as, foreignKey: 'teamId' })
     team: Team;
+
+    @BelongsTo(() => Rank, { as: undefined, foreignKey: 'rankId' })
+    Rank: Rank;
   }
 
-  sequelize.addModels([Team, Player]);
+  sequelize.addModels([Team, Player, Rank]);
 
   it('should pass as options to sequelize association', () => {
     expect(Player['associations']).to.have.property(as);
+  });
+
+  it('should use association model name if passed undefined for "as"', () => {
+    expect(Player['associations']).to.have.property('Rank');
   });
 
   it('should throw due to missing foreignKey', () => {

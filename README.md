@@ -564,6 +564,49 @@ explicitly:
   proofedBooks: Book[];
 ```
 
+### Multiple relations of same models and sequelize aliasing compatibility
+
+When defining a relationship, _sequelize_ allows you to configure an alias, but it also allows you to configure empty aliases
+as a sort of default relationship when querying. When using _sequelize-typescript_, it defaults to add an alias.
+
+Consider the following model definition:
+
+```typescript
+@Table
+class User extends Model {
+  @HasMany(() => Comment)
+  comments: Comment[];
+
+  @HasMany(() => Comment, {
+    as: 'archivedComments'
+  })
+  archivedComments: Comment[];
+}
+```
+
+Running the following query will result in an error:
+
+```typescript
+User.findOne({ include: [Comment, 'archivedComments'] })
+// Error: Alias cannot be inferred: "user" has multiple relations with "comment"
+```
+
+To revert to the original _sequelize_ behavior, you can turn off the automatic aliasing by specifying `undefined` for
+the alias value:
+
+```typescript
+@Table({ modelName: 'user' })
+class User extends Model {
+  @HasMany(() => Comment, { as: undefined })
+  comments: Comment[];
+
+  @HasMany(() => Comment, {
+    as: 'archivedComments'
+  })
+  archivedComments: Comment[];
+}
+```
+
 ### Type safe usage of auto generated functions
 
 With the creation of a relation, sequelize generates some method on the corresponding

@@ -15,6 +15,9 @@ describe('BelongsToMany', () => {
   class Team extends Model {}
 
   @Table
+  class Rank extends Model {}
+
+  @Table
   class Player extends Model {
     @BelongsToMany(() => Team, {
       as,
@@ -23,11 +26,23 @@ describe('BelongsToMany', () => {
       otherKey: 'teamId',
     })
     teams: Team[];
+
+    @BelongsToMany(() => Rank, {
+      as: undefined,
+      through: 'RankPlayer',
+      foreignKey: 'playerId',
+      otherKey: 'rankId',
+    })
+    Ranks: Rank[];
   }
 
-  sequelize.addModels([Team, Player]);
+  sequelize.addModels([Team, Player, Rank]);
 
   it('should pass as options to sequelize association', () => {
     expect(Player['associations']).to.have.property(as);
+  });
+
+  it('should use association model name if passed undefined for "as"', () => {
+    expect(Player['associations']).to.have.property('Ranks');
   });
 });

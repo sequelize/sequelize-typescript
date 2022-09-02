@@ -21,7 +21,7 @@ export function HasMany<TCreationAttributes, TModelAttributes>(
 ): Function {
   return (target: any, propertyName: string) => {
     const options: HasManyOptions = getPreparedAssociationOptions(optionsOrForeignKey);
-    if (!options.as) options.as = propertyName;
+    if (!options.as && !('as' in options)) options.as = propertyName;
     addAssociation(target, new HasAssociation(associatedClassGetter, options, Association.HasMany));
   };
 }
