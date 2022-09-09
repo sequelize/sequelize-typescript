@@ -33,7 +33,7 @@ export class BelongsToManyAssociation<
     const options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough> = {
       ...this.options,
     };
-    const associatedClass = this.getAssociatedClass();
+    const associatedClass = this.getAssociatedClass(sequelize.stModels);
     const throughOptions = this.getThroughOptions(sequelize);
 
     const throughModel =
@@ -41,9 +41,15 @@ export class BelongsToManyAssociation<
         ? throughOptions.model
         : undefined;
     options.through = throughOptions;
-    options.foreignKey = getForeignKeyOptions(model, throughModel as any, this.options.foreignKey);
+    options.foreignKey = getForeignKeyOptions(
+      model,
+      sequelize,
+      throughModel as any,
+      this.options.foreignKey
+    );
     options.otherKey = getForeignKeyOptions(
       associatedClass,
+      sequelize,
       throughModel as any,
       this.options.otherKey
     );
@@ -60,7 +66,7 @@ export class BelongsToManyAssociation<
       typeof through === 'object' ? { ...through } : ({} as any);
 
     if (typeof throughModel === 'function') {
-      const throughModelClass = sequelize.model(throughModel());
+      const throughModelClass = sequelize.model(throughModel(sequelize.stModels));
       if (!throughModelClass.isInitialized) {
         throw new ModelNotInitializedError(throughModelClass, 'Association cannot be resolved.');
       }
