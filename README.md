@@ -523,14 +523,14 @@ class Book extends Model {
   @Column
   authorId: number
 
-  @BelongsTo(() => Person)
+  @BelongsTo(() => Person, 'authorId')
   author: Person
 
   @ForeignKey(() => Person)
   @Column
   proofreaderId: number
 
-  @BelongsTo(() => Person)
+  @BelongsTo(() => Person, 'proofreaderId')
   proofreader: Person
 }
 
