@@ -41,6 +41,7 @@ export function getModels(arg: (ModelCtor | string)[], modelMatch: ModelMatch): 
   if (arg && typeof arg[0] === 'string') {
     return arg.reduce((models: any[], dir) => {
       if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = join(dir as string, '/*');
+      dir = dir.replaceAll('\\', '/');
       const _models = glob
         .sync(dir as string)
         .filter(isImportable)
