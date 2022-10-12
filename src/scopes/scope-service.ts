@@ -66,7 +66,7 @@ export const resolvesDeprecatedScopes = (model: ModelCtor): void => {
  * Adds scope option meta data for specified prototype
  * @deprecated
  */
-export function addScopeOptions<TCreationAttributes, TModelAttributes>(
+export function addScopeOptions<TCreationAttributes extends {}, TModelAttributes extends {}>(
   target: any,
   options: ScopeOptions<TCreationAttributes, TModelAttributes>
 ): void {
@@ -78,7 +78,7 @@ export function addScopeOptions<TCreationAttributes, TModelAttributes>(
  * Returns scope option meta data from specified target
  * @deprecated
  */
-export function getScopeOptions<TCreationAttributes, TModelAttributes>(
+export function getScopeOptions<TCreationAttributes extends {}, TModelAttributes extends {}>(
   target: any
 ): ScopeOptions<TCreationAttributes, TModelAttributes> | undefined {
   const options = Reflect.getMetadata(SCOPES_KEY, target);
@@ -90,7 +90,7 @@ export function getScopeOptions<TCreationAttributes, TModelAttributes>(
 /**
  * @deprecated
  */
-function resolveDeprecatedScope<TCreationAttributes, TModelAttributes>(
+function resolveDeprecatedScope<TCreationAttributes extends {}, TModelAttributes extends {}>(
   scopeName: string,
   model: ModelCtor,
   options: ScopeFindOptions<TCreationAttributes, TModelAttributes> | Function | undefined
@@ -108,7 +108,7 @@ function resolveDeprecatedScope<TCreationAttributes, TModelAttributes>(
  * Set scope option meta data for specified prototype
  * @deprecated
  */
-function setScopeOptions<TCreationAttributes, TModelAttributes>(
+function setScopeOptions<TCreationAttributes extends {}, TModelAttributes extends {}>(
   target: any,
   options: ScopeOptions<TCreationAttributes, TModelAttributes>
 ): void {

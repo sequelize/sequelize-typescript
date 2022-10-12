@@ -10,10 +10,10 @@ import { ModelType } from '../../model/model/model';
 import { ThroughOptions } from '../through/through-options';
 
 export class BelongsToManyAssociation<
-  TCreationAttributes,
-  TModelAttributes,
-  TCreationAttributesThrough,
-  TModelAttributesThrough
+  TCreationAttributes extends {},
+  TModelAttributes extends {},
+  TCreationAttributesThrough extends {},
+  TModelAttributesThrough extends {}
 > extends BaseAssociation<TCreationAttributes, TModelAttributes> {
   constructor(
     associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
