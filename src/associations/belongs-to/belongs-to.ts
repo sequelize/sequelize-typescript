@@ -4,17 +4,17 @@ import { BelongsToAssociation } from './belongs-to-association';
 import { ModelClassGetter } from '../../model/shared/model-class-getter';
 import { addAssociation, getPreparedAssociationOptions } from '../shared/association-service';
 
-export function BelongsTo<TCreationAttributes, TModelAttributes>(
+export function BelongsTo<TCreationAttributes extends {}, TModelAttributes extends {}>(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   foreignKey?: string
 ): Function;
 
-export function BelongsTo<TCreationAttributes, TModelAttributes>(
+export function BelongsTo<TCreationAttributes extends {}, TModelAttributes extends {}>(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   options?: BelongsToOptions
 ): Function;
 
-export function BelongsTo<TCreationAttributes, TModelAttributes>(
+export function BelongsTo<TCreationAttributes extends {}, TModelAttributes extends {}>(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   optionsOrForeignKey?: string | BelongsToOptions
 ): Function {

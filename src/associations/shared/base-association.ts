@@ -4,7 +4,7 @@ import { ModelClassGetter } from '../../model/shared/model-class-getter';
 import { ModelType } from '../../model/model/model';
 import { Sequelize } from '../../sequelize/sequelize/sequelize';
 
-export abstract class BaseAssociation<TCreationAttributes, TModelAttributes> {
+export abstract class BaseAssociation<TCreationAttributes extends {}, TModelAttributes extends {}> {
   constructor(
     private associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
     protected options: UnionAssociationOptions

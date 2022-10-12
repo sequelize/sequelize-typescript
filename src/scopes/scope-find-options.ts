@@ -1,7 +1,7 @@
 import { Association, FindOptions, IncludeOptions } from 'sequelize';
 import { ModelClassGetter } from '../model/shared/model-class-getter';
 
-export type ScopeIncludeOptions<TCreationAttributes, TModelAttributes> = {
+export type ScopeIncludeOptions<TCreationAttributes extends {}, TModelAttributes extends {}> = {
   [K in keyof IncludeOptions]: K extends 'model'
     ? ModelClassGetter<TCreationAttributes, TModelAttributes>
     : K extends 'include'
@@ -9,7 +9,7 @@ export type ScopeIncludeOptions<TCreationAttributes, TModelAttributes> = {
     : IncludeOptions[K];
 };
 
-export type ScopeFindOptions<TCreationAttributes, TModelAttributes> = {
+export type ScopeFindOptions<TCreationAttributes extends {}, TModelAttributes extends {}> = {
   [K in keyof FindOptions]: K extends 'include'
     ?
         | ModelClassGetter<TCreationAttributes, TModelAttributes>[]

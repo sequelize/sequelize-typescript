@@ -16,7 +16,7 @@ import { AssociationActionOptions } from './association/association-action-optio
 import { AssociationCreateOptions } from './association/association-create-options';
 import { Repository } from '../../sequelize/repository/repository';
 
-export type ModelType<TCreationAttributes, TModelAttributes> = new (
+export type ModelType<TCreationAttributes extends {}, TModelAttributes extends {}> = new (
   values?: TCreationAttributes,
   options?: any
 ) => Model<TModelAttributes, TCreationAttributes>;

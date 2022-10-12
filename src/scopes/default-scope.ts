@@ -11,14 +11,14 @@ export function DefaultScope(scopeGetter: DefaultScopeGetter): Function;
  * Decorator for defining default Model scope
  * @deprecated
  */
-export function DefaultScope<TCreationAttributes, TModelAttributes>(
+export function DefaultScope<TCreationAttributes extends {}, TModelAttributes extends {}>(
   scope: ScopeFindOptions<TCreationAttributes, TModelAttributes>
 ): Function;
 
 /**
  * Decorator for defining default Model scope
  */
-export function DefaultScope<TCreationAttributes, TModelAttributes>(
+export function DefaultScope<TCreationAttributes extends {}, TModelAttributes extends {}>(
   scopeOrSsopeGetter: ScopeFindOptions<TCreationAttributes, TModelAttributes> | DefaultScopeGetter
 ): Function {
   return (target: any) => {

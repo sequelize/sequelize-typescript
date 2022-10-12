@@ -28,7 +28,7 @@ export function getPreparedAssociationOptions(
 /**
  * Stores association meta data for specified class
  */
-export function addAssociation<TCreationAttributes, TModelAttributes>(
+export function addAssociation<TCreationAttributes extends {}, TModelAttributes extends {}>(
   target: any,
   association: BaseAssociation<TCreationAttributes, TModelAttributes>
 ): void {
@@ -44,7 +44,7 @@ export function addAssociation<TCreationAttributes, TModelAttributes>(
 /**
  * Returns association meta data from specified class
  */
-export function getAssociations<TCreationAttributes, TModelAttributes>(
+export function getAssociations<TCreationAttributes extends {}, TModelAttributes extends {}>(
   target: any
 ): BaseAssociation<TCreationAttributes, TModelAttributes>[] | undefined {
   const associations = Reflect.getMetadata(ASSOCIATIONS_KEY, target);
@@ -53,14 +53,14 @@ export function getAssociations<TCreationAttributes, TModelAttributes>(
   }
 }
 
-export function setAssociations<TCreationAttributes, TModelAttributes>(
+export function setAssociations<TCreationAttributes extends {}, TModelAttributes extends {}>(
   target: any,
   associations: BaseAssociation<TCreationAttributes, TModelAttributes>[]
 ): void {
   Reflect.defineMetadata(ASSOCIATIONS_KEY, associations, target);
 }
 
-export function getAssociationsByRelation<TCreationAttributes, TModelAttributes>(
+export function getAssociationsByRelation<TCreationAttributes extends {}, TModelAttributes extends {}>(
   target: any,
   relatedClass: any
 ): BaseAssociation<TCreationAttributes, TModelAttributes>[] {
