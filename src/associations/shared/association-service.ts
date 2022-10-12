@@ -60,10 +60,10 @@ export function setAssociations<TCreationAttributes extends {}, TModelAttributes
   Reflect.defineMetadata(ASSOCIATIONS_KEY, associations, target);
 }
 
-export function getAssociationsByRelation<TCreationAttributes extends {}, TModelAttributes extends {}>(
-  target: any,
-  relatedClass: any
-): BaseAssociation<TCreationAttributes, TModelAttributes>[] {
+export function getAssociationsByRelation<
+  TCreationAttributes extends {},
+  TModelAttributes extends {}
+>(target: any, relatedClass: any): BaseAssociation<TCreationAttributes, TModelAttributes>[] {
   const associations = getAssociations<TCreationAttributes, TModelAttributes>(target);
   return (associations || []).filter((association) => {
     const _relatedClass = association.getAssociatedClass();

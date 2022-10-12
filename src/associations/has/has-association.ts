@@ -7,10 +7,10 @@ import { Association } from '../shared/association';
 import { UnionAssociationOptions } from '../shared/union-association-options';
 import { ModelType } from '../../model/model/model';
 
-export class HasAssociation<TCreationAttributes extends {}, TModelAttributes extends {}> extends BaseAssociation<
-  TCreationAttributes,
-  TModelAttributes
-> {
+export class HasAssociation<
+  TCreationAttributes extends {},
+  TModelAttributes extends {}
+> extends BaseAssociation<TCreationAttributes, TModelAttributes> {
   constructor(
     associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
     protected options: HasManyOptions | HasOneOptions,

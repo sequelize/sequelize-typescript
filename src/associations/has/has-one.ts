@@ -10,7 +10,7 @@ export function HasOne<TCreationAttributes extends {}, TModelAttributes extends 
   foreignKey?: string
 ): Function;
 
-export function HasOne<TCreationAttributes extends {}, TModelAttributes  extends {}>(
+export function HasOne<TCreationAttributes extends {}, TModelAttributes extends {}>(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   options?: HasOneOptions
 ): Function;
