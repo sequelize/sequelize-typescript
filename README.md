@@ -3,38 +3,60 @@
 [![Build Status](https://github.com/RobinBuschmann/sequelize-typescript/workflows/Node.js%20CI/badge.svg)](https://github.com/RobinBuschmann/sequelize-typescript/actions?query=workflow%3A%22Node.js+CI%22)
 [![codecov](https://codecov.io/gh/RobinBuschmann/sequelize-typescript/branch/master/graph/badge.svg)](https://codecov.io/gh/RobinBuschmann/sequelize-typescript)
 [![NPM](https://img.shields.io/npm/v/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
-[![Dependency Status](https://img.shields.io/david/RobinBuschmann/sequelize-typescript.svg)](https://www.npmjs.com/package/sequelize-typescript)
 
 Decorators and some other features for sequelize (v6).
 
-- [Installation](#installation)
-- [Model Definition](#model-definition)
-  - [`@Table` API](#table-api)
-  - [`@Column` API](#column-api)
-- [Usage](#usage)
-  - [Configuration](#configuration)
-  - [globs](#globs)
-  - [Model-path resolving](#model-path-resolving)
-- [Model association](#model-association)
-  - [One-to-many](#one-to-many)
-  - [Many-to-many](#many-to-many)
-  - [One-to-one](#one-to-one)
-  - [`@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API](#foreignkey-belongsto-hasmany-hasone-belongstomany-api)
-  - [Generated getter and setter](#type-safe-usage-of-auto-generated-functions)
-  - [Multiple relations of same models](#multiple-relations-of-same-models)
-- [Indexes](#indexes)
-  - [`@Index` API](#index)
-  - [`createIndexDecorator()` API](#createindexdecorator)
-- [Repository mode](#repository-mode)
-  - [How to enable repository mode?](#how-to-enable-repository-mode)
-  - [How to use repository mode?](#how-to-use-repository-mode)
-  - [How to use associations with repository mode?](#how-to-use-associations-with-repository-mode)
-  - [Limitations of repository mode](#limitations-of-repository-mode)
-- [Model validation](#model-validation)
-- [Scopes](#scopes)
-- [Hooks](#hooks)
-- [Why `() => Model`?](#user-content-why---model)
-- [Recommendations and limitations](#recommendations-and-limitations)
+- [sequelize-typescript](#sequelize-typescript)
+  - [Installation](#installation)
+    - [Sequelize Options](#sequelize-options)
+    - [Scopes Options](#scopes-options)
+  - [Model definition](#model-definition)
+    - [Less strict](#less-strict)
+    - [More strict](#more-strict)
+    - [`@Table`](#table)
+      - [Table API](#table-api)
+      - [Primary key](#primary-key)
+      - [`@CreatedAt`, `@UpdatedAt`, `@DeletedAt`](#createdat-updatedat-deletedat)
+    - [`@Column`](#column)
+      - [Column API](#column-api)
+      - [_Shortcuts_](#shortcuts)
+    - [Type inference](#type-inference)
+    - [Accessors](#accessors)
+  - [Usage](#usage)
+    - [Configuration](#configuration)
+    - [globs](#globs)
+      - [Model-path resolving](#model-path-resolving)
+    - [Build and create](#build-and-create)
+    - [Find and update](#find-and-update)
+  - [Model association](#model-association)
+    - [One-to-many](#one-to-many)
+    - [Many-to-many](#many-to-many)
+      - [Type safe _through_-table instance access](#type-safe-through-table-instance-access)
+    - [One-to-one](#one-to-one)
+    - [`@ForeignKey`, `@BelongsTo`, `@HasMany`, `@HasOne`, `@BelongsToMany` API](#foreignkey-belongsto-hasmany-hasone-belongstomany-api)
+    - [Multiple relations of same models](#multiple-relations-of-same-models)
+    - [Type safe usage of auto generated functions](#type-safe-usage-of-auto-generated-functions)
+  - [Indexes](#indexes)
+    - [`@Index`](#index)
+      - [Index API](#index-api)
+    - [`createIndexDecorator()`](#createindexdecorator)
+  - [Repository mode](#repository-mode)
+    - [How to enable repository mode?](#how-to-enable-repository-mode)
+    - [How to use repository mode?](#how-to-use-repository-mode)
+    - [How to use associations with repository mode?](#how-to-use-associations-with-repository-mode)
+    - [Limitations of repository mode](#limitations-of-repository-mode)
+  - [Model validation](#model-validation)
+    - [Exceptions](#exceptions)
+    - [Example](#example)
+  - [Scopes](#scopes)
+    - [`@DefaultScope` and `@Scopes`](#defaultscope-and-scopes)
+  - [Hooks](#hooks)
+  - [Why `() => Model`?](#why---model)
+  - [Recommendations and limitations](#recommendations-and-limitations)
+    - [One Sequelize instance per model (without repository mode)](#one-sequelize-instance-per-model-without-repository-mode)
+    - [One model class per file](#one-model-class-per-file)
+    - [Minification](#minification)
+  - [Contributing](#contributing)
 
 ## Installation
 
@@ -79,25 +101,25 @@ instead of deprecated way:
 ## Model definition
 
 ```typescript
-import { Table, Column, Model, HasMany } from 'sequelize-typescript'
+import { Table, Column, Model, HasMany } from 'sequelize-typescript';
 
 @Table
 class Person extends Model {
   @Column
-  name: string
+  name: string;
 
   @Column
-  birthday: Date
+  birthday: Date;
 
   @HasMany(() => Hobby)
-  hobbies: Hobby[]
+  hobbies: Hobby[];
 }
 ```
 
 ### Less strict
 
 ```typescript
-import { Table, Model } from 'sequelize-typescript'
+import { Table, Model } from 'sequelize-typescript';
 
 @Table
 class Person extends Model {}
@@ -106,12 +128,12 @@ class Person extends Model {}
 ### More strict
 
 ```typescript
-import { Optional } from 'sequelize'
-import { Table, Model } from 'sequelize-typescript'
+import { Optional } from 'sequelize';
+import { Table, Model } from 'sequelize-typescript';
 
 interface PersonAttributes {
-  id: number
-  name: string
+  id: number;
+  name: string;
 }
 
 interface PersonCreationAttributes extends Optional<PersonAttributes, 'id'> {}
@@ -250,11 +272,11 @@ Get/set accessors do work as well
 class Person extends Model {
   @Column
   get name(): string {
-    return 'My name is ' + this.getDataValue('name')
+    return 'My name is ' + this.getDataValue('name');
   }
 
   set name(value: string) {
-    this.setDataValue('name', value)
+    this.setDataValue('name', value);
   }
 }
 ```
@@ -269,7 +291,7 @@ Except for minor variations _sequelize-typescript_ will work like pure sequelize
 To make the defined models available, you have to configure a `Sequelize` instance from `sequelize-typescript`(!).
 
 ```typescript
-import { Sequelize } from 'sequelize-typescript'
+import { Sequelize } from 'sequelize-typescript';
 
 const sequelize = new Sequelize({
   database: 'some_db',
@@ -277,8 +299,8 @@ const sequelize = new Sequelize({
   username: 'root',
   password: '',
   storage: ':memory:',
-  models: [__dirname + '/models'] // or [Player, Team],
-})
+  models: [__dirname + '/models'], // or [Player, Team],
+});
 ```
 
 Before you can use your models you have to tell sequelize where they can be found. So either set `models` in the
@@ -286,8 +308,8 @@ sequelize config or add the required models later on by calling `sequelize.addMo
 `sequelize.addModels([__dirname + '/models'])`:
 
 ```typescript
-sequelize.addModels([Person])
-sequelize.addModels(['path/to/models'])
+sequelize.addModels([Person]);
+sequelize.addModels(['path/to/models']);
 ```
 
 ### globs
@@ -371,17 +393,17 @@ export default class User extends Model {}
 Instantiation and inserts can be achieved in the good old sequelize way
 
 ```typescript
-const person = Person.build({ name: 'bob', age: 99 })
-person.save()
+const person = Person.build({ name: 'bob', age: 99 });
+person.save();
 
-Person.create({ name: 'bob', age: 99 })
+Person.create({ name: 'bob', age: 99 });
 ```
 
 but _sequelize-typescript_ also makes it possible to create instances with `new`:
 
 ```typescript
-const person = new Person({ name: 'bob', age: 99 })
-person.save()
+const person = new Person({ name: 'bob', age: 99 });
+person.save();
 ```
 
 ### Find and update
@@ -391,16 +413,16 @@ Finding and updating entries does also work like using native sequelize. So see 
 
 ```typescript
 Person.findOne().then((person) => {
-  person.age = 100
-  return person.save()
-})
+  person.age = 100;
+  return person.save();
+});
 
 Person.update(
   {
-    name: 'bobby'
+    name: 'bobby',
   },
   { where: { id: 1 } }
-).then(() => {})
+).then(() => {});
 ```
 
 ## Model association
@@ -414,26 +436,26 @@ and `@ForeignKey` annotations.
 @Table
 class Player extends Model {
   @Column
-  name: string
+  name: string;
 
   @Column
-  num: number
+  num: number;
 
   @ForeignKey(() => Team)
   @Column
-  teamId: number
+  teamId: number;
 
   @BelongsTo(() => Team)
-  team: Team
+  team: Team;
 }
 
 @Table
 class Team extends Model {
   @Column
-  name: string
+  name: string;
 
   @HasMany(() => Player)
-  players: Player[]
+  players: Player[];
 }
 ```
 
@@ -441,8 +463,8 @@ That's all, _sequelize-typescript_ does everything else for you. So when retriev
 
 ```typescript
 Team.findOne({ include: [Player] }).then((team) => {
-  team.players.forEach((player) => console.log(`Player ${player.name}`))
-})
+  team.players.forEach((player) => console.log(`Player ${player.name}`));
+});
 ```
 
 the players will also be resolved (when passing `include: Player` to the find options)
@@ -453,24 +475,24 @@ the players will also be resolved (when passing `include: Player` to the find op
 @Table
 class Book extends Model {
   @BelongsToMany(() => Author, () => BookAuthor)
-  authors: Author[]
+  authors: Author[];
 }
 
 @Table
 class Author extends Model {
   @BelongsToMany(() => Book, () => BookAuthor)
-  books: Book[]
+  books: Book[];
 }
 
 @Table
 class BookAuthor extends Model {
   @ForeignKey(() => Book)
   @Column
-  bookId: number
+  bookId: number;
 
   @ForeignKey(() => Author)
   @Column
-  authorId: number
+  authorId: number;
 }
 ```
 
@@ -521,26 +543,26 @@ So if you define a model with multiple relations like
 class Book extends Model {
   @ForeignKey(() => Person)
   @Column
-  authorId: number
+  authorId: number;
 
   @BelongsTo(() => Person)
-  author: Person
+  author: Person;
 
   @ForeignKey(() => Person)
   @Column
-  proofreaderId: number
+  proofreaderId: number;
 
   @BelongsTo(() => Person)
-  proofreader: Person
+  proofreader: Person;
 }
 
 @Table
 class Person extends Model {
   @HasMany(() => Book)
-  writtenBooks: Book[]
+  writtenBooks: Book[];
 
   @HasMany(() => Book)
-  proofedBooks: Book[]
+  proofedBooks: Book[];
 }
 ```
 
@@ -577,32 +599,32 @@ functions.
 @Table
 class ModelA extends Model {
   @HasMany(() => ModelB)
-  bs: ModelB[]
+  bs: ModelB[];
 }
 
 @Table
 class ModelB extends Model {
   @BelongsTo(() => ModelA)
-  a: ModelA
+  a: ModelA;
 }
 ```
 
 To use them, pass the property key of the respective relation as the first parameter:
 
 ```typescript
-const modelA = new ModelA()
+const modelA = new ModelA();
 
 modelA
   .$set('bs', [
     /* instance */
   ])
-  .then(/* ... */)
-modelA.$add('b' /* instance */).then(/* ... */)
-modelA.$get('bs').then(/* ... */)
-modelA.$count('bs').then(/* ... */)
-modelA.$has('bs').then(/* ... */)
-modelA.$remove('bs' /* instance */).then(/* ... */)
-modelA.$create('bs' /* value */).then(/* ... */)
+  .then(/* ... */);
+modelA.$add('b' /* instance */).then(/* ... */);
+modelA.$get('bs').then(/* ... */);
+modelA.$count('bs').then(/* ... */);
+modelA.$has('bs').then(/* ... */);
+modelA.$remove('bs' /* instance */).then(/* ... */);
+modelA.$create('bs' /* value */).then(/* ... */);
 ```
 
 ## Indexes
@@ -616,11 +638,11 @@ The `@Index` annotation can be used without passing any parameters.
 class Person extends Model {
   @Index // Define an index with default name
   @Column
-  name: string
+  name: string;
 
   @Index // Define another index
   @Column
-  birthday: Date
+  birthday: Date;
 }
 ```
 
@@ -632,11 +654,11 @@ an object literal (see [indexes define option](https://sequelize.org/v5/manual/m
 class Person extends Model {
   @Index('my-index') // Define a multi-field index on name and birthday
   @Column
-  name: string
+  name: string;
 
   @Index('my-index') // Add birthday as the second field to my-index
   @Column
-  birthday: Date
+  birthday: Date;
 
   @Index({
     // index options
@@ -652,13 +674,13 @@ class Person extends Model {
     // index field options
     length: 10,
     order: 'ASC',
-    collate: 'NOCASE'
+    collate: 'NOCASE',
   })
   @Column
-  jobTitle: string
+  jobTitle: string;
 
   @Column
-  isEmployee: boolean
+  isEmployee: boolean;
 }
 ```
 
@@ -675,7 +697,7 @@ class Person extends Model {
 The `createIndexDecorator()` function can be used to create a decorator for an index with options specified with an object literal supplied as the argument. Fields are added to the index by decorating properties.
 
 ```typescript
-const SomeIndex = createIndexDecorator()
+const SomeIndex = createIndexDecorator();
 const JobIndex = createIndexDecorator({
   // index options
   name: 'job-index',
@@ -686,36 +708,36 @@ const JobIndex = createIndexDecorator({
   concurrently: true,
   using: 'BTREE',
   operator: 'text_pattern_ops',
-  prefix: 'test-'
-})
+  prefix: 'test-',
+});
 
 @Table
 class Person extends Model {
   @SomeIndex // Add name to SomeIndex
   @Column
-  name: string
+  name: string;
 
   @SomeIndex // Add birthday to SomeIndex
   @Column
-  birthday: Date
+  birthday: Date;
 
   @JobIndex({
     // index field options
     length: 10,
     order: 'ASC',
-    collate: 'NOCASE'
+    collate: 'NOCASE',
   })
   @Column
-  jobTitle: string
+  jobTitle: string;
 
   @Column
-  isEmployee: boolean
+  isEmployee: boolean;
 }
 ```
 
 ## Repository mode
 
-With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode-1) for details.
+With `sequelize-typescript@1` comes a repository mode. See [docs](#repository-mode) for details.
 
 The repository mode makes it possible to separate static operations like `find`, `create`, ... from model definitions.
 It also empowers models so that they can be used with multiple sequelize instances.
@@ -736,10 +758,10 @@ const sequelize = new Sequelize({
 Retrieve repository to create instances or perform search operations:
 
 ```typescript
-const userRepository = sequelize.getRepository(User)
+const userRepository = sequelize.getRepository(User);
 
-const luke = await userRepository.create({ name: 'Luke Skywalker' })
-const luke = await userRepository.findOne({ where: { name: 'luke' } })
+const luke = await userRepository.create({ name: 'Luke Skywalker' });
+const luke = await userRepository.findOne({ where: { name: 'luke' } });
 ```
 
 ### How to use associations with repository mode?
@@ -747,11 +769,11 @@ const luke = await userRepository.findOne({ where: { name: 'luke' } })
 For now one need to use the repositories within the include options in order to retrieve or create related data:
 
 ```typescript
-const userRepository = sequelize.getRepository(User)
-const addressRepository = sequelize.getRepository(Address)
+const userRepository = sequelize.getRepository(User);
+const addressRepository = sequelize.getRepository(Address);
 
-userRepository.find({ include: [addressRepository] })
-userRepository.create({ name: 'Bear' }, { include: [addressRepository] })
+userRepository.find({ include: [addressRepository] });
+userRepository.create({ name: 'Bear' }, { include: [addressRepository] });
 ```
 
 > ⚠️ This will change in the future: One will be able to refer the model classes instead of the repositories.
@@ -764,12 +786,12 @@ Nested scopes and includes in general won't work when using `@Scope` annotation 
 @Scopes(() => ({
   // includes
   withAddress: {
-    include: [() => Address]
+    include: [() => Address],
   },
   // nested scopes
   withAddressIncludingLatLng: {
-    include: [() => Address.scope('withLatLng')]
-  }
+    include: [() => Address.scope('withLatLng')],
+  },
 }))
 @Table
 class User extends Model {}
@@ -799,55 +821,55 @@ The following validators cannot simply be translated from sequelize validator to
 ### Example
 
 ```typescript
-const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
+const HEX_REGEX = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
 @Table
 export class Shoe extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Column
-  id: string
+  id: string;
 
   @Equals('lala')
   @Column
-  readonly key: string
+  readonly key: string;
 
   @Contains('Special')
   @Column
-  special: string
+  special: string;
 
   @Length({ min: 3, max: 15 })
   @Column
-  brand: string
+  brand: string;
 
   @IsUrl
   @Column
-  brandUrl: string
+  brandUrl: string;
 
   @Is('HexColor', (value) => {
     if (!HEX_REGEX.test(value)) {
-      throw new Error(`"${value}" is not a hex color value.`)
+      throw new Error(`"${value}" is not a hex color value.`);
     }
   })
   @Column
-  primaryColor: string
+  primaryColor: string;
 
   @Is(function hexColor(value: string): void {
     if (!HEX_REGEX.test(value)) {
-      throw new Error(`"${value}" is not a hex color value.`)
+      throw new Error(`"${value}" is not a hex color value.`);
     }
   })
   @Column
-  secondaryColor: string
+  secondaryColor: string;
 
   @Is(HEX_REGEX)
   @Column
-  tertiaryColor: string
+  tertiaryColor: string;
 
   @IsDate
   @IsBefore('2017-02-27')
   @Column
-  producedAt: Date
+  producedAt: Date;
 }
 ```
 
@@ -860,36 +882,36 @@ sequelize (See sequelize [docs](https://sequelize.org/master/manual/scopes.html)
 
 ```typescript
 @DefaultScope(() => ({
-  attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt']
+  attributes: ['id', 'primaryColor', 'secondaryColor', 'producedAt'],
 }))
 @Scopes(() => ({
   full: {
-    include: [Manufacturer]
+    include: [Manufacturer],
   },
   yellow: {
-    where: { primaryColor: 'yellow' }
-  }
+    where: { primaryColor: 'yellow' },
+  },
 }))
 @Table
 export class ShoeWithScopes extends Model {
   @Column
-  readonly secretKey: string
+  readonly secretKey: string;
 
   @Column
-  primaryColor: string
+  primaryColor: string;
 
   @Column
-  secondaryColor: string
+  secondaryColor: string;
 
   @Column
-  producedAt: Date
+  producedAt: Date;
 
   @ForeignKey(() => Manufacturer)
   @Column
-  manufacturerId: number
+  manufacturerId: number;
 
   @BelongsTo(() => Manufacturer)
-  manufacturer: Manufacturer
+  manufacturer: Manufacturer;
 }
 ```
 
@@ -905,19 +927,19 @@ The name of the method cannot be the same as the name of the hook (for example, 
 @Table
 export class Person extends Model {
   @Column
-  name: string
+  name: string;
 
   @BeforeUpdate
   @BeforeCreate
   static makeUpperCase(instance: Person) {
     // this will be called when an instance is created or updated
-    instance.name = instance.name.toLocaleUpperCase()
+    instance.name = instance.name.toLocaleUpperCase();
   }
 
   @BeforeCreate
   static addUnicorn(instance: Person) {
     // this will also be called when an instance is created
-    instance.name += ' 🦄'
+    instance.name += ' 🦄';
   }
 }
 ```
@@ -933,7 +955,7 @@ this issue.
 
 ### One Sequelize instance per model (without repository mode)
 
-Unless you are using the [repository mode](#repository-mode-1), you won't be able to add one and the same model to multiple
+Unless you are using the [repository mode](#repository-mode), you won't be able to add one and the same model to multiple
 Sequelize instances with differently configured connections. So that one model will only work for one connection.
 
 ### One model class per file
