@@ -19,6 +19,6 @@
     "express": "^4.16.4",
     "sequelize": "^5.15.1",
     "sequelize-typescript": "^1.0.0-alpha.9",
-    "strong-error-handler": "^3.2.0"
+    "strong-error-handler": "^3.5.0"
   }
 }
