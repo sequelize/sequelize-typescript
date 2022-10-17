@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.5](https://github.com/RobinBuschmann/sequelize-typescript/compare/v2.1.4...v2.1.5) (2022-10-17)
+
+### Bug Fixes
+
+- **deps:** revert to glob@7.2.0 for sequelize@6 & node@10 compatibility ([#1479](https://github.com/RobinBuschmann/sequelize-typescript/issues/1479)) ([7c8eea7](https://github.com/RobinBuschmann/sequelize-typescript/commit/7c8eea7bb7f9de5fdb03fef56afb0654808a0d18))
+
 ## [2.1.4](https://github.com/RobinBuschmann/sequelize-typescript/compare/v2.1.3...v2.1.4) (2022-10-15)
 
 ### Bug Fixes
