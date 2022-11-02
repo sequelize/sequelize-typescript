@@ -97,7 +97,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "17.2.0",
-    "@commitlint/config-conventional": "17.1.0",
+    "@commitlint/config-conventional": "17.2.0",
     "@release-it/conventional-changelog": "5.1.1",
     "@types/chai": "4.3.3",
     "@types/chai-as-promised": "7.1.5",
