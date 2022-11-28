@@ -107,7 +107,7 @@
     "@types/node": "18.11.9",
     "@types/prettyjson": "0.0.30",
     "@types/sinon": "10.0.11",
-    "@types/sinon-chai": "3.2.8",
+    "@types/sinon-chai": "3.2.9",
     "@typescript-eslint/eslint-plugin": "5.42.0",
     "@typescript-eslint/parser": "5.42.0",
     "chai": "4.3.7",
