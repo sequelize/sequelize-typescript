@@ -119,7 +119,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "has-flag": "5.0.1",
-    "husky": "8.0.1",
+    "husky": "8.0.2",
     "lodash": "4.17.21",
     "markdownlint-cli": "0.32.2",
     "mocha": "9.2.2",
