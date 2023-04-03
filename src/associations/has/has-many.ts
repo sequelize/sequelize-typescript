@@ -5,17 +5,17 @@ import { ModelClassGetter } from '../../model/shared/model-class-getter';
 import { addAssociation, getPreparedAssociationOptions } from '../shared/association-service';
 import { Association } from '../shared/association';
 
-export function HasMany<TCreationAttributes, TModelAttributes>(
+export function HasMany<TCreationAttributes extends {}, TModelAttributes extends {}>(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   foreignKey?: string
 ): Function;
 
-export function HasMany<TCreationAttributes, TModelAttributes>(
+export function HasMany<TCreationAttributes extends {}, TModelAttributes extends {}>(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   options?: HasManyOptions
 ): Function;
 
-export function HasMany<TCreationAttributes, TModelAttributes>(
+export function HasMany<TCreationAttributes extends {}, TModelAttributes extends {}>(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   optionsOrForeignKey?: string | HasManyOptions
 ): Function {

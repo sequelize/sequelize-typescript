@@ -32,7 +32,7 @@ export class Sequelize extends OriginSequelize {
     }
   }
 
-  model<TCreationAttributes, TModelAttributes>(
+  model<TCreationAttributes extends {}, TModelAttributes extends {}>(
     model: string | ModelType<TCreationAttributes, TModelAttributes>
   ): ModelCtor {
     if (typeof model !== 'string') {
