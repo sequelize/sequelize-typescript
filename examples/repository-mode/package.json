@@ -15,8 +15,8 @@
     "ts-node": "^7.0.1"
   },
   "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
     "sequelize": "^5.22.5",
     "sequelize-typescript": "^1.0.0-alpha.9",
     "strong-error-handler": "^3.2.0"
