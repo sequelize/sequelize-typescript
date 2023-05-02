@@ -83,13 +83,13 @@ import { Table, Column, Model, HasMany } from 'sequelize-typescript';
 @Table
 class Person extends Model {
   @Column
-  name: string;
+  declare name: string;
 
   @Column
-  birthday: Date;
+  declare birthday: Date;
 
   @HasMany(() => Hobby)
-  hobbies: Hobby[];
+  declare hobbies: Hobby[];
 }
 ```
 
@@ -157,13 +157,13 @@ Annotations to define custom and type safe `createdAt`, `updatedAt` and `deleted
 
 ```typescript
   @CreatedAt
-  creationDate: Date;
+  declare creationDate: Date;
 
   @UpdatedAt
-  updatedOn: Date;
+  declare updatedOn: Date;
 
   @DeletedAt
-  deletionDate: Date;
+  declare deletionDate: Date;
 ```
 
 | Decorator    | Description                                                            |
@@ -179,7 +179,7 @@ the js type can be inferred automatically (see [Type inference](#type-inference)
 
 ```typescript
   @Column
-  name: string;
+  declare name: string;
 ```
 
 If the type cannot or should not be inferred, use:
@@ -188,7 +188,7 @@ If the type cannot or should not be inferred, use:
 import {DataType} from 'sequelize-typescript';
 
   @Column(DataType.TEXT)
-  name: string;
+  declare name: string;
 ```
 
 Or for a more detailed column description, use an object literal
@@ -201,7 +201,7 @@ from sequelize are valid):
     comment: 'Some value',
     ...
   })
-  value: number;
+  declare value: number;
 ```
 
 #### Column API
@@ -343,7 +343,7 @@ export const NUser = 'Not a model';
 export class User extends Model {
 
   @Column
-  nickname: string;
+  declare nickname: string;
 }
 ```
 
@@ -413,26 +413,26 @@ and `@ForeignKey` annotations.
 @Table
 class Player extends Model {
   @Column
-  name: string;
+  declare name: string;
 
   @Column
-  num: number;
+  declare num: number;
 
   @ForeignKey(() => Team)
   @Column
-  teamId: number;
+  declare teamId: number;
 
   @BelongsTo(() => Team)
-  team: Team;
+  declare team: Team;
 }
 
 @Table
 class Team extends Model {
   @Column
-  name: string;
+  declare name: string;
 
   @HasMany(() => Player)
-  players: Player[];
+  declare players: Player[];
 }
 ```
 
@@ -458,18 +458,18 @@ class Book extends Model {
 @Table
 class Author extends Model {
   @BelongsToMany(() => Book, () => BookAuthor)
-  books: Book[];
+  declare books: Book[];
 }
 
 @Table
 class BookAuthor extends Model {
   @ForeignKey(() => Book)
   @Column
-  bookId: number;
+  declare bookId: number;
 
   @ForeignKey(() => Author)
   @Column
-  authorId: number;
+  declare authorId: number;
 }
 ```
 
@@ -480,7 +480,7 @@ need to be set up manually. For `Author` model it can be achieved like so:
 
 ```ts
   @BelongsToMany(() => Book, () => BookAuthor)
-  books: Array<Book & {BookAuthor: BookAuthor}>;
+  declare books: Array<Book & {BookAuthor: BookAuthor}>;
 ```
 
 ### One-to-one
@@ -520,26 +520,26 @@ So if you define a model with multiple relations like
 class Book extends Model {
   @ForeignKey(() => Person)
   @Column
-  authorId: number;
+  declare authorId: number;
 
   @BelongsTo(() => Person)
-  author: Person;
+  declare author: Person;
 
   @ForeignKey(() => Person)
   @Column
-  proofreaderId: number;
+  declare proofreaderId: number;
 
   @BelongsTo(() => Person)
-  proofreader: Person;
+  declare proofreader: Person;
 }
 
 @Table
 class Person extends Model {
   @HasMany(() => Book)
-  writtenBooks: Book[];
+  declare writtenBooks: Book[];
 
   @HasMany(() => Book)
-  proofedBooks: Book[];
+  declare proofedBooks: Book[];
 }
 ```
 
@@ -550,17 +550,17 @@ explicitly:
 
   // in class "Books":
   @BelongsTo(() => Person, 'authorId')
-  author: Person;
+  declare author: Person;
 
   @BelongsTo(() => Person, 'proofreaderId')
-  proofreader: Person;
+  declare proofreader: Person;
 
   // in class "Person":
   @HasMany(() => Book, 'authorId')
-  writtenBooks: Book[];
+  declare writtenBooks: Book[];
 
   @HasMany(() => Book, 'proofreaderId')
-  proofedBooks: Book[];
+  declare proofedBooks: Book[];
 ```
 
 ### Type safe usage of auto generated functions
@@ -576,13 +576,13 @@ functions.
 @Table
 class ModelA extends Model {
   @HasMany(() => ModelB)
-  bs: ModelB[];
+  declare bs: ModelB[];
 }
 
 @Table
 class ModelB extends Model {
   @BelongsTo(() => ModelA)
-  a: ModelA;
+  declare a: ModelA;
 }
 ```
 
@@ -615,11 +615,11 @@ The `@Index` annotation can be used without passing any parameters.
 class Person extends Model {
   @Index // Define an index with default name
   @Column
-  name: string;
+  declare name: string;
 
   @Index // Define another index
   @Column
-  birthday: Date;
+  declare birthday: Date;
 }
 ```
 
@@ -631,11 +631,11 @@ an object literal (see [indexes define option](https://sequelize.org/v5/manual/m
 class Person extends Model {
   @Index('my-index') // Define a multi-field index on name and birthday
   @Column
-  name: string;
+  declare name: string;
 
   @Index('my-index') // Add birthday as the second field to my-index
   @Column
-  birthday: Date;
+  declare birthday: Date;
 
   @Index({
     // index options
@@ -654,10 +654,10 @@ class Person extends Model {
     collate: 'NOCASE',
   })
   @Column
-  jobTitle: string;
+  declare jobTitle: string;
 
   @Column
-  isEmployee: boolean;
+  declare isEmployee: boolean;
 }
 ```
 
@@ -692,11 +692,11 @@ const JobIndex = createIndexDecorator({
 class Person extends Model {
   @SomeIndex // Add name to SomeIndex
   @Column
-  name: string;
+  declare name: string;
 
   @SomeIndex // Add birthday to SomeIndex
   @Column
-  birthday: Date;
+  declare birthday: Date;
 
   @JobIndex({
     // index field options
@@ -705,10 +705,10 @@ class Person extends Model {
     collate: 'NOCASE',
   })
   @Column
-  jobTitle: string;
+  declare jobTitle: string;
 
   @Column
-  isEmployee: boolean;
+  declare isEmployee: boolean;
 }
 ```
 
@@ -805,23 +805,23 @@ export class Shoe extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Column
-  id: string;
+  declare id: string;
 
   @Equals('lala')
   @Column
-  readonly key: string;
+  declare readonly key: string;
 
   @Contains('Special')
   @Column
-  special: string;
+  declare special: string;
 
   @Length({ min: 3, max: 15 })
   @Column
-  brand: string;
+  declare brand: string;
 
   @IsUrl
   @Column
-  brandUrl: string;
+  declare brandUrl: string;
 
   @Is('HexColor', (value) => {
     if (!HEX_REGEX.test(value)) {
@@ -829,7 +829,7 @@ export class Shoe extends Model {
     }
   })
   @Column
-  primaryColor: string;
+  declare primaryColor: string;
 
   @Is(function hexColor(value: string): void {
     if (!HEX_REGEX.test(value)) {
@@ -837,16 +837,16 @@ export class Shoe extends Model {
     }
   })
   @Column
-  secondaryColor: string;
+  declare secondaryColor: string;
 
   @Is(HEX_REGEX)
   @Column
-  tertiaryColor: string;
+  declare tertiaryColor: string;
 
   @IsDate
   @IsBefore('2017-02-27')
   @Column
-  producedAt: Date;
+  declare producedAt: Date;
 }
 ```
 
@@ -872,23 +872,23 @@ sequelize (See sequelize [docs](https://sequelize.org/master/manual/scopes.html)
 @Table
 export class ShoeWithScopes extends Model {
   @Column
-  readonly secretKey: string;
+  declare readonly secretKey: string;
 
   @Column
-  primaryColor: string;
+  declare primaryColor: string;
 
   @Column
-  secondaryColor: string;
+  declare secondaryColor: string;
 
   @Column
-  producedAt: Date;
+  declare producedAt: Date;
 
   @ForeignKey(() => Manufacturer)
   @Column
-  manufacturerId: number;
+  declare manufacturerId: number;
 
   @BelongsTo(() => Manufacturer)
-  manufacturer: Manufacturer;
+  declare manufacturer: Manufacturer;
 }
 ```
 
@@ -904,7 +904,7 @@ The name of the method cannot be the same as the name of the hook (for example, 
 @Table
 export class Person extends Model {
   @Column
-  name: string;
+  declare name: string;
 
   @BeforeUpdate
   @BeforeCreate
