@@ -596,7 +596,7 @@ modelA
     /* instance */
   ])
   .then(/* ... */);
-modelA.$add('b' /* instance */).then(/* ... */);
+modelA.$add('bs' /* instance */).then(/* ... */);
 modelA.$get('bs').then(/* ... */);
 modelA.$count('bs').then(/* ... */);
 modelA.$has('bs').then(/* ... */);
