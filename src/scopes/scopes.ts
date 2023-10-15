@@ -11,14 +11,14 @@ export function Scopes(scopesGetter: ScopesOptionsGetter): Function;
  * Decorator for defining Model scopes
  * @deprecated
  */
-export function Scopes<TCreationAttributes, TModelAttributes>(
+export function Scopes<TCreationAttributes extends {}, TModelAttributes extends {}>(
   scopes: ScopeTableOptions<TCreationAttributes, TModelAttributes>
 ): Function;
 
 /**
  * Decorator for defining Model scopes
  */
-export function Scopes<TCreationAttributes, TModelAttributes>(
+export function Scopes<TCreationAttributes extends {}, TModelAttributes extends {}>(
   scopesOrScopesGetter:
     | ScopeTableOptions<TCreationAttributes, TModelAttributes>
     | ScopesOptionsGetter

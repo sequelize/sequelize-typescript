@@ -4,10 +4,10 @@ import { ModelClassGetter } from '../../model/shared/model-class-getter';
 import { addAssociation } from '../shared/association-service';
 
 export function BelongsToMany<
-  TCreationAttributes,
-  TModelAttributes,
-  TCreationAttributesThrough,
-  TModelAttributesThrough
+  TCreationAttributes extends {},
+  TModelAttributes extends {},
+  TCreationAttributesThrough extends {},
+  TModelAttributesThrough extends {}
 >(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   through: ModelClassGetter<TCreationAttributesThrough, TModelAttributesThrough> | string,
@@ -15,19 +15,19 @@ export function BelongsToMany<
   otherKey?: string
 ): Function;
 export function BelongsToMany<
-  TCreationAttributes,
-  TModelAttributes,
-  TCreationAttributesThrough,
-  TModelAttributesThrough
+  TCreationAttributes extends {},
+  TModelAttributes extends {},
+  TCreationAttributesThrough extends {},
+  TModelAttributesThrough extends {}
 >(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   options: BelongsToManyOptions<TCreationAttributesThrough, TModelAttributesThrough>
 ): Function;
 export function BelongsToMany<
-  TCreationAttributes,
-  TModelAttributes,
-  TCreationAttributesThrough,
-  TModelAttributesThrough
+  TCreationAttributes extends {},
+  TModelAttributes extends {},
+  TCreationAttributesThrough extends {},
+  TModelAttributesThrough extends {}
 >(
   associatedClassGetter: ModelClassGetter<TCreationAttributes, TModelAttributes>,
   throughOrOptions:

@@ -10,9 +10,9 @@ jobs:
   publish-npm:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v3.0.2'
+      - uses: 'actions/checkout@v3.1.0'
 
-      - uses: 'actions/setup-node@v3.4.1'
+      - uses: 'actions/setup-node@v3.5.1'
         with:
           node-version: 16
           registry-url: 'https://registry.npmjs.org/'

@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "config:base",
+    ":maintainLockFilesWeekly",
+    ":semanticCommitTypeAll(meta)",
+    ":semanticCommitScopeDisabled"
+  ],
+  "automergeStrategy": "squash",
+  "semanticCommitType": "meta",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "matchPackageNames": ["mocha", "@types/mocha", "sinon", "@types/sinon"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ]
+}
