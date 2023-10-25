@@ -14,7 +14,7 @@ export function deepAssign<T, S>(target: T, source: S): T & S;
 export function deepAssign<S>(target: {}, source: S): S;
 export function deepAssign(target: any, ...sources: any[]): any {
   sources.forEach((source) => {
-    Object.getOwnPropertyNames(source).forEach((key) => assign(key, target, source));
+    Object.getOwnPropertyNames(source).forEach((key) => !["__proto__", "constructor", "prototype"].includes(key) && assign(key, target, source));
     /* istanbul ignore next */
     if (Object.getOwnPropertySymbols) {
       Object.getOwnPropertySymbols(source).forEach((key) => assign(key, target, source));
