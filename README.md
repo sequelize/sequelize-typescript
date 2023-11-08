@@ -93,6 +93,10 @@ class Person extends Model {
 }
 ```
 
+Sequelize adds getter & setter for each attribute defined through `Model.init`. Adding class fields will override them, causing issues with access. To prevent that `declare` should be put before any attribute.
+
+More could be found in [official docs](https://sequelize.org/docs/v6/core-concepts/model-basics/#caveat-with-public-class-fields).
+
 ### Less strict
 
 ```typescript
