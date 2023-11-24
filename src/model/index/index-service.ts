@@ -7,7 +7,7 @@ const INDEXES_KEY = 'sequelize:indexes';
 export interface IndexFieldOptions {
   name: string;
   length?: number;
-  order?: 'ASC' | 'DESC';
+  order?: `${'ASC' | 'DESC'}${ ` NULLS ${ 'FIRST' | 'LAST' }` | ''}`;
   collate?: string;
 }
 
