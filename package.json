@@ -1,6 +1,6 @@
 {
   "name": "sequelize-typescript",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Decorators and some other features for sequelize",
   "scripts": {
     "build": "tsc",
