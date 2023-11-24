@@ -8,7 +8,7 @@
     "cover": "nyc mocha test/**/*.spec.ts",
     "lint": "eslint --ext .ts src/ test/",
     "lint:fix": "npm run lint -- --fix",
-    "markdownlint": "markdownlint '**/*.md' --ignore node_modules",
+    "markdownlint": "markdownlint '**/*.md' --ignore node_modules --ignore CHANGELOG.md",
     "release": "release-it",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable && npm run build",
