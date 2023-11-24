@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { deepAssign } from '../../../src/shared/object';
+import { addScopeOptions } from '../../../src/scopes/scope-service';
 
 describe('utils', () => {
   describe('object', () => {
@@ -107,6 +108,14 @@ describe('utils', () => {
         const copy = deepAssign({}, { test: new Test() });
 
         expect(copy.test).to.have.property('protoFn').that.is.a('function');
+      });
+
+      it('ignore prototype property', () => {
+        const BAD_JSON = JSON.parse('{"__proto__":{"polluted":true}}');
+        const empty_scope = {};
+
+        addScopeOptions(empty_scope, BAD_JSON);
+        expect(empty_scope).not.to.have.property('polluted');
       });
 
       if (Object.getOwnPropertySymbols) {
