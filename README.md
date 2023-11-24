@@ -42,7 +42,7 @@ Decorators and some other features for sequelize (v6).
 - additional typings as documented [here](https://sequelize.org/master/manual/typescript.html) and [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 
 ```sh
-npm install --save-dev @types/node @types/validator
+npm install --save-dev @types/validator
 npm install sequelize reflect-metadata sequelize-typescript
 ```
 
