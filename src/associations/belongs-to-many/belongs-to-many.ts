@@ -48,7 +48,7 @@ export function BelongsToMany<
       options = { ...throughOrOptions };
     }
 
-    if (!options.as) options.as = propertyName;
+    if (!options.as && !('as' in options)) options.as = propertyName;
 
     addAssociation(
       target,

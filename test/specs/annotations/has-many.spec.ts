@@ -15,17 +15,30 @@ describe('HasMany', () => {
   class Player extends Model {}
 
   @Table
+  class Rank extends Model {}
+
+  @Table
   class Team extends Model {
     @HasMany(() => Player, {
       as,
       foreignKey: 'teamId',
     })
     players: Player[];
+
+    @HasMany(() => Rank, {
+      as: undefined,
+      foreignKey: 'rankId',
+    })
+    Ranks: Rank[];
   }
 
-  sequelize.addModels([Team, Player]);
+  sequelize.addModels([Team, Player, Rank]);
 
   it('should pass as options to sequelize association', () => {
     expect(Team['associations']).to.have.property(as);
+  });
+
+  it('should use association model name if passed undefined for "as"', () => {
+    expect(Team['associations']).to.have.property('Ranks');
   });
 });

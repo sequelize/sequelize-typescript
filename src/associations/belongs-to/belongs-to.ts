@@ -20,7 +20,7 @@ export function BelongsTo<TCreationAttributes extends {}, TModelAttributes exten
 ): Function {
   return (target: any, propertyName: string) => {
     const options: BelongsToOptions = getPreparedAssociationOptions(optionsOrForeignKey);
-    if (!options.as) options.as = propertyName;
+    if (!options.as && !('as' in options)) options.as = propertyName;
     addAssociation(target, new BelongsToAssociation(associatedClassGetter, options));
   };
 }

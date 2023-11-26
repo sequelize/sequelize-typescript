@@ -1,4 +1,17 @@
+import { BaseAssociation } from '../shared/base-association';
 import { getAssociationsByRelation } from '../shared/association-service';
+
+/**
+ * Returns true if automatic association is possible given include parameters and list of associations
+ */
+function automaticAssociationInferrencePossible<TCreationAttributes, TModelAttributes>(
+  include: { model: any; as: any },
+  associations: BaseAssociation<TCreationAttributes, TModelAttributes>[]
+): boolean {
+  const hasModelOptionWithoutAsOption = !!(include.model && !include.as);
+  const associationsWithoutAs = associations.filter((assoc) => !assoc.getAs());
+  return associationsWithoutAs.length === 1 && hasModelOptionWithoutAsOption;
+}
 
 /**
  * Pre conform includes, so that "as" value can be inferred from source
@@ -44,7 +57,9 @@ function inferAliasForInclude(include: any, source: any): any {
     const relatedClass = include.model;
     const associations = getAssociationsByRelation(targetPrototype, relatedClass);
 
-    if (associations.length > 0) {
+    if (automaticAssociationInferrencePossible(include, associations)) {
+      // Do nothing, this "include" is actually fine
+    } else if (associations.length > 0) {
       if (associations.length > 1) {
         throw new Error(
           `Alias cannot be inferred: "${source.name}" has multiple ` +
