@@ -10,6 +10,7 @@ import { getAssociations } from '../../associations/shared/association-service';
 import { getAttributes } from '../../model/column/attribute-service';
 import { getIndexes } from '../../model/index/index-service';
 import { Repository } from '../..';
+import { snakeCase } from 'lodash';
 
 export class Sequelize extends OriginSequelize {
   options: SequelizeOptions;
@@ -93,6 +94,20 @@ export class Sequelize extends OriginSequelize {
       const indexArray = Object.keys(indexes.named)
         .map((key) => indexes.named[key])
         .concat(indexes.unnamed);
+
+      if (modelOptions.underscored) {
+        indexArray.forEach((index) => {
+          index.fields?.forEach((field) => {
+            const value = field.valueOf();
+            if (typeof value === 'object') {
+              field['name'] = snakeCase(value['name']);
+            } else if (typeof value === 'string') {
+              field = snakeCase(value);
+            }
+          });
+        });
+      }
+
       const initOptions: InitOptions & { modelName } = {
         ...(indexArray.length > 0 && { indexes: indexArray }),
         ...modelOptions,
