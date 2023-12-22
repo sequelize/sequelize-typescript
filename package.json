@@ -130,7 +130,7 @@
     "prettier": "2.8.0",
     "prettyjson": "1.2.5",
     "reflect-metadata": "0.1.13",
-    "release-it": "15.5.0",
+    "release-it": "15.10.1",
     "sequelize": "6.29.0",
     "sinon": "13.0.1",
     "sinon-chai": "3.7.0",
