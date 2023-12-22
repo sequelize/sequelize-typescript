@@ -17,7 +17,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "sequelize": "^5.22.5",
+    "sequelize": "^6.29.0",
     "sequelize-typescript": "^1.0.0-alpha.9",
     "strong-error-handler": "^3.2.0"
   }
