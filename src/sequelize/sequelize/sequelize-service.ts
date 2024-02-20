@@ -39,7 +39,7 @@ export function getModels(arg: (ModelCtor | string)[], modelMatch: ModelMatch): 
   const hasSupportedExtension = (path) => ['.ts', '.js'].indexOf(extname(path)) !== -1;
 
   if (arg && typeof arg[0] === 'string') {
-    return arg.reduce((models: any[], dir) => {
+    return arg.reduce((models: any[], dir: string) => {
       if (!glob.hasMagic(dir) && !hasSupportedExtension(dir)) dir = join(dir as string, '/*');
       const _models = glob
         .sync(dir as string)
